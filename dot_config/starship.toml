@@ -1,0 +1,10 @@
+[gcloud]
+disabled = true
+
+[kubernetes]
+format = '[($context) \($namespace\)](italic blue) '
+disabled = false
+
+[[kubernetes.contexts]]
+context_pattern = 'arn.*/(?P<cluster>.*)'
+context_alias = "$cluster"

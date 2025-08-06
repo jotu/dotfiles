@@ -1,0 +1,6 @@
+#MISE description="Disable file extensions globally."
+#MISE alias="odfe"
+defaults write NSGlobalDomain AppleShowAllExtensions -bool false
+osascript -e 'tell application "Finder" to quit'
+killall Spotlight
+open -g -a Finder

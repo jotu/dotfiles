@@ -1,0 +1,22 @@
+[user]
+    name = {{ .name | quote }}
+    email = {{ .personal.git.email | quote }}
+    signingkey = {{ .personal.git.signingKey | quote }}
+{{- if .work.enable }}
+[includeIf "gitdir:~/develop/work"]
+    path = ~/.gitconfig.work
+{{- end }}
+[commit]
+    gpgsign = true
+[gpg]
+    program = gpg
+[tag]
+    gpgSign = true
+[credential]
+    helper = !gh auth git-credential
+    useHttpPath = true
+[http]
+    version = HTTP/2
+    postBuffer = 524288000
+[init]
+    defaultBranch = main

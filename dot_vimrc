@@ -1,0 +1,26 @@
+" Use spaces instead of tabs
+set expandtab
+
+" Set the number of spaces that a tab counts for
+set tabstop=2
+
+" If zero, use the shiftwidth value for number of spaces when using tab
+set softtabstop=0
+
+" Set the number of spaces to use for each step of (auto)indent
+set shiftwidth=2
+
+" Convert tabs to spaces
+set smarttab
+
+" Automatically indent new lines
+set autoindent
+
+" Enable smart indenting
+set smartindent
+
+" Enable syntax highlighting
+syntax on
+
+" Show line numbers
+set number

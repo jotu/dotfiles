@@ -1,0 +1,22 @@
+[tools]
+"go:golang.org/x/tools/gopls" = "latest"
+"ubi:errata-ai/vale-ls" = "latest"
+"ubi:joshrotenberg/adrs" = "latest"
+"ubi:mrjosh/helm-ls" = "latest"
+chezmoi = "latest"
+gh = "latest"
+git = "latest"
+go = "latest"
+helm = "latest"
+k9s = "latest"
+kind = "latest"
+kubebuilder = "latest"
+kubectl = "latest"
+kubelogin = "latest"
+node = "latest"
+starship = "latest"
+usage = "latest"
+vale = "latest"
+
+[settings]
+experimental = true

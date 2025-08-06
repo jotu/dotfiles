@@ -1,0 +1,28 @@
+# Run expensive operations once per day
+
+# Define paths
+local last_run_path="${XDG_CACHE_HOME:-$HOME/.cache}/zsh_daily"
+local last_run_file="${last_run_path}/last_successful_run"
+
+# Ensure the path exists
+mkdir -p "$last_run_path"
+
+# Read last run (safely), get today's date
+local last_run=""
+[[ -f $last_run_file ]] && last_run=$(<"$last_run_file")
+local today=$(date +%F)
+
+autoload -Uz compinit
+
+# Run daily tasks only if not already run today
+if [[ $last_run != $today ]]; then
+  echo "$today" >| "$last_run_file"
+  echo "Running daily operations."
+  {{- if .work.enable }}
+  mise run osx:disable-file-extensions
+  {{- end }}
+  compinit
+  source ~/.zsh_completions
+else
+  compinit -C
+fi

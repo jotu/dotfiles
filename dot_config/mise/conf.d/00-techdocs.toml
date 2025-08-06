@@ -1,0 +1,9 @@
+[tasks."techdocs:generate"]
+alias = "tdg"
+description = "Generate the TechDocs site. Useful for troubleshooting badly generated sites."
+run = "npx @techdocs/cli generate -v"
+
+[tasks."techdocs:serve"]
+alias = "tds"
+description = "Serve the TechDocs site locally"
+run = "npx @techdocs/cli serve -v"

@@ -1,0 +1,3 @@
+#MISE description="Print the current Kubernetes context."
+#MISE alias="kcc"
+kubectl config current-context

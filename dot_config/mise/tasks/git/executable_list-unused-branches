@@ -1,0 +1,4 @@
+#MISE description="List all unused branches in the current repository."
+#MISE dir="{{cwd}}"
+#MISE alias="glub"
+git branch -vv | grep ': gone]' | awk '{print $1}'
