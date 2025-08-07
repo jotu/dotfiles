@@ -1,3 +1,7 @@
 Host github.com
     HostName github.com
     IdentitiesOnly yes
+
+Match host github.com user jotu
+IdentityFile ~/ssh/id_ed25519
+
