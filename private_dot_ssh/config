@@ -3,5 +3,5 @@ Host github.com
     IdentitiesOnly yes
 
 Match host github.com user jotu
-IdentityFile ~/ssh/{{ .personal.ssh.identityFile }}
+IdentityFile ~/ssh/id_ed25519
 
