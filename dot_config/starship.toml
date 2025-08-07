@@ -1,10 +1,112 @@
-[gcloud]
+"$schema" = 'https://starship.rs/config-schema.json'
+
+add_newline = true
+command_timeout = 2000 # timeout in milliseconds
+
+format = '''
+(bold green)$directory$nix_shell$java$golang$python$nodejs$lua$kubernetes$cmd_duration
+[$character](bold green)'''
+
+right_format = """
+$git_branch\
+$git_commit\
+$git_state\
+$git_status\
+$docker_context\
+$terraform\
+$aws\
+$gcloud\
+$openstack\
+$azure\
+$custom\
+$status"""
+
+[fill]
+symbol = '.'
+
+[character]
+success_symbol = '[➜](bold green)'
+error_symbol = '[✗](bold red)'
+
+[package]
 disabled = true
 
-[kubernetes]
-format = '[($context) \($namespace\)](italic blue) '
+[cmd_duration]
+min_time = 500
+
+[aws]
 disabled = false
+format = 'on [$symbol$profile]($style)'
+style = "italic #FF9900"                # Use AWS orange color
+
+[azure]
+disabled = true
+format = 'on [$symbol($subscription)]($style)'
+style = "italic #007FFF"                       # Using Azure blue color
+
+[gcloud]
+disabled = true
+format = 'on [$symbol$profile]($style)'
+style = "italic #4285F4"                # Using Google G color
+
+[directory]
+truncate_to_repo = true
+
+[docker_context]
+disabled = true
+
+[git_branch]
+
+[git_status]
+conflicted = '🏳'
+ahead = '🏎💨'
+behind = '😰'
+diverged = '😵'
+up_to_date = ''
+untracked = '🤷'
+stashed = ''
+modified = '📝'
+staged = '[++\($count\)](green)'
+renamed = '👅'
+deleted = '🗑'
+disabled = false
+
+[java]
+format = "[${symbol}(${version} )]($style)"
+style = "italic blue"
+
+[golang]
+disabled = false
+format = "[ ${symbol}(${version} )]($style)"
+style = "italic cyan"
+
+[nodejs]
+disabled = false
+
+[python]
+disabled = false
+
+[kubernetes]
+disabled = false
+style = 'cyan'
+format = '[$symbol$context]($style) '
 
 [[kubernetes.contexts]]
 context_pattern = 'arn.*/(?P<cluster>.*)'
 context_alias = "$cluster"
+style = "italic cyan"
+
+[nix_shell]
+disabled = false
+impure_msg = 'devbox'
+format = '[$symbol$state](bold blue)'
+
+[sudo]
+disabled = false
+
+[time]
+disabled = true
+format = "[ $time]($style)"
+time_format = "%R"
+utc_time_offset = "local"
+style = "italic dimmed white"
