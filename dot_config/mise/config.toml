@@ -1,5 +1,6 @@
 [tools]
 adr-tools = "latest"
+fzf = "latest" 
 gh = "latest"
 ginkgo = "latest"
 go = "latest"
