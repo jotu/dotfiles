@@ -19,9 +19,10 @@ setopt SHARE_HISTORY
 export PATH="$HOME/.local/bin:$PATH"
 eval "$(mise activate zsh)"
 eval "$(starship init zsh)"
+eval $(thefuck --alias fuck)
 
 source ~/.zsh_aliases
 source ~/.zsh_daily # Run expensive operations once per day
 source <(fzf --zsh) # Enable fzf keybindings and completions
 source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-
+[[ $commands[kubectl] ]] && source <(kubectl completion zsh)
