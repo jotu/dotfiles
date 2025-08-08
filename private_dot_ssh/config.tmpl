@@ -1,0 +1,11 @@
+Host github.com
+    HostName github.com
+    IdentitiesOnly yes
+
+Match host github.com user jotu
+IdentityFile ~/ssh/{{ .personal.ssh.identityFile  }}
+
+{{- if .work.enable }}
+Match host github.com user git
+IdentityFile ~/ssh/{{ .work.ssh.identityFile  }}
+{{- end }}
