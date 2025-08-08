@@ -6,3 +6,7 @@ alias skp="sk -p" # Previously selected context and namespace
 alias skn="sk -n" # Also prompt for namespace selection
 alias skN="sk -N" # Only prompt for namespace selection
 alias skc="sk -c" # Print the currently selected context and namespace
+{{- if .work.enable }}
+alias kinit="kinit --keychain {{ .work.employee.code }}@{{ .work.domain }}"
+alias goedemorgen='open -a "Firefox" "{{ .work.saml.auth.url  }}?nocache=$(date +%s)" && we auth && aws sso login --profile {{ .work.aws.profile.a }} && {{ .work.aws.profile.b }}'
+{{- end }}
