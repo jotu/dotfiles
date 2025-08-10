@@ -1,2 +1,6 @@
-export PATH="/opt/homebrew/bin:$PATH"
+export PATH="$BREW_HOM/bin:$PATH"
+
+eval "$(/BREW_HOME/bin/brew shellenv)"
+eval "$(starship init zsh)"
+eval $(thefuck --alias fuck)
 eval "$($HOME/.local/bin/mise activate zsh --shims)"
