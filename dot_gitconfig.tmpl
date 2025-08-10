@@ -2,26 +2,42 @@
     name = {{ .name | quote }}
     email = {{ .personal.git.email | quote }}
     signingkey = {{ .personal.git.signingKey | quote }}
+
 {{- if .work.enable }}
 [includeIf "gitdir:~/develop/work/"]
     path = ~/.gitconfig.work
 {{- end }}
+
+[core]
+    autocrlf = input
+    symlinks = false
+    filemode = false
+    whitespace = cr-at-eol
+    editor = vi
+
 [commit]
     gpgsign = true
+
 [gpg]
     program = gpg
+
 [tag]
     gpgSign = true
+
 [credential]
     helper = !gh auth git-credential
     useHttpPath = true
+
 [http]
     version = HTTP/2
     postBuffer = 524288000
+
 [url "ssh://git@github.com"]
   insteadOf = https://github.com
+
 [init]
     defaultBranch = main
+
 [alias]
   br = branch
   ci = commit
