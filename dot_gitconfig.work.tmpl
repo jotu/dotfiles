@@ -7,3 +7,36 @@
 [includeIf "gitdir:~/develop/work/**"]
     path = ~/.gitconfig.work-specific
 {{- end }}
+
+[core]
+        autocrlf = input
+        symlinks = false
+        filemode = false
+        whitespace = cr-at-eol
+        editor = vi
+
+[credential "https://github.com"]
+        helper =
+        helper = !/opt/homebrew/bin/gh auth git-credential
+
+[credential "https://gist.github.com"]
+        helper =
+        helper = !/opt/homebrew/bin/gh auth git-credential
+
+[credential "https://github.com"]
+        helper = !/opt/homebrew/bin/gh auth git-credential
+
+[credential "https://gist.github.com"]
+        helper = !/opt/homebrew/bin/gh auth git-credential
+
+[url "ssh://git@github.com/"]
+        insteadOf = https://github.com/
+[commit]
+        gpgsign = true
+[filter "lfs"]
+        clean = git-lfs clean -- %f
+        smudge = git-lfs smudge -- %f
+        process = git-lfs filter-process
+        required = true
+[gpg]
+        program = /opt/homebrew/bin/gpg
