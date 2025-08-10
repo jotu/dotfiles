@@ -4,7 +4,7 @@
     email = {{ .work.git.email | quote }}
     signingkey = {{ .work.git.signingKey | quote }}
 
-[includeIf "gitdir:~/develop/work/**"]
+[includeIf "gitdir:~/develop/work/"]
     path = ~/.gitconfig.work-specific
 {{- end }}
 
