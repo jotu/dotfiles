@@ -17,6 +17,13 @@ setopt HIST_IGNORE_DUPS
 setopt SHARE_HISTORY
 
 export GPG_TTY=$(tty)
+export PATH="$BREW_HOME/bin:$PATH"
+export PATH="$HOME/.local/bin:$HOME/bin:$PATH"
+
+eval "$(brew shellenv)"
+eval "$(starship init zsh)"
+eval $(thefuck --alias fuck)
+eval "$(mise activate zsh --shims)"
 
 source ~/.zsh_aliases
 source ~/.zsh_daily # Run expensive operations once per day
