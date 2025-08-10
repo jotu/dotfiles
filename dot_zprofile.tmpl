@@ -1,6 +1,6 @@
-export PATH="$BREW_HOM/bin:$PATH"
+export PATH="$BREW_HOME/bin:$PATH"
 
-eval "$(/BREW_HOME/bin/brew shellenv)"
+eval "$(brew shellenv)"
 eval "$(starship init zsh)"
 eval $(thefuck --alias fuck)
-eval "$($HOME/.local/bin/mise activate zsh --shims)"
+eval "$(mise activate zsh --shims)"
