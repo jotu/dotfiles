@@ -16,6 +16,8 @@ setopt HIST_IGNORE_DUPS
 # Share history between sessions.
 setopt SHARE_HISTORY
 
+export GPG_TTY=$(tty)
+
 source ~/.zsh_aliases
 source ~/.zsh_daily # Run expensive operations once per day
 source <(fzf --zsh) # Enable fzf keybindings and completions
