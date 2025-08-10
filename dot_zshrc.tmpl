@@ -16,7 +16,8 @@ setopt HIST_IGNORE_DUPS
 # Share history between sessions.
 setopt SHARE_HISTORY
 
-export PATH="$HOME/.local/bin:$PATH"
+export PATH="$HOME/.local/bin:$HOME/bin::$PATH"
+eval "$(/usr/local/bin/brew shellenv)"
 eval "$(mise activate zsh)"
 eval "$(starship init zsh)"
 eval $(thefuck --alias fuck)

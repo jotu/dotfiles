@@ -1,4 +1,5 @@
 [tools]
+gh = "latest"
 go = "latest"
 "go:golang.org/x/tools/gopls" = "latest"
 "ubi:errata-ai/vale-ls" = "latest"
