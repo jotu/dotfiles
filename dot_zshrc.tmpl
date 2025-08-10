@@ -16,11 +16,8 @@ setopt HIST_IGNORE_DUPS
 # Share history between sessions.
 setopt SHARE_HISTORY
 
-export BREW_HOME=$(brew --prefix)
-export PATH="$HOME/.local/bin:$HOME/bin::$PATH"
-
 source ~/.zsh_aliases
 source ~/.zsh_daily # Run expensive operations once per day
 source <(fzf --zsh) # Enable fzf keybindings and completions
-source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+#source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 [[ $commands[kubectl] ]] && source <(kubectl completion zsh)
