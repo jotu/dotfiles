@@ -3,11 +3,16 @@ AddKeysToAgent yes
 HostName github.com
 UseKeychain yes
 
-Match host github.com user {{ .personal.git.user }}
+{{- if not .work.enable }}
+
+Match host github.com user git
 IdentityFile ~/ssh/{{ .personal.ssh.identityFile  }}
 
+{{- end }}
+
 {{- if .work.enable }}
-Match host github.com user {{ .work.git.user }}
+
+Match host github.com user git
 IdentityFile ~/ssh/{{ .work.ssh.user.identityFile  }}
 
 Match host github.com user git
@@ -15,4 +20,13 @@ IdentityFile ~/.ssh/{{ .work.ssh.company.identityFile }}
 
 Match host github.com user org-*
 IdentityFile ~/.ssh/{{ .work.ssh.organization.identityFile }}
+
+Host github.com-personal
+  HostName github.com
+  User git
+  IdentityFile ~/.ssh/{{ .personal.ssh.identityFile  }}
+  IdentitiesOnly yes
+  AddKeysToAgent yes
+  UseKeychain yes
+
 {{- end }}
