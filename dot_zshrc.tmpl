@@ -34,6 +34,4 @@ eval "$(mise activate zsh --shims)"
 source ~/.zsh_aliases
 source ~/.zsh_completions
 source ~/.zsh_daily # Run expensive operations once per day
-source <(fzf --zsh) # Enable fzf keybindings and completions
 source $BREW_HOME/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-[[ $commands[kubectl] ]] && source <(kubectl completion zsh)
