@@ -32,8 +32,13 @@
     version = HTTP/2
     postBuffer = 524288000
 
+{{- if .work.enable }}
+[url "ssh://git@github.com-personal/"]
+  insteadOf = https://github.com/
+{{- else }}
 [url "ssh://git@github.com"]
   insteadOf = https://github.com
+{{- end }}
 
 [init]
     defaultBranch = main
