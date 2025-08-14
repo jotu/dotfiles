@@ -14,7 +14,7 @@ Everything except sensitive information to setup a new computer and keep it in s
     pbcopy < ~/.ssh/id_ed25519_personal.pub
 ```
 
-## Generate pgp key for laptop
+## Generate gpg key for laptop
 ```bash
     # Generate
     gpg --gen-key
@@ -25,7 +25,7 @@ Everything except sensitive information to setup a new computer and keep it in s
     # Add to GitHub or similar
 ```
 
-## Delete old pgp key for laptop
+## Delete old gpg key for laptop
 
 ```bash
     gpg --delete-secret-key <OLD_KEY>
