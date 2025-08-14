@@ -7,6 +7,9 @@
 HISTSIZE=100000
 SAVEHIST=100000
 
+killall ssh-agent
+eval "$(ssh-agent -s)"
+
 # Write to the history file immediately, not when the shell exits.
 setopt INC_APPEND_HISTORY
 # Duplicates get trimmed first.
