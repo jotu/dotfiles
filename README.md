@@ -24,3 +24,10 @@ Everything except sensitive information to setup a new computer and keep it in s
     gpg --armor --export <GeneratedKey>
     # Add to GitHub or similar
 ```
+
+## Delete old pgp key for laptop
+
+```bash
+    gpg --delete-secret-key <OLD_KEY>
+    gpg --delete-key <OLD_KEY>
+```
