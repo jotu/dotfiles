@@ -1,0 +1,13 @@
+source <(gh completion --shell zsh)
+source <(fzf --zsh)
+source <(kubectl completion zsh)
+source <(mise completion --raw zsh)
+source <(starship completions zsh)
+
+{{- if .work.enable }}
+
+source <(argocd completion zsh)
+source <(cilium completion zsh)
+source <(helm completion zsh)
+
+{{ end }}

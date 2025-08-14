@@ -21,7 +21,7 @@ FPATH=$BREW_HOME/share/zsh-completions:$FPATH
 autoload -Uz compinit
 compinit
 
-#export GPG_TTY=$(tty)
+export GPG_TTY=$(tty)
 export GPG_TTY=$TTY
 export PATH="$BREW_HOME/bin:$PATH"
 export PATH="$HOME/.local/bin:$HOME/bin:$PATH"
