@@ -4,10 +4,6 @@
     email = {{ .work.git.email | quote }}
     signingkey = {{ .work.git.signingKey | quote }}
 
-[includeIf "gitdir:~/develop/work/"]
-    path = ~/.gitconfig.work-specific
-{{- end }}
-
 [credential "https://github.com"]
         helper = !/opt/homebrew/bin/gh auth git-credential
 
@@ -33,3 +29,4 @@
         required = true
 [gpg]
         program = gpg
+{{- end }}

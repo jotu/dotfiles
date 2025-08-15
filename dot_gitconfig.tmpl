@@ -6,6 +6,7 @@
 {{- if .work.enable }}
 [includeIf "gitdir:~/develop/work/"]
     path = ~/.gitconfig.work
+
 {{- end }}
 
 [core]
@@ -35,6 +36,10 @@
 {{- if .work.enable }}
 [url "ssh://git@github.com-personal/"]
   insteadOf = https://github.com/
+
+[include]
+    path = ~/.gitconfig.work-specific
+
 {{- else }}
 [url "ssh://git@github.com"]
   insteadOf = https://github.com
