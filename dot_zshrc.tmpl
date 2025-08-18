@@ -9,6 +9,7 @@ SAVEHIST=100000
 
 killall ssh-agent
 eval "$(ssh-agent -s)"
+export SSH_AUTH_SOCK="$(launchctl getenv SSH_AUTH_SOCK)"
 
 # Write to the history file immediately, not when the shell exits.
 setopt INC_APPEND_HISTORY
