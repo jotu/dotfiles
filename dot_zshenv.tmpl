@@ -11,12 +11,16 @@ export PATH="$BREW_HOME/opt/openssl@3/bin:$PATH"
 
 {{- if .work.enable }}
 # aws
-export AWS_PROFILE=wdp-prod-high
+export AWS_PROFILE={{ .work.aws.profile.b | quote }}
 export AWS_DEFAULT_PROFILE=$AWS_PROFILE
 
 # aws vault
 export AWS_VAULT_KEYCHAIN_NAME=login
 export AWS_VAULT_BACKEND=keychain
+
+# GITHUB
+export GITHUB_TOKEN={{ keyring "github" .work.git.user | quote }}
+export MISE_GITHUB_TOKEN={{ keyring "github" .work.git.user | quote }}
 
 # local backstage dev 
 AUTH_GITHUB_CLIENT_ID=$(security find-generic-password -w -s 'GITHUB_OAUTH_CLIENT_ID' -a '{{ .work.employee.code }}')
