@@ -23,6 +23,7 @@ if [[ $last_run != $today ]]; then
   {{- end }}
   compinit
   source ~/.zsh_completions
+  source $BREW_HOME/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 else
   compinit -C
 fi

@@ -7,10 +7,6 @@
 HISTSIZE=100000
 SAVEHIST=100000
 
-killall ssh-agent
-eval "$(ssh-agent -s)"
-export SSH_AUTH_SOCK="$(launchctl getenv SSH_AUTH_SOCK)"
-
 # Write to the history file immediately, not when the shell exits.
 setopt INC_APPEND_HISTORY
 # Duplicates get trimmed first.
@@ -21,9 +17,6 @@ setopt HIST_IGNORE_DUPS
 setopt SHARE_HISTORY
 
 FPATH=$BREW_HOME/share/zsh-completions:$FPATH
-
-autoload -Uz compinit
-compinit
 
 export GPG_TTY=$(tty)
 export GPG_TTY=$TTY
@@ -36,6 +29,4 @@ eval $(thefuck --alias fuck)
 eval "$(mise activate zsh --shims)"
 
 source ~/.zsh_aliases
-source ~/.zsh_completions
 source ~/.zsh_daily # Run expensive operations once per day
-source $BREW_HOME/share/zsh-autosuggestions/zsh-autosuggestions.zsh

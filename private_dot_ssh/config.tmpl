@@ -6,14 +6,14 @@ UseKeychain yes
 {{- if not .work.enable }}
 
 Match host github.com user git
-IdentityFile ~/ssh/{{ .personal.ssh.identityFile  }}
+IdentityFile ~/.ssh/{{ .personal.ssh.identityFile  }}
 
 {{- end }}
 
 {{- if .work.enable }}
 
 Match host github.com user git
-IdentityFile ~/ssh/{{ .work.ssh.user.identityFile  }}
+IdentityFile ~/.ssh/{{ .work.ssh.user.identityFile  }}
 
 Match host github.com user git
 IdentityFile ~/.ssh/{{ .work.ssh.company.identityFile }}
