@@ -15,9 +15,6 @@ IdentityFile ~/.ssh/{{ .personal.ssh.identityFile  }}
 Match host github.com user git
 IdentityFile ~/.ssh/{{ .work.ssh.user.identityFile  }}
 
-Match host github.com user git
-IdentityFile ~/.ssh/{{ .work.ssh.company.identityFile }}
-
 Match host github.com user org-*
 IdentityFile ~/.ssh/{{ .work.ssh.organization.identityFile }}
 

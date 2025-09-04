@@ -30,3 +30,11 @@ eval "$(mise activate zsh --shims)"
 
 source ~/.zsh_aliases
 source ~/.zsh_daily # Run expensive operations once per day
+source ~/.zsh_completions
+source $BREW_HOME/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+
+# The following lines have been added by Docker Desktop to enable Docker CLI completions.
+fpath=(/Users/ab000546/.docker/completions $fpath)
+autoload -Uz compinit
+compinit
+# End of Docker CLI completions
