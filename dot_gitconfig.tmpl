@@ -4,7 +4,8 @@
     signingkey = {{ .personal.git.signingKey | quote }}
 
 {{- if .work.enable }}
-[includeIf "gitdir:~/develop/work/"]
+
+[includeIf "gitdir/i:~/develop/work/"]
     path = ~/.gitconfig.work
 
 {{- end }}
@@ -15,6 +16,9 @@
     filemode = false
     whitespace = cr-at-eol
     editor = vi
+{{- if .work.enable }}
+    sshCommand = "ssh -i ~/.ssh/id_ed25519_personal"
+{{- end }}
 
 [commit]
     gpgsign = true
@@ -33,16 +37,14 @@
     version = HTTP/2
     postBuffer = 524288000
 
+[url "ssh://git@github.com/"]
+    insteadOf = https://github.com/
+
 {{- if .work.enable }}
-[url "ssh://git@github.com-personal/"]
-  insteadOf = https://github.com/
 
 [include]
     path = ~/.gitconfig.work-specific
 
-{{- else }}
-[url "ssh://git@github.com"]
-  insteadOf = https://github.com
 {{- end }}
 
 [init]
