@@ -5,7 +5,7 @@
 
 {{- if .work.enable }}
 
-[includeIf "gitdir/i:~/develop/work/"]
+[includeIf "gitdir:~/develop/work/"]
     path = ~/.gitconfig.work
 
 {{- end }}
@@ -15,10 +15,7 @@
     symlinks = false
     filemode = false
     whitespace = cr-at-eol
-    editor = vi
-{{- if .work.enable }}
-    sshCommand = "ssh -i ~/.ssh/id_ed25519_personal"
-{{- end }}
+    editor = code 
 
 [commit]
     gpgsign = true

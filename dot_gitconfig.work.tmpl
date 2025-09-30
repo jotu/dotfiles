@@ -1,5 +1,4 @@
 {{- if .work.enable }}
-
 [user]
     name = {{ .name | quote }}
     email = {{ .work.git.email | quote }}
@@ -21,8 +20,4 @@
         required = true
 [gpg]
         program = gpg
-
-[core]
-    sshCommand = "ssh -i ~/.ssh/id_ed25519"
-
 {{- end }}

@@ -23,10 +23,10 @@ export GITHUB_TOKEN={{ keyring "github" .work.git.user | quote }}
 export MISE_GITHUB_TOKEN={{ keyring "github" .work.git.user | quote }}
 
 # local backstage dev 
-AUTH_GITHUB_CLIENT_ID=$(security find-generic-password -w -s 'GITHUB_OAUTH_CLIENT_ID' -a '{{ .work.employee.code }}')
-AUTH_GITHUB_CLIENT_SECRET=$(security find-generic-password -w -s 'GITHUB_OAUTH_CLIENT_SECRET' -a '{{ .work.employee.code }}')
-export AUTH_GITHUB_CLIENT_ID
-export AUTH_GITHUB_CLIENT_SECRET
+#AUTH_GITHUB_CLIENT_ID=$(security find-generic-password -w -s 'GITHUB_OAUTH_CLIENT_ID' -a '{{ .work.employee.code }}')
+#AUTH_GITHUB_CLIENT_SECRET=$(security find-generic-password -w -s 'GITHUB_OAUTH_CLIENT_SECRET' -a '{{ .work.employee.code }}')
+#export AUTH_GITHUB_CLIENT_ID
+#export AUTH_GITHUB_CLIENT_SECRET
 
 # added by toolbox app
 export PATH="$PATH:/Users/ab000546/Library/Application Support/JetBrains/Toolbox/scripts"

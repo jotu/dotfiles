@@ -1,7 +1,6 @@
 [tools]
 adr-tools = "latest"
 cosign = "latest"
-gh = "latest"
 go = "latest"
 golangci-lint = "latest"
 k6 = "latest"
@@ -10,7 +9,6 @@ watchexec = "latest"
 "ubi:joshrotenberg/adrs" = "latest"
 "ubi:errata-ai/vale-ls" = "latest"
 vale = "latest"
-yarn = "latest"
 
 [settings]
 experimental = true
