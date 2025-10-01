@@ -8,22 +8,24 @@ Host github.com
 
 {{- if .work.enable }}
 
-# Work GitHub organizations
-Host github.com-work
+Host github.com
     HostName github.com
-    User git
-    AddKeysToAgent yes
-    UseKeychain yes
-    IdentityFile ~/.ssh/{{ .work.ssh.user.identityFile }}
     IdentitiesOnly yes
 
-# Specific patterns for organization SSH URLs
-Host org-*.github.com
+Match host github.com user git
+    IdentityFile ~/.ssh/id_rsa_wirelesscar
+
+Match host github.com user org-*
+    IdentityFile ~/.ssh/id_github_wirelesscar_sweden_ab
+
+{{- else }}
+
+Host github.com
     HostName github.com
     User git
     AddKeysToAgent yes
     UseKeychain yes
-    IdentityFile ~/.ssh/{{ .work.ssh.organization.identityFile }}
+    IdentityFile ~/.ssh/{{ .personal.ssh.identityFile }}
     IdentitiesOnly yes
 
 {{- end }}
