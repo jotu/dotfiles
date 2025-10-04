@@ -1,0 +1,162 @@
+// Zed settings
+//
+// For information on how to configure Zed, see the Zed
+// documentation: https://zed.dev/docs/configuring-zed
+//
+// To see all of Zed's default settings without changing your
+// custom settings, run `zed: open default settings` from the
+// command palette (cmd-shift-p / ctrl-shift-p)
+{
+  "agent": {
+    "inline_assistant_model": {
+      "provider": "copilot_chat",
+      "model": "claude-sonnet-4"
+    },
+    "always_allow_tool_actions": false,
+    "default_model": {
+      "provider": "copilot_chat",
+      "model": "claude-3.7-sonnet-thought"
+    },
+    "model_parameters": []
+  },
+  "auto_install_extensions": {
+    "helm": false,
+    "html": true,
+    "toml": true,
+    "vale": true
+  },
+  "autosave": "on_focus_change",
+  "buffer_font_size": 14,
+  "context_servers": {
+    "mcp-server-github": {
+      "source": "extension",
+      "settings": {
+        "github_personal_access_token": {{ secret "find-generic-password" "-ga" "mcp-server-github" "-w" | quote }}
+      }
+    }
+  },
+  "edit_predictions": {
+    "mode": "subtle"
+  },
+  "features": {
+    "edit_prediction_provider": "copilot"
+  },
+  "file_types": {
+    "Helm": [
+      "**/templates/**/*.tpl",
+      "**/templates/**/*.yaml",
+      "**/templates/**/*.yml",
+      "**/helmfile.d/**/*.yaml",
+      "**/helmfile.d/**/*.yml",
+      "**/values*.yaml"
+    ]
+  },
+  "language_models": {
+    "ollama": {
+      "api_url": "http://localhost:11434",
+      "available_models": [
+        {
+          "name": "devstral:latest",
+          "display_name": "devstral",
+          "max_tokens": 32768,
+          "supports_tools": true
+        }
+      ]
+    }
+  },
+  "languages": {
+    "Go": {
+      "enable_language_server": true,
+      "language_servers": [
+        "gopls"
+      ]
+    },
+    "Markdown": {
+      "enable_language_server": true,
+      "formatter": "prettier",
+      "format_on_save": "on",
+      "language_servers": [
+        "markdown-oxide",
+        "vale"
+      ]
+    }
+  },
+  "lsp": {
+    "gopls": {
+      "binary": {
+        "path": "gopls"
+      },
+      "initialization_options": {
+        "codelenses": {
+          "run_govulncheck": true
+        },
+        "gofumpt": true,
+        "hints": {
+          "assignVariableTypes": true,
+          "compositeLiteralFields": true,
+          "compositeLiteralTypes": true,
+          "constantValues": true,
+          "functionTypeParameters": true,
+          "parameterNames": true,
+          "rangeVariableTypes": true
+        },
+        "semanticTokens": true,
+        "staticcheck": true,
+        "usePlaceholders": true,
+        "vulncheck": "Imports"
+      }
+    },
+    "helm_ls": {
+      "settings": {
+        "helm-ls": {
+          "logLevel": "warning",
+          "yamlls": {
+            "enabled": false
+          }
+        }
+      }
+    },
+    "vale": {
+      "binary": {
+        "path": "vale-ls"
+      },
+      "initialization_options": {
+        "syncOnStartup": true
+      }
+    },
+    "yaml-language-server": {
+      "settings": {
+        "yaml": {
+          "schemaStore": {
+            "enable": true
+          }
+        }
+      }
+    }
+  },
+  "format_on_save": "language_server",
+  "formatter": {
+    "code_actions": {
+      "source.organizeImports": true
+    }
+  },
+  "macos": {
+    "use_system_window_tabs": true
+  },
+  "preferred_line_length": 120,
+  "soft_wrap": "bounded",
+  "telemetry": {
+    "metrics": false,
+    "diagnostics": false
+  },
+  "terminal": {
+    "copy_on_select": true
+  },
+  "theme": {
+    "dark": "Ayu Dark",
+    "light": "Hex Solarized Light Theme",
+    "mode": "system"
+  },
+  "ui_font_size": 14,
+  "vim_mode": true
+}
