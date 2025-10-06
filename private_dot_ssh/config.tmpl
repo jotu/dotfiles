@@ -1,3 +1,11 @@
+13 Host github.com
+ HostName github.com
+    User git
+    AddKeysToAgent yes
+    UseKeychain yes
+    IdentityFile ~/.ssh/{{ .personal.ssh.identityFile }}
+    IdentitiesOnly yes
+
 {{- if .work.enable }}
 Host github.com
     HostName github.com
