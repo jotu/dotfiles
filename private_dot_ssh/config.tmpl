@@ -4,10 +4,10 @@ Host github.com
     IdentitiesOnly yes
 
 Match host github.com user git
-    IdentityFile ~/.ssh/{{ .organization.ssh.identityFile }}
+    IdentityFile ~/.ssh/{{ .work.ssh.organization.identityFile }}
 
 Match host github.com user org-*
-    IdentityFile ~/.ssh/{{ .organization.ssh.identityFile }}
+    IdentityFile ~/.ssh/{{ .work.ssh.organization.identityFile }}
 
 {{- else }}
 Host github.com
