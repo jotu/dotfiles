@@ -31,3 +31,8 @@ Everything except sensitive information to setup a new computer and keep it in s
     gpg --delete-secret-key <OLD_KEY>
     gpg --delete-key <OLD_KEY>
 ```
+
+## Add co pilot mcp secret
+security add-generic-password -a "$(whoami)" \
+  -s "mcp-server-github" \
+  -w "<YOUR_GITHUB_PERSONAL_ACCESS_TOKEN>"

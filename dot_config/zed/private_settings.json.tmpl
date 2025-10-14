@@ -8,14 +8,26 @@
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
   "agent": {
+    {{- if .work.enable }}
     "inline_assistant_model": {
       "provider": "copilot_chat",
-      "model": "claude-sonnet-4"
+      "model": "gpt-4.1"
     },
+    {{- else }}
+    "inline_assistant_model": {
+      "provider": "copilot_chat",
+      "model": "gpt-4.1"
+    },
+    {{- end }}
     "always_allow_tool_actions": false,
     "default_model": {
+    {{- if .work.enable }}
       "provider": "copilot_chat",
-      "model": "claude-3.7-sonnet-thought"
+      "model": "gpt-4.1"
+    {{- else }}
+      "provider": "copilot_chat",
+      "model": "gpt-4.1"
+    {{- end }}
     },
     "model_parameters": []
   },
@@ -31,16 +43,22 @@
     "mcp-server-github": {
       "source": "extension",
       "settings": {
-        "github_personal_access_token": {{ secret "find-generic-password" "-ga" "mcp-server-github" "-w" | quote }}
+        "github_personal_access_token": {{ output "security" "find-generic-password" "-s" "mcp-server-github" "-w" | trim | quote }}
       }
     }
   },
   "edit_predictions": {
     "mode": "subtle"
   },
+  {{- if .work.enable }}
   "features": {
     "edit_prediction_provider": "copilot"
   },
+  {{- else }}
+  "features": {
+    "edit_prediction_provider": "none"
+  },
+  {{- end }}
   "file_types": {
     "Helm": [
       "**/templates/**/*.tpl",

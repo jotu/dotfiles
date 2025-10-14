@@ -1,5 +1,5 @@
 gui:
-  showBottomLine: false
+  showBottomLine: true 
   showCommandLog: false
   showFileTree: false
   border: single
