@@ -32,7 +32,7 @@
     "model_parameters": []
   },
   "auto_install_extensions": {
-    "helm": false,
+    "helm": true,
     "html": true,
     "toml": true,
     "vale": true
@@ -97,9 +97,32 @@
         "markdown-oxide",
         "vale"
       ]
+    },
+    "Shell Script": {
+      "format_on_save": "on",
+      "formatter": {
+        "external": {
+          "command": "shfmt",
+          // Change `--indent 2` to match your preferred tab_size
+          "arguments": [
+            "--filename",
+            "{buffer_path}",
+            "--indent",
+            "2"
+          ]
+        }
+      }
     }
   },
   "lsp": {
+    "bash-language-server": {
+      "binary": {
+        "path": "bash-language-server",
+        "arguments": [
+          "start"
+        ]
+      }
+    },
     "gopls": {
       "binary": {
         "path": "gopls"
@@ -127,9 +150,8 @@
     "helm_ls": {
       "settings": {
         "helm-ls": {
-          "logLevel": "warning",
           "yamlls": {
-            "enabled": false
+            "enabled": true
           }
         }
       }
@@ -152,14 +174,10 @@
       }
     }
   },
-  "format_on_save": "language_server",
-  "formatter": {
-    "code_actions": {
-      "source.organizeImports": true
-    }
-  },
+  "format_on_save": "on",
+  "formatter": "language_server",
   "macos": {
-    "use_system_window_tabs": true
+    "use_system_window_tabs": false
   },
   "preferred_line_length": 120,
   "soft_wrap": "bounded",
@@ -172,9 +190,9 @@
   },
   "theme": {
     "dark": "Ayu Dark",
-    "light": "Hex Solarized Light Theme",
+    "light": "Ayu Light",
     "mode": "system"
   },
   "ui_font_size": 14,
-  "vim_mode": true
+  "vim_mode": false
 }

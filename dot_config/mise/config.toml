@@ -1,14 +1,22 @@
 [tools]
 adr-tools = "latest"
-cosign = "latest"
 go = "latest"
 golangci-lint = "latest"
+"go:golang.org/x/tools/gopls" = "latest"
+helm = "latest"
 k6 = "latest"
+k9s = "latest"
+kind = "latest"
+kubebuilder = "latest"
+kubectl = "latest"
+kubelogin = "latest"
 node = "latest"
-watchexec = "latest"
-"ubi:joshrotenberg/adrs" = "latest"
+usage = "latest"
 "ubi:errata-ai/vale-ls" = "latest"
+"ubi:joshrotenberg/adrs" = "latest"
+"ubi:mrjosh/helm-ls" = "latest"
 vale = "latest"
+watchexec = "latest"
 
 [settings]
 experimental = true

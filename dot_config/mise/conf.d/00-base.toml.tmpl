@@ -1,2 +1,16 @@
+[tasks."ssh:agent:restart"]
+alias = "sar"
+description = "Restart ssh agent"
+run = '''
+  eval $(ssh-agent -s)
+{{- if .work.enable }}
+  ssh-add ~/.ssh/{{ .work.ssh.user.identityFile }}
+  ssh-add ~/.ssh/{{ .work.ssh.organization.identityFile }}
+{{- end }}
+  ssh-add ~/.ssh/{{ .personal.ssh.identityFile }}
+'''
+
 [tools]
-uv = "latest"
+shellcheck = "latest"
+shellspec = "latest"
+shfmt = "latest"
