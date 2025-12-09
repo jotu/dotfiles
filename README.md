@@ -1,9 +1,20 @@
+<div align="center">
+
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+![Project Status](https://img.shields.io/badge/status-alpha-orange)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/jotu/dotfiles/badge)](https://scorecard.dev/viewer/?uri=github.com/jotu/dotfiles)
+[![GitHub stars](https://img.shields.io/github/stars/jotu/dotfiles.svg?style=social&label=Star)](https://github.com/jotu/dotfiles)
+
+</div>
+
 # README
+
 Everything except sensitive information to setup a new computer and keep it in sync.
 
 # Git
 
 ## Generate ssh keys for laptop
+
 ```bash
     # Generate
     ssh-keygen -t ed25519 -C "your-personal@email.com" -f ~/.ssh/id_ed25519_personal
@@ -15,6 +26,7 @@ Everything except sensitive information to setup a new computer and keep it in s
 ```
 
 ## Generate gpg key for laptop
+
 ```bash
     # Generate
     gpg --gen-key
@@ -33,6 +45,7 @@ Everything except sensitive information to setup a new computer and keep it in s
 ```
 
 ## Add co pilot mcp secret
+
 security add-generic-password -a "$(whoami)" \
-  -s "mcp-server-github" \
-  -w "<YOUR_GITHUB_PERSONAL_ACCESS_TOKEN>"
+ -s "mcp-server-github" \
+ -w "<YOUR_GITHUB_PERSONAL_ACCESS_TOKEN>"
