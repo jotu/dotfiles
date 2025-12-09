@@ -1,0 +1,79 @@
+// Zed keymap
+//
+// For information on binding keys, see the Zed
+// documentation: https://zed.dev/docs/key-bindings
+//
+// To see the default key bindings run `zed: open default keymap`
+// from the command palette.
+[
+  {
+    "context": "Workspace",
+    "bindings": {
+      // "shift shift": "file_finder::Toggle"
+    }
+  },
+  {
+    "context": "Editor",
+    "bindings": {
+      "cmd-k cmd-left": "workspace::ActivatePaneLeft",
+      "cmd-k cmd-right": "workspace::ActivatePaneRight",
+      "cmd-k cmd-up": "workspace::ActivatePaneUp",
+      "cmd-k cmd-down": "workspace::ActivatePaneDown",
+      "cmd-k shift-left": "workspace::SwapPaneLeft",
+      "cmd-k shift-right": "workspace::SwapPaneRight",
+      "cmd-k shift-up": "workspace::SwapPaneUp",
+      "cmd-k shift-down": "workspace::SwapPaneDown"
+    }
+  },
+  {
+    "context": "VimControl && !menu",
+    "bindings": {
+      "ö": [
+        "workspace::SendKeystrokes",
+        "["
+      ],
+      "ä": [
+        "workspace::SendKeystrokes",
+        "]"
+      ],
+      "ctrl-ö": [
+        "workspace::SendKeystrokes",
+        "{"
+      ],
+      "ctrl-ä": [
+        "workspace::SendKeystrokes",
+        "}"
+      ]
+    }
+  },
+  {
+    "context": "Editor",
+    "bindings": {
+      "cmd-k right": "pane::SplitAndMoveRight"
+    }
+  },
+  {
+    "context": "Editor",
+    "bindings": {
+      "cmd-k left": "pane::SplitAndMoveLeft"
+    }
+  },
+  {
+    "context": "Editor",
+    "bindings": {
+      "cmd-k down": "pane::SplitAndMoveDown"
+    }
+  },
+  {
+    "context": "Editor",
+    "bindings": {
+      "cmd-k up": "pane::SplitAndMoveUp"
+    }
+  },
+  {
+    "context": "(VimControl || (!Editor && !Terminal))",
+    "bindings": {
+      "ctrl-w w": "workspace::ActivateNextWindow"
+    }
+  }
+]
