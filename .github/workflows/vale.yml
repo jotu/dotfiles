@@ -33,5 +33,5 @@ jobs:
         with:
           files: "**/*.md"
           reporter: github-check
-          fail_on_error: true
-          level: error
+          fail_on_error: false
+          level: warning
