@@ -23,15 +23,13 @@ jobs:
         uses: errata-ai/vale-action@v2
         with:
           files: "**/*.md"
-          config: .vale.ini
+          config: ".vale.ini"
           reporter: github-pr-check
-        working-directory: dotfiles
 
       - name: Vale (push)
         if: github.event_name == 'push'
         uses: errata-ai/vale-action@v2
         with:
           files: "**/*.md"
-          config: .vale.ini
+          config: ".vale.ini"
           reporter: github-check
-        working-directory: dotfiles
