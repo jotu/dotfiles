@@ -1,4 +1,8 @@
+.github/
+.vale.ini
+
+AGENT.md
 README.md
 LICENSE
+
 mise.toml
-.vale.ini
