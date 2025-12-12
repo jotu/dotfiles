@@ -1,4 +1,9 @@
 {{- if .work.enable }}
+# Work profile enabled:
+# - Use organization SSH identity for GitHub operations when user matches `org-*`.
+# - Keep IdentitiesOnly for explicit key usage.
+# The commented block below shows a typical personal setup for reference.
+
 #Host github.com
 #HostName github.com
 #User git
@@ -11,10 +16,14 @@ Host github.com
 HostName github.com
 IdentitiesOnly yes
 
+# When using org-specific GitHub accounts, switch to the organization identity.
 Match host github.com user org-*
-IdentityFile ~/.ssh/{{ .work.ssh.organization.identityFile }}
+  IdentityFile ~/.ssh/{{ .work.ssh.organization.identityFile }}
 
 {{- else }}
+# Personal profile:
+# - Use Keychain for convenience and add keys to agent.
+# - Reference only the filename from `.data.personal.ssh.identityFile`.
 Host github.com
 HostName github.com
 User git

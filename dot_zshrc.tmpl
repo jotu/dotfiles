@@ -16,22 +16,34 @@ setopt HIST_IGNORE_DUPS
 # Share history between sessions.
 setopt SHARE_HISTORY
 
-FPATH=$BREW_HOME/share/zsh-completions:$FPATH
+if [ -d "$BREW_HOME/share/zsh-completions" ]; then
+  FPATH="$BREW_HOME/share/zsh-completions:$FPATH"
+fi
 
 export GPG_TTY=$(tty)
-export GPG_TTY=$TTY
+# export GPG_TTY=$TTY # redundant; GPG_TTY=$(tty) already set
 export PATH="$BREW_HOME/bin:$PATH"
 export PATH="$HOME/.local/bin:$HOME/bin:$PATH"
 
-eval "$(brew shellenv)"
-eval "$(starship init zsh)"
-eval $(thefuck --alias fuck)
-eval "$(mise activate zsh --shims)"
+if command -v brew >/dev/null; then
+  eval "$(brew shellenv)"
+fi
+if command -v starship >/dev/null; then
+  eval "$(starship init zsh)"
+fi
+if command -v thefuck >/dev/null; then
+  eval "$(thefuck --alias fuck)"
+fi
+if command -v mise >/dev/null; then
+  eval "$(mise activate zsh --shims)"
+fi
 
-source ~/.zsh_aliases
-source ~/.zsh_daily # Run expensive operations once per day
-source ~/.zsh_completions
-source $BREW_HOME/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+[ -f ~/.zsh_aliases ] && source ~/.zsh_aliases
+[ -f ~/.zsh_daily ] && source ~/.zsh_daily # Run expensive operations once per day
+[ -f ~/.zsh_completions ] && source ~/.zsh_completions
+if [ -f "$BREW_HOME/share/zsh-autosuggestions/zsh-autosuggestions.zsh" ]; then
+  source "$BREW_HOME/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
+fi
 
 # The following lines have been added by Docker Desktop to enable Docker CLI completions.
 fpath=($HOME/.docker/completions $fpath)

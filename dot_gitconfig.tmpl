@@ -15,7 +15,7 @@
     symlinks = false
     filemode = false
     whitespace = cr-at-eol
-    editor = zed --wait
+    editor = {{ .editor | quote }}
 
 [commit]
     gpgsign = true

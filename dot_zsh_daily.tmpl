@@ -19,10 +19,10 @@ if [[ $last_run != $today ]]; then
   echo "$today" >| "$last_run_file"
   echo "Running daily operations."
   {{- if .work.enable }}
-  mise run osx:disable-file-extensions
+  if command -v mise >/dev/null; then mise run osx:disable-file-extensions; fi
   {{- end }}
   compinit
-  source ~/.zsh_completions
+  [ -f ~/.zsh_completions ] && source ~/.zsh_completions
 else
   compinit -C
 fi

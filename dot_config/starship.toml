@@ -1,7 +1,16 @@
 "$schema" = 'https://starship.rs/config-schema.json'
 
+# ChezMoi Template: Starship
+# Purpose: Configure Starship prompt dynamically using `.data` keys populated via `.chezmoi.toml.tmpl`.
+# This template adapts modules based on:
+# - .prompt.starship.enable_kubernetes
+# - .prompt.aws.profile
+# - .prompt.shell.show_docker_context
+# - .prompt.shell.show_sudo
+# - .dev.langs (slice of language names: e.g., ["nodejs","python","golang","rust"])
+
 add_newline = true
-command_timeout = 3000 # timeout in milliseconds
+command_timeout = 3000
 
 format = '''
 (bold green)$directory$nix_shell$java$golang$python$nodejs$lua$kubernetes$cmd_duration
@@ -34,28 +43,32 @@ disabled = true
 [cmd_duration]
 min_time = 500
 
+# AWS: disable when no profile is provided in `.data`
 [aws]
-disabled = false
+disabled = {{ eq .prompt.aws.profile "" }}
 format = 'on [$symbol$profile]($style)'
-style = "italic #FF9900"                # Use AWS orange color
+style = "italic #FF9900"
 
+# Cloud providers: keep disabled by default
 [azure]
 disabled = true
 format = 'on [$symbol($subscription)]($style)'
-style = "italic #007FFF"                       # Using Azure blue color
+style = "italic #007FFF"
 
 [gcloud]
 disabled = true
 format = 'on [$symbol$profile]($style)'
-style = "italic #4285F4"                # Using Google G color
+style = "italic #4285F4"
 
 [directory]
 truncate_to_repo = true
 
+# Docker context: controlled by `.prompt.shell.show_docker_context`
 [docker_context]
-disabled = true
+disabled = {{ not .prompt.shell.show_docker_context }}
 
 [git_branch]
+# default settings
 
 [git_status]
 conflicted = '🏳'
@@ -75,19 +88,21 @@ disabled = false
 format = "[${symbol}(${version} )]($style)"
 style = "italic blue"
 
+# Language modules: enable only if present in `.dev.langs`
 [golang]
-disabled = false
+disabled = {{ not (or (contains .dev.langs "golang") (contains .dev.langs "go")) }}
 format = "[ ${symbol}(${version} )]($style)"
 style = "italic cyan"
 
 [nodejs]
-disabled = false
+disabled = {{ not (contains .dev.langs "nodejs") }}
 
 [python]
-disabled = false
+disabled = {{ not (contains .dev.langs "python") }}
 
+# Kubernetes: controlled by `.prompt.starship.enable_kubernetes`
 [kubernetes]
-disabled = false
+disabled = {{ not .prompt.starship.enable_kubernetes }}
 style = 'cyan'
 format = '[$symbol$context]($style) '
 
@@ -101,8 +116,9 @@ disabled = false
 impure_msg = 'devbox'
 format = '[$symbol$state](bold blue)'
 
+# Sudo indicator: controlled by `.prompt.shell.show_sudo`
 [sudo]
-disabled = false
+disabled = {{ not .prompt.shell.show_sudo }}
 
 [time]
 disabled = true

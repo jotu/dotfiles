@@ -1,13 +1,13 @@
-source <(gh completion --shell zsh)
-source <(fzf --zsh)
-source <(kubectl completion zsh)
-source <(mise completion --raw zsh)
-source <(starship completions zsh)
+if command -v gh >/dev/null; then source <(gh completion --shell zsh); fi
+if command -v fzf >/dev/null; then source <(fzf --zsh); fi
+if command -v kubectl >/dev/null; then source <(kubectl completion zsh); fi
+if command -v mise >/dev/null; then source <(mise completion --raw zsh); fi
+if command -v starship >/dev/null; then source <(starship completions zsh); fi
 
 {{- if .work.enable }}
 
-source <(argocd completion zsh)
-source <(cilium completion zsh)
-source <(helm completion zsh)
+if command -v argocd >/dev/null; then source <(argocd completion zsh); fi
+if command -v cilium >/dev/null; then source <(cilium completion zsh); fi
+if command -v helm >/dev/null; then source <(helm completion zsh); fi
 
 {{ end }}
