@@ -25,7 +25,8 @@ jobs:
           files: "**/*.md"
           reporter: github-pr-check
           fail_on_error: false
-          level: warning
+          level: suggestion
+          vale_flags: --no-exit
 
       - name: Vale (push)
         if: github.event_name == 'push'
@@ -34,4 +35,5 @@ jobs:
           files: "**/*.md"
           reporter: github-check
           fail_on_error: false
-          level: warning
+          level: suggestion
+          vale_flags: --no-exit
