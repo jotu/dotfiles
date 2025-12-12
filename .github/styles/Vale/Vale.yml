@@ -1,0 +1,139 @@
+# Vale core style config enabling consistent English and tone checks.
+# Place this file at: dotfiles/.github/styles/Vale/Vale.yml
+# These rules complement installed packages (alex, write-good) and a custom vocabulary (Vocab/Base).
+# They aim for consistent English style and professional tone while avoiding false positives in technical docs.
+
+# Spelling: rely on Vale's spelling mechanism and the repo's vocabulary.
+General.Spelling:
+  extends: spelling
+  description: Ensure consistent spelling with project vocabulary.
+  level: error
+  # The dictionary named "Base" is configured via `.vale.ini` using `Vocab = Base`.
+  # Vale uses the active vocabulary automatically; no need to specify here.
+
+# Weasel words: flag vague and weak terms.
+General.Weasel:
+  extends: existence
+  description: Avoid vague and weak terms (weasel words).
+  level: warning
+  ignorecase: true
+  nonword: true
+  tokens:
+    - actually
+    - basically
+    - clearly
+    - obviously
+    - just
+    - simply
+    - very
+    - really
+    - quite
+    - maybe
+    - perhaps
+    - somehow
+    - somewhat
+    - stuff
+    - things
+
+# Hedging: encourage direct, confident phrasing.
+General.Hedging:
+  extends: existence
+  description: Reduce hedging and overly tentative phrasing.
+  level: suggestion
+  ignorecase: true
+  nonword: true
+  tokens:
+    - might
+    - could
+    - may
+    - seems
+    - appears to
+    - tends to
+    - probably
+    - possibly
+    - perhaps
+    - likely
+    - unlikely
+
+# Passive voice: prefer active voice where practical.
+# Note: Technical docs sometimes require passive; treat as a suggestion to reduce noise.
+General.PassiveVoice:
+  extends: existence
+  description: Prefer active voice; passive constructions reduce clarity.
+  level: suggestion
+  # A basic heuristic: "be" + past participle; this intentionally errs on the side of fewer false positives.
+  # Vale applies this to text blocks, excluding code as configured in `.vale.ini`.
+  # Examples: "is configured", "was created", "were added", "be used", "being installed", "been updated"
+  # This is a simplified pattern and will not catch all passive forms.
+  match:
+    - '\b(is|are|was|were|be|been|being)\s+\w+(ed|en)\b'
+
+# Inclusive language: catch common non-inclusive terms not already covered by external packages.
+General.InclusiveLanguage:
+  extends: substitution
+  description: Use inclusive alternatives to potentially problematic terms.
+  level: warning
+  ignorecase: true
+  swap:
+    whitelist: allowlist
+    blacklist: denylist
+    master: primary
+    slave: secondary
+    guys: folks
+    sanity check: quick check
+    dummy value: placeholder
+    trivial: straightforward
+    native: built-in
+
+# Tone: avoid overly apologetic or conversational fillers.
+General.ToneProfessional:
+  extends: existence
+  description: Maintain a professional tone (avoid fillers and apologies).
+  level: suggestion
+  ignorecase: true
+  nonword: true
+  tokens:
+    - sorry
+    - I think
+    - I guess
+    - in my opinion
+    - IMHO
+    - FYI
+    - BTW
+    - kinda
+    - sorta
+
+# Consistency: prefer standardized hyphenation and capitalization for common terms in this repo.
+# Some items are already in vocabulary; this ensures format consistency for style-sensitive terms.
+General.Consistency:
+  extends: substitution
+  description: Prefer consistent casing/hyphenation for common technical terms.
+  level: suggestion
+  ignorecase: true
+  swap:
+    # Casing
+    macos: macOS
+    github: GitHub
+    gpg: GPG
+    ssh: SSH
+    aws: AWS
+    azure: Azure
+    gcloud: gcloud
+    openssf: OpenSSF
+    # Hyphenation
+    commandline: command-line
+    cli: CLI
+    # Compound terms
+    dot files: dotfiles
+    home brew: Homebrew
+
+# Number formatting: prefer numerals for 10+ and words for 0–9 in general prose.
+# This is a heuristic; set to suggestion to avoid excessive noise.
+General.Numbers:
+  extends: existence
+  description: Prefer numerals for 10+ and words for 0–9 (heuristic).
+  level: suggestion
+  # Very light heuristic: flag standalone numerals under 10 as a reminder.
+  # Excludes common version patterns and paths by project-wide ignores in `.vale.ini`.
+  match:
+    - '\b[1-9]\b'

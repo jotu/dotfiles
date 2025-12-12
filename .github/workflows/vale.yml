@@ -1,0 +1,37 @@
+name: Vale Lint
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  vale:
+    name: Run Vale on Markdown
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Vale (pull request)
+        if: github.event_name == 'pull_request'
+        uses: errata-ai/vale-action@v2
+        with:
+          files: "**/*.md"
+          config: .vale.ini
+          reporter: github-pr-check
+        working-directory: dotfiles
+
+      - name: Vale (push)
+        if: github.event_name == 'push'
+        uses: errata-ai/vale-action@v2
+        with:
+          files: "**/*.md"
+          config: .vale.ini
+          reporter: github-check
+        working-directory: dotfiles
