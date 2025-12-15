@@ -45,7 +45,7 @@ min_time = 500
 
 # AWS: disable when no profile is provided in `.data`
 [aws]
-disabled = {{ eq .prompt.aws.profile "" }}
+disabled = false
 format = 'on [$symbol$profile]($style)'
 style = "italic #FF9900"
 
@@ -65,7 +65,7 @@ truncate_to_repo = true
 
 # Docker context: controlled by `.prompt.shell.show_docker_context`
 [docker_context]
-disabled = {{ not .prompt.shell.show_docker_context }}
+disabled = false
 
 [git_branch]
 # default settings
@@ -90,19 +90,19 @@ style = "italic blue"
 
 # Language modules: enable only if present in `.dev.langs`
 [golang]
-disabled = {{ not (or (contains .dev.langs "golang") (contains .dev.langs "go")) }}
+disabled = false
 format = "[ ${symbol}(${version} )]($style)"
 style = "italic cyan"
 
 [nodejs]
-disabled = {{ not (contains .dev.langs "nodejs") }}
+disabled = false
 
 [python]
-disabled = {{ not (contains .dev.langs "python") }}
+disabled = false
 
 # Kubernetes: controlled by `.prompt.starship.enable_kubernetes`
 [kubernetes]
-disabled = {{ not .prompt.starship.enable_kubernetes }}
+disabled = false
 style = 'cyan'
 format = '[$symbol$context]($style) '
 
@@ -118,7 +118,7 @@ format = '[$symbol$state](bold blue)'
 
 # Sudo indicator: controlled by `.prompt.shell.show_sudo`
 [sudo]
-disabled = {{ not .prompt.shell.show_sudo }}
+disabled = false
 
 [time]
 disabled = true
