@@ -1,24 +1,45 @@
 # Run expensive operations once per day
 
 # Define paths
-local last_run_path="${XDG_CACHE_HOME:-$HOME/.cache}/zsh_daily"
-local last_run_file="${last_run_path}/last_successful_run"
+typeset last_run_path="${XDG_CACHE_HOME:-$HOME/.cache}/zsh_daily"
+typeset last_run_file="${last_run_path}/last_successful_run"
+typeset zc_cache_dir="${XDG_CACHE_HOME:-$HOME/.cache}/zsh_completions.d"
 
 # Ensure the path exists
 mkdir -p "$last_run_path"
+mkdir -p "$zc_cache_dir"
 
 # Read last run (safely), get today's date
-local last_run=""
+typeset last_run=""
 [[ -f $last_run_file ]] && last_run=$(<"$last_run_file")
-local today=$(date +%F)
+typeset today=$(date +%F)
 
 autoload -Uz compinit
+
+generate_completion_cache() {
+  local tool_name="$1"
+  local cache_file="$2"
+  local command="$3"
+
+  if command -v "$tool_name" >/dev/null; then
+    eval "$command" >| "$cache_file"
+  fi
+}
 
 # Run daily tasks only if not already run today
 if [[ $last_run != $today ]]; then
   echo "$today" >| "$last_run_file"
   echo "Running daily operations."
+  generate_completion_cache gh "$zc_cache_dir/gh.zsh" "gh completion --shell zsh"
+  generate_completion_cache chezmoi "$zc_cache_dir/chezmoi.zsh" "chezmoi completion zsh"
+  generate_completion_cache fzf "$zc_cache_dir/fzf.zsh" "fzf --zsh"
+  generate_completion_cache kubectl "$zc_cache_dir/kubectl.zsh" "kubectl completion zsh"
+  generate_completion_cache mise "$zc_cache_dir/mise.zsh" "mise completion --raw zsh"
+  generate_completion_cache starship "$zc_cache_dir/starship.zsh" "starship completions zsh"
   {{- if .work.enable }}
+  generate_completion_cache argocd "$zc_cache_dir/argocd.zsh" "argocd completion zsh"
+  generate_completion_cache cilium "$zc_cache_dir/cilium.zsh" "cilium completion zsh"
+  generate_completion_cache helm "$zc_cache_dir/helm.zsh" "helm completion zsh"
   if command -v mise >/dev/null; then mise run osx:disable-file-extensions; fi
   {{- end }}
   compinit

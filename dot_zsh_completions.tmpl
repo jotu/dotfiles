@@ -1,13 +1,53 @@
-if command -v gh >/dev/null; then source <(gh completion --shell zsh); fi
-if command -v fzf >/dev/null; then source <(fzf --zsh); fi
-if command -v kubectl >/dev/null; then source <(kubectl completion zsh); fi
-if command -v mise >/dev/null; then source <(mise completion --raw zsh); fi
-if command -v starship >/dev/null; then source <(starship completions zsh); fi
+typeset _zc_cache_dir="${XDG_CACHE_HOME:-$HOME/.cache}/zsh_completions.d"
+
+load_or_generate_completion() {
+  local cache_file="$1"
+  local generator_cmd="$2"
+
+  if [[ -r "$cache_file" ]]; then
+    source "$cache_file"
+    return
+  fi
+
+  eval "$generator_cmd"
+}
+
+if command -v gh >/dev/null; then
+  load_or_generate_completion "$_zc_cache_dir/gh.zsh" "source <(gh completion --shell zsh)"
+fi
+
+if command -v chezmoi >/dev/null; then
+  load_or_generate_completion "$_zc_cache_dir/chezmoi.zsh" "source <(chezmoi completion zsh)"
+fi
+
+if command -v fzf >/dev/null; then
+  load_or_generate_completion "$_zc_cache_dir/fzf.zsh" "source <(fzf --zsh)"
+fi
+
+if command -v kubectl >/dev/null; then
+  load_or_generate_completion "$_zc_cache_dir/kubectl.zsh" "source <(kubectl completion zsh)"
+fi
+
+if command -v mise >/dev/null; then
+  load_or_generate_completion "$_zc_cache_dir/mise.zsh" "source <(mise completion --raw zsh)"
+fi
+
+if command -v starship >/dev/null; then
+  load_or_generate_completion "$_zc_cache_dir/starship.zsh" "source <(starship completions zsh)"
+fi
 
 {{- if .work.enable }}
 
-if command -v argocd >/dev/null; then source <(argocd completion zsh); fi
-if command -v cilium >/dev/null; then source <(cilium completion zsh); fi
-if command -v helm >/dev/null; then source <(helm completion zsh); fi
+if command -v argocd >/dev/null; then
+  load_or_generate_completion "$_zc_cache_dir/argocd.zsh" "source <(argocd completion zsh)"
+fi
+
+if command -v cilium >/dev/null; then
+  load_or_generate_completion "$_zc_cache_dir/cilium.zsh" "source <(cilium completion zsh)"
+fi
+
+if command -v helm >/dev/null; then
+  load_or_generate_completion "$_zc_cache_dir/helm.zsh" "source <(helm completion zsh)"
+fi
 
 {{ end }}
