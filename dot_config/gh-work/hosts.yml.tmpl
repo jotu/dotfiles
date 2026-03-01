@@ -1,0 +1,21 @@
+{{- $ghHost := "github.com" -}}
+{{- if and (hasKey . "github") (hasKey .github "host") -}}
+{{- $ghHost = get .github "host" -}}
+{{- end -}}
+{{- $workUser := "" -}}
+{{- if and (hasKey . "github") (hasKey .github "workUsername") -}}
+{{- $workUser = get .github "workUsername" -}}
+{{- else if and (hasKey . "github") (hasKey .github "username") -}}
+{{- $workUser = get .github "username" -}}
+{{- else if and (hasKey . "work") (hasKey .work "git") (hasKey .work.git "username") -}}
+{{- $workUser = get .work.git "username" -}}
+{{- end -}}
+{{- $workGitProtocol := "ssh" -}}
+{{- if and (hasKey . "github") (hasKey .github "work") (hasKey (get .github "work") "gitProtocol") -}}
+{{- $workGitProtocol = get (get .github "work") "gitProtocol" -}}
+{{- end -}}
+{{ $ghHost }}:
+    git_protocol: {{ $workGitProtocol }}
+    users:
+        {{ $workUser }}:
+    user: {{ $workUser }}

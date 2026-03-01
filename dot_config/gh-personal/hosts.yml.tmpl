@@ -1,0 +1,23 @@
+{{- $ghHost := "github.com" -}}
+{{- if and (hasKey . "github") (hasKey .github "host") -}}
+{{- $ghHost = get .github "host" -}}
+{{- end -}}
+{{- $personalUser := "" -}}
+{{- if and (hasKey . "github") (hasKey .github "personalUsername") -}}
+{{- $personalUser = get .github "personalUsername" -}}
+{{- else if and (hasKey . "personal") (hasKey .personal "git") (hasKey .personal.git "username") -}}
+{{- $personalUser = get .personal.git "username" -}}
+{{- else if and (hasKey . "personal") (hasKey .personal "git") (hasKey .personal.git "user") -}}
+{{- $personalUser = get .personal.git "user" -}}
+{{- else if and (hasKey . "github") (hasKey .github "username") -}}
+{{- $personalUser = get .github "username" -}}
+{{- end -}}
+{{- $personalGitProtocol := "https" -}}
+{{- if and (hasKey . "github") (hasKey .github "personal") (hasKey (get .github "personal") "gitProtocol") -}}
+{{- $personalGitProtocol = get (get .github "personal") "gitProtocol" -}}
+{{- end -}}
+{{ $ghHost }}:
+    git_protocol: {{ $personalGitProtocol }}
+    users:
+        {{ $personalUser }}:
+    user: {{ $personalUser }}
