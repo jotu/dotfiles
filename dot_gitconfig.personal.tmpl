@@ -1,0 +1,6 @@
+{{- if .work.enable }}
+[user]
+    name = {{ .name | quote }}
+    email = {{ .personal.git.email | quote }}
+    signingkey = {{ .personal.git.signingKey | quote }}
+{{- end }}

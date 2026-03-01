@@ -19,7 +19,8 @@ export AWS_VAULT_KEYCHAIN_NAME=login
 export AWS_VAULT_BACKEND=keychain
 
 # GITHUB
-export GITHUB_TOKEN={{ keyring "github" .github.username | quote }}
+# Keep gh auth controlled explicitly by your chosen GH_CONFIG_DIR/session.
+# Only set MISE_GITHUB_TOKEN for mise GitHub API access.
 export MISE_GITHUB_TOKEN={{ keyring "github" .github.username | quote }}
 
 # local backstage dev

@@ -1,12 +1,29 @@
 [user]
     name = {{ .name | quote }}
+{{- if .work.enable }}
+    email = {{ .work.git.email | quote }}
+    signingkey = {{ .work.git.signingKey | quote }}
+{{- else }}
     email = {{ .personal.git.email | quote }}
     signingkey = {{ .personal.git.signingKey | quote }}
+{{- end }}
 
 {{- if .work.enable }}
 
-[includeIf "gitdir:~/develop/work/"]
+{{- if hasKey .work.git "rootDir" }}
+[includeIf "gitdir:{{ get .work.git "rootDir" }}/"]
     path = ~/.gitconfig.work
+{{- end }}
+
+{{- if hasKey .personal.git "rootDir" }}
+
+[includeIf "gitdir:{{ get .personal.git "rootDir" }}/"]
+    path = ~/.gitconfig.personal
+
+{{- end }}
+
+[includeIf "gitdir:{{ .chezmoi.sourceDir }}/"]
+    path = ~/.gitconfig.personal
 
 {{- end }}
 
@@ -33,9 +50,6 @@
 [http]
     version = HTTP/2
     postBuffer = 524288000
-
-[url "ssh://git@github.com/"]
-    insteadOf = https://github.com/
 
 {{- if .work.enable }}
 

@@ -4,11 +4,11 @@
     email = {{ .work.git.email | quote }}
     signingkey = {{ .work.git.signingKey | quote }}
 
-[credential "https://github.com"]
-        helper = !/opt/homebrew/bin/gh auth git-credential
+[url "ssh://git@github.com/"]
+        insteadOf = https://github.com/
 
-[credential "https://gist.github.com"]
-        helper = !/opt/homebrew/bin/gh auth git-credential
+[core]
+        sshCommand = ssh -i ~/.ssh/{{ .work.ssh.organization.identityFile }} -o IdentitiesOnly=yes
 
 [commit]
         gpgsign = true
