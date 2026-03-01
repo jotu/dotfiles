@@ -143,3 +143,48 @@ mise run opencode:profile:copilot
 mise run opencode:profile:openai
 mise run opencode:profile:current
 ```
+
+## Zed workflow shortcuts
+
+Managed Zed tasks are available for a non-vim workflow:
+
+```bash
+LazyGit
+Television
+Superfile
+```
+
+Managed Zed files:
+
+- `~/.config/zed/private_settings.json`
+- `~/.config/zed/keymap.json`
+- `~/.config/zed/tasks.json`
+
+Default keybindings:
+
+```text
+cmd-shift-g -> LazyGit
+cmd-p       -> Television
+cmd-shift-f -> Superfile
+```
+
+Quick verify after apply:
+
+```bash
+git config --get core.excludesfile
+mise install
+which lazygit
+which tv
+which spf
+```
+
+Optional: set Zed MCP GitHub token via local chezmoi data (do not commit):
+
+```toml
+[data.github]
+mcpServerGithubToken = "<github_pat_for_mcp_server_github>"
+```
+
+Shell completions are cached daily in `${XDG_CACHE_HOME:-~/.cache}/zsh_completions.d`.
+
+Install Zed manually from zed.dev if it is not already present.
