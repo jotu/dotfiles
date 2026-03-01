@@ -129,3 +129,16 @@ mise run gh:auth:login:personal
 mise run gh:auth:login:work
 mise run gh:auth:status:all
 ```
+
+## OpenCode profile defaults
+
+- Work machines (`work.enable = true`) use this laptop's current work-oriented OpenCode profile.
+- Personal machines (`work.enable = false`) use GitHub Copilot models per role/category (quality + token efficiency).
+- Personal fallback default model in `opencode.json` is `github-copilot/gpt-5.2-codex`.
+
+Optional local override (do not commit):
+
+```toml
+[data.opencode.personal]
+bestModel = "github-copilot/gpt-5.2-codex"
+```
