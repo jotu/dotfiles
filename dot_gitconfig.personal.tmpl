@@ -1,6 +1,18 @@
 {{- if .work.enable }}
+{{- $ghConfigPersonal := "~/.config/gh-personal" -}}
+{{- if hasKey .github "configDir" -}}
+{{- $ghConfig := get .github "configDir" -}}
+{{- if hasKey $ghConfig "personal" -}}{{- $ghConfigPersonal = get $ghConfig "personal" -}}{{- end -}}
+{{- end }}
+
 [user]
     name = {{ .name | quote }}
     email = {{ .personal.git.email | quote }}
     signingkey = {{ .personal.git.signingKey | quote }}
+
+[credential "https://github.com"]
+    helper = !GH_CONFIG_DIR={{ $ghConfigPersonal }} gh auth git-credential
+
+[credential "https://gist.github.com"]
+    helper = !GH_CONFIG_DIR={{ $ghConfigPersonal }} gh auth git-credential
 {{- end }}
