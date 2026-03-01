@@ -28,14 +28,14 @@ export PATH="$HOME/.local/bin:$HOME/bin:$PATH"
 if command -v brew >/dev/null; then
   eval "$(brew shellenv)"
 fi
+if command -v mise >/dev/null; then
+  eval "$(mise activate zsh --shims)"
+fi
 if command -v starship >/dev/null; then
   eval "$(starship init zsh)"
 fi
 if command -v thefuck >/dev/null; then
   eval "$(thefuck --alias fuck)"
-fi
-if command -v mise >/dev/null; then
-  eval "$(mise activate zsh --shims)"
 fi
 
 [ -f ~/.zsh_aliases ] && source ~/.zsh_aliases
