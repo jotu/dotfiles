@@ -1,0 +1,83 @@
+{
+  "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-opencode/master/assets/oh-my-opencode.schema.json",
+  "agents": {
+    "sisyphus": {
+      "model": "openai/gpt-5.3-codex",
+      "prompt_append": "Session bootstrap reminder: for fresh tasks, suggest `/new-task <task_request>` to load repo context and validation scope before implementation."
+    },
+    "plan": {
+      "model": "openai/gpt-5.2"
+    },
+    "build": {
+      "model": "openai/gpt-5.3-codex"
+    },
+    "oracle": {
+      "model": "openai/gpt-5.2"
+    },
+    "explore": {
+      "model": "openai/gpt-5.2"
+    },
+    "librarian": {
+      "model": "openai/gpt-5.1-codex-mini"
+    },
+    "frontend-ui-ux-engineer": {
+      "model": "openai/gpt-5.2"
+    },
+    "document-writer": {
+      "model": "openai/gpt-5.2"
+    },
+    "multimodal-looker": {
+      "model": "openai/gpt-5.2"
+    }
+  },
+  "categories": {
+    "ultrabrain": {
+      "model": "openai/gpt-5.3-codex",
+      "reasoningEffort": "xhigh",
+      "textVerbosity": "medium",
+      "description": "Deep architecture and complex reasoning (Codex)."
+    },
+    "deep": {
+      "model": "openai/gpt-5.3-codex",
+      "reasoningEffort": "high",
+      "textVerbosity": "medium",
+      "description": "Implementation-oriented deep work / multi-step coding (Codex)."
+    },
+    "quick": {
+      "model": "openai/gpt-5.1-codex-mini",
+      "reasoningEffort": "low",
+      "textVerbosity": "low",
+      "description": "Small fixes, quick edits, straightforward changes."
+    },
+    "unspecified-low": {
+      "model": "openai/gpt-5.2",
+      "reasoningEffort": "medium",
+      "textVerbosity": "medium",
+      "description": "General-purpose default when no other category fits."
+    },
+    "visual-engineering": {
+      "model": "openai/gpt-5.2",
+      "reasoningEffort": "medium",
+      "textVerbosity": "high",
+      "description": "UI/UX, styling, visual consistency, frontend design reviews."
+    },
+    "documentation": {
+      "model": "openai/gpt-5.2",
+      "reasoningEffort": "medium",
+      "textVerbosity": "high",
+      "description": "Docs, ADRs, release notes, README updates, and writing tasks."
+    },
+    "librarian": {
+      "model": "openai/gpt-5.1-codex-mini",
+      "reasoningEffort": "medium",
+      "textVerbosity": "high",
+      "description": "Codebase exploration + explaining findings with citations/paths."
+    },
+    "multimodal": {
+      "model": "openai/gpt-5.2",
+      "reasoningEffort": "medium",
+      "textVerbosity": "high",
+      "description": "Image + UI screenshot analysis, visual debugging, multimodal review."
+    }
+  }
+}

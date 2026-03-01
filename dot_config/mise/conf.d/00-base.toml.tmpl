@@ -204,6 +204,41 @@ run = '''
 '''
 {{- end }}
 
+[tasks."opencode:profile:copilot"]
+alias = "opoc"
+description = "Switch OpenCode to Copilot profile"
+run = '''
+  set -eu
+  cp "$HOME/.config/opencode/profiles/opencode.copilot.json" "$HOME/.config/opencode/opencode.json"
+  cp "$HOME/.config/opencode/profiles/oh-my-opencode.copilot.json" "$HOME/.config/opencode/oh-my-opencode.json"
+  echo "OpenCode profile switched to Copilot"
+'''
+
+[tasks."opencode:profile:openai"]
+alias = "opoa"
+description = "Switch OpenCode to OpenAI profile"
+run = '''
+  set -eu
+  cp "$HOME/.config/opencode/profiles/opencode.openai.json" "$HOME/.config/opencode/opencode.json"
+  cp "$HOME/.config/opencode/profiles/oh-my-opencode.openai.json" "$HOME/.config/opencode/oh-my-opencode.json"
+  echo "OpenCode profile switched to OpenAI"
+'''
+
+[tasks."opencode:profile:current"]
+alias = "opos"
+description = "Show current OpenCode profile models"
+run = '''
+  set -eu
+  echo "opencode.json model:"
+  if grep -q '"model"\s*:' "$HOME/.config/opencode/opencode.json"; then
+    grep -E '"model"\s*:' "$HOME/.config/opencode/opencode.json" | head -n 1
+  else
+    echo "  (no top-level model; provider-based profile)"
+  fi
+  echo "oh-my-opencode sisyphus model:"
+  grep -A2 '"sisyphus"' "$HOME/.config/opencode/oh-my-opencode.json" | grep -E '"model"\s*:' | head -n 1
+'''
+
 [tools]
 node = "latest"
 "npm:bash-language-server" = "latest"
