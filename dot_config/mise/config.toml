@@ -10,13 +10,10 @@ kind = "latest"
 kubebuilder = "latest"
 kubectl = "latest"
 kubelogin = "latest"
-node = "latest"
+node = "22.22.0"
 usage = "latest"
-"ubi:errata-ai/vale-ls" = "latest"
-"ubi:joshrotenberg/adrs" = "latest"
-"ubi:mrjosh/helm-ls" = "latest"
-vale = "latest"
 watchexec = "latest"
+yarn = "4.12.0"
 
 [settings]
 experimental = true
