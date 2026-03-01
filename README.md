@@ -132,13 +132,14 @@ mise run gh:auth:status:all
 
 ## OpenCode profile defaults
 
-- Work machines (`work.enable = true`) use this laptop's current work-oriented OpenCode profile.
-- Personal machines (`work.enable = false`) use GitHub Copilot models per role/category (quality + token efficiency).
-- Personal fallback default model in `opencode.json` is `github-copilot/claude-sonnet-4.6`.
+- Work machines (`work.enable = true`) default to OpenAI/Codex profile.
+- Personal machines (`work.enable = false`) default to GitHub Copilot profile.
+- Both profiles are available on both machines; you can switch any time.
 
-Optional local override (do not commit):
+Switch OpenCode profile quickly:
 
-```toml
-[data.opencode.personal]
-bestModel = "github-copilot/claude-sonnet-4.6"
+```bash
+mise run opencode:profile:copilot
+mise run opencode:profile:openai
+mise run opencode:profile:current
 ```
