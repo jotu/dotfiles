@@ -6,7 +6,10 @@ alias skp="sk -p" # Previously selected context and namespace
 alias skn="sk -n" # Also prompt for namespace selection
 alias skN="sk -N" # Only prompt for namespace selection
 alias skc="sk -c" # Print the currently selected context and namespace
+alias ghlp='mise run gh:auth:login:personal'
 {{- if .work.enable }}
 alias kinit="kinit --keychain {{ .work.employee.code }}@{{ .work.domain.name }}"
-alias goedemorgen='if command -v open >/dev/null; then open -a "Firefox" "{{ .work.saml.auth.url }}?nocache=$(date +%s)"; fi; if command -v we >/dev/null; then we auth; fi; if command -v mise >/dev/null; then mise tb:aws:login; fi'
+alias goedemorgen='if command -v open >/dev/null; then open -a "Firefox" "{{ .work.saml.auth.url }}?nocache=$(date +%s)"; fi; if command -v mise >/dev/null; then mise tb:aws:login; fi'
+alias ghlw='mise run gh:auth:login:work'
+alias ghsa='mise run gh:auth:status:all'
 {{- end }}

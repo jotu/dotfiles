@@ -2,24 +2,217 @@
 alias = "sar"
 description = "Restart ssh agent"
 run = '''
+  set -eu
+
+  add_if_exists() {
+    if [ -f "$1" ]; then
+      ssh-add "$1"
+    fi
+  }
+
   eval $(ssh-agent -s)
 {{- if .work.enable }}
-  ssh-add ~/.ssh/{{ .work.ssh.user.identityFile }}
-  ssh-add ~/.ssh/{{ .work.ssh.organization.identityFile }}
+  add_if_exists "$HOME/.ssh/{{ .work.ssh.user.identityFile }}"
+  add_if_exists "$HOME/.ssh/{{ .work.ssh.organization.identityFile }}"
+  add_if_exists "$HOME/.ssh/{{ .work.ssh.organization.identityFile }}-cert.pub"
 {{- end }}
-  ssh-add ~/.ssh/{{ .personal.ssh.identityFile }}
+  add_if_exists "$HOME/.ssh/{{ .personal.ssh.identityFile }}"
 '''
 
+{{- $ghConfigPersonal := "~/.config/gh-personal" -}}
+{{- $ghConfigWork := "~/.config/gh-work" -}}
+{{- if hasKey .github "configDir" -}}
+{{- $ghConfig := get .github "configDir" -}}
+{{- if hasKey $ghConfig "personal" -}}{{- $ghConfigPersonal = get $ghConfig "personal" -}}{{- end -}}
+{{- if hasKey $ghConfig "work" -}}{{- $ghConfigWork = get $ghConfig "work" -}}{{- end -}}
+{{- end }}
+
+[tasks."dotfiles:health:check"]
+alias = "dhc"
+description = "Validate gh, ssh agent, and repo roots"
+run = '''
+  set -eu
+
+  expand_path() {
+    case "$1" in
+      "~") printf "%s\n" "$HOME" ;;
+      "~/"*) printf "%s/%s\n" "$HOME" "${1#"~/"}" ;;
+      *) printf "%s\n" "$1" ;;
+    esac
+  }
+
+  if ! command -v gh >/dev/null 2>&1; then
+    echo "ERROR: gh not found in PATH"
+    exit 1
+  fi
+
+  if ! command -v ssh-add >/dev/null 2>&1; then
+    echo "ERROR: ssh-add not found in PATH"
+    exit 1
+  fi
+
+  gh_status_cmd='gh auth status --hostname github.com'
+
+  check_gh_login() {
+    local config_dir="$1"
+    local profile_name="$2"
+
+    if ! GH_CONFIG_DIR="$config_dir" $gh_status_cmd >/dev/null 2>&1; then
+      echo "ERROR: gh is not logged in for $profile_name profile (GH_CONFIG_DIR=$config_dir)"
+      echo "Run: GH_CONFIG_DIR=\"$config_dir\" gh auth login --hostname github.com"
+
+      if GH_CONFIG_DIR="$HOME/.config/gh" $gh_status_cmd >/dev/null 2>&1; then
+        echo "Hint: you are logged into default ~/.config/gh, but this profile uses GH_CONFIG_DIR=$config_dir"
+      fi
+
+      exit 1
+    fi
+  }
+
+{{- if .work.enable }}
+  gh_personal_dir=$(expand_path "{{ $ghConfigPersonal }}")
+  gh_work_dir=$(expand_path "{{ $ghConfigWork }}")
+
+  check_gh_login "$gh_personal_dir" "personal"
+  check_gh_login "$gh_work_dir" "work"
+{{- else }}
+  if ! $gh_status_cmd >/dev/null 2>&1; then
+    echo "ERROR: gh is not logged in for default profile"
+    echo "Run: gh auth login --hostname github.com"
+    exit 1
+  fi
+{{- end }}
+
+  personal_key_path="$HOME/.ssh/{{ .personal.ssh.identityFile }}"
+  if [ ! -f "$personal_key_path" ]; then
+    echo "ERROR: required SSH key file is missing: $personal_key_path"
+    exit 1
+  fi
+
+{{- if .work.enable }}
+  org_key_path="$HOME/.ssh/{{ .work.ssh.organization.identityFile }}"
+  org_cert_path="$HOME/.ssh/{{ .work.ssh.organization.identityFile }}-cert.pub"
+  if [ ! -f "$org_key_path" ] && [ ! -f "$org_cert_path" ]; then
+    echo "ERROR: expected work org key or certificate file"
+    echo "Missing both: $org_key_path and $org_cert_path"
+    exit 1
+  fi
+{{- end }}
+
+  keys_output=$(ssh-add -l 2>&1 || true)
+  if printf "%s" "$keys_output" | grep -q "Could not open a connection to your authentication agent"; then
+    echo "ERROR: ssh-agent is not available in this shell session"
+    echo "Run: eval \"$(ssh-agent -s)\""
+    exit 1
+  fi
+
+  loaded_keys=$(printf "%s\n" "$keys_output" | grep -c "SHA256:" || true)
+  if [ "$loaded_keys" -lt 1 ]; then
+    echo "ERROR: ssh-agent has no loaded identities"
+    echo "Run: ssh-add ~/.ssh/{{ .personal.ssh.identityFile }}"
+{{- if .work.enable }}
+    echo "Then: ssh-add ~/.ssh/{{ .work.ssh.organization.identityFile }}"
+    echo "If your org uses SSH certificates, also run: ssh-add ~/.ssh/{{ .work.ssh.organization.identityFile }}-cert.pub"
+{{- end }}
+    exit 1
+  fi
+
+{{- if .work.enable }}
+  work_root="{{ if hasKey .work.git "rootDir" }}{{ get .work.git "rootDir" }}{{ end }}"
+  personal_root="{{ if hasKey .personal.git "rootDir" }}{{ get .personal.git "rootDir" }}{{ end }}"
+
+  if [ -z "$work_root" ] || [ -z "$personal_root" ]; then
+    echo "ERROR: work.git.rootDir and personal.git.rootDir must be set in local chezmoi data"
+    exit 1
+  fi
+
+  work_root=$(expand_path "$work_root")
+  personal_root=$(expand_path "$personal_root")
+
+  if [ ! -d "$work_root" ]; then
+    echo "ERROR: work root dir does not exist: $work_root"
+    exit 1
+  fi
+
+  if [ ! -d "$personal_root" ]; then
+    echo "ERROR: personal root dir does not exist: $personal_root"
+    exit 1
+  fi
+{{- end }}
+
+  echo "OK: dotfiles health checks passed"
+ '''
+
+[tasks."gh:auth:login:personal"]
+alias = "ghlp"
+description = "Login gh personal profile"
+run = '''
+  set -eu
+
+  expand_path() {
+    case "$1" in
+      "~") printf "%s\n" "$HOME" ;;
+      "~/"*) printf "%s/%s\n" "$HOME" "${1#"~/"}" ;;
+      *) printf "%s\n" "$1" ;;
+    esac
+  }
+
+  gh_personal_dir=$(expand_path "{{ $ghConfigPersonal }}")
+  GH_CONFIG_DIR="$gh_personal_dir" gh auth login --hostname github.com --git-protocol https
+'''
+
+{{- if .work.enable }}
+[tasks."gh:auth:login:work"]
+alias = "ghlw"
+description = "Login gh work profile"
+run = '''
+  set -eu
+
+  expand_path() {
+    case "$1" in
+      "~") printf "%s\n" "$HOME" ;;
+      "~/"*) printf "%s/%s\n" "$HOME" "${1#"~/"}" ;;
+      *) printf "%s\n" "$1" ;;
+    esac
+  }
+
+  gh_work_dir=$(expand_path "{{ $ghConfigWork }}")
+  GH_CONFIG_DIR="$gh_work_dir" gh auth login --hostname github.com --git-protocol ssh
+'''
+
+[tasks."gh:auth:status:all"]
+alias = "ghsa"
+description = "Show gh auth status for personal and work profiles"
+run = '''
+  set -eu
+
+  expand_path() {
+    case "$1" in
+      "~") printf "%s\n" "$HOME" ;;
+      "~/"*) printf "%s/%s\n" "$HOME" "${1#"~/"}" ;;
+      *) printf "%s\n" "$1" ;;
+    esac
+  }
+
+  gh_personal_dir=$(expand_path "{{ $ghConfigPersonal }}")
+  gh_work_dir=$(expand_path "{{ $ghConfigWork }}")
+
+  echo "Personal profile ($gh_personal_dir):"
+  GH_CONFIG_DIR="$gh_personal_dir" gh auth status --hostname github.com
+  echo
+  echo "Work profile ($gh_work_dir):"
+  GH_CONFIG_DIR="$gh_work_dir" gh auth status --hostname github.com
+'''
+{{- end }}
+
 [tools]
-bun = "latest"
-npm = "latest"
-"npm:@ast-grep/napi" = "latest"
+node = "latest"
 "npm:bash-language-server" = "latest"
-"npm:oh-my-opencode" = "latest"
-"npm:opencode-ai" = "latest"
+"npm:opencode-ai"= "latest"
+"npm:typescript-language-server" = "latest"
 "npm:yaml-language-server" = "latest"
-"npm:playwright" = "latest"
+"npm:@openai/codex" =  "latest"
 shellcheck = "latest"
 shellspec = "latest"
 shfmt = "latest"
-vale = "latest"
+eksctl= "latest"
