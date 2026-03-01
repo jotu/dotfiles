@@ -1,7 +1,9 @@
 {{- if .work.enable }}
+{{- $orgAlias := trimPrefix "id_github_" .work.ssh.organization.identityFile }}
 # Work profile enabled:
 # - Keep github.com on the personal identity by default.
 # - Work repositories force their SSH key via git core.sshCommand.
+# - Keep org-* compatibility and a dedicated enterprise host alias.
 
 Host github.com
 HostName github.com
@@ -10,6 +12,17 @@ AddKeysToAgent yes
 UseKeychain yes
 IdentityFile ~/.ssh/{{ .personal.ssh.identityFile }}
 IdentitiesOnly yes
+
+Host {{ $orgAlias }}
+HostName github.com
+User git
+AddKeysToAgent yes
+UseKeychain yes
+IdentityFile ~/.ssh/{{ .work.ssh.organization.identityFile }}
+IdentitiesOnly yes
+
+Match host github.com user org-*
+  IdentityFile ~/.ssh/{{ .work.ssh.organization.identityFile }}
 
 {{- else }}
 # Personal profile:

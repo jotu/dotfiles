@@ -14,7 +14,6 @@ run = '''
 {{- if .work.enable }}
   add_if_exists "$HOME/.ssh/{{ .work.ssh.user.identityFile }}"
   add_if_exists "$HOME/.ssh/{{ .work.ssh.organization.identityFile }}"
-  add_if_exists "$HOME/.ssh/{{ .work.ssh.organization.identityFile }}-cert.pub"
 {{- end }}
   add_if_exists "$HOME/.ssh/{{ .personal.ssh.identityFile }}"
 '''

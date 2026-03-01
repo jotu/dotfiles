@@ -20,7 +20,7 @@
         insteadOf = https://github.com/
 
 [core]
-        sshCommand = ssh -i ~/.ssh/{{ .work.ssh.organization.identityFile }} -o IdentitiesOnly=yes
+        sshCommand = ssh -F /dev/null -i ~/.ssh/{{ .work.ssh.organization.identityFile }} -o IdentitiesOnly=yes
 
 [commit]
         gpgsign = true
