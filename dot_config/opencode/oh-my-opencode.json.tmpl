@@ -1,0 +1,151 @@
+{
+  "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-opencode/master/assets/oh-my-opencode.schema.json",
+  "agents": {
+    "sisyphus": {
+{{- if .work.enable }}
+      "model": "openai/gpt-5.3-codex",
+{{- else }}
+      "model": "github-copilot/gpt-5.1-codex-max",
+{{- end }}
+      "prompt_append": "Session bootstrap reminder: for fresh tasks, suggest `/new-task <task_request>` to load repo context and validation scope before implementation."
+    },
+    "plan": {
+{{- if .work.enable }}
+      "model": "openai/gpt-5.2"
+{{- else }}
+      "model": "github-copilot/claude-sonnet-4.5"
+{{- end }}
+    },
+    "build": {
+{{- if .work.enable }}
+      "model": "openai/gpt-5.3-codex"
+{{- else }}
+      "model": "github-copilot/gpt-5.2-codex"
+{{- end }}
+    },
+    "oracle": {
+{{- if .work.enable }}
+      "model": "openai/gpt-5.2"
+{{- else }}
+      "model": "github-copilot/claude-sonnet-4.5"
+{{- end }}
+    },
+    "explore": {
+{{- if .work.enable }}
+      "model": "openai/gpt-5.2"
+{{- else }}
+      "model": "github-copilot/gpt-5.1-codex-mini"
+{{- end }}
+    },
+    "librarian": {
+{{- if .work.enable }}
+      "model": "openai/gpt-5.1-codex-mini"
+{{- else }}
+      "model": "github-copilot/gpt-5-mini"
+{{- end }}
+    },
+    "frontend-ui-ux-engineer": {
+{{- if .work.enable }}
+      "model": "openai/gpt-5.2"
+{{- else }}
+      "model": "github-copilot/gemini-3.1-pro-preview"
+{{- end }}
+    },
+    "document-writer": {
+{{- if .work.enable }}
+      "model": "openai/gpt-5.2"
+{{- else }}
+      "model": "github-copilot/claude-sonnet-4.5"
+{{- end }}
+    },
+    "multimodal-looker": {
+{{- if .work.enable }}
+      "model": "openai/gpt-5.2"
+{{- else }}
+      "model": "github-copilot/gemini-3.1-pro-preview"
+{{- end }}
+    }
+  },
+  "categories": {
+    "ultrabrain": {
+{{- if .work.enable }}
+      "model": "openai/gpt-5.3-codex",
+{{- else }}
+      "model": "github-copilot/gpt-5.1-codex-max",
+{{- end }}
+      "reasoningEffort": "xhigh",
+      "textVerbosity": "medium",
+      "description": "Deep architecture and complex reasoning (Codex)."
+    },
+    "deep": {
+{{- if .work.enable }}
+      "model": "openai/gpt-5.3-codex",
+{{- else }}
+      "model": "github-copilot/gpt-5.2-codex",
+{{- end }}
+      "reasoningEffort": "high",
+      "textVerbosity": "medium",
+      "description": "Implementation-oriented deep work / multi-step coding (Codex)."
+    },
+    "quick": {
+{{- if .work.enable }}
+      "model": "openai/gpt-5.1-codex-mini",
+{{- else }}
+      "model": "github-copilot/gpt-5-mini",
+{{- end }}
+      "reasoningEffort": "low",
+      "textVerbosity": "low",
+      "description": "Small fixes, quick edits, straightforward changes."
+    },
+    "unspecified-low": {
+{{- if .work.enable }}
+      "model": "openai/gpt-5.2",
+{{- else }}
+      "model": "github-copilot/gpt-5-mini",
+{{- end }}
+      "reasoningEffort": "medium",
+      "textVerbosity": "medium",
+      "description": "General-purpose default when no other category fits."
+    },
+    "visual-engineering": {
+{{- if .work.enable }}
+      "model": "openai/gpt-5.2",
+{{- else }}
+      "model": "github-copilot/gemini-3.1-pro-preview",
+{{- end }}
+      "reasoningEffort": "medium",
+      "textVerbosity": "high",
+      "description": "UI/UX, styling, visual consistency, frontend design reviews."
+    },
+    "documentation": {
+{{- if .work.enable }}
+      "model": "openai/gpt-5.2",
+{{- else }}
+      "model": "github-copilot/claude-sonnet-4.5",
+{{- end }}
+      "reasoningEffort": "medium",
+      "textVerbosity": "high",
+      "description": "Docs, ADRs, release notes, README updates, and writing tasks."
+    },
+    "librarian": {
+{{- if .work.enable }}
+      "model": "openai/gpt-5.1-codex-mini",
+{{- else }}
+      "model": "github-copilot/gpt-5-mini",
+{{- end }}
+      "reasoningEffort": "medium",
+      "textVerbosity": "high",
+      "description": "Codebase exploration + explaining findings with citations/paths."
+    },
+    "multimodal": {
+{{- if .work.enable }}
+      "model": "openai/gpt-5.2",
+{{- else }}
+      "model": "github-copilot/gemini-3.1-pro-preview",
+{{- end }}
+      "reasoningEffort": "medium",
+      "textVerbosity": "high",
+      "description": "Image + UI screenshot analysis, visual debugging, multimodal review."
+    }
+  }
+}
