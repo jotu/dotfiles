@@ -33,6 +33,11 @@
     filemode = false
     whitespace = cr-at-eol
     editor = {{ .editor | quote }}
+{{- if .work.enable }}
+    sshCommand = ssh -F /dev/null -i ~/.ssh/{{ .work.ssh.organization.identityFile }} -o IdentitiesOnly=yes
+{{- else }}
+    sshCommand = ssh -F /dev/null -i ~/.ssh/{{ .personal.ssh.identityFile }} -o IdentitiesOnly=yes
+{{- end }}
 
 [commit]
     gpgsign = true
@@ -44,7 +49,21 @@
     gpgSign = true
 
 [credential]
-    helper = !gh auth git-credential
+{{- if .work.enable }}
+{{- $ghConfigWork := "~/.config/gh-work" -}}
+{{- if hasKey .github "configDir" -}}
+{{- $ghConfig := get .github "configDir" -}}
+{{- if hasKey $ghConfig "work" -}}{{- $ghConfigWork = get $ghConfig "work" -}}{{- end -}}
+{{- end }}
+    helper = !GH_CONFIG_DIR={{ $ghConfigWork }} gh auth git-credential
+{{- else }}
+{{- $ghConfigPersonal := "~/.config/gh-personal" -}}
+{{- if hasKey .github "configDir" -}}
+{{- $ghConfig := get .github "configDir" -}}
+{{- if hasKey $ghConfig "personal" -}}{{- $ghConfigPersonal = get $ghConfig "personal" -}}{{- end -}}
+{{- end }}
+    helper = !GH_CONFIG_DIR={{ $ghConfigPersonal }} gh auth git-credential
+{{- end }}
     useHttpPath = true
 
 [http]

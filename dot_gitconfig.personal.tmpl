@@ -15,4 +15,7 @@
 
 [credential "https://gist.github.com"]
     helper = !GH_CONFIG_DIR={{ $ghConfigPersonal }} gh auth git-credential
+
+[core]
+    sshCommand = ssh -F /dev/null -i ~/.ssh/{{ .personal.ssh.identityFile }} -o IdentitiesOnly=yes
 {{- end }}
