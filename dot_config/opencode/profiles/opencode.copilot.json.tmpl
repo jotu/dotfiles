@@ -2,6 +2,96 @@
   "plugin": [
     "oh-my-opencode"
   ],
-  "model": "github-copilot/claude-sonnet-4.6",
+  "model": "github-copilot/gpt-5.3-codex",
+  "small_model": "github-copilot/claude-haiku-4.5",
+  "provider": {
+    "github-copilot": {
+      "name": "GitHub Copilot",
+      "models": {
+        "gpt-5.3-codex": {
+          "options": {
+            "reasoningEffort": "medium",
+            "textVerbosity": "low"
+          },
+          "variants": {
+            "low": {
+              "reasoningEffort": "low",
+              "textVerbosity": "low"
+            },
+            "medium": {
+              "reasoningEffort": "medium",
+              "textVerbosity": "low"
+            },
+            "high": {
+              "reasoningEffort": "high",
+              "textVerbosity": "medium"
+            }
+          }
+        },
+        "claude-sonnet-4.6": {
+          "options": {
+            "textVerbosity": "low"
+          }
+        },
+        "claude-opus-4.6": {
+          "options": {
+            "textVerbosity": "medium"
+          }
+        },
+        "claude-haiku-4.5": {
+          "options": {
+            "textVerbosity": "low"
+          },
+          "variants": {
+            "low": {
+              "textVerbosity": "low"
+            },
+            "medium": {
+              "textVerbosity": "medium"
+            }
+          }
+        },
+        "gpt-5.2-codex": {
+          "options": {
+            "reasoningEffort": "medium",
+            "textVerbosity": "low"
+          }
+        },
+        "gpt-5.2": {
+          "options": {
+            "reasoningEffort": "medium",
+            "textVerbosity": "low"
+          }
+        },
+        "gpt-5.1-codex-max": {
+          "options": {
+            "reasoningEffort": "high",
+            "textVerbosity": "medium"
+          }
+        },
+        "gpt-5.1-codex-mini": {
+          "options": {
+            "reasoningEffort": "low",
+            "textVerbosity": "low"
+          },
+          "variants": {
+            "low": {
+              "reasoningEffort": "low",
+              "textVerbosity": "low"
+            },
+            "medium": {
+              "reasoningEffort": "medium",
+              "textVerbosity": "low"
+            }
+          }
+        },
+        "gemini-3.1-pro-preview": {
+          "options": {
+            "textVerbosity": "high"
+          }
+        }
+      }
+    }
+  },
   "$schema": "https://opencode.ai/config.json"
 }
