@@ -1,60 +1,179 @@
-{{- if .work.enable }}
 {
+  "permission": {
+    "*": "allow",
+    "read": {
+      "*": "allow",
+      "*.env": "ask",
+      "*.env.*": "ask",
+      "*.env.local": "ask",
+      "*.pem": "deny",
+      "*.key": "deny",
+      "*.p12": "deny",
+      "*.pfx": "deny",
+      "*.jks": "deny",
+      "*credentials*": "deny",
+      "*secret*": "ask",
+      "*.keystore": "deny",
+      ".git/config": "ask",
+      ".git/config.*": "ask",
+      "**/secrets/**": "ask",
+      "**/private/**": "deny",
+      "**/.aws/**": "deny",
+      "**/.aws/config": "ask",
+      "**/.ssh/**": "deny",
+      "**/.ssh/config": "ask",
+      "**/.gnupg/**": "deny",
+      "*docker-compose*.yml": "ask",
+      "$HOME/.kube/**": "deny",
+      "$HOME/.kube/agent-kubeconfig": "allow"
+    },
+    "edit": {
+      "*": "allow",
+      "*.env": "ask",
+      "*.env.*": "ask",
+      "*.env.local": "ask",
+      "*.pem": "deny",
+      "*.key": "deny",
+      "*.p12": "deny",
+      "*.pfx": "deny",
+      "*.jks": "deny",
+      "*credentials*": "deny",
+      "*secret*": "ask",
+      "*.keystore": "deny",
+      ".git/config": "ask",
+      ".git/config.*": "ask",
+      "**/secrets/**": "ask",
+      "**/private/**": "deny",
+      "**/.aws/**": "deny",
+      "**/.aws/config": "ask",
+      "**/.ssh/**": "deny",
+      "**/.ssh/config": "ask",
+      "**/.gnupg/**": "deny",
+      "*docker-compose*.yml": "ask",
+      "$HOME/.kube/**": "deny",
+      "$HOME/.kube/agent-kubeconfig": "allow"
+   },
+    "bash": {
+      "*": "allow",
+      "git status *": "allow",
+      "git diff *": "allow",
+      "git log *": "allow",
+      "git branch *": "allow",
+      "grep *": "allow",
+      "cat *.env*": "deny",
+      "cat *secret*": "deny",
+      "cat *credential*": "deny",
+      "cat *.pem": "deny",
+      "cat *.key": "deny",
+      "printenv *": "deny",
+      "env": "deny",
+      "export *": "deny",
+      "echo $*": "deny",
+      "curl *": "ask",
+      "wget *": "ask",
+      "rm -rf *": "deny",
+      "rm -r *": "deny",
+      "mise env": "deny",
+      "mise env *": "deny",
+      "k9s*": "deny",
+      "KUBECONFIG=$HOME/.kube/agent-kubeconfig k9s*": "allow",
+      "kubectl*": "deny",
+      "KUBECONFIG=$HOME/.kube/agent-kubeconfig kubectl*": "allow"
+    },
+    "zsh": {
+      "*": "allow",
+      "git status *": "allow",
+      "git diff *": "allow",
+      "git log *": "allow",
+      "git branch *": "allow",
+      "grep *": "allow",
+      "cat *.env*": "deny",
+      "cat *secret*": "deny",
+      "cat *credential*": "deny",
+      "cat *.pem": "deny",
+      "cat *.key": "deny",
+      "printenv *": "deny",
+      "env": "deny",
+      "export *": "deny",
+      "echo $*": "deny",
+      "curl *": "ask",
+      "wget *": "ask",
+      "rm -rf *": "deny",
+      "rm -r *": "deny",
+      "mise env": "deny",
+      "mise env *": "deny",
+      "k9s*": "deny",
+      "KUBECONFIG=$HOME/.kube/agent-kubeconfig k9s*": "allow",
+      "kubectl*": "deny",
+      "KUBECONFIG=$HOME/.kube/agent-kubeconfig kubectl*": "allow"
+    },
+    "webfetch": "allow",
+    "external_directory": "ask"
+  },
+{{- if .work.enable }}
   "plugin": [
     "oh-my-opencode",
     "opencode-openai-codex-auth"
   ],
+  "model": "openai/gpt-5.3-codex",
+  "small_model": "openai/gpt-5.1-codex-mini",
   "provider": {
     "openai": {
       "name": "OpenAI",
       "options": {
         "reasoningEffort": "medium",
         "reasoningSummary": "auto",
-        "textVerbosity": "medium",
-        "include": [
-          "reasoning.encrypted_content"
-        ],
+        "textVerbosity": "low",
+        "include": ["reasoning.encrypted_content"],
         "store": false
       },
       "models": {
-        "gpt-5.2": {
-          "name": "GPT 5.2 (OAuth)",
+        "gpt-5.3-codex": {
+          "name": "GPT 5.3 Codex (OAuth)",
           "limit": {
             "context": 272000,
             "output": 128000
           },
           "modalities": {
-            "input": [
-              "text",
-              "image"
-            ],
-            "output": [
-              "text"
-            ]
+            "input": ["text", "image"],
+            "output": ["text"]
           },
           "variants": {
-            "none": {
-              "reasoningEffort": "none",
-              "reasoningSummary": "auto",
-              "textVerbosity": "medium"
-            },
             "low": {
               "reasoningEffort": "low",
               "reasoningSummary": "auto",
-              "textVerbosity": "medium"
+              "textVerbosity": "low"
             },
             "medium": {
               "reasoningEffort": "medium",
               "reasoningSummary": "auto",
-              "textVerbosity": "medium"
+              "textVerbosity": "low"
             },
             "high": {
               "reasoningEffort": "high",
               "reasoningSummary": "detailed",
               "textVerbosity": "medium"
+            }
+          }
+        },
+        "gpt-5.4": {
+          "name": "GPT 5.4 (OAuth)",
+          "limit": {
+            "context": 272000,
+            "output": 128000
+          },
+          "modalities": {
+            "input": ["text", "image"],
+            "output": ["text"]
+          },
+          "variants": {
+            "medium": {
+              "reasoningEffort": "medium",
+              "reasoningSummary": "auto",
+              "textVerbosity": "low"
             },
-            "xhigh": {
-              "reasoningEffort": "xhigh",
+            "high": {
+              "reasoningEffort": "high",
               "reasoningSummary": "detailed",
               "textVerbosity": "medium"
             }
@@ -67,34 +186,14 @@
             "output": 128000
           },
           "modalities": {
-            "input": [
-              "text",
-              "image"
-            ],
-            "output": [
-              "text"
-            ]
+            "input": ["text", "image"],
+            "output": ["text"]
           },
           "variants": {
-            "low": {
-              "reasoningEffort": "low",
-              "reasoningSummary": "auto",
-              "textVerbosity": "medium"
-            },
             "medium": {
               "reasoningEffort": "medium",
               "reasoningSummary": "auto",
-              "textVerbosity": "medium"
-            },
-            "high": {
-              "reasoningEffort": "high",
-              "reasoningSummary": "detailed",
-              "textVerbosity": "medium"
-            },
-            "xhigh": {
-              "reasoningEffort": "xhigh",
-              "reasoningSummary": "detailed",
-              "textVerbosity": "medium"
+              "textVerbosity": "low"
             }
           }
         },
@@ -105,20 +204,10 @@
             "output": 128000
           },
           "modalities": {
-            "input": [
-              "text",
-              "image"
-            ],
-            "output": [
-              "text"
-            ]
+            "input": ["text", "image"],
+            "output": ["text"]
           },
           "variants": {
-            "low": {
-              "reasoningEffort": "low",
-              "reasoningSummary": "detailed",
-              "textVerbosity": "medium"
-            },
             "medium": {
               "reasoningEffort": "medium",
               "reasoningSummary": "detailed",
@@ -128,11 +217,47 @@
               "reasoningEffort": "high",
               "reasoningSummary": "detailed",
               "textVerbosity": "medium"
+            }
+          }
+        },
+        "gpt-5.2": {
+          "name": "GPT 5.2 (OAuth)",
+          "limit": {
+            "context": 272000,
+            "output": 128000
+          },
+          "modalities": {
+            "input": ["text", "image"],
+            "output": ["text"]
+          },
+          "variants": {
+            "medium": {
+              "reasoningEffort": "medium",
+              "reasoningSummary": "auto",
+              "textVerbosity": "low"
+            }
+          }
+        },
+        "gpt-5.1-codex-mini": {
+          "name": "GPT 5.1 Codex Mini (OAuth)",
+          "limit": {
+            "context": 272000,
+            "output": 128000
+          },
+          "modalities": {
+            "input": ["text", "image"],
+            "output": ["text"]
+          },
+          "variants": {
+            "low": {
+              "reasoningEffort": "low",
+              "reasoningSummary": "auto",
+              "textVerbosity": "low"
             },
-            "xhigh": {
-              "reasoningEffort": "xhigh",
-              "reasoningSummary": "detailed",
-              "textVerbosity": "medium"
+            "medium": {
+              "reasoningEffort": "medium",
+              "reasoningSummary": "auto",
+              "textVerbosity": "low"
             }
           }
         }
@@ -140,13 +265,11 @@
     }
   },
   "$schema": "https://opencode.ai/config.json"
-}
 {{- else }}
-{
   "plugin": [
     "oh-my-opencode"
   ],
   "model": "github-copilot/claude-sonnet-4.6",
   "$schema": "https://opencode.ai/config.json"
-}
 {{- end }}
+}

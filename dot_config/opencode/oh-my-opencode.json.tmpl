@@ -5,13 +5,13 @@
 {{- if .work.enable }}
       "model": "openai/gpt-5.3-codex",
 {{- else }}
-      "model": "github-copilot/claude-opus-4.6",
+      "model": "github-copilot/gpt-5.3-codex",
 {{- end }}
       "prompt_append": "Session bootstrap reminder: for fresh tasks, suggest `/new-task <task_request>` to load repo context and validation scope before implementation."
     },
     "plan": {
 {{- if .work.enable }}
-      "model": "openai/gpt-5.2"
+      "model": "openai/gpt-5.4"
 {{- else }}
       "model": "github-copilot/claude-sonnet-4.6"
 {{- end }}
@@ -20,21 +20,21 @@
 {{- if .work.enable }}
       "model": "openai/gpt-5.3-codex"
 {{- else }}
-      "model": "github-copilot/gpt-5.2-codex"
+      "model": "github-copilot/gpt-5.3-codex"
 {{- end }}
     },
     "oracle": {
 {{- if .work.enable }}
-      "model": "openai/gpt-5.2"
+      "model": "openai/gpt-5.4"
 {{- else }}
       "model": "github-copilot/claude-sonnet-4.6"
 {{- end }}
     },
     "explore": {
 {{- if .work.enable }}
-      "model": "openai/gpt-5.2"
+      "model": "openai/gpt-5.4"
 {{- else }}
-      "model": "github-copilot/claude-sonnet-4.5"
+      "model": "github-copilot/claude-sonnet-4.6"
 {{- end }}
     },
     "librarian": {
@@ -46,46 +46,46 @@
     },
     "frontend-ui-ux-engineer": {
 {{- if .work.enable }}
-      "model": "openai/gpt-5.2"
+      "model": "openai/gpt-5.4"
 {{- else }}
-      "model": "github-copilot/gemini-3.1-pro-preview"
+      "model": "github-copilot/gemini-3-pro",
 {{- end }}
     },
     "document-writer": {
 {{- if .work.enable }}
-      "model": "openai/gpt-5.2"
+      "model": "openai/gpt-5.4"
 {{- else }}
       "model": "github-copilot/claude-sonnet-4.6"
 {{- end }}
     },
     "multimodal-looker": {
 {{- if .work.enable }}
-      "model": "openai/gpt-5.2"
+      "model": "openai/gpt-5.4"
 {{- else }}
-      "model": "github-copilot/gemini-3.1-pro-preview"
+      "model": "github-copilot/gemini-3-pro",
 {{- end }}
     }
   },
   "categories": {
     "ultrabrain": {
 {{- if .work.enable }}
-      "model": "openai/gpt-5.3-codex",
+      "model": "openai/gpt-5.4",
 {{- else }}
       "model": "github-copilot/claude-opus-4.6",
 {{- end }}
-      "reasoningEffort": "xhigh",
+      "reasoningEffort": "high",
       "textVerbosity": "medium",
-      "description": "Deep architecture and complex reasoning (Codex)."
+      "description": "Deep architecture and complex reasoning."
     },
     "deep": {
 {{- if .work.enable }}
       "model": "openai/gpt-5.3-codex",
 {{- else }}
-      "model": "github-copilot/gpt-5.2-codex",
+      "model": "github-copilot/gpt-5.3-codex",
 {{- end }}
       "reasoningEffort": "high",
       "textVerbosity": "medium",
-      "description": "Implementation-oriented deep work / multi-step coding (Codex)."
+      "description": "Implementation-oriented deep work / multi-step coding."
     },
     "quick": {
 {{- if .work.enable }}
@@ -99,19 +99,19 @@
     },
     "unspecified-low": {
 {{- if .work.enable }}
-      "model": "openai/gpt-5.2",
+      "model": "openai/gpt-5.3-codex",
 {{- else }}
-      "model": "github-copilot/claude-sonnet-4.5",
+      "model": "github-copilot/claude-sonnet-4.6",
 {{- end }}
       "reasoningEffort": "medium",
-      "textVerbosity": "medium",
+      "textVerbosity": "low",
       "description": "General-purpose default when no other category fits."
     },
     "visual-engineering": {
 {{- if .work.enable }}
-      "model": "openai/gpt-5.2",
+      "model": "openai/gpt-5.4",
 {{- else }}
-      "model": "github-copilot/gemini-3.1-pro-preview",
+      "model": "github-copilot/gemini-3-pro",
 {{- end }}
       "reasoningEffort": "medium",
       "textVerbosity": "high",
@@ -119,7 +119,7 @@
     },
     "documentation": {
 {{- if .work.enable }}
-      "model": "openai/gpt-5.2",
+      "model": "openai/gpt-5.4",
 {{- else }}
       "model": "github-copilot/claude-sonnet-4.6",
 {{- end }}
@@ -134,14 +134,14 @@
       "model": "github-copilot/claude-haiku-4.5",
 {{- end }}
       "reasoningEffort": "medium",
-      "textVerbosity": "high",
+      "textVerbosity": "medium",
       "description": "Codebase exploration + explaining findings with citations/paths."
     },
     "multimodal": {
 {{- if .work.enable }}
-      "model": "openai/gpt-5.2",
+      "model": "openai/gpt-5.4",
 {{- else }}
-      "model": "github-copilot/gemini-3.1-pro-preview",
+      "model": "github-copilot/gemini-3-pro",
 {{- end }}
       "reasoningEffort": "medium",
       "textVerbosity": "high",
