@@ -239,6 +239,26 @@ run = '''
   grep -A2 '"sisyphus"' "$HOME/.config/opencode/oh-my-opencode.json" | grep -E '"model"\s*:' | head -n 1
 '''
 
+[tasks."opencode:models:validate"]
+alias = "opomv"
+description = "Validate OpenCode template/profile JSON files"
+run = '''
+  set -eu
+
+  repo_root=$(git rev-parse --show-toplevel)
+  cd "$repo_root"
+
+  chezmoi execute-template < dot_config/opencode/opencode.json.tmpl | python -m json.tool >/dev/null
+  chezmoi execute-template < dot_config/opencode/oh-my-opencode.json.tmpl | python -m json.tool >/dev/null
+
+  python -m json.tool dot_config/opencode/profiles/opencode.openai.json.tmpl >/dev/null
+  python -m json.tool dot_config/opencode/profiles/opencode.copilot.json.tmpl >/dev/null
+  python -m json.tool dot_config/opencode/profiles/oh-my-opencode.openai.json.tmpl >/dev/null
+  python -m json.tool dot_config/opencode/profiles/oh-my-opencode.copilot.json.tmpl >/dev/null
+
+  echo "OpenCode model templates and profiles are valid JSON"
+'''
+
 [tools]
 adr-tools = "latest"
 aws-cli = "latest"
