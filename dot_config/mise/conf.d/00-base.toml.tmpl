@@ -259,6 +259,22 @@ run = '''
   echo "OpenCode model templates and profiles are valid JSON"
 '''
 
+[tasks."proton:mise:update"]
+hide = true
+description = "Update Proton CLI via mise hook"
+run = "mise proton:cli:update"
+
+[hooks]
+postinstall = '''
+  set -eu
+
+  if command -v pass >/dev/null 2>&1; then
+    mise proton:mise:update
+  else
+    mise proton:cli:install
+  fi
+'''
+
 [tools]
 adr-tools = "latest"
 aws-cli = "latest"
