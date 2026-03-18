@@ -1,0 +1,37 @@
+{{- if eq .chezmoi.os "darwin" -}}
+#!/bin/bash
+
+set -eu
+
+if ! command -v thefuck >/dev/null 2>&1; then
+  exit 0
+fi
+
+if thefuck --version >/dev/null 2>&1; then
+  exit 0
+fi
+
+thefuck_bin="$(command -v thefuck)"
+thefuck_python="$(dirname "$thefuck_bin")/python"
+
+if [ ! -x "$thefuck_python" ]; then
+  thefuck_python="$(sed -n '1s/^#!//p' "$thefuck_bin")"
+fi
+
+if [ ! -x "$thefuck_python" ]; then
+  echo "WARNING: thefuck exists but runtime python interpreter was not found"
+  exit 0
+fi
+
+# Python 3.12+ removed stdlib distutils; older thefuck releases still import it.
+# setuptools vendors distutils, and imp2importlib helps with legacy imp imports.
+if ! "$thefuck_python" -m pip --version >/dev/null 2>&1; then
+  "$thefuck_python" -m ensurepip --upgrade >/dev/null 2>&1 || true
+fi
+
+"$thefuck_python" -m pip install --upgrade "setuptools>=80" imp2importlib >/dev/null 2>&1 || true
+
+if ! thefuck --version >/dev/null 2>&1; then
+  echo "WARNING: thefuck is still not runnable after compatibility injection"
+fi
+{{- end -}}

@@ -35,7 +35,11 @@ if command -v starship >/dev/null; then
   eval "$(starship init zsh)"
 fi
 if command -v thefuck >/dev/null; then
-  eval "$(thefuck --alias fuck)"
+  # Python 3.12+ removed distutils; older thefuck builds can crash on import.
+  # Only initialize alias when runtime check succeeds.
+  if thefuck --version >/dev/null 2>&1; then
+    eval "$(thefuck --alias fuck)"
+  fi
 fi
 
 [ -f ~/.zsh_aliases ] && source ~/.zsh_aliases
