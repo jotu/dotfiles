@@ -1,0 +1,88 @@
+[tasks."opencode:deps:install"]
+alias = "opodi"
+description = "Install OpenCode local plugin dependencies"
+run = '''
+  set -eu
+  cd "$HOME/.config/opencode"
+  if command -v bun >/dev/null 2>&1; then
+    bun install --frozen-lockfile
+  else
+    npm install
+  fi
+'''
+
+[tasks."opencode:profile:copilot"]
+alias = "opoc"
+description = "Switch OpenCode to Copilot profile"
+run = '''
+  set -eu
+  cp "$HOME/.config/opencode/profiles/opencode.copilot.json" "$HOME/.config/opencode/opencode.json"
+  cp "$HOME/.config/opencode/profiles/oh-my-opencode.copilot.json" "$HOME/.config/opencode/oh-my-opencode.json"
+  echo "OpenCode profile switched to Copilot"
+'''
+
+[tasks."opencode:profile:openai"]
+alias = "opoa"
+description = "Switch OpenCode to OpenAI profile"
+run = '''
+  set -eu
+  cp "$HOME/.config/opencode/profiles/opencode.openai.json" "$HOME/.config/opencode/opencode.json"
+  cp "$HOME/.config/opencode/profiles/oh-my-opencode.openai.json" "$HOME/.config/opencode/oh-my-opencode.json"
+  echo "OpenCode profile switched to OpenAI"
+'''
+
+[tasks."opencode:profile:current"]
+alias = "opos"
+description = "Show current OpenCode profile models"
+run = '''
+  set -eu
+  echo "opencode.json model:"
+  if grep -q '"model"\s*:' "$HOME/.config/opencode/opencode.json"; then
+    grep -E '"model"\s*:' "$HOME/.config/opencode/opencode.json" | head -n 1
+  else
+    echo "  (no top-level model; provider-based profile)"
+  fi
+  echo "oh-my-opencode sisyphus model:"
+  grep -A2 '"sisyphus"' "$HOME/.config/opencode/oh-my-opencode.json" | grep -E '"model"\s*:' | head -n 1
+'''
+
+[tasks."opencode:profile:default"]
+alias = "opod"
+description = "Switch OpenCode to default profile for this machine"
+{{- if .work.enable }}
+run = "mise opencode:profile:openai"
+{{- else }}
+run = "mise opencode:profile:copilot"
+{{- end }}
+
+[tasks."opencode:models:validate"]
+alias = "opomv"
+description = "Validate OpenCode template/profile JSON files"
+run = '''
+  set -eu
+  repo_root=$(git rev-parse --show-toplevel)
+  cd "$repo_root"
+
+  chezmoi execute-template < dot_config/opencode/opencode.json.tmpl | python -m json.tool >/dev/null
+  chezmoi execute-template < dot_config/opencode/oh-my-opencode.json.tmpl | python -m json.tool >/dev/null
+
+  python -m json.tool dot_config/opencode/profiles/opencode.openai.json.tmpl >/dev/null
+  python -m json.tool dot_config/opencode/profiles/opencode.copilot.json.tmpl >/dev/null
+  python -m json.tool dot_config/opencode/profiles/oh-my-opencode.openai.json.tmpl >/dev/null
+  python -m json.tool dot_config/opencode/profiles/oh-my-opencode.copilot.json.tmpl >/dev/null
+
+  echo "OpenCode model templates and profiles are valid JSON"
+'''
+
+[tasks."opencode:setup"]
+alias = "oposu"
+description = "Install OpenCode tooling, local deps, and default profile"
+run = [
+  "mise opencode:deps:install",
+  "mise opencode:profile:default"
+]
+
+[tools]
+"npm:@github/copilot" = "latest"
+"npm:opencode-ai" = "latest"
+"npm:@openai/codex" = "latest"

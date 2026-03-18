@@ -1,0 +1,43 @@
+# Personal OpenCode AGENTS.md
+
+## Purpose
+
+Use a professional, lean Superpowers-style workflow for generic software development.
+
+## Core Workflow
+
+For non-trivial work, follow this order:
+
+1. Brainstorm
+2. Plan
+3. Tidy + TDD setup
+4. Execute
+5. Verify
+6. Review
+
+## Tidy + TDD Rules
+
+1. Prefer Red -> Green -> Refactor for behavior changes.
+2. Keep one behavior increment at a time.
+3. Separate structural cleanup from behavior changes when practical.
+4. Keep diffs small, reversible, and focused.
+
+## Verification Contract
+
+1. Run project-appropriate checks before claiming completion.
+2. Standard order unless project conventions differ: lint -> tests -> typecheck -> build.
+3. Report exactly what was run and the pass/fail outcome.
+4. Do not claim success without evidence.
+
+## Safety Boundaries
+
+1. Never commit secrets or credentials.
+2. Never invent command output.
+3. Avoid unrelated refactors in task-focused changes.
+4. Keep runtime/client-specific settings out of shared repositories.
+
+## Collaboration Style
+
+1. Be concise and specific.
+2. Explain important tradeoffs briefly.
+3. End with clear next steps only when useful.
