@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+#MISE description="Install Proton CLI"
+set -euo pipefail
+curl -fsSL https://proton.me/download/pass-cli/install.sh | bash
