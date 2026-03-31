@@ -8,6 +8,44 @@
     "github-copilot": {
       "name": "GitHub Copilot",
       "models": {
+        "claude-haiku-4.5": {
+          "options": {
+            "textVerbosity": "low"
+          },
+          "variants": {
+            "low": {
+              "textVerbosity": "low"
+            },
+            "medium": {
+              "textVerbosity": "medium"
+            }
+          }
+        },
+        "claude-opus-4.5": {
+          "options": {
+            "textVerbosity": "medium"
+          }
+        },
+        "claude-opus-4.6": {
+          "options": {
+            "textVerbosity": "medium"
+          }
+        },
+        "claude-opus-41": {
+          "options": {
+            "textVerbosity": "medium"
+          }
+        },
+        "claude-sonnet-4": {
+          "options": {
+            "textVerbosity": "low"
+          }
+        },
+        "claude-sonnet-4.5": {
+          "options": {
+            "textVerbosity": "low"
+          }
+        },
         "gpt-5.3-codex": {
           "options": {
             "reasoningEffort": "medium",
@@ -33,20 +71,109 @@
             "textVerbosity": "low"
           }
         },
-        "claude-opus-4.6": {
+        "gemini-2.5-pro": {
           "options": {
-            "textVerbosity": "medium"
+            "textVerbosity": "high"
           }
         },
-        "claude-haiku-4.5": {
+        "gemini-3-flash-preview": {
           "options": {
+            "textVerbosity": "low"
+          }
+        },
+        "gemini-3-pro-preview": {
+          "options": {
+            "textVerbosity": "high"
+          }
+        },
+        "gemini-3.1-pro-preview": {
+          "options": {
+            "textVerbosity": "high"
+          }
+        },
+        "gpt-4.1": {
+          "options": {
+            "reasoningEffort": "medium",
+            "textVerbosity": "low"
+          }
+        },
+        "gpt-4o": {
+          "options": {
+            "textVerbosity": "low"
+          }
+        },
+        "gpt-5": {
+          "options": {
+            "reasoningEffort": "medium",
             "textVerbosity": "low"
           },
           "variants": {
             "low": {
+              "reasoningEffort": "low",
               "textVerbosity": "low"
             },
             "medium": {
+              "reasoningEffort": "medium",
+              "textVerbosity": "low"
+            },
+            "high": {
+              "reasoningEffort": "high",
+              "textVerbosity": "medium"
+            }
+          }
+        },
+        "gpt-5-mini": {
+          "options": {
+            "reasoningEffort": "low",
+            "textVerbosity": "low"
+          },
+          "variants": {
+            "low": {
+              "reasoningEffort": "low",
+              "textVerbosity": "low"
+            },
+            "medium": {
+              "reasoningEffort": "medium",
+              "textVerbosity": "low"
+            }
+          }
+        },
+        "gpt-5.1": {
+          "options": {
+            "reasoningEffort": "medium",
+            "textVerbosity": "low"
+          },
+          "variants": {
+            "low": {
+              "reasoningEffort": "low",
+              "textVerbosity": "low"
+            },
+            "medium": {
+              "reasoningEffort": "medium",
+              "textVerbosity": "low"
+            },
+            "high": {
+              "reasoningEffort": "high",
+              "textVerbosity": "medium"
+            }
+          }
+        },
+        "gpt-5.1-codex": {
+          "options": {
+            "reasoningEffort": "medium",
+            "textVerbosity": "low"
+          },
+          "variants": {
+            "low": {
+              "reasoningEffort": "low",
+              "textVerbosity": "low"
+            },
+            "medium": {
+              "reasoningEffort": "medium",
+              "textVerbosity": "low"
+            },
+            "high": {
+              "reasoningEffort": "high",
               "textVerbosity": "medium"
             }
           }
@@ -60,6 +187,44 @@
         "gpt-5.2": {
           "options": {
             "reasoningEffort": "medium",
+            "textVerbosity": "low"
+          }
+        },
+        "gpt-5.4": {
+          "options": {
+            "reasoningEffort": "high",
+            "textVerbosity": "medium"
+          },
+          "variants": {
+            "medium": {
+              "reasoningEffort": "medium",
+              "textVerbosity": "low"
+            },
+            "high": {
+              "reasoningEffort": "high",
+              "textVerbosity": "medium"
+            }
+          }
+        },
+        "gpt-5.4-mini": {
+          "options": {
+            "reasoningEffort": "low",
+            "textVerbosity": "low"
+          },
+          "variants": {
+            "low": {
+              "reasoningEffort": "low",
+              "textVerbosity": "low"
+            },
+            "medium": {
+              "reasoningEffort": "medium",
+              "textVerbosity": "low"
+            }
+          }
+        },
+        "grok-code-fast-1": {
+          "options": {
+            "reasoningEffort": "low",
             "textVerbosity": "low"
           }
         },
@@ -83,11 +248,6 @@
               "reasoningEffort": "medium",
               "textVerbosity": "low"
             }
-          }
-        },
-        "gemini-3.1-pro-preview": {
-          "options": {
-            "textVerbosity": "high"
           }
         }
       }
