@@ -144,6 +144,31 @@ mise run opencode:profile:openai
 mise run opencode:profile:current
 ```
 
+### OpenCode skills catalog policy
+
+Use `~/.agents/skills` as the canonical runtime custom-skills catalog (agent-agnostic and shared).
+
+- Keep `~/.config/opencode` for runtime config, profiles, commands, and `AGENTS.md`.
+- Do not store active custom skills in `~/.config/opencode/skill` or `~/.config/opencode/skills`; keep those out of the active search path to prevent precedence drift.
+- Do not treat `~/.agents/skills` as a fully repo-owned tree; unmanaged local skills, Company skills, and team-provided skills may coexist there.
+- In this repo, manage only explicitly selected skills via `dot_agents/skills/<skill-name>/SKILL.md`. Ownership is per managed skill path only, so chezmoi materializes just those selected files under `~/.agents/skills/...` without claiming or cleaning unmanaged siblings in the catalog.
+
+Quick validation:
+
+```bash
+chezmoi source-path ~/.agents/skills/<skill-name>/SKILL.md
+chezmoi source-path ~/.config/opencode/opencode.json
+```
+
+If `chezmoi source-path` says a skill file is "not managed", that is acceptable for local-only skills you want to keep outside this repo.
+
+Example:
+
+```bash
+chezmoi source-path ~/.agents/skills/some-company-or-team-skill/SKILL.md
+# -> not managed
+```
+
 ## Zed workflow shortcuts
 
 Managed Zed tasks are available for a non-vim workflow:
