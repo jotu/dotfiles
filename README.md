@@ -169,6 +169,22 @@ chezmoi source-path ~/.agents/skills/some-company-or-team-skill/SKILL.md
 # -> not managed
 ```
 
+### OpenCode commands catalog policy
+
+Use `~/.config/opencode/commands` as the canonical runtime commands location.
+
+- Keep active commands in `~/.config/opencode/commands` only.
+- Do not use alternate active command paths for OpenCode (for example `~/.config/opencode/command`), because parallel locations create precedence drift and make runtime behavior harder to reason about.
+- Manage the intended command set through this repo under `dot_config/opencode/commands/*.md.tmpl`, so `chezmoi apply` reproduces the same command catalog.
+- Local-only experimental commands are fine, but they should be intentionally unmanaged and understood as non-reproducible.
+
+Quick validation:
+
+```bash
+chezmoi source-path ~/.config/opencode/commands/brainstorm.md
+chezmoi source-path ~/.config/opencode/commands/write-plan.md
+```
+
 ## Zed workflow shortcuts
 
 Managed Zed tasks are available for a non-vim workflow:
