@@ -1,0 +1,20 @@
+---
+description: Initialize repo with automated workflow
+---
+Add the following section to the repo AGENTS.md:
+
+```
+## Commit & Pull Request workflow
+AGENT MUST ALWAYS FOLLOW this workflow.
+- MUST ensure that changes are not on the main branch.
+  - Ask to create a branch if not on a feature branch. Generate a branch name from context.
+- MUST do atomic commits after each iteration.
+  - Follow Conventional Commit style (i.e. feat(scope): description)
+  - Add a short description about the change and add a footer "Created by agent" in the body
+- When the feature is deemed ready, create a pull request using `gh pr create`
+  - Add a concise summary using conventional commits
+  - Add a description of the changes using markdown. Highlight important topics with github callouts. Add prompts in a collapsible section with summary "Prompts used"; separate multiple prompts with a blank line. Summarize short answers and ignore irrelevant chatter.
+  - Send a Slack message to #trailblazers-codereview including the PR title and link
+```
+
+If there are any references to git workflows already - remove these in order to avoid confusion.
