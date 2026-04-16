@@ -32,14 +32,14 @@
     },
     "explore": {
 {{- if .work.enable }}
-      "model": "openai/gpt-5.2-codex"
+      "model": "openai/gpt-5.3-codex-spark"
 {{- else }}
       "model": "github-copilot/claude-sonnet-4.6"
 {{- end }}
     },
     "librarian": {
 {{- if .work.enable }}
-      "model": "openai/gpt-5.1-codex-mini"
+      "model": "openai/codex-mini-latest"
 {{- else }}
       "model": "github-copilot/claude-haiku-4.5"
 {{- end }}
@@ -53,7 +53,7 @@
     },
     "document-writer": {
 {{- if .work.enable }}
-      "model": "openai/gpt-5.2"
+      "model": "openai/gpt-5.3-codex-spark"
 {{- else }}
       "model": "github-copilot/claude-sonnet-4.6"
 {{- end }}
@@ -89,7 +89,7 @@
     },
     "quick": {
 {{- if .work.enable }}
-      "model": "openai/gpt-5.1-codex-mini",
+      "model": "openai/codex-mini-latest",
 {{- else }}
       "model": "github-copilot/claude-haiku-4.5",
 {{- end }}
@@ -99,7 +99,7 @@
     },
     "unspecified-low": {
 {{- if .work.enable }}
-      "model": "openai/gpt-5.2",
+      "model": "openai/gpt-5.3-codex-spark",
 {{- else }}
       "model": "github-copilot/claude-sonnet-4.6",
 {{- end }}
@@ -119,7 +119,7 @@
     },
     "documentation": {
 {{- if .work.enable }}
-      "model": "openai/gpt-5.2",
+      "model": "openai/gpt-5.3-codex-spark",
 {{- else }}
       "model": "github-copilot/claude-sonnet-4.6",
 {{- end }}
@@ -129,7 +129,7 @@
     },
     "librarian": {
 {{- if .work.enable }}
-      "model": "openai/gpt-5.1-codex-mini",
+      "model": "openai/codex-mini-latest",
 {{- else }}
       "model": "github-copilot/claude-haiku-4.5",
 {{- end }}
