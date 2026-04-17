@@ -135,6 +135,8 @@ mise run gh:auth:status:all
 - Work machines (`work.enable = true`) default to OpenAI/Codex profile.
 - Personal machines (`work.enable = false`) default to GitHub Copilot profile.
 - Both profiles are available on both machines; you can switch any time.
+- For OpenAI/Codex routing, treat provider catalog entries as available options, not guaranteed-compatible defaults. Any active `model` or `small_model` route must be compatible with the account/auth path in use.
+- In practice, ChatGPT-backed Codex accounts should use active routes that are known to work for that auth flow. For the small OpenAI/Codex route in this repo, prefer `openai/codex-mini-latest` over `openai/gpt-5.1-codex-mini`.
 
 Switch OpenCode profile quickly:
 
