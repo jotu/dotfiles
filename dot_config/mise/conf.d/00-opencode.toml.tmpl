@@ -68,10 +68,10 @@ run = '''
   chezmoi execute-template < dot_config/opencode/opencode.json.tmpl | python -m json.tool >/dev/null
   chezmoi execute-template < dot_config/opencode/oh-my-opencode.json.tmpl | python -m json.tool >/dev/null
 
-  python -m json.tool dot_config/opencode/profiles/opencode.openai.json.tmpl >/dev/null
-  python -m json.tool dot_config/opencode/profiles/opencode.copilot.json.tmpl >/dev/null
-  python -m json.tool dot_config/opencode/profiles/oh-my-opencode.openai.json.tmpl >/dev/null
-  python -m json.tool dot_config/opencode/profiles/oh-my-opencode.copilot.json.tmpl >/dev/null
+  chezmoi execute-template < dot_config/opencode/profiles/opencode.openai.json.tmpl | python -m json.tool >/dev/null
+  chezmoi execute-template < dot_config/opencode/profiles/opencode.copilot.json.tmpl | python -m json.tool >/dev/null
+  chezmoi execute-template < dot_config/opencode/profiles/oh-my-opencode.openai.json.tmpl | python -m json.tool >/dev/null
+  chezmoi execute-template < dot_config/opencode/profiles/oh-my-opencode.copilot.json.tmpl | python -m json.tool >/dev/null
 
   echo "OpenCode model templates and profiles are valid JSON"
 '''

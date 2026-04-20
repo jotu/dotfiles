@@ -146,6 +146,19 @@ mise run opencode:profile:openai
 mise run opencode:profile:current
 ```
 
+OpenCode config maintenance note:
+
+- Shared runtime-critical sections live in `.chezmoitemplates/opencode/`:
+  - `permission.json.tmpl`
+  - `plugins-openai.json.tmpl`
+  - `plugins-copilot.json.tmpl`
+- These shared fragments are included by:
+  - `dot_config/opencode/opencode.json.tmpl`
+  - `dot_config/opencode/profiles/opencode.openai.json.tmpl`
+  - `dot_config/opencode/profiles/opencode.copilot.json.tmpl`
+- Keep only genuinely shared blocks there. Provider catalogs, model routes, and other profile-specific behavior should stay in the owning template.
+- When changing OpenCode config templates, always run `mise run opencode:models:validate` so chezmoi renders the templates before JSON validation.
+
 ### OpenCode skills catalog policy
 
 Use `~/.agents/skills` as the canonical runtime custom-skills catalog (agent-agnostic and shared).
