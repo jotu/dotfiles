@@ -135,6 +135,7 @@ mise run gh:auth:status:all
 - Work machines (`work.enable = true`) default to OpenAI/Codex profile.
 - Personal machines (`work.enable = false`) default to GitHub Copilot profile.
 - Both profiles are available on both machines; you can switch any time.
+- Upstream docs now use `oh-my-openagent` naming, but this repo intentionally keeps the legacy-compatible runtime basename `~/.config/opencode/oh-my-opencode.json` until a full migration is proven safe.
 - For OpenAI/Codex routing, treat provider catalog entries as available options, not guaranteed-compatible defaults. Any active `model` or `small_model` route must be compatible with the account/auth path in use.
 - In practice, ChatGPT-backed Codex accounts should use active routes that are known to work for that auth flow. For the small OpenAI/Codex route in this repo, prefer `openai/codex-mini-latest` over `openai/gpt-5.1-codex-mini`.
 
@@ -156,6 +157,7 @@ OpenCode config maintenance note:
   - `dot_config/opencode/opencode.json.tmpl`
   - `dot_config/opencode/profiles/opencode.openai.json.tmpl`
   - `dot_config/opencode/profiles/opencode.copilot.json.tmpl`
+- `oh-my-opencode` templates in this repo track the current upstream schema from the renamed `code-yeongyu/oh-my-openagent` repository, while still rendering the legacy-compatible `oh-my-opencode.json` basename locally.
 - Keep only genuinely shared blocks there. Provider catalogs, model routes, and other profile-specific behavior should stay in the owning template.
 - When changing OpenCode config templates, always run `mise run opencode:models:validate` so chezmoi renders the templates before JSON validation.
 

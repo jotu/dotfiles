@@ -16,6 +16,7 @@ alias = "opoc"
 description = "Switch OpenCode to Copilot profile"
 run = '''
   set -eu
+  # Keep the legacy-compatible runtime basename active for now.
   rm -f "$HOME/.config/opencode/oh-my-openagent.json" "$HOME/.config/opencode/oh-my-openagent.json".bak*
   cp "$HOME/.config/opencode/profiles/opencode.copilot.json" "$HOME/.config/opencode/opencode.json"
   cp "$HOME/.config/opencode/profiles/oh-my-opencode.copilot.json" "$HOME/.config/opencode/oh-my-opencode.json"
@@ -27,6 +28,7 @@ alias = "opoa"
 description = "Switch OpenCode to OpenAI profile"
 run = '''
   set -eu
+  # Keep the legacy-compatible runtime basename active for now.
   rm -f "$HOME/.config/opencode/oh-my-openagent.json" "$HOME/.config/opencode/oh-my-openagent.json".bak*
   cp "$HOME/.config/opencode/profiles/opencode.openai.json" "$HOME/.config/opencode/opencode.json"
   cp "$HOME/.config/opencode/profiles/oh-my-opencode.openai.json" "$HOME/.config/opencode/oh-my-opencode.json"
