@@ -3,7 +3,7 @@
 {{- if .work.enable }}
   "plugin": {{ includeTemplate ".chezmoitemplates/opencode/plugins-openai.json.tmpl" }},
   "model": "openai/gpt-5.3-codex",
-  "small_model": "openai/codex-mini-latest",
+  "small_model": "openai/gpt-5.1-codex-mini",
   "provider": {
     "openai": {
       "name": "OpenAI",
