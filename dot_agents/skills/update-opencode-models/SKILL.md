@@ -55,11 +55,10 @@ Use a quality-first, cost-aware mix (never max-cost everywhere, never cheapest e
 ### Work (OpenAI)
 
 - Default: `model = openai/gpt-5.3-codex`
-- Small: `small_model = openai/gpt-5.1-codex-mini`
+- Small: `small_model = openai/gpt-5.3-codex-spark`
 - Keep `plan`, `oracle`, `ultrabrain`, `visual-engineering`, `multimodal`, `frontend-ui-ux-engineer`, `multimodal-looker` on `openai/gpt-5.4`
 - Keep `sisyphus`, `build`, `deep` on `openai/gpt-5.3-codex`
-- Use `openai/gpt-5.3-codex-spark` for `explore`, `document-writer`, `documentation`, `unspecified-low`
-- Use `openai/gpt-5.1-codex-mini` for `quick` and `librarian`
+- Use `openai/gpt-5.3-codex-spark` for `explore`, `document-writer`, `documentation`, `unspecified-low`, `quick`, and `librarian`
 
 ### Personal (GitHub Copilot)
 
