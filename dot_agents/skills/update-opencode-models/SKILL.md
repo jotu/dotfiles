@@ -1,6 +1,6 @@
 ---
 name: update-opencode-models
-description: Update OpenCode model routing for work (OpenAI), personal (GitHub Copilot), or both across opencode and oh-my-opencode template/profile files. Use when refreshing model catalogs, changing default model mix, or syncing role/category model assignments.
+description: Update OpenCode model routing for work (OpenAI), personal (GitHub Copilot), or both across opencode and oh-my-openagent template/profile files. Use when refreshing model catalogs, changing default model mix, or syncing role/category model assignments.
 ---
 
 # Update OpenCode Models
@@ -19,9 +19,9 @@ Default scope: `both`.
 ## Target Files
 
 - `dot_config/opencode/opencode.json.tmpl`
-- `dot_config/opencode/oh-my-opencode.json.tmpl`
-- `dot_config/opencode/profiles/oh-my-opencode.copilot.json.tmpl`
-- `dot_config/opencode/profiles/oh-my-opencode.openai.json.tmpl`
+- `dot_config/opencode/oh-my-openagent.json.tmpl`
+- `dot_config/opencode/profiles/oh-my-openagent.copilot.json.tmpl`
+- `dot_config/opencode/profiles/oh-my-openagent.openai.json.tmpl`
 - `dot_config/opencode/profiles/opencode.copilot.json.tmpl`
 - `dot_config/opencode/profiles/opencode.openai.json.tmpl`
 
@@ -38,7 +38,7 @@ Default scope: `both`.
    - `personal`: update only Copilot branch values (`{{- else }}`) and Copilot profile files
    - `both`: update both branches and both profile sets
 5. Keep mirrored routing consistent:
-   - `dot_config/opencode/oh-my-opencode.json.tmpl` <-> `dot_config/opencode/profiles/oh-my-opencode.openai.json.tmpl` and `dot_config/opencode/profiles/oh-my-opencode.copilot.json.tmpl`
+- `dot_config/opencode/oh-my-openagent.json.tmpl` <-> `dot_config/opencode/profiles/oh-my-openagent.openai.json.tmpl` and `dot_config/opencode/profiles/oh-my-openagent.copilot.json.tmpl`
    - `dot_config/opencode/opencode.json.tmpl` <-> `dot_config/opencode/profiles/opencode.openai.json.tmpl` and `dot_config/opencode/profiles/opencode.copilot.json.tmpl`
 
 ## Optimization Target
@@ -55,11 +55,11 @@ Use a quality-first, cost-aware mix (never max-cost everywhere, never cheapest e
 ### Work (OpenAI)
 
 - Default: `model = openai/gpt-5.3-codex`
-- Small: `small_model = openai/gpt-5.1-codex-mini` (or `openai/codex-mini-latest` when requested)
+- Small: `small_model = openai/gpt-5.1-codex-mini`
 - Keep `plan`, `oracle`, `ultrabrain`, `visual-engineering`, `multimodal`, `frontend-ui-ux-engineer`, `multimodal-looker` on `openai/gpt-5.4`
 - Keep `sisyphus`, `build`, `deep` on `openai/gpt-5.3-codex`
 - Use `openai/gpt-5.3-codex-spark` for `explore`, `document-writer`, `documentation`, `unspecified-low`
-- Use `openai/codex-mini-latest` for `quick` and `librarian`
+- Use `openai/gpt-5.1-codex-mini` for `quick` and `librarian`
 
 ### Personal (GitHub Copilot)
 
@@ -85,4 +85,4 @@ Run repository task:
 
 Then show scoped changes:
 
-- `git diff -- dot_config/opencode/opencode.json.tmpl dot_config/opencode/oh-my-opencode.json.tmpl dot_config/opencode/profiles/oh-my-opencode.copilot.json.tmpl dot_config/opencode/profiles/oh-my-opencode.openai.json.tmpl dot_config/opencode/profiles/opencode.copilot.json.tmpl dot_config/opencode/profiles/opencode.openai.json.tmpl`
+- `git diff -- dot_config/opencode/opencode.json.tmpl dot_config/opencode/oh-my-openagent.json.tmpl dot_config/opencode/profiles/oh-my-openagent.copilot.json.tmpl dot_config/opencode/profiles/oh-my-openagent.openai.json.tmpl dot_config/opencode/profiles/opencode.copilot.json.tmpl dot_config/opencode/profiles/opencode.openai.json.tmpl`
