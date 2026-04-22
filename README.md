@@ -137,7 +137,7 @@ mise run gh:auth:status:all
 - Both profiles are available on both machines; you can switch any time.
 - Upstream docs use `oh-my-openagent` naming, and this repo now manages the migrated runtime basename `~/.config/opencode/oh-my-openagent.json` directly.
 - For OpenAI/Codex routing, treat provider catalog entries as available options, not guaranteed-compatible defaults. Any active `model` or `small_model` route must be compatible with the account/auth path in use.
-- In practice, ChatGPT-backed Codex accounts should use active routes that are known to work for that auth flow. In this repo, use `openai/gpt-5.3-codex-spark` for the lightweight OpenAI/Codex route, and treat `openai/gpt-5.1-codex-mini` and `openai/codex-mini-latest` as do-not-use options for this auth path.
+- In practice, ChatGPT-backed Codex accounts should use active routes that are known to work for that auth flow. In this repo, use `openai/gpt-5.3-codex` for the active OpenAI/Codex route, and treat `openai/gpt-5.3-codex-spark`, `openai/gpt-5.1-codex-mini`, and `openai/codex-mini-latest` as catalog entries rather than active defaults for this auth path.
 
 Switch OpenCode profile quickly:
 
