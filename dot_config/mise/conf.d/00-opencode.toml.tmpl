@@ -45,7 +45,11 @@ run = '''
     echo "  (no top-level model; provider-based profile)"
   fi
   echo "oh-my-openagent sisyphus model:"
-  grep -A2 '"sisyphus"' "$HOME/.config/opencode/oh-my-openagent.json" | grep -E '"model"\s*:' | head -n 1
+  if [ -f "$HOME/.config/opencode/oh-my-openagent.json" ]; then
+    grep -A2 '"sisyphus"' "$HOME/.config/opencode/oh-my-openagent.json" | grep -E '"model"\s*:' | head -n 1
+  else
+    echo "  (missing; run mise opencode:profile:default)"
+  fi
 '''
 
 [tasks."opencode:profile:default"]
