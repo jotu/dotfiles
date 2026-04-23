@@ -135,9 +135,9 @@ mise run gh:auth:status:all
 - Work machines (`work.enable = true`) default to OpenAI/Codex profile.
 - Personal machines (`work.enable = false`) default to GitHub Copilot profile.
 - Both profiles are available on both machines; you can switch any time.
-- Upstream docs use `oh-my-openagent` naming, and this repo now manages the migrated runtime basename `~/.config/opencode/oh-my-openagent.json` directly.
+- Upstream docs use `oh-my-openagent` naming, and this repo manages the migrated runtime basename `~/.config/opencode/oh-my-openagent.json` directly.
 - For OpenAI/Codex routing, treat provider catalog entries as available options, not guaranteed-compatible defaults. Any active `model` or `small_model` route must be compatible with the account/auth path in use.
-- In practice, ChatGPT-backed Codex accounts should use active routes that are known to work for that auth flow. In this repo, use `openai/gpt-5.3-codex` for the active OpenAI/Codex route, and treat `openai/gpt-5.3-codex-spark`, `openai/gpt-5.1-codex-mini`, and `openai/codex-mini-latest` as catalog entries rather than active defaults for this auth path.
+- In practice, ChatGPT-backed Codex accounts should use active routes that are known to work for that auth flow. In this repo, keep `openai/gpt-5.3-codex` as the active OpenCode route in `opencode.json`, use `openai/gpt-5.4` for the active `oh-my-openagent` work agent/category routes, and treat `openai/gpt-5.3-codex-spark`, `openai/gpt-5.1-codex-mini`, and `openai/codex-mini-latest` as catalog entries rather than active defaults for this auth path.
 
 Switch OpenCode profile quickly:
 
@@ -158,6 +158,7 @@ OpenCode config maintenance note:
   - `dot_config/opencode/profiles/opencode.openai.json.tmpl`
   - `dot_config/opencode/profiles/opencode.copilot.json.tmpl`
 - `oh-my-openagent` templates in this repo track the current upstream schema from the renamed `code-yeongyu/oh-my-openagent` repository and render the migrated `oh-my-openagent.json` basename locally.
+- The managed work/OpenAI runtime template includes the expected `_migrations` metadata for the current GPT-5.4 routing so runtime-generated migration metadata does not immediately reintroduce chezmoi drift.
 - Keep only genuinely shared blocks there. Provider catalogs, model routes, and other profile-specific behavior should stay in the owning template.
 - When changing OpenCode config templates, always run `mise run opencode:models:validate` so chezmoi renders the templates before JSON validation.
 

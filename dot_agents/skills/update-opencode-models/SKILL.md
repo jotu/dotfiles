@@ -27,7 +27,7 @@ Default scope: `both`.
 
 ## Procedure
 
-1. Read all six files.
+1. Read all target files.
 2. Build available model catalogs per provider from `provider.*.models` keys in:
    - `dot_config/opencode/opencode.json.tmpl`
    - `dot_config/opencode/profiles/opencode.openai.json.tmpl`
@@ -57,8 +57,8 @@ Use a quality-first, cost-aware mix (never max-cost everywhere, never cheapest e
 - Default: `model = openai/gpt-5.3-codex`
 - Small: `small_model = openai/gpt-5.3-codex`
 - Keep `plan`, `oracle`, `ultrabrain`, `visual-engineering`, `multimodal`, `frontend-ui-ux-engineer`, `multimodal-looker` on `openai/gpt-5.4`
-- Keep `sisyphus`, `build`, `deep` on `openai/gpt-5.3-codex`
-- Use `openai/gpt-5.3-codex` for `explore`, `document-writer`, `documentation`, `unspecified-low`, `quick`, and `librarian`
+- Keep OpenCode `model` and `small_model` on `openai/gpt-5.3-codex`
+- Use `openai/gpt-5.4` for `sisyphus`, `build`, `explore`, `librarian`, `document-writer`, `ultrabrain`, `deep`, `quick`, `unspecified-low`, `documentation`, `visual-engineering`, and `multimodal` in `oh-my-openagent`
 
 ### Personal (GitHub Copilot)
 
