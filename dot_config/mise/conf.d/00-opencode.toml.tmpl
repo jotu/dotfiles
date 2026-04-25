@@ -85,11 +85,56 @@ run = '''
   echo "OpenCode model templates and profiles are valid JSON"
 '''
 
+[tasks."opencode:plugins:validate"]
+alias = "opopv"
+description = "Validate OpenCode plugin allowlist and pinned sources"
+run = '''
+  set -eu
+  repo_root=$(git rev-parse --show-toplevel)
+  cd "$repo_root"
+
+  python - <<'PY'
+import json
+import subprocess
+import sys
+
+EXPECTED = {
+    ".chezmoitemplates/opencode/plugins-openai.json.tmpl": [
+        "oh-my-opencode",
+        "opencode-openai-codex-auth",
+        "superpowers@git+https://github.com/obra/superpowers.git#v5.0.5",
+    ],
+    ".chezmoitemplates/opencode/plugins-copilot.json.tmpl": [
+        "oh-my-opencode",
+        "superpowers@git+https://github.com/obra/superpowers.git#v5.0.5",
+    ],
+}
+
+for path, expected in EXPECTED.items():
+    rendered = subprocess.check_output(["chezmoi", "execute-template"], input=open(path, "rb").read())
+    plugins = json.loads(rendered)
+    if plugins != expected:
+        print(f"plugin allowlist mismatch in {path}", file=sys.stderr)
+        print(f"expected: {expected}", file=sys.stderr)
+        print(f"actual:   {plugins}", file=sys.stderr)
+        sys.exit(1)
+
+print("OpenCode plugin allowlists match expected values")
+PY
+
+  grep -q '"npm:oh-my-opencode" = "latest"' dot_config/mise/conf.d/00-opencode.toml.tmpl
+  grep -q 'superpowers@git+https://github.com/obra/superpowers.git#v5.0.5' .chezmoitemplates/opencode/plugins-openai.json.tmpl
+  grep -q 'superpowers@git+https://github.com/obra/superpowers.git#v5.0.5' .chezmoitemplates/opencode/plugins-copilot.json.tmpl
+
+  echo "OpenCode plugin sources are allowlisted and pinned"
+'''
+
 [tasks."opencode:setup"]
 alias = "oposu"
 description = "Install OpenCode tooling, local deps, and default profile"
 run = [
   "mise opencode:deps:install",
+  "mise opencode:plugins:validate",
   "mise opencode:profile:default"
 ]
 
