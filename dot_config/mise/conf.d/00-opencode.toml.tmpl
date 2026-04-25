@@ -16,9 +16,9 @@ alias = "opoc"
 description = "Switch OpenCode to Copilot profile"
 run = '''
   set -eu
-  rm -f "$HOME/.config/opencode/oh-my-openagent.json" "$HOME/.config/opencode/oh-my-openagent.json".bak*
+  rm -f "$HOME/.config/opencode/oh-my-opencode.json" "$HOME/.config/opencode/oh-my-opencode.json".bak*
   cp "$HOME/.config/opencode/profiles/opencode.copilot.json" "$HOME/.config/opencode/opencode.json"
-  cp "$HOME/.config/opencode/profiles/oh-my-opencode.copilot.json" "$HOME/.config/opencode/oh-my-opencode.json"
+  cp "$HOME/.config/opencode/profiles/oh-my-openagent.copilot.json" "$HOME/.config/opencode/oh-my-openagent.json"
   echo "OpenCode profile switched to Copilot"
 '''
 
@@ -27,9 +27,9 @@ alias = "opoa"
 description = "Switch OpenCode to OpenAI profile"
 run = '''
   set -eu
-  rm -f "$HOME/.config/opencode/oh-my-openagent.json" "$HOME/.config/opencode/oh-my-openagent.json".bak*
+  rm -f "$HOME/.config/opencode/oh-my-opencode.json" "$HOME/.config/opencode/oh-my-opencode.json".bak*
   cp "$HOME/.config/opencode/profiles/opencode.openai.json" "$HOME/.config/opencode/opencode.json"
-  cp "$HOME/.config/opencode/profiles/oh-my-opencode.openai.json" "$HOME/.config/opencode/oh-my-opencode.json"
+  cp "$HOME/.config/opencode/profiles/oh-my-openagent.openai.json" "$HOME/.config/opencode/oh-my-openagent.json"
   echo "OpenCode profile switched to OpenAI"
 '''
 
@@ -44,9 +44,9 @@ run = '''
   else
     echo "  (no top-level model; provider-based profile)"
   fi
-  echo "oh-my-opencode sisyphus model:"
-  if [ -f "$HOME/.config/opencode/oh-my-opencode.json" ]; then
-    grep -A2 '"sisyphus"' "$HOME/.config/opencode/oh-my-opencode.json" | grep -E '"model"\s*:' | head -n 1
+  echo "oh-my-openagent sisyphus model:"
+  if [ -f "$HOME/.config/opencode/oh-my-openagent.json" ]; then
+    grep -A2 '"sisyphus"' "$HOME/.config/opencode/oh-my-openagent.json" | grep -E '"model"\s*:' | head -n 1
   else
     echo "  (missing; run mise opencode:profile:default)"
   fi
@@ -69,18 +69,18 @@ run = '''
   repo_root=$(git rev-parse --show-toplevel)
   cd "$repo_root"
 
-  expected_schema_base="https://raw.githubusercontent.com/code-yeongyu/oh-my-opencode/"
-  grep -q "$expected_schema_base" dot_config/opencode/oh-my-opencode.json.tmpl
-  grep -q "$expected_schema_base" dot_config/opencode/profiles/oh-my-opencode.openai.json.tmpl
-  grep -q "$expected_schema_base" dot_config/opencode/profiles/oh-my-opencode.copilot.json.tmpl
+  expected_schema_base="https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/"
+  grep -q "$expected_schema_base" dot_config/opencode/oh-my-openagent.json.tmpl
+  grep -q "$expected_schema_base" dot_config/opencode/profiles/oh-my-openagent.openai.json.tmpl
+  grep -q "$expected_schema_base" dot_config/opencode/profiles/oh-my-openagent.copilot.json.tmpl
 
   chezmoi execute-template < dot_config/opencode/opencode.json.tmpl | python -m json.tool >/dev/null
-  chezmoi execute-template < dot_config/opencode/oh-my-opencode.json.tmpl | python -m json.tool >/dev/null
+  chezmoi execute-template < dot_config/opencode/oh-my-openagent.json.tmpl | python -m json.tool >/dev/null
 
   chezmoi execute-template < dot_config/opencode/profiles/opencode.openai.json.tmpl | python -m json.tool >/dev/null
   chezmoi execute-template < dot_config/opencode/profiles/opencode.copilot.json.tmpl | python -m json.tool >/dev/null
-  chezmoi execute-template < dot_config/opencode/profiles/oh-my-opencode.openai.json.tmpl | python -m json.tool >/dev/null
-  chezmoi execute-template < dot_config/opencode/profiles/oh-my-opencode.copilot.json.tmpl | python -m json.tool >/dev/null
+  chezmoi execute-template < dot_config/opencode/profiles/oh-my-openagent.openai.json.tmpl | python -m json.tool >/dev/null
+  chezmoi execute-template < dot_config/opencode/profiles/oh-my-openagent.copilot.json.tmpl | python -m json.tool >/dev/null
 
   echo "OpenCode model templates and profiles are valid JSON"
 '''
@@ -100,12 +100,12 @@ import sys
 
 EXPECTED = {
     ".chezmoitemplates/opencode/plugins-openai.json.tmpl": [
-        "oh-my-opencode",
+        "oh-my-openagent",
         "opencode-openai-codex-auth",
         "superpowers@git+https://github.com/obra/superpowers.git#v5.0.5",
     ],
     ".chezmoitemplates/opencode/plugins-copilot.json.tmpl": [
-        "oh-my-opencode",
+        "oh-my-openagent",
         "superpowers@git+https://github.com/obra/superpowers.git#v5.0.5",
     ],
 }
