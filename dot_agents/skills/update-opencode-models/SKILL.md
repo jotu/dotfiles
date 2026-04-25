@@ -64,11 +64,21 @@ Use a quality-first, cost-aware mix (never max-cost everywhere, never cheapest e
 
 - Default: `model = github-copilot/gpt-5.3-codex`
 - Small: `small_model = github-copilot/claude-haiku-4.5`
-- Keep `ultrabrain` on `github-copilot/claude-opus-4.6`
+- Keep `ultrabrain` on `github-copilot/claude-opus-4.7`
 - Keep visual/multimodal roles on `github-copilot/gemini-3.1-pro-preview`
 - Keep `plan`, `oracle`, `explore`, `documentation`, `unspecified-low` on `github-copilot/claude-sonnet-4.6`
 - Keep `sisyphus`, `build`, `deep` on `github-copilot/gpt-5.3-codex`
 - Keep `quick`, `librarian` on `github-copilot/claude-haiku-4.5`
+
+## Profile Defaults and Switching
+
+- Work machines (`work.enable = true`) default to the OpenAI/Codex profile.
+- Personal machines (`work.enable = false`) default to the GitHub Copilot profile.
+- On work machines, switch to Copilot at any time: `mise run opencode:profile:copilot`
+- Switch back to OpenAI: `mise run opencode:profile:openai`
+- Check the active profile: `mise run opencode:profile:current`
+
+When updating routing, apply the correct scope (`work`, `personal`, or `both`) to match the target machine type.
 
 ## Guardrails
 
