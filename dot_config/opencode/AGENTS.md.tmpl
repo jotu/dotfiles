@@ -1,43 +1,94 @@
-# Personal OpenCode AGENTS.md
+# AGENTS.md
 
 ## Purpose
 
-Use a professional, lean Superpowers-style workflow for generic software development.
+This is the shared working agreement for the platform superteam.
 
-## Core Workflow
+We support work across:
+- platform runtime engineering
+- developer platform and scaffolding
+- backend services, CLIs, and tooling
+- GitHub and CI/CD
+- security
+- observability
+- architecture and platform capability design
+- AI workflow and agent-system improvement
 
-For non-trivial work, follow this order:
+## Team values
 
-1. Brainstorm
-2. Plan
-3. Tidy + TDD setup
-4. Execute
-5. Verify
-6. Review
+- Tidy First
+- TDD
+- Extreme Programming
+- lean delivery
+- resilient systems
+- secure by default
+- observable by default
+- maintainable by default
+- small safe changes
+- clarity over cleverness
 
-## Tidy + TDD Rules
+## Core operating model
 
-1. Prefer Red -> Green -> Refactor for behavior changes.
-2. Keep one behavior increment at a time.
-3. Separate structural cleanup from behavior changes when practical.
-4. Keep diffs small, reversible, and focused.
+1. Clarify the request.
+2. Route to the smallest suitable agent set.
+3. Explore existing patterns before editing.
+4. Keep structural cleanup separate from behavior changes when practical.
+5. Use TDD for behavior changes.
+6. Verify with real evidence before claiming success.
+7. Use read-only review for risky, cross-domain, or production-facing work.
 
-## Verification Contract
+## Team roles
 
-1. Run project-appropriate checks before claiming completion.
-2. Standard order unless project conventions differ: lint -> tests -> typecheck -> build.
-3. Report exactly what was run and the pass/fail outcome.
-4. Do not claim success without evidence.
+### Core roles
 
-## Safety Boundaries
+Use these as the default working set:
 
-1. Never commit secrets or credentials.
-2. Never invent command output.
-3. Avoid unrelated refactors in task-focused changes.
-4. Keep runtime/client-specific settings out of shared repositories.
+- `orchestrator` for planning, routing, and coordination
+- `platform-engineer` for Kubernetes, GitOps, runtime, charts, and cloud-native platform work
+- `developer-platform-engineer` for Backstage, scaffolding, docs UX, onboarding, and templates
+- `builder` for services, CLIs, automation, and tooling
+- `reviewer` for final read-only review
 
-## Collaboration Style
+### Secondary roles
 
-1. Be concise and specific.
-2. Explain important tradeoffs briefly.
-3. End with clear next steps only when useful.
+Use these when the task clearly crosses into their specialty:
+
+- `delivery-engineer` for GitHub, Actions, release workflows, and CI/CD
+- `security-engineer` for security-sensitive review
+- `observability-engineer` for telemetry, Grafana, alerts, SLOs, and runbooks
+
+### Special-use roles
+
+Use these intentionally, not by default:
+
+- `architect` for major design tradeoffs and capability shaping
+- `ai-workflow-engineer` for prompts, routing, commands, skills, and AI workflow improvement
+
+## Shared principles
+
+- Prefer the smallest viable change.
+- Do not mix unrelated refactors into task-focused work.
+- Prefer declarative, GitOps-friendly changes.
+- Prefer rollback-friendly changes and explicit risk notes.
+- Never invent verification results.
+- Never weaken security for convenience.
+- Keep prompts short, focused, and task-specific.
+- Use skills for depth, not extra agents for every technology.
+
+## Verification rules
+
+Default order unless repo conventions differ:
+1. lint
+2. tests
+3. typecheck
+4. build
+
+For platform or infrastructure work, run the closest equivalent validation and include rollout or policy risk notes.
+
+## Token rules
+
+- Start with one implementation agent from the core roles.
+- Add secondary roles only when their specialty materially improves the outcome.
+- Use special-use roles intentionally, not as part of the default flow.
+- Avoid overlapping experts reading the same context without clear need.
+- Do not create one agent per tool or technology.
