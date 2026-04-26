@@ -23,6 +23,76 @@
       "model": "github-copilot/gpt-5.3-codex"
 {{- end }}
     },
+    "orchestrator": {
+{{- if .work.enable }}
+      "model": "openai/gpt-5.5"
+{{- else }}
+      "model": "github-copilot/claude-sonnet-4.6"
+{{- end }}
+    },
+    "platform-engineer": {
+{{- if .work.enable }}
+      "model": "openai/gpt-5.4"
+{{- else }}
+      "model": "github-copilot/gpt-5.3-codex"
+{{- end }}
+    },
+    "developer-platform-engineer": {
+{{- if .work.enable }}
+      "model": "openai/gpt-5.4"
+{{- else }}
+      "model": "github-copilot/gpt-5.3-codex"
+{{- end }}
+    },
+    "builder": {
+{{- if .work.enable }}
+      "model": "openai/gpt-5.4"
+{{- else }}
+      "model": "github-copilot/gpt-5.3-codex"
+{{- end }}
+    },
+    "delivery-engineer": {
+{{- if .work.enable }}
+      "model": "openai/gpt-5.4"
+{{- else }}
+      "model": "github-copilot/gpt-5.3-codex"
+{{- end }}
+    },
+    "security-engineer": {
+{{- if .work.enable }}
+      "model": "openai/gpt-5.5"
+{{- else }}
+      "model": "github-copilot/claude-sonnet-4.6"
+{{- end }}
+    },
+    "observability-engineer": {
+{{- if .work.enable }}
+      "model": "openai/gpt-5.4"
+{{- else }}
+      "model": "github-copilot/gpt-5.3-codex"
+{{- end }}
+    },
+    "reviewer": {
+{{- if .work.enable }}
+      "model": "openai/gpt-5.5"
+{{- else }}
+      "model": "github-copilot/claude-sonnet-4.6"
+{{- end }}
+    },
+    "architect": {
+{{- if .work.enable }}
+      "model": "openai/gpt-5.5"
+{{- else }}
+      "model": "github-copilot/claude-sonnet-4.6"
+{{- end }}
+    },
+    "ai-workflow-engineer": {
+{{- if .work.enable }}
+      "model": "openai/gpt-5.5"
+{{- else }}
+      "model": "github-copilot/claude-sonnet-4.6"
+{{- end }}
+    },
     "oracle": {
 {{- if .work.enable }}
       "model": "openai/gpt-5.5"
