@@ -27,17 +27,24 @@ Default scope: `both`.
 
 ## Procedure
 
-1. Read all target files.
-2. Build available model catalogs per provider from `provider.*.models` keys in:
+1. Refresh the verified matrix first:
+   - `mise run opencode:models:refresh:matrix:openai`
+   - `mise run opencode:models:refresh:matrix:github-copilot`
+   - or `mise run opencode:models:refresh:matrix:all` when updating both trees
+2. Read the matrix artifacts and recommendations from:
+   - `dot_agents/skills/verify-opencode-models/references/model-matrix.openai.json`
+   - `dot_agents/skills/verify-opencode-models/references/model-matrix.github-copilot.json`
+3. Read all target files.
+4. Build available model catalogs per provider from `provider.*.models` keys in:
    - `dot_config/opencode/opencode.json.tmpl`
    - `dot_config/opencode/profiles/opencode.openai.json.tmpl`
    - `dot_config/opencode/profiles/opencode.copilot.json.tmpl`
-3. Assign only models that exist in each provider catalog.
-4. Apply requested scope:
+5. Assign only models that both exist in each provider catalog and pass in the refreshed verified matrix.
+6. Apply requested scope:
    - `work`: update only OpenAI branch values (`{{- if .work.enable }}`) and OpenAI profile files
    - `personal`: update only Copilot branch values (`{{- else }}`) and Copilot profile files
    - `both`: update both branches and both profile sets
-5. Keep mirrored routing consistent:
+7. Keep mirrored routing consistent:
 - `dot_config/opencode/oh-my-openagent.json.tmpl` <-> `dot_config/opencode/profiles/oh-my-openagent.openai.json.tmpl` and `dot_config/opencode/profiles/oh-my-openagent.copilot.json.tmpl`
    - `dot_config/opencode/opencode.json.tmpl` <-> `dot_config/opencode/profiles/opencode.openai.json.tmpl` and `dot_config/opencode/profiles/opencode.copilot.json.tmpl`
 
@@ -55,10 +62,12 @@ Use a quality-first, cost-aware mix (never max-cost everywhere, never cheapest e
 ### Work (OpenAI)
 
 - Default: `model = openai/gpt-5.3-codex`
-- Small: `small_model = openai/gpt-5.3-codex`
-- Keep `plan`, `oracle`, `ultrabrain`, `visual-engineering`, `multimodal`, `frontend-ui-ux-engineer`, `multimodal-looker` on `openai/gpt-5.4`
-- Keep OpenCode `model` and `small_model` on `openai/gpt-5.3-codex`
-- Use `openai/gpt-5.4` for `sisyphus`, `build`, `explore`, `librarian`, `document-writer`, `ultrabrain`, `deep`, `quick`, `unspecified-low`, `documentation`, `visual-engineering`, and `multimodal` in `oh-my-openagent`
+- Small: `small_model = openai/gpt-5.4-mini`
+- Keep flagship reasoning roles like `plan`, `oracle`, `architect`, `reviewer`, and `ultrabrain` on `openai/gpt-5.5`
+- Keep OpenCode `model` on `openai/gpt-5.3-codex` and `small_model` on `openai/gpt-5.4-mini`
+- Use `openai/gpt-5.3-codex` for coding-heavy OpenAI routes like `sisyphus`, `build`, `platform-engineer`, `developer-platform-engineer`, `builder`, `delivery-engineer`, `observability-engineer`, `explore`, and `deep`
+- Use `openai/gpt-5.4-mini` for helper OpenAI routes like `quick`, `unspecified-low`, `documentation`, `document-writer`, and lightweight `librarian`
+- Keep `openai/gpt-5.4` for OpenAI visual and multimodal routes like `frontend-ui-ux-engineer`, `visual-engineering`, `multimodal`, and `multimodal-looker`
 
 ### Personal (GitHub Copilot)
 

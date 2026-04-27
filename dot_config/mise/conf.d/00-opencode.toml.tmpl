@@ -85,6 +85,119 @@ run = '''
   echo "OpenCode model templates and profiles are valid JSON"
 '''
 
+[tasks."opencode:models:refresh:matrix:openai"]
+description = "Refresh the managed OpenAI model matrix artifact"
+run = '''
+  set -eu
+  repo_root=$(git rev-parse --show-toplevel 2>/dev/null || true)
+  script_path=""
+  if [ -n "$repo_root" ] && [ -f "$repo_root/dot_agents/skills/verify-opencode-models/scripts/verify-models.mjs" ]; then
+    script_path="$repo_root/dot_agents/skills/verify-opencode-models/scripts/verify-models.mjs"
+  else
+    script_path="$HOME/.agents/skills/verify-opencode-models/scripts/verify-models.mjs"
+  fi
+  node "$script_path" refresh --provider openai
+'''
+
+[tasks."opencode:models:refresh:matrix:github-copilot"]
+description = "Refresh the managed GitHub Copilot model matrix artifact"
+run = '''
+  set -eu
+  repo_root=$(git rev-parse --show-toplevel 2>/dev/null || true)
+  script_path=""
+  if [ -n "$repo_root" ] && [ -f "$repo_root/dot_agents/skills/verify-opencode-models/scripts/verify-models.mjs" ]; then
+    script_path="$repo_root/dot_agents/skills/verify-opencode-models/scripts/verify-models.mjs"
+  else
+    script_path="$HOME/.agents/skills/verify-opencode-models/scripts/verify-models.mjs"
+  fi
+  node "$script_path" refresh --provider github-copilot
+'''
+
+[tasks."opencode:models:refresh:matrix:all"]
+description = "Refresh all managed OpenCode model matrix artifacts"
+run = [
+  "mise run opencode:models:refresh:matrix:openai",
+  "mise run opencode:models:refresh:matrix:github-copilot"
+]
+
+[tasks."opencode:models:list:openai"]
+description = "List OpenAI models available through OpenCode"
+run = "opencode models openai"
+
+[tasks."opencode:models:list:github-copilot"]
+description = "List GitHub Copilot models available through OpenCode"
+run = "opencode models github-copilot"
+
+[tasks."opencode:models:verify:openai"]
+description = "Smoke-test OpenAI models through OpenCode"
+run = '''
+  set -eu
+  repo_root=$(git rev-parse --show-toplevel 2>/dev/null || true)
+  script_path=""
+  if [ -n "$repo_root" ] && [ -f "$repo_root/dot_agents/skills/verify-opencode-models/scripts/verify-models.mjs" ]; then
+    script_path="$repo_root/dot_agents/skills/verify-opencode-models/scripts/verify-models.mjs"
+  else
+    script_path="$HOME/.agents/skills/verify-opencode-models/scripts/verify-models.mjs"
+  fi
+  node "$script_path" verify --provider openai
+'''
+
+[tasks."opencode:models:verify:github-copilot"]
+description = "Smoke-test GitHub Copilot models through OpenCode"
+run = '''
+  set -eu
+  repo_root=$(git rev-parse --show-toplevel 2>/dev/null || true)
+  script_path=""
+  if [ -n "$repo_root" ] && [ -f "$repo_root/dot_agents/skills/verify-opencode-models/scripts/verify-models.mjs" ]; then
+    script_path="$repo_root/dot_agents/skills/verify-opencode-models/scripts/verify-models.mjs"
+  else
+    script_path="$HOME/.agents/skills/verify-opencode-models/scripts/verify-models.mjs"
+  fi
+  node "$script_path" verify --provider github-copilot
+'''
+
+[tasks."opencode:models:verify:all"]
+description = "Smoke-test OpenCode provider models through OpenCode"
+run = [
+  "mise run opencode:models:verify:openai",
+  "mise run opencode:models:verify:github-copilot"
+]
+
+[tasks."opencode:models:recommend:openai"]
+description = "Recommend OpenAI routing tiers from verified model results"
+run = '''
+  set -eu
+  repo_root=$(git rev-parse --show-toplevel 2>/dev/null || true)
+  script_path=""
+  if [ -n "$repo_root" ] && [ -f "$repo_root/dot_agents/skills/verify-opencode-models/scripts/verify-models.mjs" ]; then
+    script_path="$repo_root/dot_agents/skills/verify-opencode-models/scripts/verify-models.mjs"
+  else
+    script_path="$HOME/.agents/skills/verify-opencode-models/scripts/verify-models.mjs"
+  fi
+  node "$script_path" recommend --provider openai
+'''
+
+[tasks."opencode:models:recommend:github-copilot"]
+description = "Recommend GitHub Copilot routing tiers from verified model results"
+run = '''
+  set -eu
+  repo_root=$(git rev-parse --show-toplevel 2>/dev/null || true)
+  script_path=""
+  if [ -n "$repo_root" ] && [ -f "$repo_root/dot_agents/skills/verify-opencode-models/scripts/verify-models.mjs" ]; then
+    script_path="$repo_root/dot_agents/skills/verify-opencode-models/scripts/verify-models.mjs"
+  else
+    script_path="$HOME/.agents/skills/verify-opencode-models/scripts/verify-models.mjs"
+  fi
+  node "$script_path" recommend --provider github-copilot
+'''
+
+[tasks."opencode:models:recommend:all"]
+description = "Recommend routing tiers for all OpenCode provider models"
+run = [
+  "mise run opencode:models:recommend:openai",
+  "mise run opencode:models:recommend:github-copilot"
+]
+
 [tasks."opencode:plugins:validate"]
 alias = "opopv"
 description = "Validate OpenCode plugin allowlist and pinned sources"
