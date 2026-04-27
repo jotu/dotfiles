@@ -1,0 +1,1721 @@
+{
+  "provider": "openai",
+  "prompt": "Reply with exactly: OK",
+  "generatedAt": "2026-04-27T19:02:38.389Z",
+  "results": [
+    {
+      "provider": "openai",
+      "model": "openai/codex-mini-latest",
+      "status": "fail",
+      "latencyMs": 4391,
+      "failureClass": "unexpected-response",
+      "note": "Unexpected response: (empty)",
+      "response": "",
+      "meta": {
+        "id": "codex-mini-latest",
+        "api": {
+          "id": "codex-mini-latest",
+          "npm": "@ai-sdk/openai",
+          "url": ""
+        },
+        "status": "active",
+        "name": "Codex Mini Latest (OAuth, DO NOT USE)",
+        "providerID": "openai",
+        "capabilities": {
+          "temperature": false,
+          "reasoning": false,
+          "attachment": false,
+          "toolcall": true,
+          "input": {
+            "text": true,
+            "audio": false,
+            "image": true,
+            "video": false,
+            "pdf": false
+          },
+          "output": {
+            "text": true,
+            "audio": false,
+            "image": false,
+            "video": false,
+            "pdf": false
+          },
+          "interleaved": false
+        },
+        "cost": {
+          "input": 0,
+          "output": 0,
+          "cache": {
+            "read": 0,
+            "write": 0
+          }
+        },
+        "options": {},
+        "limit": {
+          "context": 272000,
+          "output": 128000
+        },
+        "headers": {},
+        "family": "",
+        "release_date": "",
+        "variants": {
+          "low": {
+            "reasoningEffort": "low",
+            "reasoningSummary": "auto",
+            "textVerbosity": "low"
+          },
+          "medium": {
+            "reasoningEffort": "medium",
+            "reasoningSummary": "auto",
+            "textVerbosity": "low"
+          }
+        }
+      }
+    },
+    {
+      "provider": "openai",
+      "model": "openai/gpt-5-codex",
+      "status": "fail",
+      "latencyMs": 4680,
+      "failureClass": "unexpected-response",
+      "note": "Unexpected response: (empty)",
+      "response": "",
+      "meta": {
+        "id": "gpt-5-codex",
+        "api": {
+          "id": "gpt-5-codex",
+          "npm": "@ai-sdk/openai",
+          "url": ""
+        },
+        "status": "active",
+        "name": "GPT 5 Codex (OAuth)",
+        "providerID": "openai",
+        "capabilities": {
+          "temperature": false,
+          "reasoning": true,
+          "attachment": false,
+          "toolcall": true,
+          "input": {
+            "text": true,
+            "audio": false,
+            "image": true,
+            "video": false,
+            "pdf": false
+          },
+          "output": {
+            "text": true,
+            "audio": false,
+            "image": false,
+            "video": false,
+            "pdf": false
+          },
+          "interleaved": false
+        },
+        "cost": {
+          "input": 0,
+          "output": 0,
+          "cache": {
+            "read": 0,
+            "write": 0
+          }
+        },
+        "options": {},
+        "limit": {
+          "context": 272000,
+          "input": 272000,
+          "output": 128000
+        },
+        "headers": {},
+        "family": "gpt-codex",
+        "release_date": "2025-09-15",
+        "variants": {
+          "low": {
+            "reasoningEffort": "low",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ],
+            "textVerbosity": "low"
+          },
+          "medium": {
+            "reasoningEffort": "medium",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ],
+            "textVerbosity": "low"
+          },
+          "high": {
+            "reasoningEffort": "high",
+            "reasoningSummary": "detailed",
+            "include": [
+              "reasoning.encrypted_content"
+            ],
+            "textVerbosity": "medium"
+          }
+        }
+      }
+    },
+    {
+      "provider": "openai",
+      "model": "openai/gpt-5.1-codex",
+      "status": "fail",
+      "latencyMs": 4610,
+      "failureClass": "unexpected-response",
+      "note": "Unexpected response: (empty)",
+      "response": "",
+      "meta": {
+        "id": "gpt-5.1-codex",
+        "api": {
+          "id": "gpt-5.1-codex",
+          "npm": "@ai-sdk/openai",
+          "url": ""
+        },
+        "status": "active",
+        "name": "GPT 5.1 Codex (OAuth)",
+        "providerID": "openai",
+        "capabilities": {
+          "temperature": false,
+          "reasoning": true,
+          "attachment": true,
+          "toolcall": true,
+          "input": {
+            "text": true,
+            "audio": false,
+            "image": true,
+            "video": false,
+            "pdf": false
+          },
+          "output": {
+            "text": true,
+            "audio": false,
+            "image": false,
+            "video": false,
+            "pdf": false
+          },
+          "interleaved": false
+        },
+        "cost": {
+          "input": 0,
+          "output": 0,
+          "cache": {
+            "read": 0,
+            "write": 0
+          }
+        },
+        "options": {},
+        "limit": {
+          "context": 272000,
+          "input": 272000,
+          "output": 128000
+        },
+        "headers": {},
+        "family": "gpt-codex",
+        "release_date": "2025-11-13",
+        "variants": {
+          "low": {
+            "reasoningEffort": "low",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ],
+            "textVerbosity": "low"
+          },
+          "medium": {
+            "reasoningEffort": "medium",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ],
+            "textVerbosity": "low"
+          },
+          "high": {
+            "reasoningEffort": "high",
+            "reasoningSummary": "detailed",
+            "include": [
+              "reasoning.encrypted_content"
+            ],
+            "textVerbosity": "medium"
+          }
+        }
+      }
+    },
+    {
+      "provider": "openai",
+      "model": "openai/gpt-5.1-codex-max",
+      "status": "fail",
+      "latencyMs": 4650,
+      "failureClass": "unexpected-response",
+      "note": "Unexpected response: (empty)",
+      "response": "",
+      "meta": {
+        "id": "gpt-5.1-codex-max",
+        "api": {
+          "id": "gpt-5.1-codex-max",
+          "npm": "@ai-sdk/openai",
+          "url": ""
+        },
+        "status": "active",
+        "name": "GPT 5.1 Codex Max (OAuth)",
+        "providerID": "openai",
+        "capabilities": {
+          "temperature": false,
+          "reasoning": true,
+          "attachment": true,
+          "toolcall": true,
+          "input": {
+            "text": true,
+            "audio": false,
+            "image": true,
+            "video": false,
+            "pdf": false
+          },
+          "output": {
+            "text": true,
+            "audio": false,
+            "image": false,
+            "video": false,
+            "pdf": false
+          },
+          "interleaved": false
+        },
+        "cost": {
+          "input": 0,
+          "output": 0,
+          "cache": {
+            "read": 0,
+            "write": 0
+          }
+        },
+        "options": {},
+        "limit": {
+          "context": 272000,
+          "input": 272000,
+          "output": 128000
+        },
+        "headers": {},
+        "family": "gpt-codex",
+        "release_date": "2025-11-13",
+        "variants": {
+          "low": {
+            "reasoningEffort": "low",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          },
+          "medium": {
+            "reasoningEffort": "medium",
+            "reasoningSummary": "detailed",
+            "include": [
+              "reasoning.encrypted_content"
+            ],
+            "textVerbosity": "medium"
+          },
+          "high": {
+            "reasoningEffort": "high",
+            "reasoningSummary": "detailed",
+            "include": [
+              "reasoning.encrypted_content"
+            ],
+            "textVerbosity": "medium"
+          }
+        }
+      }
+    },
+    {
+      "provider": "openai",
+      "model": "openai/gpt-5.1-codex-mini",
+      "status": "fail",
+      "latencyMs": 4484,
+      "failureClass": "unexpected-response",
+      "note": "Unexpected response: (empty)",
+      "response": "",
+      "meta": {
+        "id": "gpt-5.1-codex-mini",
+        "api": {
+          "id": "gpt-5.1-codex-mini",
+          "npm": "@ai-sdk/openai",
+          "url": ""
+        },
+        "status": "active",
+        "name": "GPT 5.1 Codex Mini (OAuth, DO NOT USE)",
+        "providerID": "openai",
+        "capabilities": {
+          "temperature": false,
+          "reasoning": true,
+          "attachment": true,
+          "toolcall": true,
+          "input": {
+            "text": true,
+            "audio": false,
+            "image": true,
+            "video": false,
+            "pdf": false
+          },
+          "output": {
+            "text": true,
+            "audio": false,
+            "image": false,
+            "video": false,
+            "pdf": false
+          },
+          "interleaved": false
+        },
+        "cost": {
+          "input": 0,
+          "output": 0,
+          "cache": {
+            "read": 0,
+            "write": 0
+          }
+        },
+        "options": {},
+        "limit": {
+          "context": 272000,
+          "input": 272000,
+          "output": 128000
+        },
+        "headers": {},
+        "family": "gpt-codex",
+        "release_date": "2025-11-13",
+        "variants": {
+          "low": {
+            "reasoningEffort": "low",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ],
+            "textVerbosity": "low"
+          },
+          "medium": {
+            "reasoningEffort": "medium",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ],
+            "textVerbosity": "low"
+          },
+          "high": {
+            "reasoningEffort": "high",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "provider": "openai",
+      "model": "openai/gpt-5.2",
+      "status": "pass",
+      "latencyMs": 8342,
+      "failureClass": "-",
+      "note": "general-purpose passing candidate",
+      "response": "OK",
+      "meta": {
+        "id": "gpt-5.2",
+        "api": {
+          "id": "gpt-5.2",
+          "npm": "@ai-sdk/openai",
+          "url": ""
+        },
+        "status": "active",
+        "name": "GPT 5.2 (OAuth)",
+        "providerID": "openai",
+        "capabilities": {
+          "temperature": false,
+          "reasoning": true,
+          "attachment": true,
+          "toolcall": true,
+          "input": {
+            "text": true,
+            "audio": false,
+            "image": true,
+            "video": false,
+            "pdf": false
+          },
+          "output": {
+            "text": true,
+            "audio": false,
+            "image": false,
+            "video": false,
+            "pdf": false
+          },
+          "interleaved": false
+        },
+        "cost": {
+          "input": 0,
+          "output": 0,
+          "cache": {
+            "read": 0,
+            "write": 0
+          }
+        },
+        "options": {},
+        "limit": {
+          "context": 272000,
+          "input": 272000,
+          "output": 128000
+        },
+        "headers": {},
+        "family": "gpt",
+        "release_date": "2025-12-11",
+        "variants": {
+          "none": {
+            "reasoningEffort": "none",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          },
+          "low": {
+            "reasoningEffort": "low",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ],
+            "textVerbosity": "low"
+          },
+          "medium": {
+            "reasoningEffort": "medium",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ],
+            "textVerbosity": "low"
+          },
+          "high": {
+            "reasoningEffort": "high",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          },
+          "xhigh": {
+            "reasoningEffort": "xhigh",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "provider": "openai",
+      "model": "openai/gpt-5.2-codex",
+      "status": "fail",
+      "latencyMs": 4525,
+      "failureClass": "unexpected-response",
+      "note": "Unexpected response: (empty)",
+      "response": "",
+      "meta": {
+        "id": "gpt-5.2-codex",
+        "api": {
+          "id": "gpt-5.2-codex",
+          "npm": "@ai-sdk/openai",
+          "url": ""
+        },
+        "status": "active",
+        "name": "GPT 5.2 Codex (OAuth)",
+        "providerID": "openai",
+        "capabilities": {
+          "temperature": false,
+          "reasoning": true,
+          "attachment": true,
+          "toolcall": true,
+          "input": {
+            "text": true,
+            "audio": false,
+            "image": true,
+            "video": false,
+            "pdf": false
+          },
+          "output": {
+            "text": true,
+            "audio": false,
+            "image": false,
+            "video": false,
+            "pdf": false
+          },
+          "interleaved": false
+        },
+        "cost": {
+          "input": 0,
+          "output": 0,
+          "cache": {
+            "read": 0,
+            "write": 0
+          }
+        },
+        "options": {},
+        "limit": {
+          "context": 272000,
+          "input": 272000,
+          "output": 128000
+        },
+        "headers": {},
+        "family": "gpt-codex",
+        "release_date": "2025-12-11",
+        "variants": {
+          "low": {
+            "reasoningEffort": "low",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ],
+            "textVerbosity": "low"
+          },
+          "medium": {
+            "reasoningEffort": "medium",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ],
+            "textVerbosity": "low"
+          },
+          "high": {
+            "reasoningEffort": "high",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          },
+          "xhigh": {
+            "reasoningEffort": "xhigh",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "provider": "openai",
+      "model": "openai/gpt-5.3-codex",
+      "status": "pass",
+      "latencyMs": 6556,
+      "failureClass": "-",
+      "note": "strong coding-default candidate",
+      "response": "OK",
+      "meta": {
+        "id": "gpt-5.3-codex",
+        "api": {
+          "id": "gpt-5.3-codex",
+          "npm": "@ai-sdk/openai",
+          "url": ""
+        },
+        "status": "active",
+        "name": "GPT 5.3 Codex (OAuth)",
+        "providerID": "openai",
+        "capabilities": {
+          "temperature": false,
+          "reasoning": true,
+          "attachment": true,
+          "toolcall": true,
+          "input": {
+            "text": true,
+            "audio": false,
+            "image": true,
+            "video": false,
+            "pdf": false
+          },
+          "output": {
+            "text": true,
+            "audio": false,
+            "image": false,
+            "video": false,
+            "pdf": false
+          },
+          "interleaved": false
+        },
+        "cost": {
+          "input": 0,
+          "output": 0,
+          "cache": {
+            "read": 0,
+            "write": 0
+          }
+        },
+        "options": {},
+        "limit": {
+          "context": 272000,
+          "input": 272000,
+          "output": 128000
+        },
+        "headers": {},
+        "family": "gpt-codex",
+        "release_date": "2026-02-05",
+        "variants": {
+          "low": {
+            "reasoningEffort": "low",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ],
+            "textVerbosity": "low"
+          },
+          "medium": {
+            "reasoningEffort": "medium",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ],
+            "textVerbosity": "low"
+          },
+          "high": {
+            "reasoningEffort": "high",
+            "reasoningSummary": "detailed",
+            "include": [
+              "reasoning.encrypted_content"
+            ],
+            "textVerbosity": "medium"
+          },
+          "xhigh": {
+            "reasoningEffort": "xhigh",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "provider": "openai",
+      "model": "openai/gpt-5.3-codex-spark",
+      "status": "fail",
+      "latencyMs": 4491,
+      "failureClass": "unexpected-response",
+      "note": "Unexpected response: (empty)",
+      "response": "",
+      "meta": {
+        "id": "gpt-5.3-codex-spark",
+        "api": {
+          "id": "gpt-5.3-codex-spark",
+          "npm": "@ai-sdk/openai",
+          "url": ""
+        },
+        "status": "active",
+        "name": "GPT 5.3 Codex Spark (OAuth)",
+        "providerID": "openai",
+        "capabilities": {
+          "temperature": false,
+          "reasoning": true,
+          "attachment": true,
+          "toolcall": true,
+          "input": {
+            "text": true,
+            "audio": false,
+            "image": true,
+            "video": false,
+            "pdf": false
+          },
+          "output": {
+            "text": true,
+            "audio": false,
+            "image": false,
+            "video": false,
+            "pdf": false
+          },
+          "interleaved": false
+        },
+        "cost": {
+          "input": 0,
+          "output": 0,
+          "cache": {
+            "read": 0,
+            "write": 0
+          }
+        },
+        "options": {},
+        "limit": {
+          "context": 272000,
+          "input": 100000,
+          "output": 128000
+        },
+        "headers": {},
+        "family": "gpt-codex-spark",
+        "release_date": "2026-02-05",
+        "variants": {
+          "low": {
+            "reasoningEffort": "low",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ],
+            "textVerbosity": "low"
+          },
+          "medium": {
+            "reasoningEffort": "medium",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ],
+            "textVerbosity": "low"
+          },
+          "high": {
+            "reasoningEffort": "high",
+            "reasoningSummary": "detailed",
+            "include": [
+              "reasoning.encrypted_content"
+            ],
+            "textVerbosity": "medium"
+          },
+          "xhigh": {
+            "reasoningEffort": "xhigh",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "provider": "openai",
+      "model": "openai/gpt-5.4",
+      "status": "pass",
+      "latencyMs": 9700,
+      "failureClass": "-",
+      "note": "general-purpose passing candidate",
+      "response": "OK",
+      "meta": {
+        "id": "gpt-5.4",
+        "api": {
+          "id": "gpt-5.4",
+          "npm": "@ai-sdk/openai",
+          "url": ""
+        },
+        "status": "active",
+        "name": "GPT 5.4 (OAuth)",
+        "providerID": "openai",
+        "capabilities": {
+          "temperature": false,
+          "reasoning": true,
+          "attachment": true,
+          "toolcall": true,
+          "input": {
+            "text": true,
+            "audio": false,
+            "image": true,
+            "video": false,
+            "pdf": false
+          },
+          "output": {
+            "text": true,
+            "audio": false,
+            "image": false,
+            "video": false,
+            "pdf": false
+          },
+          "interleaved": false
+        },
+        "cost": {
+          "input": 0,
+          "output": 0,
+          "cache": {
+            "read": 0,
+            "write": 0
+          }
+        },
+        "options": {},
+        "limit": {
+          "context": 272000,
+          "input": 922000,
+          "output": 128000
+        },
+        "headers": {},
+        "family": "gpt",
+        "release_date": "2026-03-05",
+        "variants": {
+          "none": {
+            "reasoningEffort": "none",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          },
+          "low": {
+            "reasoningEffort": "low",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ],
+            "textVerbosity": "low"
+          },
+          "medium": {
+            "reasoningEffort": "medium",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ],
+            "textVerbosity": "low"
+          },
+          "high": {
+            "reasoningEffort": "high",
+            "reasoningSummary": "detailed",
+            "include": [
+              "reasoning.encrypted_content"
+            ],
+            "textVerbosity": "medium"
+          },
+          "xhigh": {
+            "reasoningEffort": "xhigh",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "provider": "openai",
+      "model": "openai/gpt-5.4-fast",
+      "status": "pass",
+      "latencyMs": 6775,
+      "failureClass": "-",
+      "note": "fast general-purpose candidate",
+      "response": "OK",
+      "meta": {
+        "id": "gpt-5.4-fast",
+        "providerID": "openai",
+        "name": "GPT-5.4 Fast",
+        "family": "gpt",
+        "api": {
+          "id": "gpt-5.4",
+          "url": "",
+          "npm": "@ai-sdk/openai"
+        },
+        "status": "active",
+        "headers": {},
+        "options": {
+          "serviceTier": "priority"
+        },
+        "cost": {
+          "input": 0,
+          "output": 0,
+          "cache": {
+            "read": 0,
+            "write": 0
+          }
+        },
+        "limit": {
+          "context": 1050000,
+          "input": 922000,
+          "output": 128000
+        },
+        "capabilities": {
+          "temperature": false,
+          "reasoning": true,
+          "attachment": true,
+          "toolcall": true,
+          "input": {
+            "text": true,
+            "audio": false,
+            "image": true,
+            "video": false,
+            "pdf": true
+          },
+          "output": {
+            "text": true,
+            "audio": false,
+            "image": false,
+            "video": false,
+            "pdf": false
+          },
+          "interleaved": false
+        },
+        "release_date": "2026-03-05",
+        "variants": {
+          "none": {
+            "reasoningEffort": "none",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          },
+          "low": {
+            "reasoningEffort": "low",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          },
+          "medium": {
+            "reasoningEffort": "medium",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          },
+          "high": {
+            "reasoningEffort": "high",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          },
+          "xhigh": {
+            "reasoningEffort": "xhigh",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "provider": "openai",
+      "model": "openai/gpt-5.4-mini",
+      "status": "pass",
+      "latencyMs": 8106,
+      "failureClass": "-",
+      "note": "strong helper-cheap candidate",
+      "response": "OK",
+      "meta": {
+        "id": "gpt-5.4-mini",
+        "api": {
+          "id": "gpt-5.4-mini",
+          "npm": "@ai-sdk/openai",
+          "url": ""
+        },
+        "status": "active",
+        "name": "GPT 5.4 Mini (OAuth)",
+        "providerID": "openai",
+        "capabilities": {
+          "temperature": false,
+          "reasoning": true,
+          "attachment": true,
+          "toolcall": true,
+          "input": {
+            "text": true,
+            "audio": false,
+            "image": true,
+            "video": false,
+            "pdf": false
+          },
+          "output": {
+            "text": true,
+            "audio": false,
+            "image": false,
+            "video": false,
+            "pdf": false
+          },
+          "interleaved": false
+        },
+        "cost": {
+          "input": 0,
+          "output": 0,
+          "cache": {
+            "read": 0,
+            "write": 0
+          }
+        },
+        "options": {},
+        "limit": {
+          "context": 272000,
+          "input": 272000,
+          "output": 128000
+        },
+        "headers": {},
+        "family": "gpt-mini",
+        "release_date": "2026-03-17",
+        "variants": {
+          "none": {
+            "reasoningEffort": "none",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          },
+          "low": {
+            "reasoningEffort": "low",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ],
+            "textVerbosity": "low"
+          },
+          "medium": {
+            "reasoningEffort": "medium",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ],
+            "textVerbosity": "low"
+          },
+          "high": {
+            "reasoningEffort": "high",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          },
+          "xhigh": {
+            "reasoningEffort": "xhigh",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "provider": "openai",
+      "model": "openai/gpt-5.4-mini-fast",
+      "status": "pass",
+      "latencyMs": 5795,
+      "failureClass": "-",
+      "note": "strong helper-cheap candidate",
+      "response": "OK",
+      "meta": {
+        "id": "gpt-5.4-mini-fast",
+        "providerID": "openai",
+        "name": "GPT-5.4 mini Fast",
+        "family": "gpt-mini",
+        "api": {
+          "id": "gpt-5.4-mini",
+          "url": "",
+          "npm": "@ai-sdk/openai"
+        },
+        "status": "active",
+        "headers": {},
+        "options": {
+          "serviceTier": "priority"
+        },
+        "cost": {
+          "input": 0,
+          "output": 0,
+          "cache": {
+            "read": 0,
+            "write": 0
+          }
+        },
+        "limit": {
+          "context": 400000,
+          "input": 272000,
+          "output": 128000
+        },
+        "capabilities": {
+          "temperature": false,
+          "reasoning": true,
+          "attachment": true,
+          "toolcall": true,
+          "input": {
+            "text": true,
+            "audio": false,
+            "image": true,
+            "video": false,
+            "pdf": false
+          },
+          "output": {
+            "text": true,
+            "audio": false,
+            "image": false,
+            "video": false,
+            "pdf": false
+          },
+          "interleaved": false
+        },
+        "release_date": "2026-03-17",
+        "variants": {
+          "none": {
+            "reasoningEffort": "none",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          },
+          "low": {
+            "reasoningEffort": "low",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          },
+          "medium": {
+            "reasoningEffort": "medium",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          },
+          "high": {
+            "reasoningEffort": "high",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          },
+          "xhigh": {
+            "reasoningEffort": "xhigh",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "provider": "openai",
+      "model": "openai/gpt-5.5",
+      "status": "pass",
+      "latencyMs": 7240,
+      "failureClass": "-",
+      "note": "general-purpose passing candidate",
+      "response": "OK",
+      "meta": {
+        "id": "gpt-5.5",
+        "api": {
+          "id": "gpt-5.5",
+          "npm": "@ai-sdk/openai",
+          "url": ""
+        },
+        "status": "active",
+        "name": "GPT 5.5 (OAuth)",
+        "providerID": "openai",
+        "capabilities": {
+          "temperature": false,
+          "reasoning": true,
+          "attachment": true,
+          "toolcall": true,
+          "input": {
+            "text": true,
+            "audio": false,
+            "image": true,
+            "video": false,
+            "pdf": false
+          },
+          "output": {
+            "text": true,
+            "audio": false,
+            "image": false,
+            "video": false,
+            "pdf": false
+          },
+          "interleaved": false
+        },
+        "cost": {
+          "input": 0,
+          "output": 0,
+          "cache": {
+            "read": 0,
+            "write": 0
+          }
+        },
+        "options": {},
+        "limit": {
+          "context": 400000,
+          "input": 272000,
+          "output": 128000
+        },
+        "headers": {},
+        "family": "gpt",
+        "release_date": "2026-04-23",
+        "variants": {
+          "none": {
+            "reasoningEffort": "none",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          },
+          "low": {
+            "reasoningEffort": "low",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ],
+            "textVerbosity": "low"
+          },
+          "medium": {
+            "reasoningEffort": "medium",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ],
+            "textVerbosity": "low"
+          },
+          "high": {
+            "reasoningEffort": "high",
+            "reasoningSummary": "detailed",
+            "include": [
+              "reasoning.encrypted_content"
+            ],
+            "textVerbosity": "medium"
+          },
+          "xhigh": {
+            "reasoningEffort": "xhigh",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "provider": "openai",
+      "model": "openai/gpt-5.5-fast",
+      "status": "pass",
+      "latencyMs": 6601,
+      "failureClass": "-",
+      "note": "fast general-purpose candidate",
+      "response": "OK",
+      "meta": {
+        "id": "gpt-5.5-fast",
+        "providerID": "openai",
+        "name": "GPT-5.5 Fast",
+        "family": "gpt",
+        "api": {
+          "id": "gpt-5.5",
+          "url": "",
+          "npm": "@ai-sdk/openai"
+        },
+        "status": "active",
+        "headers": {},
+        "options": {
+          "serviceTier": "priority"
+        },
+        "cost": {
+          "input": 0,
+          "output": 0,
+          "cache": {
+            "read": 0,
+            "write": 0
+          }
+        },
+        "limit": {
+          "context": 400000,
+          "input": 272000,
+          "output": 128000
+        },
+        "capabilities": {
+          "temperature": false,
+          "reasoning": true,
+          "attachment": true,
+          "toolcall": true,
+          "input": {
+            "text": true,
+            "audio": false,
+            "image": true,
+            "video": false,
+            "pdf": true
+          },
+          "output": {
+            "text": true,
+            "audio": false,
+            "image": false,
+            "video": false,
+            "pdf": false
+          },
+          "interleaved": false
+        },
+        "release_date": "2026-04-23",
+        "variants": {
+          "none": {
+            "reasoningEffort": "none",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          },
+          "low": {
+            "reasoningEffort": "low",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          },
+          "medium": {
+            "reasoningEffort": "medium",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          },
+          "high": {
+            "reasoningEffort": "high",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          },
+          "xhigh": {
+            "reasoningEffort": "xhigh",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "provider": "openai",
+      "model": "openai/gpt-5.5-pro",
+      "status": "fail",
+      "latencyMs": 4433,
+      "failureClass": "unexpected-response",
+      "note": "Unexpected response: (empty)",
+      "response": "",
+      "meta": {
+        "id": "gpt-5.5-pro",
+        "api": {
+          "id": "gpt-5.5-pro",
+          "npm": "@ai-sdk/openai",
+          "url": ""
+        },
+        "status": "active",
+        "name": "GPT 5.5 Pro (OAuth)",
+        "providerID": "openai",
+        "capabilities": {
+          "temperature": false,
+          "reasoning": false,
+          "attachment": false,
+          "toolcall": true,
+          "input": {
+            "text": true,
+            "audio": false,
+            "image": true,
+            "video": false,
+            "pdf": false
+          },
+          "output": {
+            "text": true,
+            "audio": false,
+            "image": false,
+            "video": false,
+            "pdf": false
+          },
+          "interleaved": false
+        },
+        "cost": {
+          "input": 0,
+          "output": 0,
+          "cache": {
+            "read": 0,
+            "write": 0
+          }
+        },
+        "options": {},
+        "limit": {
+          "context": 400000,
+          "input": 272000,
+          "output": 128000
+        },
+        "headers": {},
+        "family": "",
+        "release_date": "",
+        "variants": {
+          "medium": {
+            "reasoningEffort": "medium",
+            "reasoningSummary": "detailed",
+            "textVerbosity": "medium"
+          },
+          "high": {
+            "reasoningEffort": "high",
+            "reasoningSummary": "detailed",
+            "textVerbosity": "medium"
+          }
+        }
+      }
+    }
+  ],
+  "recommendations": {
+    "flagship": {
+      "provider": "openai",
+      "model": "openai/gpt-5.5",
+      "status": "pass",
+      "latencyMs": 7240,
+      "failureClass": "-",
+      "note": "general-purpose passing candidate",
+      "response": "OK",
+      "meta": {
+        "id": "gpt-5.5",
+        "api": {
+          "id": "gpt-5.5",
+          "npm": "@ai-sdk/openai",
+          "url": ""
+        },
+        "status": "active",
+        "name": "GPT 5.5 (OAuth)",
+        "providerID": "openai",
+        "capabilities": {
+          "temperature": false,
+          "reasoning": true,
+          "attachment": true,
+          "toolcall": true,
+          "input": {
+            "text": true,
+            "audio": false,
+            "image": true,
+            "video": false,
+            "pdf": false
+          },
+          "output": {
+            "text": true,
+            "audio": false,
+            "image": false,
+            "video": false,
+            "pdf": false
+          },
+          "interleaved": false
+        },
+        "cost": {
+          "input": 0,
+          "output": 0,
+          "cache": {
+            "read": 0,
+            "write": 0
+          }
+        },
+        "options": {},
+        "limit": {
+          "context": 400000,
+          "input": 272000,
+          "output": 128000
+        },
+        "headers": {},
+        "family": "gpt",
+        "release_date": "2026-04-23",
+        "variants": {
+          "none": {
+            "reasoningEffort": "none",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          },
+          "low": {
+            "reasoningEffort": "low",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ],
+            "textVerbosity": "low"
+          },
+          "medium": {
+            "reasoningEffort": "medium",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ],
+            "textVerbosity": "low"
+          },
+          "high": {
+            "reasoningEffort": "high",
+            "reasoningSummary": "detailed",
+            "include": [
+              "reasoning.encrypted_content"
+            ],
+            "textVerbosity": "medium"
+          },
+          "xhigh": {
+            "reasoningEffort": "xhigh",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          }
+        }
+      }
+    },
+    "codingDefault": {
+      "provider": "openai",
+      "model": "openai/gpt-5.3-codex",
+      "status": "pass",
+      "latencyMs": 6556,
+      "failureClass": "-",
+      "note": "strong coding-default candidate",
+      "response": "OK",
+      "meta": {
+        "id": "gpt-5.3-codex",
+        "api": {
+          "id": "gpt-5.3-codex",
+          "npm": "@ai-sdk/openai",
+          "url": ""
+        },
+        "status": "active",
+        "name": "GPT 5.3 Codex (OAuth)",
+        "providerID": "openai",
+        "capabilities": {
+          "temperature": false,
+          "reasoning": true,
+          "attachment": true,
+          "toolcall": true,
+          "input": {
+            "text": true,
+            "audio": false,
+            "image": true,
+            "video": false,
+            "pdf": false
+          },
+          "output": {
+            "text": true,
+            "audio": false,
+            "image": false,
+            "video": false,
+            "pdf": false
+          },
+          "interleaved": false
+        },
+        "cost": {
+          "input": 0,
+          "output": 0,
+          "cache": {
+            "read": 0,
+            "write": 0
+          }
+        },
+        "options": {},
+        "limit": {
+          "context": 272000,
+          "input": 272000,
+          "output": 128000
+        },
+        "headers": {},
+        "family": "gpt-codex",
+        "release_date": "2026-02-05",
+        "variants": {
+          "low": {
+            "reasoningEffort": "low",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ],
+            "textVerbosity": "low"
+          },
+          "medium": {
+            "reasoningEffort": "medium",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ],
+            "textVerbosity": "low"
+          },
+          "high": {
+            "reasoningEffort": "high",
+            "reasoningSummary": "detailed",
+            "include": [
+              "reasoning.encrypted_content"
+            ],
+            "textVerbosity": "medium"
+          },
+          "xhigh": {
+            "reasoningEffort": "xhigh",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          }
+        }
+      }
+    },
+    "helperCheap": {
+      "provider": "openai",
+      "model": "openai/gpt-5.4-mini-fast",
+      "status": "pass",
+      "latencyMs": 5795,
+      "failureClass": "-",
+      "note": "strong helper-cheap candidate",
+      "response": "OK",
+      "meta": {
+        "id": "gpt-5.4-mini-fast",
+        "providerID": "openai",
+        "name": "GPT-5.4 mini Fast",
+        "family": "gpt-mini",
+        "api": {
+          "id": "gpt-5.4-mini",
+          "url": "",
+          "npm": "@ai-sdk/openai"
+        },
+        "status": "active",
+        "headers": {},
+        "options": {
+          "serviceTier": "priority"
+        },
+        "cost": {
+          "input": 0,
+          "output": 0,
+          "cache": {
+            "read": 0,
+            "write": 0
+          }
+        },
+        "limit": {
+          "context": 400000,
+          "input": 272000,
+          "output": 128000
+        },
+        "capabilities": {
+          "temperature": false,
+          "reasoning": true,
+          "attachment": true,
+          "toolcall": true,
+          "input": {
+            "text": true,
+            "audio": false,
+            "image": true,
+            "video": false,
+            "pdf": false
+          },
+          "output": {
+            "text": true,
+            "audio": false,
+            "image": false,
+            "video": false,
+            "pdf": false
+          },
+          "interleaved": false
+        },
+        "release_date": "2026-03-17",
+        "variants": {
+          "none": {
+            "reasoningEffort": "none",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          },
+          "low": {
+            "reasoningEffort": "low",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          },
+          "medium": {
+            "reasoningEffort": "medium",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          },
+          "high": {
+            "reasoningEffort": "high",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          },
+          "xhigh": {
+            "reasoningEffort": "xhigh",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          }
+        }
+      }
+    }
+  }
+}
