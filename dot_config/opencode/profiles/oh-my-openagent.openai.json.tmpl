@@ -2,35 +2,35 @@
   "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/v3.17.5/assets/oh-my-opencode.schema.json",
   "agents": {
     "sisyphus": {
-      "model": "openai/gpt-5.4",
+      "model": "openai/gpt-5.3-codex",
       "prompt_append": "Session bootstrap reminder: for fresh tasks, suggest `/new-task <task_request>` to load repo context and validation scope before implementation."
     },
     "plan": {
       "model": "openai/gpt-5.5"
     },
     "build": {
-      "model": "openai/gpt-5.4"
+      "model": "openai/gpt-5.3-codex"
     },
     "orchestrator": {
       "model": "openai/gpt-5.5"
     },
     "platform-engineer": {
-      "model": "openai/gpt-5.4"
+      "model": "openai/gpt-5.3-codex"
     },
     "developer-platform-engineer": {
-      "model": "openai/gpt-5.4"
+      "model": "openai/gpt-5.3-codex"
     },
     "builder": {
-      "model": "openai/gpt-5.4"
+      "model": "openai/gpt-5.3-codex"
     },
     "delivery-engineer": {
-      "model": "openai/gpt-5.4"
+      "model": "openai/gpt-5.3-codex"
     },
     "security-engineer": {
       "model": "openai/gpt-5.5"
     },
     "observability-engineer": {
-      "model": "openai/gpt-5.4"
+      "model": "openai/gpt-5.3-codex"
     },
     "reviewer": {
       "model": "openai/gpt-5.5"
@@ -45,16 +45,16 @@
       "model": "openai/gpt-5.5"
     },
     "explore": {
-      "model": "openai/gpt-5.4"
+      "model": "openai/gpt-5.3-codex"
     },
     "librarian": {
-      "model": "openai/gpt-5.4"
+      "model": "openai/gpt-5.4-mini"
     },
     "frontend-ui-ux-engineer": {
       "model": "openai/gpt-5.4"
     },
     "document-writer": {
-      "model": "openai/gpt-5.4"
+      "model": "openai/gpt-5.4-mini"
     },
     "multimodal-looker": {
       "model": "openai/gpt-5.4"
@@ -68,7 +68,7 @@
       "description": "Deep architecture and complex reasoning."
     },
     "deep": {
-      "model": "openai/gpt-5.4",
+      "model": "openai/gpt-5.3-codex",
       "reasoningEffort": "high",
       "textVerbosity": "medium",
       "description": "Implementation-oriented deep work / multi-step coding."

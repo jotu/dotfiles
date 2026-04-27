@@ -3,7 +3,7 @@
   "agents": {
     "sisyphus": {
 {{- if .work.enable }}
-      "model": "openai/gpt-5.4",
+      "model": "openai/gpt-5.3-codex",
 {{- else }}
       "model": "github-copilot/gpt-5.3-codex",
 {{- end }}
@@ -13,12 +13,12 @@
 {{- if .work.enable }}
       "model": "openai/gpt-5.5"
 {{- else }}
-      "model": "github-copilot/claude-sonnet-4.6"
+      "model": "github-copilot/gemini-3.1-pro-preview"
 {{- end }}
     },
     "build": {
 {{- if .work.enable }}
-      "model": "openai/gpt-5.4"
+      "model": "openai/gpt-5.3-codex"
 {{- else }}
       "model": "github-copilot/gpt-5.3-codex"
 {{- end }}
@@ -27,33 +27,33 @@
 {{- if .work.enable }}
       "model": "openai/gpt-5.5"
 {{- else }}
-      "model": "github-copilot/claude-sonnet-4.6"
+      "model": "github-copilot/gemini-3.1-pro-preview"
 {{- end }}
     },
     "platform-engineer": {
 {{- if .work.enable }}
-      "model": "openai/gpt-5.4"
+      "model": "openai/gpt-5.3-codex"
 {{- else }}
       "model": "github-copilot/gpt-5.3-codex"
 {{- end }}
     },
     "developer-platform-engineer": {
 {{- if .work.enable }}
-      "model": "openai/gpt-5.4"
+      "model": "openai/gpt-5.3-codex"
 {{- else }}
       "model": "github-copilot/gpt-5.3-codex"
 {{- end }}
     },
     "builder": {
 {{- if .work.enable }}
-      "model": "openai/gpt-5.4"
+      "model": "openai/gpt-5.3-codex"
 {{- else }}
       "model": "github-copilot/gpt-5.3-codex"
 {{- end }}
     },
     "delivery-engineer": {
 {{- if .work.enable }}
-      "model": "openai/gpt-5.4"
+      "model": "openai/gpt-5.3-codex"
 {{- else }}
       "model": "github-copilot/gpt-5.3-codex"
 {{- end }}
@@ -62,12 +62,12 @@
 {{- if .work.enable }}
       "model": "openai/gpt-5.5"
 {{- else }}
-      "model": "github-copilot/claude-sonnet-4.6"
+      "model": "github-copilot/gemini-3.1-pro-preview"
 {{- end }}
     },
     "observability-engineer": {
 {{- if .work.enable }}
-      "model": "openai/gpt-5.4"
+      "model": "openai/gpt-5.3-codex"
 {{- else }}
       "model": "github-copilot/gpt-5.3-codex"
 {{- end }}
@@ -76,42 +76,42 @@
 {{- if .work.enable }}
       "model": "openai/gpt-5.5"
 {{- else }}
-      "model": "github-copilot/claude-sonnet-4.6"
+      "model": "github-copilot/gemini-3.1-pro-preview"
 {{- end }}
     },
     "architect": {
 {{- if .work.enable }}
       "model": "openai/gpt-5.5"
 {{- else }}
-      "model": "github-copilot/claude-sonnet-4.6"
+      "model": "github-copilot/gemini-3.1-pro-preview"
 {{- end }}
     },
     "ai-workflow-engineer": {
 {{- if .work.enable }}
       "model": "openai/gpt-5.5"
 {{- else }}
-      "model": "github-copilot/claude-sonnet-4.6"
+      "model": "github-copilot/gemini-3.1-pro-preview"
 {{- end }}
     },
     "oracle": {
 {{- if .work.enable }}
       "model": "openai/gpt-5.5"
 {{- else }}
-      "model": "github-copilot/claude-sonnet-4.6"
+      "model": "github-copilot/gemini-3.1-pro-preview"
 {{- end }}
     },
     "explore": {
 {{- if .work.enable }}
-      "model": "openai/gpt-5.4"
+      "model": "openai/gpt-5.3-codex"
 {{- else }}
-      "model": "github-copilot/claude-sonnet-4.6"
+      "model": "github-copilot/gpt-5.3-codex"
 {{- end }}
     },
     "librarian": {
 {{- if .work.enable }}
-      "model": "openai/gpt-5.4"
+      "model": "openai/gpt-5.4-mini"
 {{- else }}
-      "model": "github-copilot/claude-haiku-4.5"
+      "model": "github-copilot/gemini-3-flash-preview"
 {{- end }}
     },
     "frontend-ui-ux-engineer": {
@@ -123,9 +123,9 @@
     },
     "document-writer": {
 {{- if .work.enable }}
-      "model": "openai/gpt-5.4"
+      "model": "openai/gpt-5.4-mini"
 {{- else }}
-      "model": "github-copilot/claude-sonnet-4.6"
+      "model": "github-copilot/gemini-3-flash-preview"
 {{- end }}
     },
     "multimodal-looker": {
@@ -141,7 +141,7 @@
 {{- if .work.enable }}
       "model": "openai/gpt-5.5",
 {{- else }}
-      "model": "github-copilot/claude-opus-4.7",
+      "model": "github-copilot/gemini-3.1-pro-preview",
 {{- end }}
       "reasoningEffort": "high",
       "textVerbosity": "medium",
@@ -149,7 +149,7 @@
     },
     "deep": {
 {{- if .work.enable }}
-      "model": "openai/gpt-5.4",
+      "model": "openai/gpt-5.3-codex",
 {{- else }}
       "model": "github-copilot/gpt-5.3-codex",
 {{- end }}
@@ -161,7 +161,7 @@
 {{- if .work.enable }}
       "model": "openai/gpt-5.4-mini",
 {{- else }}
-      "model": "github-copilot/claude-haiku-4.5",
+      "model": "github-copilot/gemini-3-flash-preview",
 {{- end }}
       "reasoningEffort": "low",
       "textVerbosity": "low",
@@ -171,7 +171,7 @@
 {{- if .work.enable }}
       "model": "openai/gpt-5.4-mini",
 {{- else }}
-      "model": "github-copilot/claude-sonnet-4.6",
+      "model": "github-copilot/gemini-3-flash-preview",
 {{- end }}
       "reasoningEffort": "medium",
       "textVerbosity": "low",
@@ -191,7 +191,7 @@
 {{- if .work.enable }}
       "model": "openai/gpt-5.4-mini",
 {{- else }}
-      "model": "github-copilot/claude-sonnet-4.6",
+      "model": "github-copilot/gemini-3-flash-preview",
 {{- end }}
       "reasoningEffort": "medium",
       "textVerbosity": "high",
@@ -201,7 +201,7 @@
 {{- if .work.enable }}
       "model": "openai/gpt-5.4-mini",
 {{- else }}
-      "model": "github-copilot/claude-haiku-4.5",
+      "model": "github-copilot/gemini-3-flash-preview",
 {{- end }}
       "reasoningEffort": "medium",
       "textVerbosity": "medium",
