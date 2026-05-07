@@ -1,13 +1,13 @@
 {
   "provider": "github-copilot",
   "prompt": "Reply with exactly: OK",
-  "generatedAt": "2026-04-27T19:22:10.122Z",
+  "generatedAt": "2026-05-07T19:31:06.989Z",
   "results": [
     {
       "provider": "github-copilot",
       "model": "github-copilot/claude-haiku-4.5",
       "status": "pass",
-      "latencyMs": 6959,
+      "latencyMs": 7162,
       "failureClass": "-",
       "note": "general-purpose passing candidate",
       "response": "OK",
@@ -60,16 +60,16 @@
         "headers": {},
         "release_date": "2025-10-15",
         "variants": {
-          "high": {
-            "thinking": {
-              "type": "enabled",
-              "budgetTokens": 16000
-            }
-          },
           "max": {
             "thinking": {
               "type": "enabled",
               "budgetTokens": 31999
+            }
+          },
+          "high": {
+            "thinking": {
+              "type": "enabled",
+              "budgetTokens": 16000
             }
           }
         }
@@ -79,7 +79,7 @@
       "provider": "github-copilot",
       "model": "github-copilot/claude-opus-4.5",
       "status": "pass",
-      "latencyMs": 6144,
+      "latencyMs": 6224,
       "failureClass": "-",
       "note": "general-purpose passing candidate",
       "response": "OK",
@@ -132,16 +132,16 @@
         "headers": {},
         "release_date": "2025-11-24",
         "variants": {
-          "high": {
-            "thinking": {
-              "type": "enabled",
-              "budgetTokens": 15999
-            }
-          },
           "max": {
             "thinking": {
               "type": "enabled",
               "budgetTokens": 31999
+            }
+          },
+          "high": {
+            "thinking": {
+              "type": "enabled",
+              "budgetTokens": 16000
             }
           }
         }
@@ -151,7 +151,7 @@
       "provider": "github-copilot",
       "model": "github-copilot/claude-opus-4.6",
       "status": "pass",
-      "latencyMs": 7704,
+      "latencyMs": 6678,
       "failureClass": "-",
       "note": "general-purpose passing candidate",
       "response": "OK",
@@ -221,12 +221,6 @@
               "type": "adaptive"
             },
             "effort": "high"
-          },
-          "max": {
-            "thinking": {
-              "type": "adaptive"
-            },
-            "effort": "max"
           }
         }
       }
@@ -235,7 +229,7 @@
       "provider": "github-copilot",
       "model": "github-copilot/claude-opus-4.7",
       "status": "pass",
-      "latencyMs": 6255,
+      "latencyMs": 10010,
       "failureClass": "-",
       "note": "general-purpose passing candidate",
       "response": "OK",
@@ -289,7 +283,11 @@
         "release_date": "2026-04-16",
         "variants": {
           "medium": {
-            "reasoningEffort": "medium"
+            "thinking": {
+              "type": "adaptive",
+              "display": "summarized"
+            },
+            "effort": "medium"
           }
         }
       }
@@ -298,7 +296,7 @@
       "provider": "github-copilot",
       "model": "github-copilot/claude-sonnet-4.5",
       "status": "pass",
-      "latencyMs": 7075,
+      "latencyMs": 8050,
       "failureClass": "-",
       "note": "general-purpose passing candidate",
       "response": "OK",
@@ -351,16 +349,16 @@
         "headers": {},
         "release_date": "2025-09-29",
         "variants": {
-          "high": {
-            "thinking": {
-              "type": "enabled",
-              "budgetTokens": 15999
-            }
-          },
           "max": {
             "thinking": {
               "type": "enabled",
               "budgetTokens": 31999
+            }
+          },
+          "high": {
+            "thinking": {
+              "type": "enabled",
+              "budgetTokens": 16000
             }
           }
         }
@@ -370,7 +368,7 @@
       "provider": "github-copilot",
       "model": "github-copilot/claude-sonnet-4.6",
       "status": "pass",
-      "latencyMs": 7350,
+      "latencyMs": 7339,
       "failureClass": "-",
       "note": "general-purpose passing candidate",
       "response": "OK",
@@ -440,12 +438,6 @@
               "type": "adaptive"
             },
             "effort": "high"
-          },
-          "max": {
-            "thinking": {
-              "type": "adaptive"
-            },
-            "effort": "max"
           }
         }
       }
@@ -454,7 +446,7 @@
       "provider": "github-copilot",
       "model": "github-copilot/gemini-3-flash-preview",
       "status": "pass",
-      "latencyMs": 5893,
+      "latencyMs": 5821,
       "failureClass": "-",
       "note": "strong helper-cheap candidate",
       "response": "OK",
@@ -506,14 +498,36 @@
         "options": {},
         "headers": {},
         "release_date": "2025-12-17",
-        "variants": {}
+        "variants": {
+          "low": {
+            "reasoningEffort": "low",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          },
+          "medium": {
+            "reasoningEffort": "medium",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          },
+          "high": {
+            "reasoningEffort": "high",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          }
+        }
       }
     },
     {
       "provider": "github-copilot",
       "model": "github-copilot/gemini-3.1-pro-preview",
       "status": "pass",
-      "latencyMs": 9326,
+      "latencyMs": 8553,
       "failureClass": "-",
       "note": "strong flagship candidate",
       "response": "OK",
@@ -565,14 +579,36 @@
         "options": {},
         "headers": {},
         "release_date": "2026-02-19",
-        "variants": {}
+        "variants": {
+          "low": {
+            "reasoningEffort": "low",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          },
+          "medium": {
+            "reasoningEffort": "medium",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          },
+          "high": {
+            "reasoningEffort": "high",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          }
+        }
       }
     },
     {
       "provider": "github-copilot",
       "model": "github-copilot/gpt-4.1",
       "status": "pass",
-      "latencyMs": 8390,
+      "latencyMs": 7171,
       "failureClass": "-",
       "note": "general-purpose passing candidate",
       "response": "OK",
@@ -631,7 +667,7 @@
       "provider": "github-copilot",
       "model": "github-copilot/gpt-4o",
       "status": "pass",
-      "latencyMs": 5930,
+      "latencyMs": 7248,
       "failureClass": "-",
       "note": "general-purpose passing candidate",
       "response": "OK",
@@ -690,10 +726,10 @@
       "provider": "github-copilot",
       "model": "github-copilot/gpt-5-mini",
       "status": "fail",
-      "latencyMs": 41745,
+      "latencyMs": 19044,
       "failureClass": "unexpected-response",
-      "note": "Unexpected response: I detect trivial intent - the user requested a specific short reply. My approach: answer directly.\n\nOK",
-      "response": "I detect trivial intent - the user requested a specific short reply. My approach: answer directly.\n\nOK",
+      "note": "Unexpected response: I detect trivial intent — user requests a single exact reply \"OK\". My approach: classify as Trivial and return the requested text after this verbalization.\n\nOK",
+      "response": "I detect trivial intent — user requests a single exact reply \"OK\". My approach: classify as Trivial and return the requested text after this verbalization.\n\nOK",
       "meta": {
         "id": "gpt-5-mini",
         "providerID": "github-copilot",
@@ -771,7 +807,7 @@
       "provider": "github-copilot",
       "model": "github-copilot/gpt-5.2",
       "status": "pass",
-      "latencyMs": 6821,
+      "latencyMs": 9644,
       "failureClass": "-",
       "note": "general-purpose passing candidate",
       "response": "OK",
@@ -859,7 +895,7 @@
       "provider": "github-copilot",
       "model": "github-copilot/gpt-5.2-codex",
       "status": "pass",
-      "latencyMs": 7207,
+      "latencyMs": 6765,
       "failureClass": "-",
       "note": "strong coding-default candidate",
       "response": "OK",
@@ -947,7 +983,7 @@
       "provider": "github-copilot",
       "model": "github-copilot/gpt-5.3-codex",
       "status": "pass",
-      "latencyMs": 8199,
+      "latencyMs": 8927,
       "failureClass": "-",
       "note": "strong coding-default candidate",
       "response": "OK",
@@ -1035,7 +1071,7 @@
       "provider": "github-copilot",
       "model": "github-copilot/gpt-5.4",
       "status": "pass",
-      "latencyMs": 9393,
+      "latencyMs": 9019,
       "failureClass": "-",
       "note": "general-purpose passing candidate",
       "response": "OK",
@@ -1123,7 +1159,7 @@
       "provider": "github-copilot",
       "model": "github-copilot/gpt-5.4-mini",
       "status": "pass",
-      "latencyMs": 7528,
+      "latencyMs": 9703,
       "failureClass": "-",
       "note": "strong helper-cheap candidate",
       "response": "OK",
@@ -1176,6 +1212,13 @@
         "headers": {},
         "release_date": "2026-03-17",
         "variants": {
+          "none": {
+            "reasoningEffort": "none",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          },
           "low": {
             "reasoningEffort": "low",
             "reasoningSummary": "auto",
@@ -1213,7 +1256,7 @@
       "provider": "github-copilot",
       "model": "github-copilot/gemini-3.1-pro-preview",
       "status": "pass",
-      "latencyMs": 9326,
+      "latencyMs": 8553,
       "failureClass": "-",
       "note": "strong flagship candidate",
       "response": "OK",
@@ -1265,14 +1308,36 @@
         "options": {},
         "headers": {},
         "release_date": "2026-02-19",
-        "variants": {}
+        "variants": {
+          "low": {
+            "reasoningEffort": "low",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          },
+          "medium": {
+            "reasoningEffort": "medium",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          },
+          "high": {
+            "reasoningEffort": "high",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          }
+        }
       }
     },
     "codingDefault": {
       "provider": "github-copilot",
       "model": "github-copilot/gpt-5.3-codex",
       "status": "pass",
-      "latencyMs": 8199,
+      "latencyMs": 8927,
       "failureClass": "-",
       "note": "strong coding-default candidate",
       "response": "OK",
@@ -1360,7 +1425,7 @@
       "provider": "github-copilot",
       "model": "github-copilot/gemini-3-flash-preview",
       "status": "pass",
-      "latencyMs": 5893,
+      "latencyMs": 5821,
       "failureClass": "-",
       "note": "strong helper-cheap candidate",
       "response": "OK",
@@ -1412,7 +1477,29 @@
         "options": {},
         "headers": {},
         "release_date": "2025-12-17",
-        "variants": {}
+        "variants": {
+          "low": {
+            "reasoningEffort": "low",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          },
+          "medium": {
+            "reasoningEffort": "medium",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          },
+          "high": {
+            "reasoningEffort": "high",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          }
+        }
       }
     }
   }

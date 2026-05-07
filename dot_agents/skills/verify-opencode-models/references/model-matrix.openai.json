@@ -1,13 +1,13 @@
 {
   "provider": "openai",
   "prompt": "Reply with exactly: OK",
-  "generatedAt": "2026-04-27T19:02:38.389Z",
+  "generatedAt": "2026-05-07T19:28:44.005Z",
   "results": [
     {
       "provider": "openai",
       "model": "openai/codex-mini-latest",
       "status": "fail",
-      "latencyMs": 4391,
+      "latencyMs": 4795,
       "failureClass": "unexpected-response",
       "note": "Unexpected response: (empty)",
       "response": "",
@@ -76,7 +76,7 @@
       "provider": "openai",
       "model": "openai/gpt-5-codex",
       "status": "fail",
-      "latencyMs": 4680,
+      "latencyMs": 81509,
       "failureClass": "unexpected-response",
       "note": "Unexpected response: (empty)",
       "response": "",
@@ -92,7 +92,7 @@
         "providerID": "openai",
         "capabilities": {
           "temperature": false,
-          "reasoning": true,
+          "reasoning": false,
           "attachment": false,
           "toolcall": true,
           "input": {
@@ -122,35 +122,25 @@
         "options": {},
         "limit": {
           "context": 272000,
-          "input": 272000,
           "output": 128000
         },
         "headers": {},
-        "family": "gpt-codex",
-        "release_date": "2025-09-15",
+        "family": "",
+        "release_date": "",
         "variants": {
           "low": {
             "reasoningEffort": "low",
             "reasoningSummary": "auto",
-            "include": [
-              "reasoning.encrypted_content"
-            ],
             "textVerbosity": "low"
           },
           "medium": {
             "reasoningEffort": "medium",
             "reasoningSummary": "auto",
-            "include": [
-              "reasoning.encrypted_content"
-            ],
             "textVerbosity": "low"
           },
           "high": {
             "reasoningEffort": "high",
             "reasoningSummary": "detailed",
-            "include": [
-              "reasoning.encrypted_content"
-            ],
             "textVerbosity": "medium"
           }
         }
@@ -160,7 +150,7 @@
       "provider": "openai",
       "model": "openai/gpt-5.1-codex",
       "status": "fail",
-      "latencyMs": 4610,
+      "latencyMs": 4860,
       "failureClass": "unexpected-response",
       "note": "Unexpected response: (empty)",
       "response": "",
@@ -176,8 +166,8 @@
         "providerID": "openai",
         "capabilities": {
           "temperature": false,
-          "reasoning": true,
-          "attachment": true,
+          "reasoning": false,
+          "attachment": false,
           "toolcall": true,
           "input": {
             "text": true,
@@ -206,35 +196,25 @@
         "options": {},
         "limit": {
           "context": 272000,
-          "input": 272000,
           "output": 128000
         },
         "headers": {},
-        "family": "gpt-codex",
-        "release_date": "2025-11-13",
+        "family": "",
+        "release_date": "",
         "variants": {
           "low": {
             "reasoningEffort": "low",
             "reasoningSummary": "auto",
-            "include": [
-              "reasoning.encrypted_content"
-            ],
             "textVerbosity": "low"
           },
           "medium": {
             "reasoningEffort": "medium",
             "reasoningSummary": "auto",
-            "include": [
-              "reasoning.encrypted_content"
-            ],
             "textVerbosity": "low"
           },
           "high": {
             "reasoningEffort": "high",
             "reasoningSummary": "detailed",
-            "include": [
-              "reasoning.encrypted_content"
-            ],
             "textVerbosity": "medium"
           }
         }
@@ -244,7 +224,7 @@
       "provider": "openai",
       "model": "openai/gpt-5.1-codex-max",
       "status": "fail",
-      "latencyMs": 4650,
+      "latencyMs": 4535,
       "failureClass": "unexpected-response",
       "note": "Unexpected response: (empty)",
       "response": "",
@@ -260,8 +240,8 @@
         "providerID": "openai",
         "capabilities": {
           "temperature": false,
-          "reasoning": true,
-          "attachment": true,
+          "reasoning": false,
+          "attachment": false,
           "toolcall": true,
           "input": {
             "text": true,
@@ -290,34 +270,20 @@
         "options": {},
         "limit": {
           "context": 272000,
-          "input": 272000,
           "output": 128000
         },
         "headers": {},
-        "family": "gpt-codex",
-        "release_date": "2025-11-13",
+        "family": "",
+        "release_date": "",
         "variants": {
-          "low": {
-            "reasoningEffort": "low",
-            "reasoningSummary": "auto",
-            "include": [
-              "reasoning.encrypted_content"
-            ]
-          },
           "medium": {
             "reasoningEffort": "medium",
             "reasoningSummary": "detailed",
-            "include": [
-              "reasoning.encrypted_content"
-            ],
             "textVerbosity": "medium"
           },
           "high": {
             "reasoningEffort": "high",
             "reasoningSummary": "detailed",
-            "include": [
-              "reasoning.encrypted_content"
-            ],
             "textVerbosity": "medium"
           }
         }
@@ -327,7 +293,7 @@
       "provider": "openai",
       "model": "openai/gpt-5.1-codex-mini",
       "status": "fail",
-      "latencyMs": 4484,
+      "latencyMs": 4502,
       "failureClass": "unexpected-response",
       "note": "Unexpected response: (empty)",
       "response": "",
@@ -343,8 +309,8 @@
         "providerID": "openai",
         "capabilities": {
           "temperature": false,
-          "reasoning": true,
-          "attachment": true,
+          "reasoning": false,
+          "attachment": false,
           "toolcall": true,
           "input": {
             "text": true,
@@ -373,35 +339,21 @@
         "options": {},
         "limit": {
           "context": 272000,
-          "input": 272000,
           "output": 128000
         },
         "headers": {},
-        "family": "gpt-codex",
-        "release_date": "2025-11-13",
+        "family": "",
+        "release_date": "",
         "variants": {
           "low": {
             "reasoningEffort": "low",
             "reasoningSummary": "auto",
-            "include": [
-              "reasoning.encrypted_content"
-            ],
             "textVerbosity": "low"
           },
           "medium": {
             "reasoningEffort": "medium",
             "reasoningSummary": "auto",
-            "include": [
-              "reasoning.encrypted_content"
-            ],
             "textVerbosity": "low"
-          },
-          "high": {
-            "reasoningEffort": "high",
-            "reasoningSummary": "auto",
-            "include": [
-              "reasoning.encrypted_content"
-            ]
           }
         }
       }
@@ -410,7 +362,7 @@
       "provider": "openai",
       "model": "openai/gpt-5.2",
       "status": "pass",
-      "latencyMs": 8342,
+      "latencyMs": 7001,
       "failureClass": "-",
       "note": "general-purpose passing candidate",
       "response": "OK",
@@ -507,7 +459,7 @@
       "provider": "openai",
       "model": "openai/gpt-5.2-codex",
       "status": "fail",
-      "latencyMs": 4525,
+      "latencyMs": 4496,
       "failureClass": "unexpected-response",
       "note": "Unexpected response: (empty)",
       "response": "",
@@ -523,8 +475,8 @@
         "providerID": "openai",
         "capabilities": {
           "temperature": false,
-          "reasoning": true,
-          "attachment": true,
+          "reasoning": false,
+          "attachment": false,
           "toolcall": true,
           "input": {
             "text": true,
@@ -553,42 +505,21 @@
         "options": {},
         "limit": {
           "context": 272000,
-          "input": 272000,
           "output": 128000
         },
         "headers": {},
-        "family": "gpt-codex",
-        "release_date": "2025-12-11",
+        "family": "",
+        "release_date": "",
         "variants": {
           "low": {
             "reasoningEffort": "low",
             "reasoningSummary": "auto",
-            "include": [
-              "reasoning.encrypted_content"
-            ],
             "textVerbosity": "low"
           },
           "medium": {
             "reasoningEffort": "medium",
             "reasoningSummary": "auto",
-            "include": [
-              "reasoning.encrypted_content"
-            ],
             "textVerbosity": "low"
-          },
-          "high": {
-            "reasoningEffort": "high",
-            "reasoningSummary": "auto",
-            "include": [
-              "reasoning.encrypted_content"
-            ]
-          },
-          "xhigh": {
-            "reasoningEffort": "xhigh",
-            "reasoningSummary": "auto",
-            "include": [
-              "reasoning.encrypted_content"
-            ]
           }
         }
       }
@@ -597,7 +528,7 @@
       "provider": "openai",
       "model": "openai/gpt-5.3-codex",
       "status": "pass",
-      "latencyMs": 6556,
+      "latencyMs": 9009,
       "failureClass": "-",
       "note": "strong coding-default candidate",
       "response": "OK",
@@ -688,7 +619,7 @@
       "provider": "openai",
       "model": "openai/gpt-5.3-codex-spark",
       "status": "fail",
-      "latencyMs": 4491,
+      "latencyMs": 4686,
       "failureClass": "unexpected-response",
       "note": "Unexpected response: (empty)",
       "response": "",
@@ -704,8 +635,8 @@
         "providerID": "openai",
         "capabilities": {
           "temperature": false,
-          "reasoning": true,
-          "attachment": true,
+          "reasoning": false,
+          "attachment": false,
           "toolcall": true,
           "input": {
             "text": true,
@@ -734,43 +665,26 @@
         "options": {},
         "limit": {
           "context": 272000,
-          "input": 100000,
           "output": 128000
         },
         "headers": {},
-        "family": "gpt-codex-spark",
-        "release_date": "2026-02-05",
+        "family": "",
+        "release_date": "",
         "variants": {
           "low": {
             "reasoningEffort": "low",
             "reasoningSummary": "auto",
-            "include": [
-              "reasoning.encrypted_content"
-            ],
             "textVerbosity": "low"
           },
           "medium": {
             "reasoningEffort": "medium",
             "reasoningSummary": "auto",
-            "include": [
-              "reasoning.encrypted_content"
-            ],
             "textVerbosity": "low"
           },
           "high": {
             "reasoningEffort": "high",
             "reasoningSummary": "detailed",
-            "include": [
-              "reasoning.encrypted_content"
-            ],
             "textVerbosity": "medium"
-          },
-          "xhigh": {
-            "reasoningEffort": "xhigh",
-            "reasoningSummary": "auto",
-            "include": [
-              "reasoning.encrypted_content"
-            ]
           }
         }
       }
@@ -779,7 +693,7 @@
       "provider": "openai",
       "model": "openai/gpt-5.4",
       "status": "pass",
-      "latencyMs": 9700,
+      "latencyMs": 9107,
       "failureClass": "-",
       "note": "general-purpose passing candidate",
       "response": "OK",
@@ -877,7 +791,7 @@
       "provider": "openai",
       "model": "openai/gpt-5.4-fast",
       "status": "pass",
-      "latencyMs": 6775,
+      "latencyMs": 6256,
       "failureClass": "-",
       "note": "fast general-purpose candidate",
       "response": "OK",
@@ -974,7 +888,7 @@
       "provider": "openai",
       "model": "openai/gpt-5.4-mini",
       "status": "pass",
-      "latencyMs": 8106,
+      "latencyMs": 7106,
       "failureClass": "-",
       "note": "strong helper-cheap candidate",
       "response": "OK",
@@ -1071,7 +985,7 @@
       "provider": "openai",
       "model": "openai/gpt-5.4-mini-fast",
       "status": "pass",
-      "latencyMs": 5795,
+      "latencyMs": 6973,
       "failureClass": "-",
       "note": "strong helper-cheap candidate",
       "response": "OK",
@@ -1166,9 +1080,147 @@
     },
     {
       "provider": "openai",
+      "model": "openai/gpt-5.4-nano",
+      "status": "fail",
+      "latencyMs": 4697,
+      "failureClass": "unexpected-response",
+      "note": "Unexpected response: (empty)",
+      "response": "",
+      "meta": {
+        "id": "gpt-5.4-nano",
+        "api": {
+          "id": "gpt-5.4-nano",
+          "npm": "@ai-sdk/openai",
+          "url": ""
+        },
+        "status": "active",
+        "name": "GPT 5.4 Nano (OAuth)",
+        "providerID": "openai",
+        "capabilities": {
+          "temperature": false,
+          "reasoning": false,
+          "attachment": false,
+          "toolcall": true,
+          "input": {
+            "text": true,
+            "audio": false,
+            "image": true,
+            "video": false,
+            "pdf": false
+          },
+          "output": {
+            "text": true,
+            "audio": false,
+            "image": false,
+            "video": false,
+            "pdf": false
+          },
+          "interleaved": false
+        },
+        "cost": {
+          "input": 0,
+          "output": 0,
+          "cache": {
+            "read": 0,
+            "write": 0
+          }
+        },
+        "options": {},
+        "limit": {
+          "context": 272000,
+          "output": 128000
+        },
+        "headers": {},
+        "family": "",
+        "release_date": "",
+        "variants": {
+          "low": {
+            "reasoningEffort": "low",
+            "reasoningSummary": "auto",
+            "textVerbosity": "low"
+          },
+          "medium": {
+            "reasoningEffort": "medium",
+            "reasoningSummary": "auto",
+            "textVerbosity": "low"
+          }
+        }
+      }
+    },
+    {
+      "provider": "openai",
+      "model": "openai/gpt-5.4-pro",
+      "status": "fail",
+      "latencyMs": 4517,
+      "failureClass": "unexpected-response",
+      "note": "Unexpected response: (empty)",
+      "response": "",
+      "meta": {
+        "id": "gpt-5.4-pro",
+        "api": {
+          "id": "gpt-5.4-pro",
+          "npm": "@ai-sdk/openai",
+          "url": ""
+        },
+        "status": "active",
+        "name": "GPT 5.4 Pro (OAuth)",
+        "providerID": "openai",
+        "capabilities": {
+          "temperature": false,
+          "reasoning": false,
+          "attachment": false,
+          "toolcall": true,
+          "input": {
+            "text": true,
+            "audio": false,
+            "image": true,
+            "video": false,
+            "pdf": false
+          },
+          "output": {
+            "text": true,
+            "audio": false,
+            "image": false,
+            "video": false,
+            "pdf": false
+          },
+          "interleaved": false
+        },
+        "cost": {
+          "input": 0,
+          "output": 0,
+          "cache": {
+            "read": 0,
+            "write": 0
+          }
+        },
+        "options": {},
+        "limit": {
+          "context": 272000,
+          "output": 128000
+        },
+        "headers": {},
+        "family": "",
+        "release_date": "",
+        "variants": {
+          "medium": {
+            "reasoningEffort": "medium",
+            "reasoningSummary": "detailed",
+            "textVerbosity": "medium"
+          },
+          "high": {
+            "reasoningEffort": "high",
+            "reasoningSummary": "detailed",
+            "textVerbosity": "medium"
+          }
+        }
+      }
+    },
+    {
+      "provider": "openai",
       "model": "openai/gpt-5.5",
       "status": "pass",
-      "latencyMs": 7240,
+      "latencyMs": 9803,
       "failureClass": "-",
       "note": "general-purpose passing candidate",
       "response": "OK",
@@ -1213,7 +1265,7 @@
         },
         "options": {},
         "limit": {
-          "context": 400000,
+          "context": 272000,
           "input": 272000,
           "output": 128000
         },
@@ -1266,7 +1318,7 @@
       "provider": "openai",
       "model": "openai/gpt-5.5-fast",
       "status": "pass",
-      "latencyMs": 6601,
+      "latencyMs": 10919,
       "failureClass": "-",
       "note": "fast general-purpose candidate",
       "response": "OK",
@@ -1363,7 +1415,7 @@
       "provider": "openai",
       "model": "openai/gpt-5.5-pro",
       "status": "fail",
-      "latencyMs": 4433,
+      "latencyMs": 4516,
       "failureClass": "unexpected-response",
       "note": "Unexpected response: (empty)",
       "response": "",
@@ -1379,8 +1431,8 @@
         "providerID": "openai",
         "capabilities": {
           "temperature": false,
-          "reasoning": false,
-          "attachment": false,
+          "reasoning": true,
+          "attachment": true,
           "toolcall": true,
           "input": {
             "text": true,
@@ -1408,23 +1460,50 @@
         },
         "options": {},
         "limit": {
-          "context": 400000,
+          "context": 272000,
           "input": 272000,
           "output": 128000
         },
         "headers": {},
-        "family": "",
-        "release_date": "",
+        "family": "gpt-pro",
+        "release_date": "2026-04-23",
         "variants": {
+          "none": {
+            "reasoningEffort": "none",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          },
+          "low": {
+            "reasoningEffort": "low",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          },
           "medium": {
             "reasoningEffort": "medium",
             "reasoningSummary": "detailed",
+            "include": [
+              "reasoning.encrypted_content"
+            ],
             "textVerbosity": "medium"
           },
           "high": {
             "reasoningEffort": "high",
             "reasoningSummary": "detailed",
+            "include": [
+              "reasoning.encrypted_content"
+            ],
             "textVerbosity": "medium"
+          },
+          "xhigh": {
+            "reasoningEffort": "xhigh",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
           }
         }
       }
@@ -1435,7 +1514,7 @@
       "provider": "openai",
       "model": "openai/gpt-5.5",
       "status": "pass",
-      "latencyMs": 7240,
+      "latencyMs": 9803,
       "failureClass": "-",
       "note": "general-purpose passing candidate",
       "response": "OK",
@@ -1480,7 +1559,7 @@
         },
         "options": {},
         "limit": {
-          "context": 400000,
+          "context": 272000,
           "input": 272000,
           "output": 128000
         },
@@ -1533,7 +1612,7 @@
       "provider": "openai",
       "model": "openai/gpt-5.3-codex",
       "status": "pass",
-      "latencyMs": 6556,
+      "latencyMs": 9009,
       "failureClass": "-",
       "note": "strong coding-default candidate",
       "response": "OK",
@@ -1624,7 +1703,7 @@
       "provider": "openai",
       "model": "openai/gpt-5.4-mini-fast",
       "status": "pass",
-      "latencyMs": 5795,
+      "latencyMs": 6973,
       "failureClass": "-",
       "note": "strong helper-cheap candidate",
       "response": "OK",
