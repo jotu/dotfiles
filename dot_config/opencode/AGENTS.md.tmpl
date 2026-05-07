@@ -92,3 +92,14 @@ For platform or infrastructure work, run the closest equivalent validation and i
 - Use special-use roles intentionally, not as part of the default flow.
 - Avoid overlapping experts reading the same context without clear need.
 - Do not create one agent per tool or technology.
+
+## Model routing policy
+
+Use role-tier routing instead of a single premium model for all roles.
+
+- Flagship reasoning roles (`plan`, `orchestrator`, `reviewer`, `architect`, `ai-workflow-engineer`, `oracle`, `security-engineer`, `ultrabrain`) use strongest reasoning routes.
+- Coding-default roles (`sisyphus`, `build`, `platform-engineer`, `developer-platform-engineer`, `builder`, `delivery-engineer`, `observability-engineer`, `explore`, `deep`) use strong coding routes.
+- Visual and multimodal roles (`frontend-ui-ux-engineer`, `multimodal-looker`, `visual-engineering`, `multimodal`) use visual-capable routes.
+- Helper-cheap roles (`librarian`, `document-writer`, `quick`, `unspecified-low`, `documentation`) use cost-efficient fast routes.
+
+For upstream warnings that Sisyphus "works best with Claude Opus," treat that as upstream Opus-first guidance. Keep local overrides only when provider-path verification confirms stable behavior.

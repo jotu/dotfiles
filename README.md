@@ -137,7 +137,19 @@ mise run gh:auth:status:all
 - Both profiles are available on both machines; you can switch any time.
 - Upstream plugin docs now prefer the `oh-my-openagent` plugin entry and sidecar basename during the rename transition, and this repo manages the runtime basename `~/.config/opencode/oh-my-openagent.json` directly.
 - For OpenAI/Codex routing, treat provider catalog entries as available options, not guaranteed-compatible defaults. Any active `model` or `small_model` route must be compatible with the account/auth path in use.
-- In practice, ChatGPT-backed Codex accounts should use active routes that are known to work for that auth flow. In this repo, keep `openai/gpt-5.3-codex` as the active OpenCode route in `opencode.json`, use `openai/gpt-5.4` for the active `oh-my-openagent` work agent/category routes, and treat `openai/gpt-5.3-codex-spark`, `openai/gpt-5.1-codex-mini`, and `openai/codex-mini-latest` as catalog entries rather than active defaults for this auth path.
+- In practice, ChatGPT-backed Codex accounts should use active routes that are known to work for that auth flow. In this repo, keep `openai/gpt-5.3-codex` as the active OpenCode route in `opencode.json` and apply role-tier routing for `oh-my-openagent` work profiles: `openai/gpt-5.5` for flagship reasoning roles, `openai/gpt-5.3-codex` for coding-default roles, `openai/gpt-5.4` for visual/multimodal roles, and `openai/gpt-5.4-mini` for helper-cheap roles. Treat `openai/gpt-5.3-codex-spark`, `openai/gpt-5.1-codex-mini`, and `openai/codex-mini-latest` as catalog entries rather than active defaults for this auth path.
+
+### oh-my-openagent model warning policy
+
+If you see warnings that Sisyphus "works best with Claude Opus," treat them as an upstream **Opus-first default recommendation**.
+
+- In this repo, Sisyphus uses a verified coding-default override (`gpt-5.3-codex` on both work and personal profiles) for cost/performance balance.
+- Keep this override only when model verification confirms the active provider/auth path is stable.
+- Keep flagship reasoning roles (`plan`, `oracle`, `reviewer`, `architect`, `ultrabrain`) on stronger reasoning models.
+- Keep helper and throughput roles (`quick`, `librarian`, `documentation`) on cheaper fast models.
+- Keep visual and multimodal roles on models tuned for those tasks.
+
+This preserves quality where it matters most while controlling cost and latency. Do not force every role onto a single premium model, and do not treat upstream defaults as universally optimal for every local provider path.
 
 Switch OpenCode profile quickly:
 
