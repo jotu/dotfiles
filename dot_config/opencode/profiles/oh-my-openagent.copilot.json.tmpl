@@ -2,8 +2,11 @@
   "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/v3.17.5/assets/oh-my-opencode.schema.json",
   "agents": {
     "sisyphus": {
-      "model": "github-copilot/gpt-5.3-codex",
+      "model": "github-copilot/claude-opus-4.7",
       "prompt_append": "Session bootstrap reminder: for fresh tasks, suggest `/new-task <task_request>` to load repo context and validation scope before implementation."
+    },
+    "hephaestus": {
+      "model": "github-copilot/gpt-5.3-codex"
     },
     "plan": {
       "model": "github-copilot/gemini-3.1-pro-preview"
