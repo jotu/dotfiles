@@ -137,7 +137,9 @@ mise run gh:auth:status:all
 - Both profiles are available on both machines; you can switch any time.
 - Upstream plugin docs now prefer the `oh-my-openagent` plugin entry and sidecar basename during the rename transition, and this repo manages the runtime basename `~/.config/opencode/oh-my-openagent.json` directly.
 - For OpenAI/Codex routing, treat provider catalog entries as available options, not guaranteed-compatible defaults. Any active `model` or `small_model` route must be compatible with the account/auth path in use.
-- In practice, ChatGPT-backed Codex accounts should use active routes that are known to work for that auth flow. In this repo, keep `openai/gpt-5.3-codex` as the active OpenCode route in `opencode.json` and apply role-tier routing for `oh-my-openagent` work profiles: `openai/gpt-5.5` for flagship reasoning roles, `openai/gpt-5.3-codex` for coding-default roles, `openai/gpt-5.4` for visual/multimodal roles, and `openai/gpt-5.4-mini` for helper-cheap roles. Treat `openai/gpt-5.3-codex-spark`, `openai/gpt-5.1-codex-mini`, and `openai/codex-mini-latest` as catalog entries rather than active defaults for this auth path.
+- In practice, ChatGPT-backed Codex accounts should use active routes that are known to work for that auth flow. In this repo, keep `openai/gpt-5.3-codex` as the active OpenCode route in `opencode.json` and apply role-tier routing for `oh-my-openagent` work profiles: `openai/gpt-5.5` for flagship reasoning roles, `openai/gpt-5.3-codex` for coding-default roles, `openai/gpt-5.4` for visual/multimodal roles, and `openai/gpt-5.4-mini` for helper-cheap roles.
+- Current OpenAI OAuth verification in this repo shows `openai/gpt-5.4-mini` and `openai/gpt-5.4-mini-fast` working on the ChatGPT-backed auth path, while `openai/gpt-5.4-nano` does not. Keep `nano` as a catalog entry only unless a future matrix refresh proves otherwise.
+- Treat `openai/gpt-5.3-codex-spark`, `openai/gpt-5.1-codex-mini`, `openai/codex-mini-latest`, and `openai/gpt-5.4-nano` as catalog entries rather than active defaults for this auth path.
 
 ### oh-my-openagent model warning policy
 
