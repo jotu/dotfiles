@@ -16,7 +16,7 @@
       },
       "models": {
         "codex-mini-latest": {
-          "name": "Codex Mini Latest (OAuth, DO NOT USE)",
+          "name": "Codex Mini Latest (Catalog entry; unverified on current OAuth path, DO NOT USE)",
           "limit": {
             "context": 272000,
             "output": 128000
@@ -39,7 +39,7 @@
           }
         },
         "gpt-5-codex": {
-          "name": "GPT 5 Codex (OAuth)",
+          "name": "GPT 5 Codex (Catalog entry; verify OAuth access)",
           "limit": {
             "context": 272000,
             "output": 128000
@@ -67,7 +67,7 @@
           }
         },
         "gpt-5.1-codex": {
-          "name": "GPT 5.1 Codex (OAuth)",
+          "name": "GPT 5.1 Codex (Catalog entry; verify OAuth access)",
           "limit": {
             "context": 272000,
             "output": 128000
@@ -95,7 +95,7 @@
           }
         },
         "gpt-5.1-codex-max": {
-          "name": "GPT 5.1 Codex Max (OAuth)",
+          "name": "GPT 5.1 Codex Max (Catalog entry; verify OAuth access)",
           "limit": {
             "context": 272000,
             "output": 128000
@@ -118,7 +118,7 @@
           }
         },
         "gpt-5.1-codex-mini": {
-          "name": "GPT 5.1 Codex Mini (OAuth, DO NOT USE)",
+          "name": "GPT 5.1 Codex Mini (Catalog entry; unverified on current OAuth path, DO NOT USE)",
           "limit": {
             "context": 272000,
             "output": 128000
@@ -164,7 +164,7 @@
           }
         },
         "gpt-5.2-codex": {
-          "name": "GPT 5.2 Codex (OAuth)",
+          "name": "GPT 5.2 Codex (Catalog entry; verify OAuth access)",
           "limit": {
             "context": 272000,
             "output": 128000
@@ -215,7 +215,7 @@
           }
         },
         "gpt-5.3-codex-spark": {
-          "name": "GPT 5.3 Codex Spark (OAuth)",
+          "name": "GPT 5.3 Codex Spark (Catalog entry; verify OAuth access)",
           "limit": {
             "context": 272000,
             "output": 128000
@@ -270,6 +270,29 @@
             }
           }
         },
+        "gpt-5.4-fast": {
+          "name": "GPT 5.4 Fast (OAuth)",
+          "limit": {
+            "context": 272000,
+            "output": 128000
+          },
+          "modalities": {
+            "input": ["text", "image"],
+            "output": ["text"]
+          },
+          "variants": {
+            "low": {
+              "reasoningEffort": "low",
+              "reasoningSummary": "auto",
+              "textVerbosity": "low"
+            },
+            "medium": {
+              "reasoningEffort": "medium",
+              "reasoningSummary": "auto",
+              "textVerbosity": "low"
+            }
+          }
+        },
         "gpt-5.4-mini": {
           "name": "GPT 5.4 Mini (OAuth)",
           "limit": {
@@ -293,8 +316,31 @@
             }
           }
         },
+        "gpt-5.4-mini-fast": {
+          "name": "GPT 5.4 Mini Fast (OAuth)",
+          "limit": {
+            "context": 272000,
+            "output": 128000
+          },
+          "modalities": {
+            "input": ["text", "image"],
+            "output": ["text"]
+          },
+          "variants": {
+            "low": {
+              "reasoningEffort": "low",
+              "reasoningSummary": "auto",
+              "textVerbosity": "low"
+            },
+            "medium": {
+              "reasoningEffort": "medium",
+              "reasoningSummary": "auto",
+              "textVerbosity": "low"
+            }
+          }
+        },
         "gpt-5.4-nano": {
-          "name": "GPT 5.4 Nano (OAuth)",
+          "name": "GPT 5.4 Nano (Catalog entry; does not work on current OAuth path)",
           "limit": {
             "context": 272000,
             "output": 128000
@@ -317,7 +363,7 @@
           }
         },
         "gpt-5.4-pro": {
-          "name": "GPT 5.4 Pro (OAuth)",
+          "name": "GPT 5.4 Pro (Catalog entry; verify OAuth access)",
           "limit": {
             "context": 272000,
             "output": 128000
@@ -368,7 +414,7 @@
           }
         },
         "gpt-5.5-pro": {
-          "name": "GPT 5.5 Pro (OAuth)",
+          "name": "GPT 5.5 Pro (Catalog entry; verify OAuth access)",
           "limit": {
             "context": 272000,
             "output": 128000
@@ -421,6 +467,11 @@
           }
         },
         "claude-opus-4.6": {
+          "options": {
+            "textVerbosity": "medium"
+          }
+        },
+        "claude-opus-4.7": {
           "options": {
             "textVerbosity": "medium"
           }
