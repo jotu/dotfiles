@@ -103,3 +103,5 @@ Use role-tier routing instead of a single premium model for all roles.
 - Helper-cheap roles (`librarian`, `document-writer`, `quick`, `unspecified-low`, `documentation`) use cost-efficient fast routes.
 
 For upstream warnings that Sisyphus "works best with Claude Opus," treat that as upstream Opus-first guidance. Keep local overrides only when provider-path verification confirms stable behavior.
+
+Do not route Sisyphus to GPT models except GPT-5.4 (specialized support). On GitHub Copilot, prefer Claude Opus for Sisyphus. For other GPT routes, use Hephaestus.

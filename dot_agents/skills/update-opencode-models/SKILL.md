@@ -65,7 +65,7 @@ Use a quality-first, cost-aware mix (never max-cost everywhere, never cheapest e
 - Small: `small_model = openai/gpt-5.4-mini`
 - Keep flagship reasoning roles like `plan`, `oracle`, `architect`, `reviewer`, and `ultrabrain` on `openai/gpt-5.5`
 - Keep OpenCode `model` on `openai/gpt-5.3-codex` and `small_model` on `openai/gpt-5.4-mini`
-- Use `openai/gpt-5.3-codex` for coding-heavy OpenAI routes like `sisyphus`, `build`, `platform-engineer`, `developer-platform-engineer`, `builder`, `delivery-engineer`, `observability-engineer`, `explore`, and `deep`
+- Use `openai/gpt-5.4` for `sisyphus` (GPT-specialized support route), use `openai/gpt-5.3-codex` for `hephaestus`, and keep `openai/gpt-5.3-codex` for other coding-heavy OpenAI routes like `build`, `platform-engineer`, `developer-platform-engineer`, `builder`, `delivery-engineer`, `observability-engineer`, `explore`, and `deep`
 - Use `openai/gpt-5.4-mini` for helper OpenAI routes like `quick`, `unspecified-low`, `documentation`, `document-writer`, and lightweight `librarian`
 - Keep `openai/gpt-5.4` for OpenAI visual and multimodal routes like `frontend-ui-ux-engineer`, `visual-engineering`, `multimodal`, and `multimodal-looker`
 
@@ -76,7 +76,7 @@ Use a quality-first, cost-aware mix (never max-cost everywhere, never cheapest e
 - Keep `ultrabrain` on `github-copilot/gemini-3.1-pro-preview`
 - Keep visual/multimodal roles on `github-copilot/gemini-3.1-pro-preview`
 - Keep flagship reasoning roles like `plan`, `orchestrator`, `reviewer`, `architect`, `ai-workflow-engineer`, `oracle`, and `security-engineer` on `github-copilot/gemini-3.1-pro-preview`
-- Keep `sisyphus`, `build`, `deep` on `github-copilot/gpt-5.3-codex`
+- Keep `sisyphus` on `github-copilot/claude-opus-4.7`; keep `hephaestus`, `build`, and `deep` on `github-copilot/gpt-5.3-codex`
 - Keep helper routes like `quick`, `librarian`, `documentation`, `document-writer`, and `unspecified-low` on `github-copilot/gemini-3-flash-preview`
 - Optional alternative for personal flagship reasoning: Claude Opus tier, if explicitly selected by the user for Anthropic-style reasoning preference.
 
