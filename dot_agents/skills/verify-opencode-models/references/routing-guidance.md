@@ -1,6 +1,6 @@
 # Routing Guidance
 
-Use this reference after model verification succeeds and you need to turn the results into safe OpenCode and oh-my-openagent routing.
+Use this reference after model verification succeeds and you need to turn the results into safe OpenCode routing.
 
 ## Purpose
 
@@ -35,7 +35,6 @@ Typical targets:
 
 - OpenCode `model`
 - `build`
-- `sisyphus`
 - `deep`
 - `explore`
 - `librarian`

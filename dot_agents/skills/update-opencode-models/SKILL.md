@@ -1,6 +1,6 @@
 ---
 name: update-opencode-models
-description: Update OpenCode model routing for work (OpenAI), personal (GitHub Copilot), or both across opencode and oh-my-openagent template/profile files. Use when refreshing model catalogs, changing default model mix, or syncing role/category model assignments.
+description: Update the single native OpenCode template for work and personal defaults. Use when refreshing model catalogs, changing the default model mix, or keeping the chezmoi-rendered config aligned.
 ---
 
 # Update OpenCode Models
@@ -10,8 +10,8 @@ Update model configuration with explicit scope control.
 ## Required Input
 
 Accept one scope:
-- `work` -> update only OpenAI work-mode routing
-- `personal` -> update only GitHub Copilot personal-mode routing
+- `work` -> update only work-machine defaults and provider catalogs
+- `personal` -> update only personal-machine defaults and provider catalogs
 - `both` -> update both trees
 
 Default scope: `both`.
@@ -19,11 +19,6 @@ Default scope: `both`.
 ## Target Files
 
 - `dot_config/opencode/opencode.json.tmpl`
-- `dot_config/opencode/oh-my-openagent.json.tmpl`
-- `dot_config/opencode/profiles/oh-my-openagent.copilot.json.tmpl`
-- `dot_config/opencode/profiles/oh-my-openagent.openai.json.tmpl`
-- `dot_config/opencode/profiles/opencode.copilot.json.tmpl`
-- `dot_config/opencode/profiles/opencode.openai.json.tmpl`
 
 ## Procedure
 
@@ -34,61 +29,48 @@ Default scope: `both`.
 2. Read the matrix artifacts and recommendations from:
    - `dot_agents/skills/verify-opencode-models/references/model-matrix.openai.json`
    - `dot_agents/skills/verify-opencode-models/references/model-matrix.github-copilot.json`
-3. Read all target files.
-4. Build available model catalogs per provider from `provider.*.models` keys in:
-   - `dot_config/opencode/opencode.json.tmpl`
-   - `dot_config/opencode/profiles/opencode.openai.json.tmpl`
-   - `dot_config/opencode/profiles/opencode.copilot.json.tmpl`
+3. Read the target file.
+4. Build available model catalogs per provider from `provider.*.models` keys in `dot_config/opencode/opencode.json.tmpl`.
 5. Assign only models that both exist in each provider catalog and pass in the refreshed verified matrix.
 6. Apply requested scope:
-   - `work`: update only OpenAI branch values (`{{- if .work.enable }}`) and OpenAI profile files
-   - `personal`: update only Copilot branch values (`{{- else }}`) and Copilot profile files
-   - `both`: update both branches and both profile sets
-7. Keep mirrored routing consistent:
-- `dot_config/opencode/oh-my-openagent.json.tmpl` <-> `dot_config/opencode/profiles/oh-my-openagent.openai.json.tmpl` and `dot_config/opencode/profiles/oh-my-openagent.copilot.json.tmpl`
-   - `dot_config/opencode/opencode.json.tmpl` <-> `dot_config/opencode/profiles/opencode.openai.json.tmpl` and `dot_config/opencode/profiles/opencode.copilot.json.tmpl`
+   - `work`: update only work-machine branch values (`{{- if .work.enable }}`)
+   - `personal`: update only personal-machine branch values (`{{- else }}`)
+   - `both`: update both branches in the single template
 
 ## Optimization Target
 
 Use a quality-first, cost-aware mix (never max-cost everywhere, never cheapest everywhere):
 
-- Flagship models for high-risk reasoning/planning roles
-- Strong coding models for implementation-heavy roles
-- Cost-efficient models for high-throughput helper roles
-- Mid-tier defaults for general routing
+- Strong default model for the main coding flow
+- Cost-efficient small model for lightweight tasks
+- Provider catalogs that retain verified usable options without forcing them as defaults
 
 ## Baseline Routing
 
-### Work (OpenAI)
+### Work
 
 - Default: `model = openai/gpt-5.3-codex`
 - Small: `small_model = openai/gpt-5.4-mini`
-- Keep flagship reasoning roles like `plan`, `oracle`, `architect`, `reviewer`, and `ultrabrain` on `openai/gpt-5.5`
-- Keep OpenCode `model` on `openai/gpt-5.3-codex` and `small_model` on `openai/gpt-5.4-mini`
-- Use `openai/gpt-5.4` for `sisyphus` (GPT-specialized support route), use `openai/gpt-5.3-codex` for `hephaestus`, and keep `openai/gpt-5.3-codex` for other coding-heavy OpenAI routes like `build`, `platform-engineer`, `developer-platform-engineer`, `builder`, `delivery-engineer`, `observability-engineer`, `explore`, and `deep`
-- Use `openai/gpt-5.4-mini` for helper OpenAI routes like `quick`, `unspecified-low`, `documentation`, `document-writer`, and lightweight `librarian`
-- Keep `openai/gpt-5.4` for OpenAI visual and multimodal routes like `frontend-ui-ux-engineer`, `visual-engineering`, `multimodal`, and `multimodal-looker`
+- Keep both `openai` and `github-copilot` providers available on work machines.
+- Keep OpenCode `model` on `openai/gpt-5.3-codex` and `small_model` on `openai/gpt-5.4-mini` unless refreshed verification proves a better default.
+- Keep verified OpenAI catalog entries available for explicit selection without promoting unverified options to defaults.
 
-### Personal (GitHub Copilot)
+### Personal
 
 - Default: `model = github-copilot/gpt-5.3-codex`
 - Small: `small_model = github-copilot/gemini-3-flash-preview`
-- Keep `ultrabrain` on `github-copilot/gemini-3.1-pro-preview`
-- Keep visual/multimodal roles on `github-copilot/gemini-3.1-pro-preview`
-- Keep flagship reasoning roles like `plan`, `orchestrator`, `reviewer`, `architect`, `ai-workflow-engineer`, `oracle`, and `security-engineer` on `github-copilot/gemini-3.1-pro-preview`
-- Keep `sisyphus` on `github-copilot/claude-opus-4.7`; keep `hephaestus`, `build`, and `deep` on `github-copilot/gpt-5.3-codex`
-- Keep helper routes like `quick`, `librarian`, `documentation`, `document-writer`, and `unspecified-low` on `github-copilot/gemini-3-flash-preview`
-- Optional alternative for personal flagship reasoning: Claude Opus tier, if explicitly selected by the user for Anthropic-style reasoning preference.
+- Keep GitHub Copilot as the only managed provider on personal/home machines.
+- Keep OpenCode `model` on `github-copilot/gpt-5.3-codex` and `small_model` on `github-copilot/gemini-3-flash-preview` unless refreshed verification proves a better default.
+- Keep verified Copilot catalog entries available for explicit selection without promoting unverified options to defaults.
 
-## Profile Defaults and Switching
+## Rendered Machine Defaults
 
-- Work machines (`work.enable = true`) default to the OpenAI/Codex profile.
-- Personal machines (`work.enable = false`) default to the GitHub Copilot profile.
-- On work machines, switch to Copilot at any time: `mise run opencode:profile:copilot`
-- Switch back to OpenAI: `mise run opencode:profile:openai`
-- Check the active profile: `mise run opencode:profile:current`
+- Work machines (`work.enable = true`) render an OpenAI/Codex-default config and keep both OpenAI and GitHub Copilot available.
+- Personal machines (`work.enable = false`) render a GitHub Copilot-default config and keep GitHub Copilot as the only managed provider.
+- Check the active rendered config: `mise run opencode:config:current`
+- Do not reintroduce manual profile switching or separate rendered profile files unless the user explicitly asks for that operating model.
 
-When updating routing, apply the correct scope (`work`, `personal`, or `both`) to match the target machine type.
+When updating defaults, apply the correct scope (`work`, `personal`, or `both`) to match the target machine type.
 
 ## Guardrails
 
@@ -104,4 +86,4 @@ Run repository task:
 
 Then show scoped changes:
 
-- `git diff -- dot_config/opencode/opencode.json.tmpl dot_config/opencode/oh-my-openagent.json.tmpl dot_config/opencode/profiles/oh-my-openagent.copilot.json.tmpl dot_config/opencode/profiles/oh-my-openagent.openai.json.tmpl dot_config/opencode/profiles/opencode.copilot.json.tmpl dot_config/opencode/profiles/opencode.openai.json.tmpl`
+- `git diff -- dot_config/opencode/opencode.json.tmpl`

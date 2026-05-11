@@ -1,11 +1,11 @@
 ---
 name: verify-opencode-models
-description: Verify provider model availability for OpenCode and oh-my-openagent by enumerating models through mise tasks, smoke-testing each model with a tiny prompt, building a pass/fail matrix, and recommending safe routing before updating config. Use when selecting OpenAI or GitHub Copilot models, debugging unsupported-model errors, refreshing model settings, or replacing failing model routes.
+description: Verify provider model availability for native OpenCode by enumerating models through mise tasks, smoke-testing each model with a tiny prompt, building a pass/fail matrix, and recommending safe routing before updating config. Use when selecting OpenAI or GitHub Copilot models, debugging unsupported-model errors, refreshing model settings, or replacing failing model routes.
 ---
 
 # Verify OpenCode Models
 
-Verify live model usability before assigning provider models to OpenCode or oh-my-openagent.
+Verify live model usability before assigning provider models to OpenCode.
 
 ## Required Input
 
@@ -87,6 +87,8 @@ Use environment variables when the user wants a narrower run:
 Run repository task:
 
 - `mise run opencode:models:validate`
+
+This validation should protect the single canonical `dot_config/opencode/opencode.json.tmpl` and both machine-mode branches derived from `work.enable`.
 
 Then refresh the smallest useful matrix for the requested provider, for example:
 
