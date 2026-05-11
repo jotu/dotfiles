@@ -130,37 +130,23 @@ mise run gh:auth:login:work
 mise run gh:auth:status:all
 ```
 
-## OpenCode profile defaults
+## OpenCode config defaults
 
-- Work machines (`work.enable = true`) default to OpenAI/Codex profile.
-- Personal machines (`work.enable = false`) default to GitHub Copilot profile.
-- Both profiles are available on both machines; you can switch any time.
-- Upstream plugin docs now prefer the `oh-my-openagent` plugin entry and sidecar basename during the rename transition, and this repo manages the runtime basename `~/.config/opencode/oh-my-openagent.json` directly.
-- For OpenAI/Codex routing, treat provider catalog entries as available options, not guaranteed-compatible defaults. Any active `model` or `small_model` route must be compatible with the account/auth path in use.
-- In practice, ChatGPT-backed Codex accounts should use active routes that are known to work for that auth flow. In this repo, keep `openai/gpt-5.3-codex` as the active OpenCode route in `opencode.json` and apply role-tier routing for `oh-my-openagent` work profiles: `openai/gpt-5.5` for flagship reasoning roles, `openai/gpt-5.4` for `sisyphus`, `openai/gpt-5.3-codex` for `hephaestus` and other coding-default roles, `openai/gpt-5.4` for visual/multimodal roles, and `openai/gpt-5.4-mini` for helper-cheap roles.
-- Current OpenAI OAuth verification in this repo shows `openai/gpt-5.4-mini` and `openai/gpt-5.4-mini-fast` working on the ChatGPT-backed auth path, while `openai/gpt-5.4-nano` does not. Keep `nano` as a catalog entry only unless a future matrix refresh proves otherwise.
-- Treat `openai/gpt-5.3-codex-spark`, `openai/gpt-5.1-codex-mini`, `openai/codex-mini-latest`, and `openai/gpt-5.4-nano` as catalog entries rather than active defaults for this auth path.
+- `work.enable` determines the single rendered OpenCode config for the machine.
+- Work machines (`work.enable = true`) render an OpenAI-first config and keep both `openai` and `github-copilot` available.
+- Home/personal machines (`work.enable = false`) render GitHub Copilot only.
+- On work, keep `model = openai/gpt-5.3-codex` and `small_model = openai/gpt-5.4-mini` as the default OpenCode routes while still exposing the Copilot catalog for explicit `provider/model` selection.
+- On home, keep `model = github-copilot/gpt-5.3-codex` and `small_model = github-copilot/gemini-3-flash-preview`.
+- Treat provider catalog entries as available options, not guaranteed-compatible defaults. Any active `model` or `small_model` route must be compatible with the account/auth path in use.
+- Keep the default `model` and `small_model` aligned with the strongest verified options for the active provider setup.
 
-### oh-my-openagent model warning policy
-
-If you see warnings that Sisyphus "works best with Claude Opus," treat them as an upstream **Opus-first default recommendation**.
-
-- In this repo, Sisyphus uses the GPT-5.4 specialized-support route on work/OpenAI and Claude Opus on personal/GitHub Copilot (`gpt-5.4` for work, `claude-opus-4.7` for personal).
-- For GPT routes other than 5.4, prefer Hephaestus instead of Sisyphus (`gpt-5.3-codex` in the current work/personal profiles).
-- Keep this override only when model verification confirms the active provider/auth path is stable.
-- Keep flagship reasoning roles (`plan`, `oracle`, `reviewer`, `architect`, `ultrabrain`) on stronger reasoning models.
-- Keep helper and throughput roles (`quick`, `librarian`, `documentation`) on cheaper fast models.
-- Keep visual and multimodal roles on models tuned for those tasks.
-
-This preserves quality where it matters most while controlling cost and latency. Do not force every role onto a single premium model, and do not treat upstream defaults as universally optimal for every local provider path.
-
-Switch OpenCode profile quickly:
+Inspect the rendered OpenCode config:
 
 ```bash
-mise run opencode:profile:copilot
-mise run opencode:profile:openai
-mise run opencode:profile:current
+mise run opencode:config:current
 ```
+
+There is no manual OpenCode profile switching anymore. If machine context changes, update `work.enable` and re-run `chezmoi apply`.
 
 OpenCode config maintenance note:
 
@@ -168,13 +154,7 @@ OpenCode config maintenance note:
   - `permission.json.tmpl`
   - `plugins-openai.json.tmpl`
   - `plugins-copilot.json.tmpl`
-- These shared fragments are included by:
-  - `dot_config/opencode/opencode.json.tmpl`
-  - `dot_config/opencode/profiles/opencode.openai.json.tmpl`
-  - `dot_config/opencode/profiles/opencode.copilot.json.tmpl`
-- `oh-my-openagent` templates in this repo track the current upstream schema from `code-yeongyu/oh-my-openagent` and render the `oh-my-openagent.json` basename locally.
-- The published package and CLI binary remain `oh-my-opencode`, but this repo manages only the canonical `oh-my-openagent` sidecar basename so legacy `oh-my-opencode.*` files cannot shadow the managed config during the compatibility window.
-- The managed work/OpenAI runtime template includes the expected `_migrations` metadata for the current GPT-5.4 routing so runtime-generated migration metadata does not immediately reintroduce chezmoi drift.
+- These shared fragments are included by `dot_config/opencode/opencode.json.tmpl`.
 - Keep only genuinely shared blocks there. Provider catalogs, model routes, and other profile-specific behavior should stay in the owning template.
 - When changing OpenCode config templates, always run `mise run opencode:models:validate` so chezmoi renders the templates before JSON validation.
 
@@ -182,7 +162,7 @@ OpenCode config maintenance note:
 
 Use `~/.agents/skills` as the canonical runtime custom-skills catalog (agent-agnostic and shared).
 
-- Keep `~/.config/opencode` for runtime config, profiles, commands, and `AGENTS.md`.
+- Keep `~/.config/opencode` for runtime config, commands, and `AGENTS.md`.
 - Do not store active custom skills in `~/.config/opencode/skill` or `~/.config/opencode/skills`; keep those out of the active search path to prevent precedence drift.
 - Do not treat `~/.agents/skills` as a fully repo-owned tree; unmanaged local skills, Company skills, and team-provided skills may coexist there.
 - In this repo, manage only explicitly selected skills via `dot_agents/skills/<skill-name>/SKILL.md`. Ownership is per managed skill path only, so chezmoi materializes just those selected files under `~/.agents/skills/...` without claiming or cleaning unmanaged siblings in the catalog.
