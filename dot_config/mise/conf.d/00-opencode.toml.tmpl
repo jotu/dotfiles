@@ -11,78 +11,40 @@ run = '''
   fi
 '''
 
-[tasks."opencode:profile:copilot"]
-alias = "opoc"
-description = "Switch OpenCode to Copilot profile"
-run = '''
-  set -eu
-  rm -f "$HOME/.config/opencode/oh-my-opencode.json" "$HOME/.config/opencode/oh-my-opencode.json".bak*
-  cp "$HOME/.config/opencode/profiles/opencode.copilot.json" "$HOME/.config/opencode/opencode.json"
-  cp "$HOME/.config/opencode/profiles/oh-my-openagent.copilot.json" "$HOME/.config/opencode/oh-my-openagent.json"
-  echo "OpenCode profile switched to Copilot"
-'''
-
-[tasks."opencode:profile:openai"]
-alias = "opoa"
-description = "Switch OpenCode to OpenAI profile"
-run = '''
-  set -eu
-  rm -f "$HOME/.config/opencode/oh-my-opencode.json" "$HOME/.config/opencode/oh-my-opencode.json".bak*
-  cp "$HOME/.config/opencode/profiles/opencode.openai.json" "$HOME/.config/opencode/opencode.json"
-  cp "$HOME/.config/opencode/profiles/oh-my-openagent.openai.json" "$HOME/.config/opencode/oh-my-openagent.json"
-  echo "OpenCode profile switched to OpenAI"
-'''
-
-[tasks."opencode:profile:current"]
+[tasks."opencode:config:current"]
 alias = "opos"
-description = "Show current OpenCode profile models"
+description = "Show current rendered OpenCode config"
 run = '''
   set -eu
-  echo "opencode.json model:"
-  if grep -q '"model"\s*:' "$HOME/.config/opencode/opencode.json"; then
-    grep -E '"model"\s*:' "$HOME/.config/opencode/opencode.json" | head -n 1
-  else
-    echo "  (no top-level model; provider-based profile)"
-  fi
-  echo "oh-my-openagent sisyphus model:"
-  if [ -f "$HOME/.config/opencode/oh-my-openagent.json" ]; then
-    grep -A2 '"sisyphus"' "$HOME/.config/opencode/oh-my-openagent.json" | grep -E '"model"\s*:' | head -n 1
-  else
-    echo "  (missing; run mise opencode:profile:default)"
-  fi
-'''
+  python - <<'PY'
+import json
+from pathlib import Path
 
-[tasks."opencode:profile:default"]
-alias = "opod"
-description = "Switch OpenCode to default profile for this machine"
-{{- if .work.enable }}
-run = "mise opencode:profile:openai"
-{{- else }}
-run = "mise opencode:profile:copilot"
-{{- end }}
+path = Path.home() / ".config/opencode/opencode.json"
+if not path.exists():
+    print("opencode.json missing; run chezmoi apply ~/.config/opencode/opencode.json")
+    raise SystemExit(1)
+
+data = json.loads(path.read_text())
+print(f"model: {data.get('model', '(unset)')}")
+print(f"small_model: {data.get('small_model', '(unset)')}")
+providers = ", ".join(sorted(data.get('provider', {}).keys())) or "(none)"
+print(f"providers: {providers}")
+PY
+'''
 
 [tasks."opencode:models:validate"]
 alias = "opomv"
-description = "Validate OpenCode template/profile JSON files"
+description = "Validate canonical OpenCode template JSON for both machine modes"
 run = '''
   set -eu
   repo_root=$(git rev-parse --show-toplevel)
   cd "$repo_root"
 
-  expected_schema_base="https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/"
-  grep -q "$expected_schema_base" dot_config/opencode/oh-my-openagent.json.tmpl
-  grep -q "$expected_schema_base" dot_config/opencode/profiles/oh-my-openagent.openai.json.tmpl
-  grep -q "$expected_schema_base" dot_config/opencode/profiles/oh-my-openagent.copilot.json.tmpl
+  chezmoi execute-template --file --override-data '{"work":{"enable":true}}' dot_config/opencode/opencode.json.tmpl | python -m json.tool >/dev/null
+  chezmoi execute-template --file --override-data '{"work":{"enable":false}}' dot_config/opencode/opencode.json.tmpl | python -m json.tool >/dev/null
 
-  chezmoi execute-template < dot_config/opencode/opencode.json.tmpl | python -m json.tool >/dev/null
-  chezmoi execute-template < dot_config/opencode/oh-my-openagent.json.tmpl | python -m json.tool >/dev/null
-
-  chezmoi execute-template < dot_config/opencode/profiles/opencode.openai.json.tmpl | python -m json.tool >/dev/null
-  chezmoi execute-template < dot_config/opencode/profiles/opencode.copilot.json.tmpl | python -m json.tool >/dev/null
-  chezmoi execute-template < dot_config/opencode/profiles/oh-my-openagent.openai.json.tmpl | python -m json.tool >/dev/null
-  chezmoi execute-template < dot_config/opencode/profiles/oh-my-openagent.copilot.json.tmpl | python -m json.tool >/dev/null
-
-  echo "OpenCode model templates and profiles are valid JSON"
+  echo "Canonical OpenCode template is valid JSON for work and personal machine modes"
 '''
 
 [tasks."opencode:models:refresh:matrix:openai"]
@@ -213,12 +175,10 @@ import sys
 
 EXPECTED = {
     ".chezmoitemplates/opencode/plugins-openai.json.tmpl": [
-        "oh-my-openagent",
         "opencode-openai-codex-auth",
         "superpowers@git+https://github.com/obra/superpowers.git#v5.0.5",
     ],
     ".chezmoitemplates/opencode/plugins-copilot.json.tmpl": [
-        "oh-my-openagent",
         "superpowers@git+https://github.com/obra/superpowers.git#v5.0.5",
     ],
 }
@@ -235,7 +195,6 @@ for path, expected in EXPECTED.items():
 print("OpenCode plugin allowlists match expected values")
 PY
 
-  grep -q '"npm:oh-my-opencode" = "latest"' dot_config/mise/conf.d/00-opencode.toml.tmpl
   grep -q 'superpowers@git+https://github.com/obra/superpowers.git#v5.0.5' .chezmoitemplates/opencode/plugins-openai.json.tmpl
   grep -q 'superpowers@git+https://github.com/obra/superpowers.git#v5.0.5' .chezmoitemplates/opencode/plugins-copilot.json.tmpl
 
@@ -244,15 +203,14 @@ PY
 
 [tasks."opencode:setup"]
 alias = "oposu"
-description = "Install OpenCode tooling, local deps, and default profile"
+description = "Install OpenCode tooling and validate the managed config"
 run = [
   "mise opencode:deps:install",
   "mise opencode:plugins:validate",
-  "mise opencode:profile:default"
+  "mise opencode:models:validate"
 ]
 
 [tools]
 "npm:@github/copilot" = "latest"
 "npm:opencode-ai" = "latest"
-"npm:oh-my-opencode" = "latest"
 "npm:@openai/codex" = "latest"
