@@ -97,11 +97,11 @@ For platform or infrastructure work, run the closest equivalent validation and i
 
 Use role-tier routing instead of a single premium model for all roles.
 
+OpenCode machine config in this repo is rendered from a single chezmoi template via `work.enable`. Do not introduce manual profile switching or separate rendered profile files unless explicitly requested.
+
 - Flagship reasoning roles (`plan`, `orchestrator`, `reviewer`, `architect`, `ai-workflow-engineer`, `oracle`, `security-engineer`, `ultrabrain`) use strongest reasoning routes.
-- Coding-default roles (`sisyphus`, `build`, `platform-engineer`, `developer-platform-engineer`, `builder`, `delivery-engineer`, `observability-engineer`, `explore`, `deep`) use strong coding routes.
+- Coding-default roles (`build`, `platform-engineer`, `developer-platform-engineer`, `builder`, `delivery-engineer`, `observability-engineer`, `explore`, `deep`) use strong coding routes.
 - Visual and multimodal roles (`frontend-ui-ux-engineer`, `multimodal-looker`, `visual-engineering`, `multimodal`) use visual-capable routes.
 - Helper-cheap roles (`librarian`, `document-writer`, `quick`, `unspecified-low`, `documentation`) use cost-efficient fast routes.
 
-For upstream warnings that Sisyphus "works best with Claude Opus," treat that as upstream Opus-first guidance. Keep local overrides only when provider-path verification confirms stable behavior.
-
-Do not route Sisyphus to GPT models except GPT-5.4 (specialized support). On GitHub Copilot, prefer Claude Opus for Sisyphus. For other GPT routes, use Hephaestus.
+Treat upstream model warnings as guidance, not hard requirements. Keep local overrides only when provider-path verification confirms stable behavior.
