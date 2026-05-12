@@ -36,6 +36,7 @@ if [[ $last_run != $today ]]; then
   generate_completion_cache kubectl "$zc_cache_dir/kubectl.zsh" "kubectl completion zsh"
   generate_completion_cache mise "$zc_cache_dir/mise.zsh" "mise completion --raw zsh"
   generate_completion_cache starship "$zc_cache_dir/starship.zsh" "starship completions zsh"
+  generate_completion_cache tv "$zc_cache_dir/television.zsh" "tv init zsh"
   {{- if .work.enable }}
   generate_completion_cache argocd "$zc_cache_dir/argocd.zsh" "argocd completion zsh"
   generate_completion_cache cilium "$zc_cache_dir/cilium.zsh" "cilium completion zsh"

@@ -36,6 +36,10 @@ if command -v starship >/dev/null; then
   load_or_generate_completion "$_zc_cache_dir/starship.zsh" "source <(starship completions zsh)"
 fi
 
+if command -v tv >/dev/null; then
+  load_or_generate_completion "$_zc_cache_dir/television.zsh" "source <(tv init zsh)"
+fi
+
 {{- if .work.enable }}
 
 if command -v argocd >/dev/null; then
