@@ -182,9 +182,14 @@ mise run opencode:models:validate
 
 | Profile | model | small_model |
 |---|---|---|
-| `work-openai` | `openai/gpt-5.3-codex` | `openai/gpt-5.4-mini` |
+| `work-openai` | `openai/gpt-5.3-codex` | `openai/gpt-5.4-mini-fast` |
 | `work-copilot` | `github-copilot/gpt-5.3-codex` | `github-copilot/gemini-3-flash-preview` |
 | `home-copilot` | `github-copilot/gpt-5.3-codex` | `github-copilot/gemini-3-flash-preview` |
+
+Role-tier routing defaults (verified):
+
+- `work-openai`: flagship reasoning `openai/gpt-5.5`, coding-default `openai/gpt-5.3-codex`, helper-cheap `openai/gpt-5.4-mini-fast`.
+- `work-copilot` and `home-copilot`: flagship reasoning `github-copilot/claude-opus-4.6`, coding-default `github-copilot/gpt-5.3-codex`, helper-cheap `github-copilot/gemini-3-flash-preview`.
 
 OpenCode config maintenance notes:
 

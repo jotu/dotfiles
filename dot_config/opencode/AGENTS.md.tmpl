@@ -97,4 +97,9 @@ OpenCode machine config in this repo is rendered from a single chezmoi template.
 - Visual and multimodal roles (`frontend-ui-ux-engineer`, `multimodal-looker`, `visual-engineering`, `multimodal`) use visual-capable routes.
 - Helper-cheap roles (`librarian`, `document-writer`, `quick`, `unspecified-low`, `documentation`) use cost-efficient fast routes.
 
+Current verified defaults for this setup:
+
+- `work-openai`: flagship `openai/gpt-5.5`, coding-default `openai/gpt-5.3-codex`, helper-cheap `openai/gpt-5.4-mini-fast`.
+- `work-copilot` and `home-copilot`: flagship `github-copilot/claude-opus-4.6`, coding-default `github-copilot/gpt-5.3-codex`, helper-cheap `github-copilot/gemini-3-flash-preview`.
+
 Treat upstream model warnings as guidance, not hard requirements. Keep local overrides only when provider-path verification confirms stable behavior.
