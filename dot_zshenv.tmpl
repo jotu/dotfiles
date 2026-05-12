@@ -4,10 +4,24 @@ export BREW_HOME="/opt/homebrew"
 export BREW_HOME="/usr/local"
 {{ end }}
 
+{{- $githubUsername := "" -}}
+{{- if and (hasKey . "github") (hasKey .github "username") -}}
+{{- $githubUsername = get .github "username" -}}
+{{- else if and (hasKey . "personal") (hasKey .personal "git") (hasKey .personal.git "username") -}}
+{{- $githubUsername = get .personal.git "username" -}}
+{{- end -}}
+
 # openssl
 export LDFLAGS="-L$BREW_HOME/opt/openssl@3/lib"
 export CPPFLAGS="-I$BREW_HOME/opt/openssl@3/include"
 export PATH="$BREW_HOME/opt/openssl@3/bin:$PATH"
+
+# GITHUB
+# Keep gh auth controlled explicitly by your chosen GH_CONFIG_DIR/session.
+# Only set MISE_GITHUB_TOKEN for mise GitHub API access.
+{{- if ne $githubUsername "" }}
+export MISE_GITHUB_TOKEN={{ keyring "github" $githubUsername | quote }}
+{{- end }}
 
 {{- if .work.enable }}
 # aws
@@ -17,11 +31,6 @@ export PATH="$BREW_HOME/opt/openssl@3/bin:$PATH"
 # aws vault
 export AWS_VAULT_KEYCHAIN_NAME=login
 export AWS_VAULT_BACKEND=keychain
-
-# GITHUB
-# Keep gh auth controlled explicitly by your chosen GH_CONFIG_DIR/session.
-# Only set MISE_GITHUB_TOKEN for mise GitHub API access.
-export MISE_GITHUB_TOKEN={{ keyring "github" .github.username | quote }}
 
 # local backstage dev
 #AUTH_GITHUB_CLIENT_ID=$(security find-generic-password -w -s 'GITHUB_OAUTH_CLIENT_ID' -a '{{ .work.employee.code }}')
