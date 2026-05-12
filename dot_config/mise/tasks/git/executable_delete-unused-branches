@@ -1,4 +1,7 @@
+#!/usr/bin/env bash
 #MISE description="Delete all unused branches in the current repository."
 #MISE dir="{{cwd}}"
 #MISE alias="gdub"
+set -euo pipefail
+
 git branch -vv | grep ': gone]' | awk '{print $1}' | xargs git branch -D

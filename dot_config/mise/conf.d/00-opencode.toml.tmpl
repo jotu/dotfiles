@@ -16,21 +16,7 @@ alias = "opos"
 description = "Show current rendered OpenCode config"
 run = '''
   set -eu
-  python - <<'PY'
-import json
-from pathlib import Path
-
-path = Path.home() / ".config/opencode/opencode.json"
-if not path.exists():
-    print("opencode.json missing; run chezmoi apply ~/.config/opencode/opencode.json")
-    raise SystemExit(1)
-
-data = json.loads(path.read_text())
-print(f"model: {data.get('model', '(unset)')}")
-print(f"small_model: {data.get('small_model', '(unset)')}")
-providers = ", ".join(sorted(data.get('provider', {}).keys())) or "(none)"
-print(f"providers: {providers}")
-PY
+  bash "$HOME/.config/mise/scripts/run-node-task" "$HOME/.config/mise/scripts/opencode-tasks.mjs" config-current "$HOME/.config/opencode/opencode.json"
 '''
 
 [tasks."opencode:profile:current"]
@@ -41,9 +27,10 @@ run = "mise run opencode:config:current"
 description = "Render OpenCode config for work OpenAI profile"
 run = '''
   set -eu
+  template=$(chezmoi source-path "$HOME/.config/opencode/opencode.json")
   chezmoi execute-template --file \
     --override-data '{"opencode":{"profile":"work-openai"}}' \
-    dot_config/opencode/opencode.json.tmpl > "$HOME/.config/opencode/opencode.json"
+    "$template" > "$HOME/.config/opencode/opencode.json"
   mise run opencode:profile:current
 '''
 
@@ -51,9 +38,10 @@ run = '''
 description = "Render OpenCode config for work GitHub Copilot profile"
 run = '''
   set -eu
+  template=$(chezmoi source-path "$HOME/.config/opencode/opencode.json")
   chezmoi execute-template --file \
     --override-data '{"opencode":{"profile":"work-copilot"}}' \
-    dot_config/opencode/opencode.json.tmpl > "$HOME/.config/opencode/opencode.json"
+    "$template" > "$HOME/.config/opencode/opencode.json"
   mise run opencode:profile:current
 '''
 
@@ -61,9 +49,10 @@ run = '''
 description = "Render OpenCode config for home GitHub Copilot profile"
 run = '''
   set -eu
+  template=$(chezmoi source-path "$HOME/.config/opencode/opencode.json")
   chezmoi execute-template --file \
     --override-data '{"opencode":{"profile":"home-copilot"}}' \
-    dot_config/opencode/opencode.json.tmpl > "$HOME/.config/opencode/opencode.json"
+    "$template" > "$HOME/.config/opencode/opencode.json"
   mise run opencode:profile:current
 '''
 
@@ -71,18 +60,19 @@ run = '''
 description = "Validate all OpenCode profile renders as JSON"
 run = '''
   set -eu
+  template=$(chezmoi source-path "$HOME/.config/opencode/opencode.json")
 
   chezmoi execute-template --file \
     --override-data '{"opencode":{"profile":"work-openai"}}' \
-    dot_config/opencode/opencode.json.tmpl | python -m json.tool >/dev/null
+    "$template" | bash "$HOME/.config/mise/scripts/run-node-task" "$HOME/.config/mise/scripts/opencode-tasks.mjs" validate-json
 
   chezmoi execute-template --file \
     --override-data '{"opencode":{"profile":"work-copilot"}}' \
-    dot_config/opencode/opencode.json.tmpl | python -m json.tool >/dev/null
+    "$template" | bash "$HOME/.config/mise/scripts/run-node-task" "$HOME/.config/mise/scripts/opencode-tasks.mjs" validate-json
 
   chezmoi execute-template --file \
     --override-data '{"opencode":{"profile":"home-copilot"}}' \
-    dot_config/opencode/opencode.json.tmpl | python -m json.tool >/dev/null
+    "$template" | bash "$HOME/.config/mise/scripts/run-node-task" "$HOME/.config/mise/scripts/opencode-tasks.mjs" validate-json
 
   echo "All OpenCode profiles render valid JSON"
 '''
@@ -92,12 +82,11 @@ alias = "opomv"
 description = "Validate canonical OpenCode template JSON for both machine modes"
 run = '''
   set -eu
-  repo_root=$(git rev-parse --show-toplevel)
-  cd "$repo_root"
+  template=$(chezmoi source-path "$HOME/.config/opencode/opencode.json")
 
-  chezmoi execute-template --file --override-data '{"opencode":{"profile":"work-openai"}}' dot_config/opencode/opencode.json.tmpl | python -m json.tool >/dev/null
-  chezmoi execute-template --file --override-data '{"opencode":{"profile":"work-copilot"}}' dot_config/opencode/opencode.json.tmpl | python -m json.tool >/dev/null
-  chezmoi execute-template --file --override-data '{"opencode":{"profile":"home-copilot"}}' dot_config/opencode/opencode.json.tmpl | python -m json.tool >/dev/null
+  chezmoi execute-template --file --override-data '{"opencode":{"profile":"work-openai"}}' "$template" | bash "$HOME/.config/mise/scripts/run-node-task" "$HOME/.config/mise/scripts/opencode-tasks.mjs" validate-json
+  chezmoi execute-template --file --override-data '{"opencode":{"profile":"work-copilot"}}' "$template" | bash "$HOME/.config/mise/scripts/run-node-task" "$HOME/.config/mise/scripts/opencode-tasks.mjs" validate-json
+  chezmoi execute-template --file --override-data '{"opencode":{"profile":"home-copilot"}}' "$template" | bash "$HOME/.config/mise/scripts/run-node-task" "$HOME/.config/mise/scripts/opencode-tasks.mjs" validate-json
 
   echo "Canonical OpenCode template is valid JSON for all supported profiles"
 '''
@@ -113,7 +102,7 @@ run = '''
   else
     script_path="$HOME/.agents/skills/verify-opencode-models/scripts/verify-models.mjs"
   fi
-  node "$script_path" refresh --provider openai
+  bash "$HOME/.config/mise/scripts/run-node-task" "$script_path" refresh --provider openai
 '''
 
 [tasks."opencode:models:refresh:matrix:github-copilot"]
@@ -127,7 +116,7 @@ run = '''
   else
     script_path="$HOME/.agents/skills/verify-opencode-models/scripts/verify-models.mjs"
   fi
-  node "$script_path" refresh --provider github-copilot
+  bash "$HOME/.config/mise/scripts/run-node-task" "$script_path" refresh --provider github-copilot
 '''
 
 [tasks."opencode:models:refresh:matrix:all"]
@@ -156,7 +145,7 @@ run = '''
   else
     script_path="$HOME/.agents/skills/verify-opencode-models/scripts/verify-models.mjs"
   fi
-  node "$script_path" verify --provider openai
+  bash "$HOME/.config/mise/scripts/run-node-task" "$script_path" verify --provider openai
 '''
 
 [tasks."opencode:models:verify:github-copilot"]
@@ -170,7 +159,7 @@ run = '''
   else
     script_path="$HOME/.agents/skills/verify-opencode-models/scripts/verify-models.mjs"
   fi
-  node "$script_path" verify --provider github-copilot
+  bash "$HOME/.config/mise/scripts/run-node-task" "$script_path" verify --provider github-copilot
 '''
 
 [tasks."opencode:models:verify:all"]
@@ -191,7 +180,7 @@ run = '''
   else
     script_path="$HOME/.agents/skills/verify-opencode-models/scripts/verify-models.mjs"
   fi
-  node "$script_path" recommend --provider openai
+  bash "$HOME/.config/mise/scripts/run-node-task" "$script_path" recommend --provider openai
 '''
 
 [tasks."opencode:models:recommend:github-copilot"]
@@ -205,7 +194,7 @@ run = '''
   else
     script_path="$HOME/.agents/skills/verify-opencode-models/scripts/verify-models.mjs"
   fi
-  node "$script_path" recommend --provider github-copilot
+  bash "$HOME/.config/mise/scripts/run-node-task" "$script_path" recommend --provider github-copilot
 '''
 
 [tasks."opencode:models:recommend:all"]
@@ -223,32 +212,7 @@ run = '''
   repo_root=$(git rev-parse --show-toplevel)
   cd "$repo_root"
 
-  python - <<'PY'
-import json
-import subprocess
-import sys
-
-EXPECTED = {
-    ".chezmoitemplates/opencode/plugins-openai.json.tmpl": [
-        "opencode-openai-codex-auth",
-        "superpowers@git+https://github.com/obra/superpowers.git#v5.0.5",
-    ],
-    ".chezmoitemplates/opencode/plugins-copilot.json.tmpl": [
-        "superpowers@git+https://github.com/obra/superpowers.git#v5.0.5",
-    ],
-}
-
-for path, expected in EXPECTED.items():
-    rendered = subprocess.check_output(["chezmoi", "execute-template"], input=open(path, "rb").read())
-    plugins = json.loads(rendered)
-    if plugins != expected:
-        print(f"plugin allowlist mismatch in {path}", file=sys.stderr)
-        print(f"expected: {expected}", file=sys.stderr)
-        print(f"actual:   {plugins}", file=sys.stderr)
-        sys.exit(1)
-
-print("OpenCode plugin allowlists match expected values")
-PY
+  bash "$HOME/.config/mise/scripts/run-node-task" "$HOME/.config/mise/scripts/opencode-tasks.mjs" validate-plugins
 
   grep -q 'superpowers@git+https://github.com/obra/superpowers.git#v5.0.5' .chezmoitemplates/opencode/plugins-openai.json.tmpl
   grep -q 'superpowers@git+https://github.com/obra/superpowers.git#v5.0.5' .chezmoitemplates/opencode/plugins-copilot.json.tmpl
