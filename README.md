@@ -191,6 +191,11 @@ Role-tier routing defaults (verified):
 - `work-openai`: flagship reasoning `openai/gpt-5.5`, coding-default `openai/gpt-5.3-codex`, helper-cheap `openai/gpt-5.4-mini-fast`.
 - `work-copilot` and `home-copilot`: flagship reasoning `github-copilot/claude-opus-4.6`, coding-default `github-copilot/gpt-5.3-codex`, helper-cheap `github-copilot/gemini-3-flash-preview`.
 
+Preference note:
+
+- For Copilot-backed workflows, prefer `github-copilot/claude-opus-4.6` as the default flagship reasoning route.
+- Treat Gemini models as preferred for UI, visual, and multimodal-oriented work rather than the default general flagship route.
+
 OpenCode config maintenance notes:
 
 - Shared runtime-critical sections live in `.chezmoitemplates/opencode/`:
