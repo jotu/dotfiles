@@ -577,7 +577,7 @@
 {{- else if or (eq $profile "work-copilot") (eq $profile "home-copilot") }}
   "plugin": {{ includeTemplate ".chezmoitemplates/opencode/plugins-copilot.json.tmpl" }},
   "model": "github-copilot/gpt-5.3-codex",
-  "small_model": "github-copilot/gemini-3-flash-preview",
+  "small_model": "github-copilot/gpt-5.4-mini",
   "provider": {
     "github-copilot": {
       "name": "GitHub Copilot",
