@@ -1,7 +1,6 @@
 # AGENT.md
 
-Chezmoi Dotfiles Maintainer Agent
-A concise, well-defined guide and prompt configuration for maintaining this macOS-focused dotfiles repository using ChezMoi.
+Chezmoi dotfiles maintainer guide for secure, portable, low-risk changes.
 
 ---
 
@@ -9,8 +8,8 @@ A concise, well-defined guide and prompt configuration for maintaining this macO
 
 - Ensure secure, consistent, and portable changes to dotfiles managed by ChezMoi.
 - Standardize how prompts, templates, and private files are used.
-- Provide a clear system and developer prompt for agents generating changes.
 - Offer checklists and patterns to prevent misconfigurations and secret leaks.
+- Follow Tidy First principles together with CUPID design principles for joyful, maintainable coding.
 
 ---
 
@@ -118,7 +117,7 @@ Ensure `.chezmoi.toml.tmpl` defines or normalizes the following keys (extend as 
 ## Security Guidance
 
 - Documentation quality:
-  - Ensure Markdown adheres to Vale rules; keep technical terms consistent with the allowed vocabulary (e.g., "dotfiles", "chezmoi", "macOS", "SSH", "GPG").
+  - Ensure Markdown follows Vale rules and consistent vocabulary (for example: "dotfiles", "chezmoi", "macOS", "SSH", "GPG").
   - Use inclusive language and avoid vague phrasing where feasible.
 
 - Secrets handling:
@@ -167,15 +166,6 @@ Before committing changes:
 - Docs: Comments explain file purpose; README mentions any new flows.
 - CI: Workflows are pinned and unmodified unless intentionally updated.
 - Vale: Documentation and messages pass Vale checks; allowed vocabulary (dotfiles, chezmoi, macOS, etc.) is used consistently.
-
-Before committing changes:
-
-- Secrets: No secrets or private key material embedded.
-- Templates: Dynamic content is in `*.tmpl`; static content is not templated.
-- `.data` keys: All referenced keys exist in `.chezmoi.toml.tmpl`.
-- Portability: Shell init guards exist; no hard-coded machine paths.
-- Docs: Comments explain file purpose; README mentions any new flows.
-- CI: Workflows are pinned and unmodified unless intentionally updated.
 
 ---
 

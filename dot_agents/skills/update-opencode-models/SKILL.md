@@ -9,12 +9,11 @@ Update model configuration with explicit scope control.
 
 ## Required Input
 
-Accept one scope:
-- `work` -> update only work-machine defaults and provider catalogs
-- `personal` -> update only personal-machine defaults and provider catalogs
-- `both` -> update both trees
-
-Default scope: `both`.
+Accept one profile scope:
+- `work-openai`
+- `work-copilot`
+- `home-copilot`
+- `all` (default)
 
 ## Target Files
 
@@ -33,9 +32,10 @@ Default scope: `both`.
 4. Build available model catalogs per provider from `provider.*.models` keys in `dot_config/opencode/opencode.json.tmpl`.
 5. Assign only models that both exist in each provider catalog and pass in the refreshed verified matrix.
 6. Apply requested scope:
-   - `work`: update only work-machine branch values (`{{- if .work.enable }}`)
-   - `personal`: update only personal-machine branch values (`{{- else }}`)
-   - `both`: update both branches in the single template
+   - `work-openai`: update only OpenAI-default profile values
+   - `work-copilot`: update only Copilot-default work profile values
+   - `home-copilot`: update only Copilot-default home profile values
+   - `all`: update all supported profiles in the single template
 
 ## Optimization Target
 
@@ -47,7 +47,7 @@ Use a quality-first, cost-aware mix (never max-cost everywhere, never cheapest e
 
 ## Baseline Routing
 
-### Work
+### Work OpenAI
 
 - Default: `model = openai/gpt-5.3-codex`
 - Small: `small_model = openai/gpt-5.4-mini`
@@ -55,22 +55,20 @@ Use a quality-first, cost-aware mix (never max-cost everywhere, never cheapest e
 - Keep OpenCode `model` on `openai/gpt-5.3-codex` and `small_model` on `openai/gpt-5.4-mini` unless refreshed verification proves a better default.
 - Keep verified OpenAI catalog entries available for explicit selection without promoting unverified options to defaults.
 
-### Personal
+### Work/Home Copilot
 
 - Default: `model = github-copilot/gpt-5.3-codex`
 - Small: `small_model = github-copilot/gemini-3-flash-preview`
-- Keep GitHub Copilot as the only managed provider on personal/home machines.
+- Keep GitHub Copilot defaults for home and optional Copilot profile on work.
 - Keep OpenCode `model` on `github-copilot/gpt-5.3-codex` and `small_model` on `github-copilot/gemini-3-flash-preview` unless refreshed verification proves a better default.
 - Keep verified Copilot catalog entries available for explicit selection without promoting unverified options to defaults.
 
-## Rendered Machine Defaults
+## Rendered Profile Defaults
 
-- Work machines (`work.enable = true`) render an OpenAI/Codex-default config and keep both OpenAI and GitHub Copilot available.
-- Personal machines (`work.enable = false`) render a GitHub Copilot-default config and keep GitHub Copilot as the only managed provider.
-- Check the active rendered config: `mise run opencode:config:current`
-- Do not reintroduce manual profile switching or separate rendered profile files unless the user explicitly asks for that operating model.
-
-When updating defaults, apply the correct scope (`work`, `personal`, or `both`) to match the target machine type.
+- Supported profiles: `work-openai`, `work-copilot`, `home-copilot`.
+- Check active rendered config: `mise run opencode:profile:current`.
+- Validate profile renders: `mise run opencode:profile:validate` and `mise run opencode:models:validate`.
+- Keep a single canonical template and avoid separate rendered profile files.
 
 ## Guardrails
 

@@ -11,9 +11,36 @@
 
 Everything except sensitive information to setup a new computer and keep it in sync.
 
+## Operator Index
+
+Most-used day-to-day commands:
+
+Working principles: Tidy First + CUPID (composable, Unix philosophy, predictable, idiomatic, domain-based) for lean, maintainable changes.
+
+```bash
+# apply changes safely
+chezmoi apply --preview
+chezmoi apply
+
+# quick health checks
+mise run dotfiles:health:check
+mise run gh:auth:status:all
+
+# OpenCode profile switch + verify
+mise run opencode:profile:set:work-openai   # or work-copilot / home-copilot
+mise run opencode:profile:current
+mise run opencode:profile:validate
+```
+
+Reference sections:
+- Git and identity setup: [Git](#git)
+- OpenCode profiles and model defaults: [OpenCode config defaults](#opencode-config-defaults)
+- OpenCode skills catalog policy: [OpenCode skills catalog policy](#opencode-skills-catalog-policy)
+- OpenCode commands catalog policy: [OpenCode commands catalog policy](#opencode-commands-catalog-policy)
+
 # Git
 
-## Generate ssh keys for laptop
+## Generate SSH Keys for Laptop
 
 ```bash
     # Generate
@@ -25,7 +52,7 @@ Everything except sensitive information to setup a new computer and keep it in s
     pbcopy < ~/.ssh/<personal-ssh-key>.pub
 ```
 
-## Generate gpg key for laptop
+## Generate GPG Key for Laptop
 
 ```bash
     # Generate
@@ -37,20 +64,20 @@ Everything except sensitive information to setup a new computer and keep it in s
     # Add to GitHub or similar
 ```
 
-## Delete old gpg key for laptop
+## Delete Old GPG Key for Laptop
 
 ```bash
     gpg --delete-secret-key <OLD_KEY>
     gpg --delete-key <OLD_KEY>
 ```
 
-## Add co pilot mcp secret
+## Add Copilot MCP Secret
 
 security add-generic-password -a "$(whoami)" \
  -s "mcp-server-github" \
  -w "<YOUR_GITHUB_PERSONAL_ACCESS_TOKEN>"
 
-## Personal/work gh and git setup
+## Personal/Work GH and Git Setup
 
 {{- $ghConfigPersonal := "~/.config/gh-personal" -}}
 {{- $ghConfigWork := "~/.config/gh-work" -}}
@@ -122,7 +149,7 @@ ssh -T git@github.com
 mise run dotfiles:health:check
 ```
 
-## Quick gh login tasks
+## Quick GH Login Tasks
 
 ```bash
 mise run gh:auth:login:personal
@@ -130,25 +157,36 @@ mise run gh:auth:login:work
 mise run gh:auth:status:all
 ```
 
-## OpenCode config defaults
+## OpenCode Config Defaults
 
-- `work.enable` determines the single rendered OpenCode config for the machine.
-- Work machines (`work.enable = true`) render an OpenAI-first config and keep both `openai` and `github-copilot` available.
-- Home/personal machines (`work.enable = false`) render GitHub Copilot only.
-- On work, keep `model = openai/gpt-5.3-codex` and `small_model = openai/gpt-5.4-mini` as the default OpenCode routes while still exposing the Copilot catalog for explicit `provider/model` selection.
-- On home, keep `model = github-copilot/gpt-5.3-codex` and `small_model = github-copilot/gemini-3-flash-preview`.
-- Treat provider catalog entries as available options, not guaranteed-compatible defaults. Any active `model` or `small_model` route must be compatible with the account/auth path in use.
-- Keep the default `model` and `small_model` aligned with the strongest verified options for the active provider setup.
+- Profiles: `work-openai`, `work-copilot`, `home-copilot`.
+- Fallback: if `opencode.profile` is unset and `work.enable = true`, use `work-openai`; otherwise use `home-copilot`.
 
-Inspect the rendered OpenCode config:
+### OpenCode Quick Start
 
 ```bash
-mise run opencode:config:current
+# pick a profile
+mise run opencode:profile:set:work-openai
+mise run opencode:profile:set:work-copilot
+mise run opencode:profile:set:home-copilot
+
+# inspect active config
+mise run opencode:profile:current
+
+# validate template renders
+mise run opencode:profile:validate
+mise run opencode:models:validate
 ```
 
-There is no manual OpenCode profile switching anymore. If machine context changes, update `work.enable` and re-run `chezmoi apply`.
+### Profile Defaults
 
-OpenCode config maintenance note:
+| Profile | model | small_model |
+|---|---|---|
+| `work-openai` | `openai/gpt-5.3-codex` | `openai/gpt-5.4-mini` |
+| `work-copilot` | `github-copilot/gpt-5.3-codex` | `github-copilot/gemini-3-flash-preview` |
+| `home-copilot` | `github-copilot/gpt-5.3-codex` | `github-copilot/gemini-3-flash-preview` |
+
+OpenCode config maintenance notes:
 
 - Shared runtime-critical sections live in `.chezmoitemplates/opencode/`:
   - `permission.json.tmpl`
@@ -158,14 +196,20 @@ OpenCode config maintenance note:
 - Keep only genuinely shared blocks there. Provider catalogs, model routes, and other profile-specific behavior should stay in the owning template.
 - When changing OpenCode config templates, always run `mise run opencode:models:validate` so chezmoi renders the templates before JSON validation.
 
-### OpenCode skills catalog policy
+### Docs Ownership Map
+
+- `README.md`: operator quick-start and day-1 usage.
+- `dot_config/opencode/AGENTS.md.tmpl`: agent routing, role boundaries, verification rules.
+- `dot_agents/skills/*/SKILL.md`: deep task workflows and specialized playbooks.
+
+### OpenCode Skills Catalog Policy
 
 Use `~/.agents/skills` as the canonical runtime custom-skills catalog (agent-agnostic and shared).
 
 - Keep `~/.config/opencode` for runtime config, commands, and `AGENTS.md`.
 - Do not store active custom skills in `~/.config/opencode/skill` or `~/.config/opencode/skills`; keep those out of the active search path to prevent precedence drift.
 - Do not treat `~/.agents/skills` as a fully repo-owned tree; unmanaged local skills, Company skills, and team-provided skills may coexist there.
-- In this repo, manage only explicitly selected skills via `dot_agents/skills/<skill-name>/SKILL.md`. Ownership is per managed skill path only, so chezmoi materializes just those selected files under `~/.agents/skills/...` without claiming or cleaning unmanaged siblings in the catalog.
+- In this repo, manage only explicitly selected skills via `dot_agents/skills/<skill-name>/SKILL.md`.
 
 Quick validation:
 
@@ -174,7 +218,7 @@ chezmoi source-path ~/.agents/skills/<skill-name>/SKILL.md
 chezmoi source-path ~/.config/opencode/opencode.json
 ```
 
-If `chezmoi source-path` says a skill file is "not managed", that is acceptable for local-only skills you want to keep outside this repo.
+If `chezmoi source-path` says a skill file is "not managed", that is expected for local-only or external team skills.
 
 Example:
 
@@ -183,12 +227,12 @@ chezmoi source-path ~/.agents/skills/some-company-or-team-skill/SKILL.md
 # -> not managed
 ```
 
-### OpenCode commands catalog policy
+### OpenCode Commands Catalog Policy
 
 Use `~/.config/opencode/commands` as the canonical runtime commands location.
 
 - Keep active commands in `~/.config/opencode/commands` only.
-- Do not use alternate active command paths for OpenCode (for example `~/.config/opencode/command`), because parallel locations create precedence drift and make runtime behavior harder to reason about.
+- Do not use alternate active command paths (for example `~/.config/opencode/command`) to avoid precedence drift.
 - Manage the intended command set through this repo under `dot_config/opencode/commands/*.md.tmpl`, so `chezmoi apply` reproduces the same command catalog.
 - Local-only experimental commands are fine, but they should be intentionally unmanaged and understood as non-reproducible.
 
@@ -199,7 +243,7 @@ chezmoi source-path ~/.config/opencode/commands/brainstorm.md
 chezmoi source-path ~/.config/opencode/commands/write-plan.md
 ```
 
-## Zed workflow shortcuts
+## Zed Workflow Shortcuts
 
 Managed Zed tasks are available for a non-vim workflow:
 

@@ -35,6 +35,7 @@ Use this as the default wrapper for non-trivial implementation, bug-fixing, and 
 3. Keep structural cleanup and behavior changes separable when practical.
 4. Run project-appropriate checks before claiming completion.
 5. Report commands run and pass/fail outcomes.
+6. Prefer CUPID-aligned structure: composable, Unix-style interfaces, predictable behavior, idiomatic style, and domain-based boundaries.
 
 ## Must Not Do
 

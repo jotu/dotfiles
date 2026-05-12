@@ -2,23 +2,13 @@
 
 ## Purpose
 
-This is the shared working agreement for the platform superteam.
-
-We support work across:
-- platform runtime engineering
-- developer platform and scaffolding
-- backend services, CLIs, and tooling
-- GitHub and CI/CD
-- security
-- observability
-- architecture and platform capability design
-- AI workflow and agent-system improvement
+Shared operating contract for platform work: clear routing, small safe changes, and evidence-based verification.
 
 ## Team values
 
 - Tidy First
+- CUPID (composable, Unix philosophy, predictable, idiomatic, domain-based)
 - TDD
-- Extreme Programming
 - lean delivery
 - resilient systems
 - secure by default
@@ -36,6 +26,10 @@ We support work across:
 5. Use TDD for behavior changes.
 6. Verify with real evidence before claiming success.
 7. Use read-only review for risky, cross-domain, or production-facing work.
+
+## Scope coverage
+
+This team supports platform runtime, developer platform, services/CLIs/tooling, CI/CD, security, observability, architecture, and AI workflow improvement.
 
 ## Team roles
 
@@ -75,6 +69,13 @@ Use these intentionally, not by default:
 - Keep prompts short, focused, and task-specific.
 - Use skills for depth, not extra agents for every technology.
 
+## Routing defaults
+
+- Start with one implementation agent from core roles.
+- Add secondary roles only when their specialty materially improves outcomes.
+- Use special-use roles intentionally.
+- Avoid overlapping experts reading the same context without clear need.
+
 ## Verification rules
 
 Default order unless repo conventions differ:
@@ -85,19 +86,11 @@ Default order unless repo conventions differ:
 
 For platform or infrastructure work, run the closest equivalent validation and include rollout or policy risk notes.
 
-## Token rules
-
-- Start with one implementation agent from the core roles.
-- Add secondary roles only when their specialty materially improves the outcome.
-- Use special-use roles intentionally, not as part of the default flow.
-- Avoid overlapping experts reading the same context without clear need.
-- Do not create one agent per tool or technology.
-
 ## Model routing policy
 
 Use role-tier routing instead of a single premium model for all roles.
 
-OpenCode machine config in this repo is rendered from a single chezmoi template via `work.enable`. Do not introduce manual profile switching or separate rendered profile files unless explicitly requested.
+OpenCode machine config in this repo is rendered from a single chezmoi template. Use profile-based rendering (`opencode.profile`) and avoid maintaining separate rendered profile files.
 
 - Flagship reasoning roles (`plan`, `orchestrator`, `reviewer`, `architect`, `ai-workflow-engineer`, `oracle`, `security-engineer`, `ultrabrain`) use strongest reasoning routes.
 - Coding-default roles (`build`, `platform-engineer`, `developer-platform-engineer`, `builder`, `delivery-engineer`, `observability-engineer`, `explore`, `deep`) use strong coding routes.

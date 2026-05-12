@@ -33,6 +33,60 @@ print(f"providers: {providers}")
 PY
 '''
 
+[tasks."opencode:profile:current"]
+description = "Show active OpenCode provider/model profile"
+run = "mise run opencode:config:current"
+
+[tasks."opencode:profile:set:work-openai"]
+description = "Render OpenCode config for work OpenAI profile"
+run = '''
+  set -eu
+  chezmoi execute-template --file \
+    --override-data '{"opencode":{"profile":"work-openai"}}' \
+    dot_config/opencode/opencode.json.tmpl > "$HOME/.config/opencode/opencode.json"
+  mise run opencode:profile:current
+'''
+
+[tasks."opencode:profile:set:work-copilot"]
+description = "Render OpenCode config for work GitHub Copilot profile"
+run = '''
+  set -eu
+  chezmoi execute-template --file \
+    --override-data '{"opencode":{"profile":"work-copilot"}}' \
+    dot_config/opencode/opencode.json.tmpl > "$HOME/.config/opencode/opencode.json"
+  mise run opencode:profile:current
+'''
+
+[tasks."opencode:profile:set:home-copilot"]
+description = "Render OpenCode config for home GitHub Copilot profile"
+run = '''
+  set -eu
+  chezmoi execute-template --file \
+    --override-data '{"opencode":{"profile":"home-copilot"}}' \
+    dot_config/opencode/opencode.json.tmpl > "$HOME/.config/opencode/opencode.json"
+  mise run opencode:profile:current
+'''
+
+[tasks."opencode:profile:validate"]
+description = "Validate all OpenCode profile renders as JSON"
+run = '''
+  set -eu
+
+  chezmoi execute-template --file \
+    --override-data '{"opencode":{"profile":"work-openai"}}' \
+    dot_config/opencode/opencode.json.tmpl | python -m json.tool >/dev/null
+
+  chezmoi execute-template --file \
+    --override-data '{"opencode":{"profile":"work-copilot"}}' \
+    dot_config/opencode/opencode.json.tmpl | python -m json.tool >/dev/null
+
+  chezmoi execute-template --file \
+    --override-data '{"opencode":{"profile":"home-copilot"}}' \
+    dot_config/opencode/opencode.json.tmpl | python -m json.tool >/dev/null
+
+  echo "All OpenCode profiles render valid JSON"
+'''
+
 [tasks."opencode:models:validate"]
 alias = "opomv"
 description = "Validate canonical OpenCode template JSON for both machine modes"
@@ -41,10 +95,11 @@ run = '''
   repo_root=$(git rev-parse --show-toplevel)
   cd "$repo_root"
 
-  chezmoi execute-template --file --override-data '{"work":{"enable":true}}' dot_config/opencode/opencode.json.tmpl | python -m json.tool >/dev/null
-  chezmoi execute-template --file --override-data '{"work":{"enable":false}}' dot_config/opencode/opencode.json.tmpl | python -m json.tool >/dev/null
+  chezmoi execute-template --file --override-data '{"opencode":{"profile":"work-openai"}}' dot_config/opencode/opencode.json.tmpl | python -m json.tool >/dev/null
+  chezmoi execute-template --file --override-data '{"opencode":{"profile":"work-copilot"}}' dot_config/opencode/opencode.json.tmpl | python -m json.tool >/dev/null
+  chezmoi execute-template --file --override-data '{"opencode":{"profile":"home-copilot"}}' dot_config/opencode/opencode.json.tmpl | python -m json.tool >/dev/null
 
-  echo "Canonical OpenCode template is valid JSON for work and personal machine modes"
+  echo "Canonical OpenCode template is valid JSON for all supported profiles"
 '''
 
 [tasks."opencode:models:refresh:matrix:openai"]
