@@ -231,5 +231,26 @@ run = [
 
 [tools]
 "npm:@github/copilot" = "latest"
-"npm:opencode-ai" = "latest"
 "npm:@openai/codex" = "latest"
+
+[tools."npm:opencode-ai"]
+version = "latest"
+postinstall = '''
+set -eu
+if [ -f "$MISE_TOOL_INSTALL_PATH/node_modules/opencode-ai/postinstall.mjs" ]; then
+  cd "$MISE_TOOL_INSTALL_PATH/node_modules/opencode-ai"
+elif [ -f "$MISE_TOOL_INSTALL_PATH/lib/node_modules/opencode-ai/postinstall.mjs" ]; then
+  cd "$MISE_TOOL_INSTALL_PATH/lib/node_modules/opencode-ai"
+elif [ -f "$MISE_TOOL_INSTALL_PATH/postinstall.mjs" ]; then
+  cd "$MISE_TOOL_INSTALL_PATH"
+else
+  echo "Could not find opencode-ai postinstall.mjs under $MISE_TOOL_INSTALL_PATH"
+  find "$MISE_TOOL_INSTALL_PATH" -name postinstall.mjs -maxdepth 5 || true
+  exit 1
+fi
+node postinstall.mjs
+mise reshim
+'''
+
+[settings]
+npm.package_manager = "npm"
