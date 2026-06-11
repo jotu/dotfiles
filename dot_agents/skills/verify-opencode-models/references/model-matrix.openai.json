@@ -1,13 +1,13 @@
 {
   "provider": "openai",
   "prompt": "Reply with exactly: OK",
-  "generatedAt": "2026-05-12T11:34:50.557Z",
+  "generatedAt": "2026-06-02T06:36:46.582Z",
   "results": [
     {
       "provider": "openai",
       "model": "openai/codex-mini-latest",
       "status": "fail",
-      "latencyMs": 2535,
+      "latencyMs": 2944,
       "failureClass": "unexpected-response",
       "note": "Unexpected response: (empty)",
       "response": "",
@@ -76,7 +76,7 @@
       "provider": "openai",
       "model": "openai/gpt-5-codex",
       "status": "fail",
-      "latencyMs": 2336,
+      "latencyMs": 2714,
       "failureClass": "unexpected-response",
       "note": "Unexpected response: (empty)",
       "response": "",
@@ -150,7 +150,7 @@
       "provider": "openai",
       "model": "openai/gpt-5.1-codex",
       "status": "fail",
-      "latencyMs": 2451,
+      "latencyMs": 3158,
       "failureClass": "unexpected-response",
       "note": "Unexpected response: (empty)",
       "response": "",
@@ -224,7 +224,7 @@
       "provider": "openai",
       "model": "openai/gpt-5.1-codex-max",
       "status": "fail",
-      "latencyMs": 2369,
+      "latencyMs": 3045,
       "failureClass": "unexpected-response",
       "note": "Unexpected response: (empty)",
       "response": "",
@@ -293,7 +293,7 @@
       "provider": "openai",
       "model": "openai/gpt-5.1-codex-mini",
       "status": "fail",
-      "latencyMs": 2363,
+      "latencyMs": 3607,
       "failureClass": "unexpected-response",
       "note": "Unexpected response: (empty)",
       "response": "",
@@ -361,11 +361,11 @@
     {
       "provider": "openai",
       "model": "openai/gpt-5.2",
-      "status": "pass",
-      "latencyMs": 5204,
-      "failureClass": "-",
-      "note": "general-purpose passing candidate",
-      "response": "OK",
+      "status": "fail",
+      "latencyMs": 3697,
+      "failureClass": "unexpected-response",
+      "note": "Unexpected response: (empty)",
+      "response": "",
       "meta": {
         "id": "gpt-5.2",
         "api": {
@@ -459,7 +459,7 @@
       "provider": "openai",
       "model": "openai/gpt-5.2-codex",
       "status": "fail",
-      "latencyMs": 2418,
+      "latencyMs": 3063,
       "failureClass": "unexpected-response",
       "note": "Unexpected response: (empty)",
       "response": "",
@@ -527,11 +527,11 @@
     {
       "provider": "openai",
       "model": "openai/gpt-5.3-codex",
-      "status": "pass",
-      "latencyMs": 7497,
-      "failureClass": "-",
-      "note": "strong coding-default candidate",
-      "response": "OK",
+      "status": "fail",
+      "latencyMs": 2936,
+      "failureClass": "unexpected-response",
+      "note": "Unexpected response: (empty)",
+      "response": "",
       "meta": {
         "id": "gpt-5.3-codex",
         "api": {
@@ -581,6 +581,13 @@
         "family": "gpt-codex",
         "release_date": "2026-02-05",
         "variants": {
+          "none": {
+            "reasoningEffort": "none",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          },
           "low": {
             "reasoningEffort": "low",
             "reasoningSummary": "auto",
@@ -619,7 +626,7 @@
       "provider": "openai",
       "model": "openai/gpt-5.3-codex-spark",
       "status": "fail",
-      "latencyMs": 2401,
+      "latencyMs": 2998,
       "failureClass": "unexpected-response",
       "note": "Unexpected response: (empty)",
       "response": "",
@@ -635,8 +642,8 @@
         "providerID": "openai",
         "capabilities": {
           "temperature": false,
-          "reasoning": false,
-          "attachment": false,
+          "reasoning": true,
+          "attachment": true,
           "toolcall": true,
           "input": {
             "text": true,
@@ -665,26 +672,50 @@
         "options": {},
         "limit": {
           "context": 272000,
+          "input": 100000,
           "output": 128000
         },
         "headers": {},
-        "family": "",
-        "release_date": "",
+        "family": "gpt-codex-spark",
+        "release_date": "2026-02-05",
         "variants": {
+          "none": {
+            "reasoningEffort": "none",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          },
           "low": {
             "reasoningEffort": "low",
             "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ],
             "textVerbosity": "low"
           },
           "medium": {
             "reasoningEffort": "medium",
             "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ],
             "textVerbosity": "low"
           },
           "high": {
             "reasoningEffort": "high",
             "reasoningSummary": "detailed",
+            "include": [
+              "reasoning.encrypted_content"
+            ],
             "textVerbosity": "medium"
+          },
+          "xhigh": {
+            "reasoningEffort": "xhigh",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
           }
         }
       }
@@ -693,7 +724,7 @@
       "provider": "openai",
       "model": "openai/gpt-5.4",
       "status": "pass",
-      "latencyMs": 6783,
+      "latencyMs": 6943,
       "failureClass": "-",
       "note": "general-purpose passing candidate",
       "response": "OK",
@@ -791,7 +822,7 @@
       "provider": "openai",
       "model": "openai/gpt-5.4-fast",
       "status": "pass",
-      "latencyMs": 6750,
+      "latencyMs": 6438,
       "failureClass": "-",
       "note": "fast general-purpose candidate",
       "response": "OK",
@@ -890,7 +921,7 @@
       "provider": "openai",
       "model": "openai/gpt-5.4-mini",
       "status": "pass",
-      "latencyMs": 5868,
+      "latencyMs": 7488,
       "failureClass": "-",
       "note": "strong helper-cheap candidate",
       "response": "OK",
@@ -987,7 +1018,7 @@
       "provider": "openai",
       "model": "openai/gpt-5.4-mini-fast",
       "status": "pass",
-      "latencyMs": 5149,
+      "latencyMs": 7223,
       "failureClass": "-",
       "note": "strong helper-cheap candidate",
       "response": "OK",
@@ -1086,7 +1117,7 @@
       "provider": "openai",
       "model": "openai/gpt-5.4-nano",
       "status": "fail",
-      "latencyMs": 2298,
+      "latencyMs": 3128,
       "failureClass": "unexpected-response",
       "note": "Unexpected response: (empty)",
       "response": "",
@@ -1155,7 +1186,7 @@
       "provider": "openai",
       "model": "openai/gpt-5.4-pro",
       "status": "fail",
-      "latencyMs": 2331,
+      "latencyMs": 3114,
       "failureClass": "unexpected-response",
       "note": "Unexpected response: (empty)",
       "response": "",
@@ -1224,7 +1255,7 @@
       "provider": "openai",
       "model": "openai/gpt-5.5",
       "status": "pass",
-      "latencyMs": 5416,
+      "latencyMs": 5375,
       "failureClass": "-",
       "note": "general-purpose passing candidate",
       "response": "OK",
@@ -1322,7 +1353,7 @@
       "provider": "openai",
       "model": "openai/gpt-5.5-fast",
       "status": "pass",
-      "latencyMs": 6245,
+      "latencyMs": 6784,
       "failureClass": "-",
       "note": "fast general-purpose candidate",
       "response": "OK",
@@ -1419,7 +1450,7 @@
       "provider": "openai",
       "model": "openai/gpt-5.5-pro",
       "status": "fail",
-      "latencyMs": 2542,
+      "latencyMs": 2996,
       "failureClass": "unexpected-response",
       "note": "Unexpected response: (empty)",
       "response": "",
@@ -1472,20 +1503,6 @@
         "family": "gpt-pro",
         "release_date": "2026-04-23",
         "variants": {
-          "none": {
-            "reasoningEffort": "none",
-            "reasoningSummary": "auto",
-            "include": [
-              "reasoning.encrypted_content"
-            ]
-          },
-          "low": {
-            "reasoningEffort": "low",
-            "reasoningSummary": "auto",
-            "include": [
-              "reasoning.encrypted_content"
-            ]
-          },
           "medium": {
             "reasoningEffort": "medium",
             "reasoningSummary": "detailed",
@@ -1518,7 +1535,7 @@
       "provider": "openai",
       "model": "openai/gpt-5.5",
       "status": "pass",
-      "latencyMs": 5416,
+      "latencyMs": 5375,
       "failureClass": "-",
       "note": "general-purpose passing candidate",
       "response": "OK",
@@ -1614,21 +1631,21 @@
     },
     "codingDefault": {
       "provider": "openai",
-      "model": "openai/gpt-5.3-codex",
+      "model": "openai/gpt-5.4",
       "status": "pass",
-      "latencyMs": 7497,
+      "latencyMs": 6943,
       "failureClass": "-",
-      "note": "strong coding-default candidate",
+      "note": "general-purpose passing candidate",
       "response": "OK",
       "meta": {
-        "id": "gpt-5.3-codex",
+        "id": "gpt-5.4",
         "api": {
-          "id": "gpt-5.3-codex",
+          "id": "gpt-5.4",
           "npm": "@ai-sdk/openai",
           "url": ""
         },
         "status": "active",
-        "name": "GPT 5.3 Codex (OAuth)",
+        "name": "GPT 5.4 (OAuth)",
         "providerID": "openai",
         "capabilities": {
           "temperature": false,
@@ -1662,13 +1679,20 @@
         "options": {},
         "limit": {
           "context": 272000,
-          "input": 272000,
+          "input": 922000,
           "output": 128000
         },
         "headers": {},
-        "family": "gpt-codex",
-        "release_date": "2026-02-05",
+        "family": "gpt",
+        "release_date": "2026-03-05",
         "variants": {
+          "none": {
+            "reasoningEffort": "none",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          },
           "low": {
             "reasoningEffort": "low",
             "reasoningSummary": "auto",
@@ -1707,7 +1731,7 @@
       "provider": "openai",
       "model": "openai/gpt-5.4-mini-fast",
       "status": "pass",
-      "latencyMs": 5149,
+      "latencyMs": 7223,
       "failureClass": "-",
       "note": "strong helper-cheap candidate",
       "response": "OK",

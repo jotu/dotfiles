@@ -51,7 +51,8 @@ Treat the Node.js verifier as private implementation behind those tasks.
 6. Exclude failing or uncertain models from default routing recommendations.
 7. Use the provider recommend task to group passing models into flagship, coding-default, and helper-cheap tiers. Recommendation may still succeed when some tested models fail, as long as at least one safe passing model remains.
 8. Read `references/routing-guidance.md` when several passing models are close or provider-specific tradeoffs need explanation.
-9. If the user approves changes, hand off the verified tier mapping plus the refreshed matrix artifact to `update-opencode-models`.
+9. When profile selection is part of the decision, explicitly map recommendations to profile intent (`work-openai`, `work-copilot`, `home-copilot`) so role-tier routing and profile choice are decided together.
+10. If the user approves changes, hand off the verified tier mapping plus the refreshed matrix artifact to `update-opencode-models`.
 
 ## Selection Heuristics
 

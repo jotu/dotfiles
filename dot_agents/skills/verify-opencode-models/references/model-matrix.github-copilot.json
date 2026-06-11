@@ -1,13 +1,13 @@
 {
   "provider": "github-copilot",
   "prompt": "Reply with exactly: OK",
-  "generatedAt": "2026-05-12T18:40:33.570Z",
+  "generatedAt": "2026-05-22T14:23:00.288Z",
   "results": [
     {
       "provider": "github-copilot",
       "model": "github-copilot/claude-haiku-4.5",
       "status": "pass",
-      "latencyMs": 3744,
+      "latencyMs": 4981,
       "failureClass": "-",
       "note": "general-purpose passing candidate",
       "response": "OK",
@@ -54,9 +54,9 @@
           "textVerbosity": "low"
         },
         "limit": {
-          "context": 144000,
-          "input": 128000,
-          "output": 32000
+          "context": 200000,
+          "input": 136000,
+          "output": 64000
         },
         "headers": {},
         "family": "claude-haiku",
@@ -65,7 +65,7 @@
           "high": {
             "thinking": {
               "type": "enabled",
-              "budgetTokens": 15999
+              "budgetTokens": 16000
             }
           },
           "max": {
@@ -86,11 +86,11 @@
     {
       "provider": "github-copilot",
       "model": "github-copilot/claude-opus-4.5",
-      "status": "fail",
-      "latencyMs": 2055,
-      "failureClass": "unexpected-response",
-      "note": "Unexpected response: (empty)",
-      "response": "",
+      "status": "pass",
+      "latencyMs": 4183,
+      "failureClass": "-",
+      "note": "general-purpose passing candidate",
+      "response": "OK",
       "meta": {
         "id": "claude-opus-4.5",
         "api": {
@@ -134,8 +134,8 @@
           "textVerbosity": "medium"
         },
         "limit": {
-          "context": 160000,
-          "input": 128000,
+          "context": 200000,
+          "input": 168000,
           "output": 32000
         },
         "headers": {},
@@ -157,30 +157,30 @@
     {
       "provider": "github-copilot",
       "model": "github-copilot/claude-opus-4.6",
-      "status": "fail",
-      "latencyMs": 2142,
-      "failureClass": "unexpected-response",
-      "note": "Unexpected response: (empty)",
-      "response": "",
+      "status": "pass",
+      "latencyMs": 5578,
+      "failureClass": "-",
+      "note": "general-purpose passing candidate",
+      "response": "OK",
       "meta": {
         "id": "claude-opus-4.6",
         "api": {
           "id": "claude-opus-4.6",
-          "npm": "@ai-sdk/openai-compatible",
-          "url": "https://api.githubcopilot.com"
+          "npm": "@ai-sdk/anthropic",
+          "url": "https://api.githubcopilot.com/v1"
         },
         "status": "active",
-        "name": "claude-opus-4.6",
+        "name": "Claude Opus 4.6",
         "providerID": "github-copilot",
         "capabilities": {
-          "temperature": false,
-          "reasoning": false,
-          "attachment": false,
+          "temperature": true,
+          "reasoning": true,
+          "attachment": true,
           "toolcall": true,
           "input": {
             "text": true,
             "audio": false,
-            "image": false,
+            "image": true,
             "video": false,
             "pdf": false
           },
@@ -205,42 +205,62 @@
           "textVerbosity": "medium"
         },
         "limit": {
-          "context": 0,
-          "output": 0
+          "context": 200000,
+          "input": 168000,
+          "output": 32000
         },
         "headers": {},
-        "family": "",
-        "release_date": "",
-        "variants": {}
+        "family": "claude-opus",
+        "release_date": "2026-02-05",
+        "variants": {
+          "low": {
+            "thinking": {
+              "type": "adaptive"
+            },
+            "effort": "low"
+          },
+          "medium": {
+            "thinking": {
+              "type": "adaptive"
+            },
+            "effort": "medium"
+          },
+          "high": {
+            "thinking": {
+              "type": "adaptive"
+            },
+            "effort": "high"
+          }
+        }
       }
     },
     {
       "provider": "github-copilot",
       "model": "github-copilot/claude-opus-4.7",
-      "status": "fail",
-      "latencyMs": 2157,
-      "failureClass": "unexpected-response",
-      "note": "Unexpected response: (empty)",
-      "response": "",
+      "status": "pass",
+      "latencyMs": 5276,
+      "failureClass": "-",
+      "note": "general-purpose passing candidate",
+      "response": "OK",
       "meta": {
         "id": "claude-opus-4.7",
         "api": {
           "id": "claude-opus-4.7",
-          "npm": "@ai-sdk/openai-compatible",
-          "url": "https://api.githubcopilot.com"
+          "npm": "@ai-sdk/anthropic",
+          "url": "https://api.githubcopilot.com/v1"
         },
         "status": "active",
-        "name": "claude-opus-4.7",
+        "name": "Claude Opus 4.7",
         "providerID": "github-copilot",
         "capabilities": {
           "temperature": false,
-          "reasoning": false,
-          "attachment": false,
+          "reasoning": true,
+          "attachment": true,
           "toolcall": true,
           "input": {
             "text": true,
             "audio": false,
-            "image": false,
+            "image": true,
             "video": false,
             "pdf": false
           },
@@ -265,20 +285,29 @@
           "textVerbosity": "medium"
         },
         "limit": {
-          "context": 0,
-          "output": 0
+          "context": 200000,
+          "input": 168000,
+          "output": 32000
         },
         "headers": {},
-        "family": "",
-        "release_date": "",
-        "variants": {}
+        "family": "claude-opus",
+        "release_date": "2026-04-16",
+        "variants": {
+          "medium": {
+            "thinking": {
+              "type": "adaptive",
+              "display": "summarized"
+            },
+            "effort": "medium"
+          }
+        }
       }
     },
     {
       "provider": "github-copilot",
       "model": "github-copilot/claude-sonnet-4.5",
       "status": "pass",
-      "latencyMs": 4198,
+      "latencyMs": 5202,
       "failureClass": "-",
       "note": "general-purpose passing candidate",
       "response": "OK",
@@ -325,8 +354,8 @@
           "textVerbosity": "low"
         },
         "limit": {
-          "context": 144000,
-          "input": 128000,
+          "context": 200000,
+          "input": 168000,
           "output": 32000
         },
         "headers": {},
@@ -352,7 +381,7 @@
       "provider": "github-copilot",
       "model": "github-copilot/claude-sonnet-4.6",
       "status": "pass",
-      "latencyMs": 3064,
+      "latencyMs": 4973,
       "failureClass": "-",
       "note": "general-purpose passing candidate",
       "response": "OK",
@@ -400,7 +429,7 @@
         },
         "limit": {
           "context": 200000,
-          "input": 128000,
+          "input": 168000,
           "output": 32000
         },
         "headers": {},
@@ -430,81 +459,9 @@
     },
     {
       "provider": "github-copilot",
-      "model": "github-copilot/gemini-2.5-pro",
-      "status": "pass",
-      "latencyMs": 3649,
-      "failureClass": "-",
-      "note": "strong flagship candidate",
-      "response": "OK",
-      "meta": {
-        "id": "gemini-2.5-pro",
-        "providerID": "github-copilot",
-        "api": {
-          "id": "gemini-2.5-pro",
-          "url": "https://api.githubcopilot.com",
-          "npm": "@ai-sdk/github-copilot"
-        },
-        "status": "active",
-        "limit": {
-          "context": 128000,
-          "input": 128000,
-          "output": 64000
-        },
-        "capabilities": {
-          "temperature": true,
-          "reasoning": false,
-          "attachment": true,
-          "toolcall": true,
-          "input": {
-            "text": true,
-            "audio": false,
-            "image": true,
-            "video": false,
-            "pdf": false
-          },
-          "output": {
-            "text": true,
-            "audio": false,
-            "image": false,
-            "video": false,
-            "pdf": false
-          },
-          "interleaved": false
-        },
-        "family": "gemini-pro",
-        "name": "Gemini 2.5 Pro",
-        "cost": {
-          "input": 0,
-          "output": 0,
-          "cache": {
-            "read": 0,
-            "write": 0
-          }
-        },
-        "options": {},
-        "headers": {},
-        "release_date": "2025-03-20",
-        "variants": {
-          "max": {
-            "thinking": {
-              "type": "enabled",
-              "budgetTokens": 32767
-            }
-          },
-          "high": {
-            "thinking": {
-              "type": "enabled",
-              "budgetTokens": 16384
-            }
-          }
-        }
-      }
-    },
-    {
-      "provider": "github-copilot",
       "model": "github-copilot/gemini-3-flash-preview",
       "status": "pass",
-      "latencyMs": 3144,
+      "latencyMs": 9645,
       "failureClass": "-",
       "note": "strong helper-cheap candidate",
       "response": "OK",
@@ -565,7 +522,7 @@
       "provider": "github-copilot",
       "model": "github-copilot/gemini-3.1-pro-preview",
       "status": "pass",
-      "latencyMs": 5433,
+      "latencyMs": 6280,
       "failureClass": "-",
       "note": "strong flagship candidate",
       "response": "OK",
@@ -612,8 +569,8 @@
           "textVerbosity": "high"
         },
         "limit": {
-          "context": 128000,
-          "input": 128000,
+          "context": 200000,
+          "input": 136000,
           "output": 64000
         },
         "headers": {},
@@ -626,7 +583,7 @@
       "provider": "github-copilot",
       "model": "github-copilot/gpt-4.1",
       "status": "fail",
-      "latencyMs": 2012,
+      "latencyMs": 2708,
       "failureClass": "unexpected-response",
       "note": "Unexpected response: (empty)",
       "response": "",
@@ -688,7 +645,7 @@
       "provider": "github-copilot",
       "model": "github-copilot/gpt-4o",
       "status": "pass",
-      "latencyMs": 3409,
+      "latencyMs": 4320,
       "failureClass": "-",
       "note": "general-purpose passing candidate",
       "response": "OK",
@@ -696,21 +653,21 @@
         "id": "gpt-4o",
         "api": {
           "id": "gpt-4o",
-          "npm": "@ai-sdk/github-copilot",
+          "npm": "@ai-sdk/openai-compatible",
           "url": "https://api.githubcopilot.com"
         },
         "status": "active",
-        "name": "GPT-4o",
+        "name": "gpt-4o",
         "providerID": "github-copilot",
         "capabilities": {
-          "temperature": true,
+          "temperature": false,
           "reasoning": false,
-          "attachment": true,
+          "attachment": false,
           "toolcall": true,
           "input": {
             "text": true,
             "audio": false,
-            "image": true,
+            "image": false,
             "video": false,
             "pdf": false
           },
@@ -735,13 +692,12 @@
           "textVerbosity": "low"
         },
         "limit": {
-          "context": 128000,
-          "input": 64000,
-          "output": 4096
+          "context": 0,
+          "output": 0
         },
         "headers": {},
-        "family": "gpt",
-        "release_date": "2024-05-13",
+        "family": "",
+        "release_date": "",
         "variants": {}
       }
     },
@@ -749,7 +705,7 @@
       "provider": "github-copilot",
       "model": "github-copilot/gpt-5-mini",
       "status": "pass",
-      "latencyMs": 7995,
+      "latencyMs": 7289,
       "failureClass": "-",
       "note": "strong helper-cheap candidate",
       "response": "OK",
@@ -835,7 +791,7 @@
       "provider": "github-copilot",
       "model": "github-copilot/gpt-5.2",
       "status": "pass",
-      "latencyMs": 6135,
+      "latencyMs": 4935,
       "failureClass": "-",
       "note": "general-purpose passing candidate",
       "response": "OK",
@@ -883,9 +839,9 @@
           "textVerbosity": "low"
         },
         "limit": {
-          "context": 264000,
-          "input": 128000,
-          "output": 64000
+          "context": 400000,
+          "input": 272000,
+          "output": 128000
         },
         "headers": {},
         "family": "gpt",
@@ -926,7 +882,7 @@
       "provider": "github-copilot",
       "model": "github-copilot/gpt-5.2-codex",
       "status": "fail",
-      "latencyMs": 2331,
+      "latencyMs": 3069,
       "failureClass": "unexpected-response",
       "note": "Unexpected response: (empty)",
       "response": "",
@@ -1017,7 +973,7 @@
       "provider": "github-copilot",
       "model": "github-copilot/gpt-5.3-codex",
       "status": "pass",
-      "latencyMs": 5625,
+      "latencyMs": 11136,
       "failureClass": "-",
       "note": "strong coding-default candidate",
       "response": "OK",
@@ -1111,7 +1067,7 @@
       "provider": "github-copilot",
       "model": "github-copilot/gpt-5.4",
       "status": "pass",
-      "latencyMs": 4594,
+      "latencyMs": 5008,
       "failureClass": "-",
       "note": "general-purpose passing candidate",
       "response": "OK",
@@ -1204,7 +1160,7 @@
       "provider": "github-copilot",
       "model": "github-copilot/gpt-5.4-mini",
       "status": "pass",
-      "latencyMs": 5513,
+      "latencyMs": 5530,
       "failureClass": "-",
       "note": "strong helper-cheap candidate",
       "response": "OK",
@@ -1294,93 +1250,30 @@
           }
         }
       }
-    },
-    {
-      "provider": "github-copilot",
-      "model": "github-copilot/grok-code-fast-1",
-      "status": "pass",
-      "latencyMs": 6414,
-      "failureClass": "-",
-      "note": "fast general-purpose candidate",
-      "response": "OK",
-      "meta": {
-        "id": "grok-code-fast-1",
-        "providerID": "github-copilot",
-        "api": {
-          "id": "grok-code-fast-1",
-          "url": "https://api.githubcopilot.com",
-          "npm": "@ai-sdk/github-copilot"
-        },
-        "status": "active",
-        "limit": {
-          "context": 128000,
-          "input": 128000,
-          "output": 64000
-        },
-        "capabilities": {
-          "temperature": true,
-          "reasoning": true,
-          "attachment": false,
-          "toolcall": true,
-          "input": {
-            "text": true,
-            "audio": false,
-            "image": false,
-            "video": false,
-            "pdf": false
-          },
-          "output": {
-            "text": true,
-            "audio": false,
-            "image": false,
-            "video": false,
-            "pdf": false
-          },
-          "interleaved": false
-        },
-        "family": "grok",
-        "name": "Grok Code Fast 1",
-        "cost": {
-          "input": 0,
-          "output": 0,
-          "cache": {
-            "read": 0,
-            "write": 0
-          }
-        },
-        "options": {},
-        "headers": {},
-        "release_date": "2025-08-27",
-        "variants": {}
-      }
     }
   ],
   "recommendations": {
     "flagship": {
       "provider": "github-copilot",
-      "model": "github-copilot/gemini-2.5-pro",
+      "model": "github-copilot/gemini-3.1-pro-preview",
       "status": "pass",
-      "latencyMs": 3649,
+      "latencyMs": 6280,
       "failureClass": "-",
       "note": "strong flagship candidate",
       "response": "OK",
       "meta": {
-        "id": "gemini-2.5-pro",
-        "providerID": "github-copilot",
+        "id": "gemini-3.1-pro-preview",
         "api": {
-          "id": "gemini-2.5-pro",
-          "url": "https://api.githubcopilot.com",
-          "npm": "@ai-sdk/github-copilot"
+          "id": "gemini-3.1-pro-preview",
+          "npm": "@ai-sdk/github-copilot",
+          "url": "https://api.githubcopilot.com"
         },
         "status": "active",
-        "limit": {
-          "context": 128000,
-          "input": 128000,
-          "output": 64000
-        },
+        "name": "Gemini 3.1 Pro Preview",
+        "providerID": "github-copilot",
         "capabilities": {
           "temperature": true,
-          "reasoning": false,
+          "reasoning": true,
           "attachment": true,
           "toolcall": true,
           "input": {
@@ -1399,8 +1292,6 @@
           },
           "interleaved": false
         },
-        "family": "gemini-pro",
-        "name": "Gemini 2.5 Pro",
         "cost": {
           "input": 0,
           "output": 0,
@@ -1409,30 +1300,25 @@
             "write": 0
           }
         },
-        "options": {},
+        "options": {
+          "textVerbosity": "high"
+        },
+        "limit": {
+          "context": 200000,
+          "input": 136000,
+          "output": 64000
+        },
         "headers": {},
-        "release_date": "2025-03-20",
-        "variants": {
-          "max": {
-            "thinking": {
-              "type": "enabled",
-              "budgetTokens": 32767
-            }
-          },
-          "high": {
-            "thinking": {
-              "type": "enabled",
-              "budgetTokens": 16384
-            }
-          }
-        }
+        "family": "gemini-pro",
+        "release_date": "2026-02-19",
+        "variants": {}
       }
     },
     "codingDefault": {
       "provider": "github-copilot",
       "model": "github-copilot/gpt-5.3-codex",
       "status": "pass",
-      "latencyMs": 5625,
+      "latencyMs": 11136,
       "failureClass": "-",
       "note": "strong coding-default candidate",
       "response": "OK",
@@ -1526,7 +1412,7 @@
       "provider": "github-copilot",
       "model": "github-copilot/gemini-3-flash-preview",
       "status": "pass",
-      "latencyMs": 3144,
+      "latencyMs": 9645,
       "failureClass": "-",
       "note": "strong helper-cheap candidate",
       "response": "OK",

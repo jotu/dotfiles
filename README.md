@@ -176,20 +176,37 @@ mise run opencode:profile:current
 # validate template renders
 mise run opencode:profile:validate
 mise run opencode:models:validate
+
+# preflight before changing model/profile routing
+mise run opencode:models:preflight
 ```
 
 ### Profile Defaults
 
 | Profile | model | small_model |
 |---|---|---|
-| `work-openai` | `openai/gpt-5.3-codex` | `openai/gpt-5.4-mini-fast` |
+| `work-openai` | `openai/gpt-5.4` | `openai/gpt-5.4-mini-fast` |
 | `work-copilot` | `github-copilot/gpt-5.3-codex` | `github-copilot/gemini-3-flash-preview` |
 | `home-copilot` | `github-copilot/gpt-5.3-codex` | `github-copilot/gemini-3-flash-preview` |
 
 Role-tier routing defaults (verified):
 
-- `work-openai`: flagship reasoning `openai/gpt-5.5`, coding-default `openai/gpt-5.3-codex`, helper-cheap `openai/gpt-5.4-mini-fast`.
+- `work-openai`: flagship reasoning `openai/gpt-5.5`, coding-default `openai/gpt-5.4`, helper-cheap `openai/gpt-5.4-mini-fast`.
 - `work-copilot` and `home-copilot`: flagship reasoning `github-copilot/claude-opus-4.6`, coding-default `github-copilot/gpt-5.3-codex`, helper-cheap `github-copilot/gemini-3-flash-preview`.
+
+Work profile routing notes:
+
+- `work-openai` keeps `build`/`builder` on `openai/gpt-5.4` for routine coding work such as Go and Java implementation.
+- `work-openai` promotes `platform-engineer` and `observability-engineer` to `openai/gpt-5.5` for Helm, Kubernetes, Grafana, alerts, and dashboard-heavy reasoning.
+- Use `openai/gpt-5.4` for mechanical dashboard JSON edits or straightforward Helm follow-through once the plan is clear.
+
+Selection rule (required):
+
+- Always pick models by role tier, not one "best" model for everything.
+- When updating model defaults, include both decisions together:
+  1. **Model selection** (`model`, `small_model`, and flagship recommendation)
+  2. **Profile intent** (`work-openai`, `work-copilot`, `home-copilot`) and which roles each profile is expected to serve.
+- Before adopting defaults for any profile, confirm the chosen models pass live verification on the active auth path.
 
 Preference note:
 

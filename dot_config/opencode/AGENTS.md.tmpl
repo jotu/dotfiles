@@ -95,13 +95,15 @@ Use role-tier routing instead of a single premium model for all roles.
 OpenCode machine config in this repo is rendered from a single chezmoi template. Use profile-based rendering (`opencode.profile`) and avoid maintaining separate rendered profile files.
 
 - Flagship reasoning roles (`plan`, `orchestrator`, `reviewer`, `architect`, `ai-workflow-engineer`, `oracle`, `security-engineer`, `ultrabrain`) use strongest reasoning routes.
-- Coding-default roles (`build`, `platform-engineer`, `developer-platform-engineer`, `builder`, `delivery-engineer`, `observability-engineer`, `explore`, `deep`) use strong coding routes.
+- Platform-sensitive reasoning roles (`platform-engineer`, `observability-engineer`) use strongest reasoning routes for Helm, Kubernetes, Grafana, and observability-heavy work.
+- Coding-default roles (`build`, `developer-platform-engineer`, `builder`, `delivery-engineer`, `explore`, `deep`) use strong coding routes.
 - Visual and multimodal roles (`frontend-ui-ux-engineer`, `multimodal-looker`, `visual-engineering`, `multimodal`) use visual-capable routes.
 - Helper-cheap roles (`librarian`, `document-writer`, `quick`, `unspecified-low`, `documentation`) use cost-efficient fast routes.
 
 Current verified defaults for this setup:
 
-- `work-openai`: flagship `openai/gpt-5.5`, coding-default `openai/gpt-5.3-codex`, helper-cheap `openai/gpt-5.4-mini-fast`.
+- `work-openai`: flagship `openai/gpt-5.5`, coding-default `openai/gpt-5.4`, helper-cheap `openai/gpt-5.4-mini-fast`.
+  `platform-engineer` and `observability-engineer` are intentionally promoted to flagship for Helm, Kubernetes, Grafana, and dashboard design work.
 - `work-copilot` and `home-copilot`: flagship `github-copilot/claude-opus-4.6`, coding-default `github-copilot/gpt-5.3-codex`, helper-cheap `github-copilot/gemini-3-flash-preview`.
 
 Treat upstream model warnings as guidance, not hard requirements. Keep local overrides only when provider-path verification confirms stable behavior.

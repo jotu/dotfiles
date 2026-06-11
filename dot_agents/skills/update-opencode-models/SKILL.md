@@ -31,7 +31,12 @@ Accept one profile scope:
 3. Read the target file.
 4. Build available model catalogs per provider from `provider.*.models` keys in `dot_config/opencode/opencode.json.tmpl`.
 5. Assign only models that both exist in each provider catalog and pass in the refreshed verified matrix.
-6. Apply requested scope:
+6. Build and document a role-tier mapping for the target scope:
+   - flagship reasoning roles
+   - coding-default roles
+   - helper-cheap roles
+   Ensure profile defaults (`model`, `small_model`) align with this role-tier mapping.
+7. Apply requested scope:
    - `work-openai`: update only OpenAI-default profile values
    - `work-copilot`: update only Copilot-default work profile values
    - `home-copilot`: update only Copilot-default home profile values
@@ -43,16 +48,17 @@ Use a quality-first, cost-aware mix (never max-cost everywhere, never cheapest e
 
 - Strong default model for the main coding flow
 - Cost-efficient small model for lightweight tasks
+- Strongest reliable flagship model for high-risk reasoning/review roles
 - Provider catalogs that retain verified usable options without forcing them as defaults
 
 ## Baseline Routing
 
 ### Work OpenAI
 
-- Default: `model = openai/gpt-5.3-codex`
+- Default: `model = openai/gpt-5.4`
 - Small: `small_model = openai/gpt-5.4-mini`
 - Keep both `openai` and `github-copilot` providers available on work machines.
-- Keep OpenCode `model` on `openai/gpt-5.3-codex` and `small_model` on `openai/gpt-5.4-mini` unless refreshed verification proves a better default.
+- Keep OpenCode `model` on `openai/gpt-5.4` and `small_model` on `openai/gpt-5.4-mini-fast` unless refreshed verification proves a better default.
 - Keep verified OpenAI catalog entries available for explicit selection without promoting unverified options to defaults.
 
 ### Work/Home Copilot

@@ -204,6 +204,48 @@ run = [
   "mise run opencode:models:recommend:github-copilot"
 ]
 
+[tasks."opencode:models:apply:work-openai"]
+description = "Render OpenCode config with the work OpenAI profile"
+run = "mise run opencode:profile:set:work-openai"
+
+[tasks."opencode:models:apply:work-copilot"]
+description = "Render OpenCode config with the work Copilot profile"
+run = "mise run opencode:profile:set:work-copilot"
+
+[tasks."opencode:models:apply:home-copilot"]
+description = "Render OpenCode config with the home Copilot profile"
+run = "mise run opencode:profile:set:home-copilot"
+
+[tasks."opencode:models:apply:all"]
+description = "Validate all model profile renders after template updates"
+run = [
+  "mise run opencode:models:apply:work-openai",
+  "mise run opencode:models:apply:work-copilot",
+  "mise run opencode:models:apply:home-copilot",
+  "mise run opencode:models:validate"
+]
+
+[tasks."opencode:models:preflight"]
+alias = "opomp"
+description = "Preflight model routing: refresh, verify, recommend, validate"
+run = [
+  "mise run opencode:models:refresh:matrix:all",
+  "mise run opencode:models:verify:all",
+  "mise run opencode:models:recommend:all",
+  "mise run opencode:models:validate"
+]
+
+[tasks."opencode:models:update:all"]
+description = "Refresh/verify/recommend then apply all rendered profiles"
+run = [
+  "mise run opencode:models:preflight",
+  "mise run opencode:models:apply:all"
+]
+
+[tasks."opencode:models:test"]
+description = "Run offline tests for model verifier logic"
+run = "node --test dot_agents/skills/verify-opencode-models/scripts/verify-models.test.mjs dot_agents/skills/verify-opencode-models/scripts/verify-models-cli.test.mjs"
+
 [tasks."opencode:plugins:validate"]
 alias = "opopv"
 description = "Validate OpenCode plugin allowlist and pinned sources"

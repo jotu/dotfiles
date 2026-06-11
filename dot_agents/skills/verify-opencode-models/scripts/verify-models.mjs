@@ -2,6 +2,7 @@ import { spawnSync } from "node:child_process";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import process from "node:process";
+import { computeExitCode } from "./verify-models-lib.mjs";
 
 const DEFAULT_PROMPT = process.env.OPENCODE_VERIFY_PROMPT ?? "Reply with exactly: OK";
 const DEFAULT_TIMEOUT_MS = Number.parseInt(process.env.OPENCODE_VERIFY_TIMEOUT_MS ?? "120000", 10);
@@ -474,14 +475,7 @@ async function main() {
     printRecommendations(options.provider, recommendations);
   }
 
-  const passingCount = results.filter((result) => result.status === "pass").length;
-  if (options.mode === "recommend" || options.mode === "refresh") {
-    process.exitCode = passingCount > 0 ? 0 : 1;
-    return;
-  }
-
-  const hasFailures = results.some((result) => result.status !== "pass");
-  process.exitCode = hasFailures ? 1 : 0;
+  process.exitCode = computeExitCode(options.mode, results);
 }
 
 main().catch((error) => {
