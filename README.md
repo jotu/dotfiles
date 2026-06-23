@@ -157,11 +157,6 @@ mise run osx:setup-rectangle
 
 Then grant Rectangle Accessibility permission in System Settings when prompted.
 
-Obsidian CLI note:
-
-- `obsidian` is provided by Homebrew cask `obsidian` (inside the app bundle), not by a standalone mise tool.
-- This repo installs it via the macOS package bootstrap script so it is available on both work and home machines.
-
 ## Quick GH Login Tasks
 
 ```bash
