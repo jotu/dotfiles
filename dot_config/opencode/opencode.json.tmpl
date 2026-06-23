@@ -4,6 +4,14 @@
 {{- else if .work.enable -}}
   {{- $profile = "work-openai" -}}
 {{- end -}}
+{{- $copilotFlagship := "github-copilot/claude-opus-4.6" -}}
+{{- $copilotCoding := "github-copilot/gpt-5.4" -}}
+{{- $copilotHelper := "github-copilot/claude-haiku-4.5" -}}
+{{- if eq $profile "work-copilot" -}}
+  {{- $copilotFlagship = "github-copilot/gemini-3.1-pro-preview" -}}
+  {{- $copilotCoding = "github-copilot/gpt-5.4" -}}
+  {{- $copilotHelper = "github-copilot/gemini-3-flash-preview" -}}
+{{- end -}}
 {
   "permission": {{ includeTemplate ".chezmoitemplates/opencode/permission.json.tmpl" }},
 {{- if eq $profile "work-openai" }}
@@ -606,37 +614,37 @@
   "$schema": "https://opencode.ai/config.json"
 {{- else if or (eq $profile "work-copilot") (eq $profile "home-copilot") }}
   "plugin": {{ includeTemplate ".chezmoitemplates/opencode/plugins-copilot.json.tmpl" }},
-  "model": "github-copilot/gpt-5.3-codex",
-  "small_model": "github-copilot/claude-haiku-4.5",
+  "model": "{{ $copilotCoding }}",
+  "small_model": "{{ $copilotHelper }}",
   "agent": {
-    "plan": { "model": "github-copilot/claude-opus-4.6" },
-    "orchestrator": { "model": "github-copilot/claude-opus-4.6" },
-    "reviewer": { "model": "github-copilot/claude-opus-4.6" },
-    "architect": { "model": "github-copilot/claude-opus-4.6" },
-    "ai-workflow-engineer": { "model": "github-copilot/claude-opus-4.6" },
-    "oracle": { "model": "github-copilot/claude-opus-4.6" },
-    "security-engineer": { "model": "github-copilot/claude-opus-4.6" },
-    "ultrabrain": { "model": "github-copilot/claude-opus-4.6" },
+    "plan": { "model": "{{ $copilotFlagship }}" },
+    "orchestrator": { "model": "{{ $copilotFlagship }}" },
+    "reviewer": { "model": "{{ $copilotFlagship }}" },
+    "architect": { "model": "{{ $copilotFlagship }}" },
+    "ai-workflow-engineer": { "model": "{{ $copilotFlagship }}" },
+    "oracle": { "model": "{{ $copilotFlagship }}" },
+    "security-engineer": { "model": "{{ $copilotFlagship }}" },
+    "ultrabrain": { "model": "{{ $copilotFlagship }}" },
 
-    "build": { "model": "github-copilot/gpt-5.3-codex" },
-    "platform-engineer": { "model": "github-copilot/gpt-5.3-codex" },
-    "developer-platform-engineer": { "model": "github-copilot/gpt-5.3-codex" },
-    "builder": { "model": "github-copilot/gpt-5.3-codex" },
-    "delivery-engineer": { "model": "github-copilot/gpt-5.3-codex" },
-    "observability-engineer": { "model": "github-copilot/gpt-5.3-codex" },
-    "explore": { "model": "github-copilot/gpt-5.3-codex" },
-    "deep": { "model": "github-copilot/gpt-5.3-codex" },
+    "build": { "model": "{{ $copilotCoding }}" },
+    "platform-engineer": { "model": "{{ $copilotCoding }}" },
+    "developer-platform-engineer": { "model": "{{ $copilotCoding }}" },
+    "builder": { "model": "{{ $copilotCoding }}" },
+    "delivery-engineer": { "model": "{{ $copilotCoding }}" },
+    "observability-engineer": { "model": "{{ $copilotCoding }}" },
+    "explore": { "model": "{{ $copilotCoding }}" },
+    "deep": { "model": "{{ $copilotCoding }}" },
 
     "frontend-ui-ux-engineer": { "model": "github-copilot/claude-sonnet-4.6" },
     "multimodal-looker": { "model": "github-copilot/claude-sonnet-4.6" },
     "visual-engineering": { "model": "github-copilot/claude-sonnet-4.6" },
     "multimodal": { "model": "github-copilot/claude-sonnet-4.6" },
 
-    "librarian": { "model": "github-copilot/claude-haiku-4.5" },
-    "document-writer": { "model": "github-copilot/claude-haiku-4.5" },
-    "quick": { "model": "github-copilot/claude-haiku-4.5" },
-    "unspecified-low": { "model": "github-copilot/claude-haiku-4.5" },
-    "documentation": { "model": "github-copilot/claude-haiku-4.5" }
+    "librarian": { "model": "{{ $copilotHelper }}" },
+    "document-writer": { "model": "{{ $copilotHelper }}" },
+    "quick": { "model": "{{ $copilotHelper }}" },
+    "unspecified-low": { "model": "{{ $copilotHelper }}" },
+    "documentation": { "model": "{{ $copilotHelper }}" }
   },
   "provider": {
     "github-copilot": {
