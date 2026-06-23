@@ -149,6 +149,19 @@ ssh -T git@github.com
 mise run dotfiles:health:check
 ```
 
+If you use Rectangle on macOS, run the managed post-install setup once after it is installed:
+
+```bash
+mise run osx:setup-rectangle
+```
+
+Then grant Rectangle Accessibility permission in System Settings when prompted.
+
+Obsidian CLI note:
+
+- `obsidian` is provided by Homebrew cask `obsidian` (inside the app bundle), not by a standalone mise tool.
+- This repo installs it via the macOS package bootstrap script so it is available on both work and home machines.
+
 ## Quick GH Login Tasks
 
 ```bash
@@ -185,14 +198,19 @@ mise run opencode:models:preflight
 
 | Profile | model | small_model |
 |---|---|---|
-| `work-openai` | `openai/gpt-5.4` | `openai/gpt-5.4-mini-fast` |
-| `work-copilot` | `github-copilot/gpt-5.3-codex` | `github-copilot/gemini-3-flash-preview` |
-| `home-copilot` | `github-copilot/gpt-5.3-codex` | `github-copilot/gemini-3-flash-preview` |
+| `work-openai` | `openai/gpt-5.4` | `openai/gpt-5.4-mini` |
+| `work-copilot` | `github-copilot/gpt-5.4` | `github-copilot/gpt-5.4-mini` |
+| `home-copilot` | `github-copilot/gpt-5.4` | `github-copilot/gpt-5.4-mini` |
 
 Role-tier routing defaults (verified):
 
-- `work-openai`: flagship reasoning `openai/gpt-5.5`, coding-default `openai/gpt-5.4`, helper-cheap `openai/gpt-5.4-mini-fast`.
-- `work-copilot` and `home-copilot`: flagship reasoning `github-copilot/claude-opus-4.6`, coding-default `github-copilot/gpt-5.3-codex`, helper-cheap `github-copilot/gemini-3-flash-preview`.
+- `work-openai`: flagship reasoning `openai/gpt-5.5`, coding-default `openai/gpt-5.4`, helper-cheap `openai/gpt-5.4-mini`.
+- `work-copilot` and `home-copilot`: flagship reasoning `github-copilot/gemini-3.1-pro-preview`, coding-default `github-copilot/gpt-5.4`, helper-cheap `github-copilot/gpt-5.4-mini`.
+
+Compaction ground rule:
+
+- Keep automatic compaction enabled with `tail_turns: 12` to avoid long-thread token burn.
+- If a session is still growing expensive, compact manually before large prompts or file-heavy tasks.
 
 Work profile routing notes:
 
@@ -238,6 +256,11 @@ OpenCode config maintenance notes:
 - `README.md`: operator quick-start and day-1 usage.
 - `dot_config/opencode/AGENTS.md.tmpl`: agent routing, role boundaries, verification rules.
 - `dot_agents/skills/*/SKILL.md`: deep task workflows and specialized playbooks.
+
+### Privacy Boundary
+
+- Keep all repo context repo-local.
+- Do not store notes, summaries, or decisions from this repo in external long-term memory systems (for example Obsidian/team vault) unless explicitly requested.
 
 ### OpenCode Skills Catalog Policy
 
