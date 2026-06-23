@@ -14,3 +14,5 @@ git:
   branchLogCmd: "git log --graph --color=always --oneline {{branchName}} --"
   commit:
     signOff: true
+  pagers:
+    - externalDiffCommand: hunk diff
