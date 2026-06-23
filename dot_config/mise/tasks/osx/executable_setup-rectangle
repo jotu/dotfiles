@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+#MISE description="Apply managed Rectangle defaults after install for Spaces-friendly behavior."
+#MISE alias="osr"
+set -euo pipefail
+
+app_path="/Applications/Rectangle.app"
+app_name="Rectangle"
+domain="com.knollsoft.Rectangle"
+was_running=0
+
+if [[ ! -d "$app_path" ]]; then
+  printf '%s\n' "$app_name is not installed. Install it first with chezmoi or brew." >&2
+  exit 0
+fi
+
+if pgrep -x "$app_name" >/dev/null 2>&1; then
+  was_running=1
+  osascript -e 'tell application "Rectangle" to quit'
+
+  for _ in {1..20}; do
+    if ! pgrep -x "$app_name" >/dev/null 2>&1; then
+      break
+    fi
+    sleep 0.5
+  done
+fi
+
+# Keep the managed subset intentionally small and stable.
+defaults write "$domain" launchOnLogin -bool true
+defaults write "$domain" missionControlDragging -int 2
+defaults write "$domain" subsequentExecutionMode -int 1
+defaults write "$domain" hideMenubarIcon -bool false
+
+if [[ "$was_running" -eq 1 ]]; then
+  open -g -a "$app_name"
+fi
+
+printf '%s\n' "Managed Rectangle defaults applied for $domain."
+printf '%s\n' "Manual step: grant Accessibility permission to Rectangle in System Settings > Privacy & Security > Accessibility."
+printf '%s\n' "Run this task after Rectangle updates if you want to re-apply the managed subset."
