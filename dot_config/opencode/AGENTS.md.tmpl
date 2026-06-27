@@ -33,30 +33,18 @@ This team supports platform runtime, developer platform, services/CLIs/tooling, 
 
 ## Team roles
 
-### Core roles
+Use one implementation role by default. Add specialists only when they materially improve outcomes.
 
-Use these as the default working set:
-
-- `orchestrator` for planning, routing, and coordination
-- `platform-engineer` for Kubernetes, GitOps, runtime, charts, and cloud-native platform work
-- `developer-platform-engineer` for Backstage, scaffolding, docs UX, onboarding, and templates
-- `builder` for services, CLIs, automation, and tooling
-- `reviewer` for final read-only review
-
-### Secondary roles
-
-Use these when the task clearly crosses into their specialty:
-
-- `delivery-engineer` for GitHub, Actions, release workflows, and CI/CD
-- `security-engineer` for security-sensitive review
-- `observability-engineer` for telemetry, Grafana, alerts, SLOs, and runbooks
-
-### Special-use roles
-
-Use these intentionally, not by default:
-
-- `architect` for major design tradeoffs and capability shaping
-- `ai-workflow-engineer` for prompts, routing, commands, skills, and AI workflow improvement
+- `builder`: services, CLIs, automation, tooling
+- `developer-platform-engineer`: Backstage, scaffolding, docs UX, templates
+- `platform-engineer`: Kubernetes, GitOps, runtime, charts
+- `orchestrator`: planning, routing, coordination
+- `reviewer`: final read-only review
+- `delivery-engineer`: GitHub, Actions, release workflows, CI/CD
+- `security-engineer`: security-sensitive review
+- `observability-engineer`: telemetry, Grafana, alerts, SLOs, runbooks
+- `architect`: major design tradeoffs and capability shaping (use intentionally)
+- `ai-workflow-engineer`: prompts, routing, commands, skills (use intentionally)
 
 ## Shared principles
 
@@ -67,16 +55,27 @@ Use these intentionally, not by default:
 - Never invent verification results.
 - Never weaken security for convenience.
 - Keep prompts short, focused, and task-specific.
+- Keep default responses crisp: target <= 6 bullets unless the user asks for a deep dive.
 - Use skills for depth, not extra agents for every technology.
 - In this repo, treat only repo-owned personal mise `00-*` fragments and managed helpers as in scope by default; do not modify unmanaged local `10-*`/`20-*` fragments unless explicitly asked.
 - For mise task scripting, prefer bash for simple logic, Node.js for complex logic, and run Node via mise-managed latest Node wrappers.
 
 ## Routing defaults
 
-- Start with one implementation agent from core roles.
-- Add secondary roles only when their specialty materially improves outcomes.
-- Use special-use roles intentionally.
-- Avoid overlapping experts reading the same context without clear need.
+- Start with one implementation role.
+- Add specialty roles only when needed.
+- Avoid overlapping experts on the same context.
+
+## Ponytail usage policy
+
+- Use Ponytail as a selective implementation discipline, not a global behavior override.
+- Enabled by default for: `build`, `builder`, `developer-platform-engineer`, `delivery-engineer`.
+- Optional `lite` usage for: `platform-engineer`, `observability-engineer`.
+- Disabled for: reasoning/review/architecture roles (`orchestrator`, `reviewer`, `architect`, `security-engineer`, `ai-workflow-engineer`).
+- Keep reliability guardrails intact: never skip validation, trust-boundary checks, security controls, accessibility, or rollback planning.
+- If Ponytail and task requirements conflict, prioritize correctness, safety, and explicit acceptance criteria.
+
+The full philosophy and principles are in `PONYTAIL.md.tmpl`.
 
 ## Verification rules
 
@@ -90,22 +89,6 @@ For platform or infrastructure work, run the closest equivalent validation and i
 
 ## Model routing policy
 
-Use role-tier routing instead of a single premium model for all roles.
+Use role-tier routing. Flagship reasoning roles use strongest reasoning routes, coding roles use strong coding routes, helper roles use fast cost-efficient routes.
 
-OpenCode machine config in this repo is rendered from a single chezmoi template. Use profile-based rendering (`opencode.profile`) and avoid maintaining separate rendered profile files.
-
-- Flagship reasoning roles (`plan`, `orchestrator`, `reviewer`, `architect`, `ai-workflow-engineer`, `oracle`, `security-engineer`, `ultrabrain`) use strongest reasoning routes.
-- Platform-sensitive reasoning roles (`platform-engineer`, `observability-engineer`) use strongest reasoning routes for Helm, Kubernetes, Grafana, and observability-heavy work.
-- Coding-default roles (`build`, `developer-platform-engineer`, `builder`, `delivery-engineer`, `explore`, `deep`) use strong coding routes.
-- Visual and multimodal roles (`frontend-ui-ux-engineer`, `multimodal-looker`, `visual-engineering`, `multimodal`) use visual-capable routes.
-- Helper-cheap roles (`librarian`, `document-writer`, `quick`, `unspecified-low`, `documentation`) use cost-efficient fast routes.
-
-Current verified defaults for this setup:
-
-- `work-openai`: flagship `openai/gpt-5.5`, coding-default `openai/gpt-5.4`, helper-cheap `openai/gpt-5.4-mini-fast`.
-  `platform-engineer` and `observability-engineer` are intentionally promoted to flagship for Helm, Kubernetes, Grafana, and dashboard design work.
-- `work-copilot` and `home-copilot`: flagship `github-copilot/claude-opus-4.6`, coding-default `github-copilot/gpt-5.3-codex`, helper-cheap `github-copilot/gemini-3-flash-preview`.
-
-Treat upstream model warnings as guidance, not hard requirements. Keep local overrides only when provider-path verification confirms stable behavior.
-
-For Copilot-backed defaults, prefer Claude Opus as the general flagship reasoning route; treat Gemini models as preferred for UI, visual, and multimodal-oriented work.
+OpenCode machine config is rendered from a single chezmoi template. Use profile-based rendering (`opencode.profile`) and avoid separate rendered profile files.
