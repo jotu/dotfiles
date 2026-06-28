@@ -243,8 +243,14 @@ run = [
 ]
 
 [tasks."opencode:models:test"]
-description = "Run offline tests for model verifier logic"
-run = "node --test dot_agents/skills/verify-opencode-models/scripts/verify-models.test.mjs dot_agents/skills/verify-opencode-models/scripts/verify-models-cli.test.mjs"
+description = "Run offline tests for model verifier and profile routing logic"
+run = '''
+  set -eu
+  node --test \
+    dot_agents/skills/verify-opencode-models/scripts/verify-models.test.mjs \
+    dot_agents/skills/verify-opencode-models/scripts/verify-models-cli.test.mjs \
+    dot_config/mise/scripts/opencode-profile-routing.test.mjs
+'''
 
 [tasks."opencode:plugins:validate"]
 alias = "opopv"

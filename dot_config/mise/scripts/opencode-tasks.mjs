@@ -74,9 +74,11 @@ if (command === 'validate-plugins') {
     ['.chezmoitemplates/opencode/plugins-openai.json.tmpl', [
       'opencode-openai-codex-auth',
       'superpowers@git+https://github.com/obra/superpowers.git#v5.0.5',
+      '@dietrichgebert/ponytail@4.8.3',
     ]],
     ['.chezmoitemplates/opencode/plugins-copilot.json.tmpl', [
       'superpowers@git+https://github.com/obra/superpowers.git#v5.0.5',
+      '@dietrichgebert/ponytail@4.8.3',
     ]],
   ]);
 
