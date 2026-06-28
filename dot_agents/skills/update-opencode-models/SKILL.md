@@ -58,15 +58,15 @@ Use a quality-first, cost-aware mix (never max-cost everywhere, never cheapest e
 - Default: `model = openai/gpt-5.4`
 - Small: `small_model = openai/gpt-5.4-mini`
 - Keep both `openai` and `github-copilot` providers available on work machines.
-- Keep OpenCode `model` on `openai/gpt-5.4` and `small_model` on `openai/gpt-5.4-mini-fast` unless refreshed verification proves a better default.
+- Keep OpenCode `model` on `openai/gpt-5.4` and `small_model` on `openai/gpt-5.4-mini` unless refreshed verification proves a better default.
 - Keep verified OpenAI catalog entries available for explicit selection without promoting unverified options to defaults.
 
 ### Work/Home Copilot
 
 - Default: `model = github-copilot/gpt-5.3-codex`
-- Small: `small_model = github-copilot/gemini-3-flash-preview`
+- Small: `small_model = github-copilot/gemini-3.5-flash`
 - Keep GitHub Copilot defaults for home and optional Copilot profile on work.
-- Keep OpenCode `model` on `github-copilot/gpt-5.3-codex` and `small_model` on `github-copilot/gemini-3-flash-preview` unless refreshed verification proves a better default.
+- Keep OpenCode `model` on `github-copilot/gpt-5.3-codex` and `small_model` on `github-copilot/gemini-3.5-flash` unless refreshed verification proves a better default.
 - Keep verified Copilot catalog entries available for explicit selection without promoting unverified options to defaults.
 
 ## Rendered Profile Defaults

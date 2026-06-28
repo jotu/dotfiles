@@ -1,5 +1,7 @@
 # github-copilot Model Matrix
 
+Note: This is a point-in-time verification snapshot. Canonical active defaults are in `dot_config/opencode/opencode.json.tmpl`.
+
 Generated: 2026-05-22T14:23:00.288Z
 
 Prompt: Reply with exactly: OK
@@ -29,7 +31,7 @@ Prompt: Reply with exactly: OK
 - Coding default: github-copilot/gpt-5.3-codex (11.1s, strong coding-default candidate)
 - Helper cheap: github-copilot/gemini-3-flash-preview (9.6s, strong helper-cheap candidate)
 
-## Suggested Routing
+## Suggested Routing (Snapshot)
 
 - Use github-copilot/gemini-3.1-pro-preview for flagship reasoning roles like plan/oracle/ultrabrain.
 - Use github-copilot/gpt-5.3-codex for OpenCode default implementation work and coding-heavy roles.

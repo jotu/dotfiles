@@ -48,6 +48,7 @@ Treat the Node.js verifier as private implementation behind those tasks.
 5. Persist the verified matrix as managed reference artifacts:
    - `dot_agents/skills/verify-opencode-models/references/model-matrix.<provider>.json`
    - `dot_agents/skills/verify-opencode-models/references/model-matrix.<provider>.md`
+   Treat these artifacts as snapshots, not canonical defaults.
 6. Exclude failing or uncertain models from default routing recommendations.
 7. Use the provider recommend task to group passing models into flagship, coding-default, and helper-cheap tiers. Recommendation may still succeed when some tested models fail, as long as at least one safe passing model remains.
 8. Read `references/routing-guidance.md` when several passing models are close or provider-specific tradeoffs need explanation.

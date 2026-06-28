@@ -2,6 +2,8 @@
 
 Use this reference after model verification succeeds and you need to turn the results into safe OpenCode routing.
 
+Canonical active defaults are in `dot_config/opencode/opencode.json.tmpl`; matrix files in this folder are verification snapshots.
+
 ## Purpose
 
 Convert a verified model matrix into conservative routing decisions.

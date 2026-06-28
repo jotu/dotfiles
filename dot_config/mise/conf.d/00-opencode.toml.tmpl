@@ -246,10 +246,11 @@ run = [
 description = "Run offline tests for model verifier and profile routing logic"
 run = '''
   set -eu
-  node --test \
-    dot_agents/skills/verify-opencode-models/scripts/verify-models.test.mjs \
-    dot_agents/skills/verify-opencode-models/scripts/verify-models-cli.test.mjs \
-    dot_config/mise/scripts/opencode-profile-routing.test.mjs
+  repo_root=$(chezmoi source-path 2>/dev/null || git rev-parse --show-toplevel)
+  cd "$repo_root"
+  node --test "$repo_root/dot_agents/skills/verify-opencode-models/scripts/verify-models.test.mjs"
+  node --test "$repo_root/dot_agents/skills/verify-opencode-models/scripts/verify-models-cli.test.mjs"
+  node --test "$repo_root/dot_config/mise/scripts/opencode-profile-routing.test.mjs"
 '''
 
 [tasks."opencode:plugins:validate"]

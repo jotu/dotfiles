@@ -1,5 +1,7 @@
 # openai Model Matrix
 
+Note: This is a point-in-time verification snapshot. Canonical active defaults are in `dot_config/opencode/opencode.json.tmpl`.
+
 Generated: 2026-06-02T06:36:46.582Z
 
 Prompt: Reply with exactly: OK
@@ -31,7 +33,7 @@ Prompt: Reply with exactly: OK
 - Coding default: openai/gpt-5.4 (6.9s, general-purpose passing candidate)
 - Helper cheap: openai/gpt-5.4-mini-fast (7.2s, strong helper-cheap candidate)
 
-## Suggested Routing
+## Suggested Routing (Snapshot)
 
 - Use openai/gpt-5.5 for flagship reasoning roles like plan/oracle/ultrabrain.
 - Use openai/gpt-5.4 for OpenCode default implementation work and coding-heavy roles.
