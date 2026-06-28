@@ -37,6 +37,7 @@ Reference sections:
 - OpenCode profiles and model defaults: [OpenCode config defaults](#opencode-config-defaults)
 - OpenCode skills catalog policy: [OpenCode skills catalog policy](#opencode-skills-catalog-policy)
 - OpenCode commands catalog policy: [OpenCode commands catalog policy](#opencode-commands-catalog-policy)
+- Working agreement: [Tidy First + CUPID + Ponytail](docs/working-agreement-tidy-cupid-ponytail.md)
 
 # Git
 
@@ -195,22 +196,23 @@ mise run opencode:models:preflight
 |---|---|---|
 | `work-openai` | `openai/gpt-5.4` | `openai/gpt-5.4-mini` |
 | `work-copilot` | `github-copilot/gpt-5.4` | `github-copilot/gpt-5.4-mini` |
-| `home-copilot` | `github-copilot/gpt-5.4` | `github-copilot/gpt-5.4-mini` |
+| `home-copilot` | `github-copilot/gpt-5.3-codex` | `github-copilot/gemini-3.5-flash` |
 
 Role-tier routing defaults (verified):
 
 - `work-openai`: flagship reasoning `openai/gpt-5.5`, coding-default `openai/gpt-5.4`, helper-cheap `openai/gpt-5.4-mini`.
-- `work-copilot` and `home-copilot`: flagship reasoning `github-copilot/gemini-3.1-pro-preview`, coding-default `github-copilot/gpt-5.4`, helper-cheap `github-copilot/gpt-5.4-mini`.
+- `work-copilot`: flagship reasoning `github-copilot/gemini-3.1-pro-preview`, coding-default `github-copilot/gpt-5.4`, helper-cheap `github-copilot/gpt-5.4-mini`.
+- `home-copilot`: flagship reasoning `github-copilot/gemini-2.5-pro`, coding-default `github-copilot/gpt-5.3-codex`, helper-cheap `github-copilot/gemini-3.5-flash`.
 
 Compaction ground rule:
 
-- Keep automatic compaction enabled with `tail_turns: 12` to avoid long-thread token burn.
+- Keep automatic compaction enabled with `tail_turns: 10` to avoid long-thread token burn.
 - If a session is still growing expensive, compact manually before large prompts or file-heavy tasks.
 
 Work profile routing notes:
 
 - `work-openai` keeps `build`/`builder` on `openai/gpt-5.4` for routine coding work such as Go and Java implementation.
-- `work-openai` promotes `platform-engineer` and `observability-engineer` to `openai/gpt-5.5` for Helm, Kubernetes, Grafana, alerts, and dashboard-heavy reasoning.
+- `work-openai` keeps `platform-engineer` and `observability-engineer` on `openai/gpt-5.4` by default; escalate to `openai/gpt-5.5` only for complex incident/debug/design reasoning.
 - Use `openai/gpt-5.4` for mechanical dashboard JSON edits or straightforward Helm follow-through once the plan is clear.
 
 Selection rule (required):
@@ -220,11 +222,6 @@ Selection rule (required):
   1. **Model selection** (`model`, `small_model`, and flagship recommendation)
   2. **Profile intent** (`work-openai`, `work-copilot`, `home-copilot`) and which roles each profile is expected to serve.
 - Before adopting defaults for any profile, confirm the chosen models pass live verification on the active auth path.
-
-Preference note:
-
-- For Copilot-backed workflows, prefer `github-copilot/claude-opus-4.6` as the default flagship reasoning route.
-- Treat Gemini models as preferred for UI, visual, and multimodal-oriented work rather than the default general flagship route.
 
 OpenCode config maintenance notes:
 
