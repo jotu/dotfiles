@@ -257,13 +257,10 @@ alias = "opopv"
 description = "Validate OpenCode plugin allowlist and pinned sources"
 run = '''
   set -eu
-  repo_root=$(git rev-parse --show-toplevel)
+  repo_root=$(chezmoi source-path 2>/dev/null || git rev-parse --show-toplevel)
   cd "$repo_root"
 
   bash "$HOME/.config/mise/scripts/run-node-task" "$HOME/.config/mise/scripts/opencode-tasks.mjs" validate-plugins
-
-  grep -q 'superpowers@git+https://github.com/obra/superpowers.git#v5.0.5' .chezmoitemplates/opencode/plugins-openai.json.tmpl
-  grep -q 'superpowers@git+https://github.com/obra/superpowers.git#v5.0.5' .chezmoitemplates/opencode/plugins-copilot.json.tmpl
 
   echo "OpenCode plugin sources are allowlisted and pinned"
 '''

@@ -1,6 +1,6 @@
 # Home Copilot Routing Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+
 
 **Goal:** Give `home-copilot` its own verified high-quality routing defaults without changing `work-copilot` or `work-openai` behavior.
 
