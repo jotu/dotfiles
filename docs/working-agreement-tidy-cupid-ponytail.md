@@ -33,6 +33,7 @@ Stop at the first rung that works.
 ## Token Discipline
 - Prefer short prompts with concrete scope and acceptance criteria.
 - Ask one blocking question max, only when needed.
+- If deeper reasoning seems needed, ask once before escalating to high reasoning mode.
 - Keep explanations short; let diffs carry detail.
 - No speculative abstractions.
 
