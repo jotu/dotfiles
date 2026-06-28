@@ -56,6 +56,7 @@ Use one implementation role by default. Add specialists only when they materiall
 - Never weaken security for convenience.
 - Keep prompts short, focused, and task-specific.
 - Keep default responses crisp: target <= 6 bullets unless the user asks for a deep dive.
+- Add abstraction/config only when needed now; extract on second concrete use.
 - Use skills for depth, not extra agents for every technology.
 - In this repo, treat only repo-owned personal mise `00-*` fragments and managed helpers as in scope by default; do not modify unmanaged local `10-*`/`20-*` fragments unless explicitly asked.
 - For mise task scripting, prefer bash for simple logic, Node.js for complex logic, and run Node via mise-managed latest Node wrappers.
