@@ -4,17 +4,24 @@
 {{- else if .work.enable -}}
   {{- $profile = "work-openai" -}}
 {{- end -}}
-{{- $copilotFlagship := "github-copilot/claude-opus-4.6" -}}
-{{- $copilotCoding := "github-copilot/gpt-5.4" -}}
-{{- $copilotHelper := "github-copilot/gpt-5.4-mini" -}}
-{{- if eq $profile "work-copilot" -}}
-  {{- $copilotFlagship = "github-copilot/gemini-3.1-pro-preview" -}}
-  {{- $copilotCoding = "github-copilot/gpt-5.4" -}}
-  {{- $copilotHelper = "github-copilot/gpt-5.4-mini" -}}
-{{- else if eq $profile "home-copilot" -}}
-  {{- $copilotFlagship = "github-copilot/gemini-2.5-pro" -}}
+{{- $copilotPalette := "balanced" -}}
+{{- if eq $profile "home-copilot" -}}
+  {{- $copilotPalette = "quality" -}}
+{{- end -}}
+{{- if and (eq $profile "work-copilot") (hasKey . "opencode") (hasKey .opencode "workModelPalette") .opencode.workModelPalette -}}
+  {{- $copilotPalette = .opencode.workModelPalette -}}
+{{- else if and (hasKey . "opencode") (hasKey .opencode "modelPalette") .opencode.modelPalette -}}
+  {{- $copilotPalette = .opencode.modelPalette -}}
+{{- end -}}
+{{- $copilotFlagship := "github-copilot/gpt-5.6-luna" -}}
+{{- $copilotCoding := "github-copilot/gpt-5.3-codex" -}}
+{{- $copilotHelper := "github-copilot/gpt-5-mini" -}}
+{{- if eq $copilotPalette "quality" -}}
+  {{- $copilotFlagship = "github-copilot/gpt-5.6-terra" -}}
   {{- $copilotCoding = "github-copilot/gpt-5.3-codex" -}}
-  {{- $copilotHelper = "github-copilot/gemini-3.5-flash" -}}
+  {{- $copilotHelper = "github-copilot/gpt-5.4-mini" -}}
+{{- else if ne $copilotPalette "balanced" -}}
+  {{- fail (printf "unsupported opencode modelPalette: %s" $copilotPalette) }}
 {{- end -}}
 {
   "permission": {{ includeTemplate ".chezmoitemplates/opencode/permission.json.tmpl" }},
@@ -134,6 +141,11 @@
           }
         },
         "claude-sonnet-4.6": {
+          "options": {
+            "textVerbosity": "low"
+          }
+        },
+        "claude-sonnet-5": {
           "options": {
             "textVerbosity": "low"
           }
@@ -268,6 +280,11 @@
             "textVerbosity": "low"
           }
         },
+        "claude-sonnet-5": {
+          "options": {
+            "textVerbosity": "low"
+          }
+        },
         "gemini-2.5-pro": {
           "options": {
             "textVerbosity": "medium"
@@ -281,6 +298,39 @@
         "gemini-3.5-flash": {
           "options": {
             "textVerbosity": "low"
+          }
+        },
+        "gemini-3.6-flash": {
+          "options": {
+            "textVerbosity": "low"
+          }
+        },
+        "gpt-5.6-luna": {
+          "options": {
+            "reasoningEffort": "medium",
+            "textVerbosity": "low"
+          }
+        },
+        "gpt-5.6-terra": {
+          "options": {
+            "reasoningEffort": "medium",
+            "textVerbosity": "low"
+          }
+        },
+        "gpt-5-mini": {
+          "options": {
+            "reasoningEffort": "low",
+            "textVerbosity": "low"
+          },
+          "variants": {
+            "low": {
+              "reasoningEffort": "low",
+              "textVerbosity": "low"
+            },
+            "medium": {
+              "reasoningEffort": "medium",
+              "textVerbosity": "low"
+            }
           }
         },
         "gpt-5.3-codex": {

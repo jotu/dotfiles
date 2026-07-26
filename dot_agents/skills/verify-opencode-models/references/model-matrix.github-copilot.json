@@ -1,387 +1,13 @@
 {
   "provider": "github-copilot",
   "prompt": "Reply with exactly: OK",
-  "generatedAt": "2026-05-22T14:23:00.288Z",
+  "generatedAt": "2026-07-26T14:22:01.992Z",
   "results": [
-    {
-      "provider": "github-copilot",
-      "model": "github-copilot/claude-haiku-4.5",
-      "status": "pass",
-      "latencyMs": 4981,
-      "failureClass": "-",
-      "note": "general-purpose passing candidate",
-      "response": "OK",
-      "meta": {
-        "id": "claude-haiku-4.5",
-        "api": {
-          "id": "claude-haiku-4.5",
-          "npm": "@ai-sdk/anthropic",
-          "url": "https://api.githubcopilot.com/v1"
-        },
-        "status": "active",
-        "name": "Claude Haiku 4.5",
-        "providerID": "github-copilot",
-        "capabilities": {
-          "temperature": true,
-          "reasoning": true,
-          "attachment": true,
-          "toolcall": true,
-          "input": {
-            "text": true,
-            "audio": false,
-            "image": true,
-            "video": false,
-            "pdf": false
-          },
-          "output": {
-            "text": true,
-            "audio": false,
-            "image": false,
-            "video": false,
-            "pdf": false
-          },
-          "interleaved": false
-        },
-        "cost": {
-          "input": 0,
-          "output": 0,
-          "cache": {
-            "read": 0,
-            "write": 0
-          }
-        },
-        "options": {
-          "textVerbosity": "low"
-        },
-        "limit": {
-          "context": 200000,
-          "input": 136000,
-          "output": 64000
-        },
-        "headers": {},
-        "family": "claude-haiku",
-        "release_date": "2025-10-15",
-        "variants": {
-          "high": {
-            "thinking": {
-              "type": "enabled",
-              "budgetTokens": 16000
-            }
-          },
-          "max": {
-            "thinking": {
-              "type": "enabled",
-              "budgetTokens": 31999
-            }
-          },
-          "low": {
-            "textVerbosity": "low"
-          },
-          "medium": {
-            "textVerbosity": "medium"
-          }
-        }
-      }
-    },
-    {
-      "provider": "github-copilot",
-      "model": "github-copilot/claude-opus-4.5",
-      "status": "pass",
-      "latencyMs": 4183,
-      "failureClass": "-",
-      "note": "general-purpose passing candidate",
-      "response": "OK",
-      "meta": {
-        "id": "claude-opus-4.5",
-        "api": {
-          "id": "claude-opus-4.5",
-          "npm": "@ai-sdk/anthropic",
-          "url": "https://api.githubcopilot.com/v1"
-        },
-        "status": "active",
-        "name": "Claude Opus 4.5",
-        "providerID": "github-copilot",
-        "capabilities": {
-          "temperature": true,
-          "reasoning": true,
-          "attachment": true,
-          "toolcall": true,
-          "input": {
-            "text": true,
-            "audio": false,
-            "image": true,
-            "video": false,
-            "pdf": false
-          },
-          "output": {
-            "text": true,
-            "audio": false,
-            "image": false,
-            "video": false,
-            "pdf": false
-          },
-          "interleaved": false
-        },
-        "cost": {
-          "input": 0,
-          "output": 0,
-          "cache": {
-            "read": 0,
-            "write": 0
-          }
-        },
-        "options": {
-          "textVerbosity": "medium"
-        },
-        "limit": {
-          "context": 200000,
-          "input": 168000,
-          "output": 32000
-        },
-        "headers": {},
-        "family": "claude-opus",
-        "release_date": "2025-11-24",
-        "variants": {
-          "low": {
-            "effort": "low"
-          },
-          "medium": {
-            "effort": "medium"
-          },
-          "high": {
-            "effort": "high"
-          }
-        }
-      }
-    },
-    {
-      "provider": "github-copilot",
-      "model": "github-copilot/claude-opus-4.6",
-      "status": "pass",
-      "latencyMs": 5578,
-      "failureClass": "-",
-      "note": "general-purpose passing candidate",
-      "response": "OK",
-      "meta": {
-        "id": "claude-opus-4.6",
-        "api": {
-          "id": "claude-opus-4.6",
-          "npm": "@ai-sdk/anthropic",
-          "url": "https://api.githubcopilot.com/v1"
-        },
-        "status": "active",
-        "name": "Claude Opus 4.6",
-        "providerID": "github-copilot",
-        "capabilities": {
-          "temperature": true,
-          "reasoning": true,
-          "attachment": true,
-          "toolcall": true,
-          "input": {
-            "text": true,
-            "audio": false,
-            "image": true,
-            "video": false,
-            "pdf": false
-          },
-          "output": {
-            "text": true,
-            "audio": false,
-            "image": false,
-            "video": false,
-            "pdf": false
-          },
-          "interleaved": false
-        },
-        "cost": {
-          "input": 0,
-          "output": 0,
-          "cache": {
-            "read": 0,
-            "write": 0
-          }
-        },
-        "options": {
-          "textVerbosity": "medium"
-        },
-        "limit": {
-          "context": 200000,
-          "input": 168000,
-          "output": 32000
-        },
-        "headers": {},
-        "family": "claude-opus",
-        "release_date": "2026-02-05",
-        "variants": {
-          "low": {
-            "thinking": {
-              "type": "adaptive"
-            },
-            "effort": "low"
-          },
-          "medium": {
-            "thinking": {
-              "type": "adaptive"
-            },
-            "effort": "medium"
-          },
-          "high": {
-            "thinking": {
-              "type": "adaptive"
-            },
-            "effort": "high"
-          }
-        }
-      }
-    },
-    {
-      "provider": "github-copilot",
-      "model": "github-copilot/claude-opus-4.7",
-      "status": "pass",
-      "latencyMs": 5276,
-      "failureClass": "-",
-      "note": "general-purpose passing candidate",
-      "response": "OK",
-      "meta": {
-        "id": "claude-opus-4.7",
-        "api": {
-          "id": "claude-opus-4.7",
-          "npm": "@ai-sdk/anthropic",
-          "url": "https://api.githubcopilot.com/v1"
-        },
-        "status": "active",
-        "name": "Claude Opus 4.7",
-        "providerID": "github-copilot",
-        "capabilities": {
-          "temperature": false,
-          "reasoning": true,
-          "attachment": true,
-          "toolcall": true,
-          "input": {
-            "text": true,
-            "audio": false,
-            "image": true,
-            "video": false,
-            "pdf": false
-          },
-          "output": {
-            "text": true,
-            "audio": false,
-            "image": false,
-            "video": false,
-            "pdf": false
-          },
-          "interleaved": false
-        },
-        "cost": {
-          "input": 0,
-          "output": 0,
-          "cache": {
-            "read": 0,
-            "write": 0
-          }
-        },
-        "options": {
-          "textVerbosity": "medium"
-        },
-        "limit": {
-          "context": 200000,
-          "input": 168000,
-          "output": 32000
-        },
-        "headers": {},
-        "family": "claude-opus",
-        "release_date": "2026-04-16",
-        "variants": {
-          "medium": {
-            "thinking": {
-              "type": "adaptive",
-              "display": "summarized"
-            },
-            "effort": "medium"
-          }
-        }
-      }
-    },
-    {
-      "provider": "github-copilot",
-      "model": "github-copilot/claude-sonnet-4.5",
-      "status": "pass",
-      "latencyMs": 5202,
-      "failureClass": "-",
-      "note": "general-purpose passing candidate",
-      "response": "OK",
-      "meta": {
-        "id": "claude-sonnet-4.5",
-        "api": {
-          "id": "claude-sonnet-4.5",
-          "npm": "@ai-sdk/anthropic",
-          "url": "https://api.githubcopilot.com/v1"
-        },
-        "status": "active",
-        "name": "Claude Sonnet 4.5",
-        "providerID": "github-copilot",
-        "capabilities": {
-          "temperature": true,
-          "reasoning": true,
-          "attachment": true,
-          "toolcall": true,
-          "input": {
-            "text": true,
-            "audio": false,
-            "image": true,
-            "video": false,
-            "pdf": false
-          },
-          "output": {
-            "text": true,
-            "audio": false,
-            "image": false,
-            "video": false,
-            "pdf": false
-          },
-          "interleaved": false
-        },
-        "cost": {
-          "input": 0,
-          "output": 0,
-          "cache": {
-            "read": 0,
-            "write": 0
-          }
-        },
-        "options": {
-          "textVerbosity": "low"
-        },
-        "limit": {
-          "context": 200000,
-          "input": 168000,
-          "output": 32000
-        },
-        "headers": {},
-        "family": "claude-sonnet",
-        "release_date": "2025-09-29",
-        "variants": {
-          "high": {
-            "thinking": {
-              "type": "enabled",
-              "budgetTokens": 15999
-            }
-          },
-          "max": {
-            "thinking": {
-              "type": "enabled",
-              "budgetTokens": 31999
-            }
-          }
-        }
-      }
-    },
     {
       "provider": "github-copilot",
       "model": "github-copilot/claude-sonnet-4.6",
       "status": "pass",
-      "latencyMs": 4973,
+      "latencyMs": 6119,
       "failureClass": "-",
       "note": "general-purpose passing candidate",
       "response": "OK",
@@ -417,10 +43,10 @@
           "interleaved": false
         },
         "cost": {
-          "input": 0,
-          "output": 0,
+          "input": 3,
+          "output": 15,
           "cache": {
-            "read": 0,
+            "read": 0.3,
             "write": 0
           }
         },
@@ -428,9 +54,9 @@
           "textVerbosity": "low"
         },
         "limit": {
-          "context": 200000,
-          "input": 168000,
-          "output": 32000
+          "context": 1000000,
+          "input": 936000,
+          "output": 64000
         },
         "headers": {},
         "family": "claude-sonnet",
@@ -453,259 +79,21 @@
               "type": "adaptive"
             },
             "effort": "high"
+          },
+          "max": {
+            "thinking": {
+              "type": "adaptive"
+            },
+            "effort": "max"
           }
         }
       }
     },
     {
       "provider": "github-copilot",
-      "model": "github-copilot/gemini-3-flash-preview",
-      "status": "pass",
-      "latencyMs": 9645,
-      "failureClass": "-",
-      "note": "strong helper-cheap candidate",
-      "response": "OK",
-      "meta": {
-        "id": "gemini-3-flash-preview",
-        "api": {
-          "id": "gemini-3-flash-preview",
-          "npm": "@ai-sdk/github-copilot",
-          "url": "https://api.githubcopilot.com"
-        },
-        "status": "active",
-        "name": "Gemini 3 Flash",
-        "providerID": "github-copilot",
-        "capabilities": {
-          "temperature": true,
-          "reasoning": true,
-          "attachment": true,
-          "toolcall": true,
-          "input": {
-            "text": true,
-            "audio": false,
-            "image": true,
-            "video": false,
-            "pdf": false
-          },
-          "output": {
-            "text": true,
-            "audio": false,
-            "image": false,
-            "video": false,
-            "pdf": false
-          },
-          "interleaved": false
-        },
-        "cost": {
-          "input": 0,
-          "output": 0,
-          "cache": {
-            "read": 0,
-            "write": 0
-          }
-        },
-        "options": {
-          "textVerbosity": "low"
-        },
-        "limit": {
-          "context": 128000,
-          "input": 128000,
-          "output": 64000
-        },
-        "headers": {},
-        "family": "gemini-flash",
-        "release_date": "2025-12-17",
-        "variants": {}
-      }
-    },
-    {
-      "provider": "github-copilot",
-      "model": "github-copilot/gemini-3.1-pro-preview",
-      "status": "pass",
-      "latencyMs": 6280,
-      "failureClass": "-",
-      "note": "strong flagship candidate",
-      "response": "OK",
-      "meta": {
-        "id": "gemini-3.1-pro-preview",
-        "api": {
-          "id": "gemini-3.1-pro-preview",
-          "npm": "@ai-sdk/github-copilot",
-          "url": "https://api.githubcopilot.com"
-        },
-        "status": "active",
-        "name": "Gemini 3.1 Pro Preview",
-        "providerID": "github-copilot",
-        "capabilities": {
-          "temperature": true,
-          "reasoning": true,
-          "attachment": true,
-          "toolcall": true,
-          "input": {
-            "text": true,
-            "audio": false,
-            "image": true,
-            "video": false,
-            "pdf": false
-          },
-          "output": {
-            "text": true,
-            "audio": false,
-            "image": false,
-            "video": false,
-            "pdf": false
-          },
-          "interleaved": false
-        },
-        "cost": {
-          "input": 0,
-          "output": 0,
-          "cache": {
-            "read": 0,
-            "write": 0
-          }
-        },
-        "options": {
-          "textVerbosity": "high"
-        },
-        "limit": {
-          "context": 200000,
-          "input": 136000,
-          "output": 64000
-        },
-        "headers": {},
-        "family": "gemini-pro",
-        "release_date": "2026-02-19",
-        "variants": {}
-      }
-    },
-    {
-      "provider": "github-copilot",
-      "model": "github-copilot/gpt-4.1",
-      "status": "fail",
-      "latencyMs": 2708,
-      "failureClass": "unexpected-response",
-      "note": "Unexpected response: (empty)",
-      "response": "",
-      "meta": {
-        "id": "gpt-4.1",
-        "api": {
-          "id": "gpt-4.1",
-          "npm": "@ai-sdk/github-copilot",
-          "url": "https://api.githubcopilot.com"
-        },
-        "status": "active",
-        "name": "GPT-4.1",
-        "providerID": "github-copilot",
-        "capabilities": {
-          "temperature": true,
-          "reasoning": false,
-          "attachment": true,
-          "toolcall": true,
-          "input": {
-            "text": true,
-            "audio": false,
-            "image": true,
-            "video": false,
-            "pdf": false
-          },
-          "output": {
-            "text": true,
-            "audio": false,
-            "image": false,
-            "video": false,
-            "pdf": false
-          },
-          "interleaved": false
-        },
-        "cost": {
-          "input": 0,
-          "output": 0,
-          "cache": {
-            "read": 0,
-            "write": 0
-          }
-        },
-        "options": {
-          "reasoningEffort": "medium",
-          "textVerbosity": "low"
-        },
-        "limit": {
-          "context": 128000,
-          "input": 64000,
-          "output": 16384
-        },
-        "headers": {},
-        "family": "gpt",
-        "release_date": "2025-04-14",
-        "variants": {}
-      }
-    },
-    {
-      "provider": "github-copilot",
-      "model": "github-copilot/gpt-4o",
-      "status": "pass",
-      "latencyMs": 4320,
-      "failureClass": "-",
-      "note": "general-purpose passing candidate",
-      "response": "OK",
-      "meta": {
-        "id": "gpt-4o",
-        "api": {
-          "id": "gpt-4o",
-          "npm": "@ai-sdk/openai-compatible",
-          "url": "https://api.githubcopilot.com"
-        },
-        "status": "active",
-        "name": "gpt-4o",
-        "providerID": "github-copilot",
-        "capabilities": {
-          "temperature": false,
-          "reasoning": false,
-          "attachment": false,
-          "toolcall": true,
-          "input": {
-            "text": true,
-            "audio": false,
-            "image": false,
-            "video": false,
-            "pdf": false
-          },
-          "output": {
-            "text": true,
-            "audio": false,
-            "image": false,
-            "video": false,
-            "pdf": false
-          },
-          "interleaved": false
-        },
-        "cost": {
-          "input": 0,
-          "output": 0,
-          "cache": {
-            "read": 0,
-            "write": 0
-          }
-        },
-        "options": {
-          "textVerbosity": "low"
-        },
-        "limit": {
-          "context": 0,
-          "output": 0
-        },
-        "headers": {},
-        "family": "",
-        "release_date": "",
-        "variants": {}
-      }
-    },
-    {
-      "provider": "github-copilot",
       "model": "github-copilot/gpt-5-mini",
       "status": "pass",
-      "latencyMs": 7289,
+      "latencyMs": 5107,
       "failureClass": "-",
       "note": "strong helper-cheap candidate",
       "response": "OK",
@@ -717,10 +105,10 @@
           "url": "https://api.githubcopilot.com"
         },
         "status": "active",
-        "name": "GPT-5-mini",
+        "name": "GPT-5 Mini",
         "providerID": "github-copilot",
         "capabilities": {
-          "temperature": true,
+          "temperature": false,
           "reasoning": true,
           "attachment": true,
           "toolcall": true,
@@ -741,10 +129,10 @@
           "interleaved": false
         },
         "cost": {
-          "input": 0,
-          "output": 0,
+          "input": 0.25,
+          "output": 2,
           "cache": {
-            "read": 0,
+            "read": 0.02,
             "write": 0
           }
         },
@@ -759,7 +147,7 @@
         },
         "headers": {},
         "family": "gpt-mini",
-        "release_date": "2025-08-13",
+        "release_date": "2025-08-07",
         "variants": {
           "low": {
             "reasoningEffort": "low",
@@ -789,21 +177,21 @@
     },
     {
       "provider": "github-copilot",
-      "model": "github-copilot/gpt-5.2",
+      "model": "github-copilot/gpt-5.3-codex",
       "status": "pass",
-      "latencyMs": 4935,
+      "latencyMs": 3578,
       "failureClass": "-",
-      "note": "general-purpose passing candidate",
+      "note": "strong coding-default candidate",
       "response": "OK",
       "meta": {
-        "id": "gpt-5.2",
+        "id": "gpt-5.3-codex",
         "api": {
-          "id": "gpt-5.2",
+          "id": "gpt-5.3-codex",
           "npm": "@ai-sdk/github-copilot",
           "url": "https://api.githubcopilot.com"
         },
         "status": "active",
-        "name": "GPT-5.2",
+        "name": "GPT-5.3 Codex",
         "providerID": "github-copilot",
         "capabilities": {
           "temperature": false,
@@ -827,101 +215,10 @@
           "interleaved": false
         },
         "cost": {
-          "input": 0,
-          "output": 0,
+          "input": 1.75,
+          "output": 14,
           "cache": {
-            "read": 0,
-            "write": 0
-          }
-        },
-        "options": {
-          "reasoningEffort": "medium",
-          "textVerbosity": "low"
-        },
-        "limit": {
-          "context": 400000,
-          "input": 272000,
-          "output": 128000
-        },
-        "headers": {},
-        "family": "gpt",
-        "release_date": "2025-12-11",
-        "variants": {
-          "low": {
-            "reasoningEffort": "low",
-            "reasoningSummary": "auto",
-            "include": [
-              "reasoning.encrypted_content"
-            ]
-          },
-          "medium": {
-            "reasoningEffort": "medium",
-            "reasoningSummary": "auto",
-            "include": [
-              "reasoning.encrypted_content"
-            ]
-          },
-          "high": {
-            "reasoningEffort": "high",
-            "reasoningSummary": "auto",
-            "include": [
-              "reasoning.encrypted_content"
-            ]
-          },
-          "xhigh": {
-            "reasoningEffort": "xhigh",
-            "reasoningSummary": "auto",
-            "include": [
-              "reasoning.encrypted_content"
-            ]
-          }
-        }
-      }
-    },
-    {
-      "provider": "github-copilot",
-      "model": "github-copilot/gpt-5.2-codex",
-      "status": "fail",
-      "latencyMs": 3069,
-      "failureClass": "unexpected-response",
-      "note": "Unexpected response: (empty)",
-      "response": "",
-      "meta": {
-        "id": "gpt-5.2-codex",
-        "api": {
-          "id": "gpt-5.2-codex",
-          "npm": "@ai-sdk/github-copilot",
-          "url": "https://api.githubcopilot.com"
-        },
-        "status": "active",
-        "name": "GPT-5.2-Codex",
-        "providerID": "github-copilot",
-        "capabilities": {
-          "temperature": false,
-          "reasoning": true,
-          "attachment": false,
-          "toolcall": true,
-          "input": {
-            "text": true,
-            "audio": false,
-            "image": true,
-            "video": false,
-            "pdf": false
-          },
-          "output": {
-            "text": true,
-            "audio": false,
-            "image": false,
-            "video": false,
-            "pdf": false
-          },
-          "interleaved": false
-        },
-        "cost": {
-          "input": 0,
-          "output": 0,
-          "cache": {
-            "read": 0,
+            "read": 0.17,
             "write": 0
           }
         },
@@ -936,98 +233,7 @@
         },
         "headers": {},
         "family": "gpt-codex",
-        "release_date": "2025-12-11",
-        "variants": {
-          "low": {
-            "reasoningEffort": "low",
-            "reasoningSummary": "auto",
-            "include": [
-              "reasoning.encrypted_content"
-            ]
-          },
-          "medium": {
-            "reasoningEffort": "medium",
-            "reasoningSummary": "auto",
-            "include": [
-              "reasoning.encrypted_content"
-            ]
-          },
-          "high": {
-            "reasoningEffort": "high",
-            "reasoningSummary": "auto",
-            "include": [
-              "reasoning.encrypted_content"
-            ]
-          },
-          "xhigh": {
-            "reasoningEffort": "xhigh",
-            "reasoningSummary": "auto",
-            "include": [
-              "reasoning.encrypted_content"
-            ]
-          }
-        }
-      }
-    },
-    {
-      "provider": "github-copilot",
-      "model": "github-copilot/gpt-5.3-codex",
-      "status": "pass",
-      "latencyMs": 11136,
-      "failureClass": "-",
-      "note": "strong coding-default candidate",
-      "response": "OK",
-      "meta": {
-        "id": "gpt-5.3-codex",
-        "api": {
-          "id": "gpt-5.3-codex",
-          "npm": "@ai-sdk/github-copilot",
-          "url": "https://api.githubcopilot.com"
-        },
-        "status": "active",
-        "name": "GPT-5.3-Codex",
-        "providerID": "github-copilot",
-        "capabilities": {
-          "temperature": false,
-          "reasoning": true,
-          "attachment": false,
-          "toolcall": true,
-          "input": {
-            "text": true,
-            "audio": false,
-            "image": true,
-            "video": false,
-            "pdf": false
-          },
-          "output": {
-            "text": true,
-            "audio": false,
-            "image": false,
-            "video": false,
-            "pdf": false
-          },
-          "interleaved": false
-        },
-        "cost": {
-          "input": 0,
-          "output": 0,
-          "cache": {
-            "read": 0,
-            "write": 0
-          }
-        },
-        "options": {
-          "reasoningEffort": "medium",
-          "textVerbosity": "low"
-        },
-        "limit": {
-          "context": 400000,
-          "input": 272000,
-          "output": 128000
-        },
-        "headers": {},
-        "family": "gpt-codex",
-        "release_date": "2026-02-24",
+        "release_date": "2026-02-05",
         "variants": {
           "low": {
             "reasoningEffort": "low",
@@ -1036,99 +242,6 @@
               "reasoning.encrypted_content"
             ],
             "textVerbosity": "low"
-          },
-          "medium": {
-            "reasoningEffort": "medium",
-            "reasoningSummary": "auto",
-            "include": [
-              "reasoning.encrypted_content"
-            ],
-            "textVerbosity": "low"
-          },
-          "high": {
-            "reasoningEffort": "high",
-            "reasoningSummary": "auto",
-            "include": [
-              "reasoning.encrypted_content"
-            ],
-            "textVerbosity": "medium"
-          },
-          "xhigh": {
-            "reasoningEffort": "xhigh",
-            "reasoningSummary": "auto",
-            "include": [
-              "reasoning.encrypted_content"
-            ]
-          }
-        }
-      }
-    },
-    {
-      "provider": "github-copilot",
-      "model": "github-copilot/gpt-5.4",
-      "status": "pass",
-      "latencyMs": 5008,
-      "failureClass": "-",
-      "note": "general-purpose passing candidate",
-      "response": "OK",
-      "meta": {
-        "id": "gpt-5.4",
-        "api": {
-          "id": "gpt-5.4",
-          "npm": "@ai-sdk/github-copilot",
-          "url": "https://api.githubcopilot.com"
-        },
-        "status": "active",
-        "name": "GPT-5.4",
-        "providerID": "github-copilot",
-        "capabilities": {
-          "temperature": false,
-          "reasoning": true,
-          "attachment": false,
-          "toolcall": true,
-          "input": {
-            "text": true,
-            "audio": false,
-            "image": true,
-            "video": false,
-            "pdf": false
-          },
-          "output": {
-            "text": true,
-            "audio": false,
-            "image": false,
-            "video": false,
-            "pdf": false
-          },
-          "interleaved": false
-        },
-        "cost": {
-          "input": 0,
-          "output": 0,
-          "cache": {
-            "read": 0,
-            "write": 0
-          }
-        },
-        "options": {
-          "reasoningEffort": "high",
-          "textVerbosity": "medium"
-        },
-        "limit": {
-          "context": 400000,
-          "input": 272000,
-          "output": 128000
-        },
-        "headers": {},
-        "family": "gpt",
-        "release_date": "2026-03-05",
-        "variants": {
-          "low": {
-            "reasoningEffort": "low",
-            "reasoningSummary": "auto",
-            "include": [
-              "reasoning.encrypted_content"
-            ]
           },
           "medium": {
             "reasoningEffort": "medium",
@@ -1160,24 +273,20 @@
       "provider": "github-copilot",
       "model": "github-copilot/gpt-5.4-mini",
       "status": "pass",
-      "latencyMs": 5530,
+      "latencyMs": 3799,
       "failureClass": "-",
       "note": "strong helper-cheap candidate",
       "response": "OK",
       "meta": {
         "id": "gpt-5.4-mini",
-        "providerID": "github-copilot",
         "api": {
           "id": "gpt-5.4-mini",
-          "url": "https://api.githubcopilot.com",
-          "npm": "@ai-sdk/github-copilot"
+          "npm": "@ai-sdk/github-copilot",
+          "url": "https://api.githubcopilot.com"
         },
         "status": "active",
-        "limit": {
-          "context": 400000,
-          "input": 272000,
-          "output": 128000
-        },
+        "name": "GPT-5.4 mini",
+        "providerID": "github-copilot",
         "capabilities": {
           "temperature": false,
           "reasoning": true,
@@ -1199,19 +308,126 @@
           },
           "interleaved": false
         },
-        "family": "gpt-mini",
-        "name": "GPT-5.4 Mini",
         "cost": {
-          "input": 0,
-          "output": 0,
+          "input": 0.75,
+          "output": 4.5,
           "cache": {
-            "read": 0,
+            "read": 0.07,
             "write": 0
           }
         },
-        "options": {},
+        "options": {
+          "reasoningEffort": "low",
+          "textVerbosity": "low"
+        },
+        "limit": {
+          "context": 400000,
+          "input": 272000,
+          "output": 128000
+        },
         "headers": {},
+        "family": "gpt-mini",
         "release_date": "2026-03-17",
+        "variants": {
+          "none": {
+            "reasoningEffort": "none",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          },
+          "low": {
+            "reasoningEffort": "low",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ],
+            "textVerbosity": "low"
+          },
+          "medium": {
+            "reasoningEffort": "medium",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ],
+            "textVerbosity": "low"
+          },
+          "high": {
+            "reasoningEffort": "high",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          },
+          "xhigh": {
+            "reasoningEffort": "xhigh",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "provider": "github-copilot",
+      "model": "github-copilot/gpt-5.6-luna",
+      "status": "pass",
+      "latencyMs": 3392,
+      "failureClass": "-",
+      "note": "general-purpose passing candidate",
+      "response": "OK",
+      "meta": {
+        "id": "gpt-5.6-luna",
+        "api": {
+          "id": "gpt-5.6-luna",
+          "npm": "@ai-sdk/github-copilot",
+          "url": "https://api.githubcopilot.com"
+        },
+        "status": "active",
+        "name": "GPT-5.6 Luna",
+        "providerID": "github-copilot",
+        "capabilities": {
+          "temperature": false,
+          "reasoning": true,
+          "attachment": true,
+          "toolcall": true,
+          "input": {
+            "text": true,
+            "audio": false,
+            "image": true,
+            "video": false,
+            "pdf": false
+          },
+          "output": {
+            "text": true,
+            "audio": false,
+            "image": false,
+            "video": false,
+            "pdf": false
+          },
+          "interleaved": false
+        },
+        "cost": {
+          "input": 1,
+          "output": 6,
+          "cache": {
+            "read": 0.1,
+            "write": 0
+          }
+        },
+        "options": {
+          "reasoningEffort": "medium",
+          "textVerbosity": "low"
+        },
+        "limit": {
+          "context": 1050000,
+          "input": 922000,
+          "output": 128000
+        },
+        "headers": {},
+        "family": "gpt-luna",
+        "release_date": "2026-07-09",
         "variants": {
           "none": {
             "reasoningEffort": "none",
@@ -1247,32 +463,37 @@
             "include": [
               "reasoning.encrypted_content"
             ]
+          },
+          "max": {
+            "reasoningEffort": "max",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
           }
         }
       }
-    }
-  ],
-  "recommendations": {
-    "flagship": {
+    },
+    {
       "provider": "github-copilot",
-      "model": "github-copilot/gemini-3.1-pro-preview",
+      "model": "github-copilot/gpt-5.6-terra",
       "status": "pass",
-      "latencyMs": 6280,
+      "latencyMs": 3414,
       "failureClass": "-",
-      "note": "strong flagship candidate",
+      "note": "general-purpose passing candidate",
       "response": "OK",
       "meta": {
-        "id": "gemini-3.1-pro-preview",
+        "id": "gpt-5.6-terra",
         "api": {
-          "id": "gemini-3.1-pro-preview",
+          "id": "gpt-5.6-terra",
           "npm": "@ai-sdk/github-copilot",
           "url": "https://api.githubcopilot.com"
         },
         "status": "active",
-        "name": "Gemini 3.1 Pro Preview",
+        "name": "GPT-5.6 Terra",
         "providerID": "github-copilot",
         "capabilities": {
-          "temperature": true,
+          "temperature": false,
           "reasoning": true,
           "attachment": true,
           "toolcall": true,
@@ -1293,32 +514,78 @@
           "interleaved": false
         },
         "cost": {
-          "input": 0,
-          "output": 0,
+          "input": 2.5,
+          "output": 15,
           "cache": {
-            "read": 0,
+            "read": 0.25,
             "write": 0
           }
         },
         "options": {
-          "textVerbosity": "high"
+          "reasoningEffort": "medium",
+          "textVerbosity": "low"
         },
         "limit": {
-          "context": 200000,
-          "input": 136000,
-          "output": 64000
+          "context": 1050000,
+          "input": 922000,
+          "output": 128000
         },
         "headers": {},
-        "family": "gemini-pro",
-        "release_date": "2026-02-19",
-        "variants": {}
+        "family": "gpt-terra",
+        "release_date": "2026-07-09",
+        "variants": {
+          "none": {
+            "reasoningEffort": "none",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          },
+          "low": {
+            "reasoningEffort": "low",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          },
+          "medium": {
+            "reasoningEffort": "medium",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          },
+          "high": {
+            "reasoningEffort": "high",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          },
+          "xhigh": {
+            "reasoningEffort": "xhigh",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          },
+          "max": {
+            "reasoningEffort": "max",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          }
+        }
       }
-    },
-    "codingDefault": {
+    }
+  ],
+  "recommendations": {
+    "flagship": {
       "provider": "github-copilot",
       "model": "github-copilot/gpt-5.3-codex",
       "status": "pass",
-      "latencyMs": 11136,
+      "latencyMs": 3578,
       "failureClass": "-",
       "note": "strong coding-default candidate",
       "response": "OK",
@@ -1330,12 +597,12 @@
           "url": "https://api.githubcopilot.com"
         },
         "status": "active",
-        "name": "GPT-5.3-Codex",
+        "name": "GPT-5.3 Codex",
         "providerID": "github-copilot",
         "capabilities": {
           "temperature": false,
           "reasoning": true,
-          "attachment": false,
+          "attachment": true,
           "toolcall": true,
           "input": {
             "text": true,
@@ -1354,10 +621,10 @@
           "interleaved": false
         },
         "cost": {
-          "input": 0,
-          "output": 0,
+          "input": 1.75,
+          "output": 14,
           "cache": {
-            "read": 0,
+            "read": 0.17,
             "write": 0
           }
         },
@@ -1372,7 +639,101 @@
         },
         "headers": {},
         "family": "gpt-codex",
-        "release_date": "2026-02-24",
+        "release_date": "2026-02-05",
+        "variants": {
+          "low": {
+            "reasoningEffort": "low",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ],
+            "textVerbosity": "low"
+          },
+          "medium": {
+            "reasoningEffort": "medium",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ],
+            "textVerbosity": "low"
+          },
+          "high": {
+            "reasoningEffort": "high",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ],
+            "textVerbosity": "medium"
+          },
+          "xhigh": {
+            "reasoningEffort": "xhigh",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          }
+        }
+      }
+    },
+    "codingDefault": {
+      "provider": "github-copilot",
+      "model": "github-copilot/gpt-5.3-codex",
+      "status": "pass",
+      "latencyMs": 3578,
+      "failureClass": "-",
+      "note": "strong coding-default candidate",
+      "response": "OK",
+      "meta": {
+        "id": "gpt-5.3-codex",
+        "api": {
+          "id": "gpt-5.3-codex",
+          "npm": "@ai-sdk/github-copilot",
+          "url": "https://api.githubcopilot.com"
+        },
+        "status": "active",
+        "name": "GPT-5.3 Codex",
+        "providerID": "github-copilot",
+        "capabilities": {
+          "temperature": false,
+          "reasoning": true,
+          "attachment": true,
+          "toolcall": true,
+          "input": {
+            "text": true,
+            "audio": false,
+            "image": true,
+            "video": false,
+            "pdf": false
+          },
+          "output": {
+            "text": true,
+            "audio": false,
+            "image": false,
+            "video": false,
+            "pdf": false
+          },
+          "interleaved": false
+        },
+        "cost": {
+          "input": 1.75,
+          "output": 14,
+          "cache": {
+            "read": 0.17,
+            "write": 0
+          }
+        },
+        "options": {
+          "reasoningEffort": "medium",
+          "textVerbosity": "low"
+        },
+        "limit": {
+          "context": 400000,
+          "input": 272000,
+          "output": 128000
+        },
+        "headers": {},
+        "family": "gpt-codex",
+        "release_date": "2026-02-05",
         "variants": {
           "low": {
             "reasoningEffort": "low",
@@ -1410,24 +771,24 @@
     },
     "helperCheap": {
       "provider": "github-copilot",
-      "model": "github-copilot/gemini-3-flash-preview",
+      "model": "github-copilot/gpt-5.4-mini",
       "status": "pass",
-      "latencyMs": 9645,
+      "latencyMs": 3799,
       "failureClass": "-",
       "note": "strong helper-cheap candidate",
       "response": "OK",
       "meta": {
-        "id": "gemini-3-flash-preview",
+        "id": "gpt-5.4-mini",
         "api": {
-          "id": "gemini-3-flash-preview",
+          "id": "gpt-5.4-mini",
           "npm": "@ai-sdk/github-copilot",
           "url": "https://api.githubcopilot.com"
         },
         "status": "active",
-        "name": "Gemini 3 Flash",
+        "name": "GPT-5.4 mini",
         "providerID": "github-copilot",
         "capabilities": {
-          "temperature": true,
+          "temperature": false,
           "reasoning": true,
           "attachment": true,
           "toolcall": true,
@@ -1448,25 +809,64 @@
           "interleaved": false
         },
         "cost": {
-          "input": 0,
-          "output": 0,
+          "input": 0.75,
+          "output": 4.5,
           "cache": {
-            "read": 0,
+            "read": 0.07,
             "write": 0
           }
         },
         "options": {
+          "reasoningEffort": "low",
           "textVerbosity": "low"
         },
         "limit": {
-          "context": 128000,
-          "input": 128000,
-          "output": 64000
+          "context": 400000,
+          "input": 272000,
+          "output": 128000
         },
         "headers": {},
-        "family": "gemini-flash",
-        "release_date": "2025-12-17",
-        "variants": {}
+        "family": "gpt-mini",
+        "release_date": "2026-03-17",
+        "variants": {
+          "none": {
+            "reasoningEffort": "none",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          },
+          "low": {
+            "reasoningEffort": "low",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ],
+            "textVerbosity": "low"
+          },
+          "medium": {
+            "reasoningEffort": "medium",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ],
+            "textVerbosity": "low"
+          },
+          "high": {
+            "reasoningEffort": "high",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          },
+          "xhigh": {
+            "reasoningEffort": "xhigh",
+            "reasoningSummary": "auto",
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          }
+        }
       }
     }
   }

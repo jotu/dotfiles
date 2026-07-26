@@ -27,6 +27,16 @@ function parseJsonText(text, context = 'input') {
   }
 }
 
+function validateModelRouting(config) {
+  const routes = [config.model, config.small_model, ...Object.values(config.agent ?? {}).map((agent) => agent.model)].filter(Boolean);
+  for (const model of routes) {
+    const [provider, id] = model.split('/');
+    if (!provider || !id || !config.provider?.[provider]?.models?.[id]) {
+      fail(`model route is not in the rendered provider catalog: ${model}`);
+    }
+  }
+}
+
 function renderTemplate(path) {
   const input = fs.readFileSync(path);
   const result = spawnSync('chezmoi', ['execute-template'], {
@@ -66,6 +76,12 @@ if (command === 'config-current') {
 if (command === 'validate-json') {
   const input = await readStdin();
   parseJsonText(input);
+  process.exit(0);
+}
+
+if (command === 'validate-model-routing') {
+  const input = await readStdin();
+  validateModelRouting(parseJsonText(input));
   process.exit(0);
 }
 

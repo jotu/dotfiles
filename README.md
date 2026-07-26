@@ -195,14 +195,14 @@ mise run opencode:models:preflight
 | Profile | model | small_model |
 |---|---|---|
 | `work-openai` | `openai/gpt-5.4` | `openai/gpt-5.4-mini` |
-| `work-copilot` | `github-copilot/gpt-5.4` | `github-copilot/gpt-5.4-mini` |
-| `home-copilot` | `github-copilot/gpt-5.3-codex` | `github-copilot/gemini-3.5-flash` |
+| `work-copilot` | `github-copilot/gpt-5.3-codex` | `github-copilot/gpt-5-mini` |
+| `home-copilot` | `github-copilot/gpt-5.3-codex` | `github-copilot/gpt-5.4-mini` |
 
 Role-tier routing defaults (verified):
 
 - `work-openai`: flagship reasoning `openai/gpt-5.5`, coding-default `openai/gpt-5.4`, helper-cheap `openai/gpt-5.4-mini`.
-- `work-copilot`: flagship reasoning `github-copilot/gemini-3.1-pro-preview`, coding-default `github-copilot/gpt-5.4`, helper-cheap `github-copilot/gpt-5.4-mini`.
-- `home-copilot`: flagship reasoning `github-copilot/gemini-2.5-pro`, coding-default `github-copilot/gpt-5.3-codex`, helper-cheap `github-copilot/gemini-3.5-flash`.
+- `work-copilot`: flagship reasoning `github-copilot/gpt-5.6-luna`, coding-default `github-copilot/gpt-5.3-codex`, helper-cheap `github-copilot/gpt-5-mini`.
+- `home-copilot`: flagship reasoning `github-copilot/gpt-5.6-terra`, coding-default `github-copilot/gpt-5.3-codex`, helper-cheap `github-copilot/gpt-5.4-mini`.
 
 Compaction ground rule:
 

@@ -84,11 +84,11 @@ run = '''
   set -eu
   template=$(chezmoi source-path "$HOME/.config/opencode/opencode.json")
 
-  chezmoi execute-template --file --override-data '{"opencode":{"profile":"work-openai"}}' "$template" | bash "$HOME/.config/mise/scripts/run-node-task" "$HOME/.config/mise/scripts/opencode-tasks.mjs" validate-json
-  chezmoi execute-template --file --override-data '{"opencode":{"profile":"work-copilot"}}' "$template" | bash "$HOME/.config/mise/scripts/run-node-task" "$HOME/.config/mise/scripts/opencode-tasks.mjs" validate-json
-  chezmoi execute-template --file --override-data '{"opencode":{"profile":"home-copilot"}}' "$template" | bash "$HOME/.config/mise/scripts/run-node-task" "$HOME/.config/mise/scripts/opencode-tasks.mjs" validate-json
+  chezmoi execute-template --file --override-data '{"opencode":{"profile":"work-openai"}}' "$template" | bash "$HOME/.config/mise/scripts/run-node-task" "$HOME/.config/mise/scripts/opencode-tasks.mjs" validate-model-routing
+  chezmoi execute-template --file --override-data '{"opencode":{"profile":"work-copilot"}}' "$template" | bash "$HOME/.config/mise/scripts/run-node-task" "$HOME/.config/mise/scripts/opencode-tasks.mjs" validate-model-routing
+  chezmoi execute-template --file --override-data '{"opencode":{"profile":"home-copilot"}}' "$template" | bash "$HOME/.config/mise/scripts/run-node-task" "$HOME/.config/mise/scripts/opencode-tasks.mjs" validate-model-routing
 
-  echo "Canonical OpenCode template is valid JSON for all supported profiles"
+  echo "Canonical OpenCode model routes are valid for all supported profiles"
 '''
 
 [tasks."opencode:models:refresh:matrix:openai"]

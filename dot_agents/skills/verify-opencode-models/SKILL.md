@@ -41,7 +41,7 @@ Treat the Node.js verifier as private implementation behind those tasks.
 
 ## Procedure
 
-1. Refresh the provider matrix first through `opencode:models:refresh:matrix:<provider>` or `opencode:models:refresh:matrix:all`.
+1. List the provider catalog, then refresh only active routes and concrete replacement candidates through `OPENCODE_MODEL_FILTER` and `opencode:models:refresh:matrix:<provider>`. Use an unfiltered refresh only for a deliberate catalog audit.
 2. Warn the user that live smoke tests incur provider usage and may hit rate limits.
 3. Enumerate candidate models through the provider list task when explaining scope or filters.
 4. Capture a compact matrix with provider, model, pass/fail, latency, failure class, and a short note.
@@ -71,7 +71,10 @@ Use the strongest reliable model for flagship reasoning and review roles, the be
 
 - Do not assume a local catalog entry is usable just because it exists in `provider.*.models`.
 - Do not recommend models that fail with unsupported, access, auth, or ambiguous errors.
+- Do not treat a provider unavailable in the current OpenCode auth path as a model failure or a passing verification; leave that profile's active routes unchanged and verify from the matching profile.
 - Do not treat a single tiny prompt as proof of overall quality; it only proves baseline usability.
+- Do not spend tokens testing every catalog entry during routine updates; test current routes plus candidates with a concrete reason to replace them.
+- Do not change a default solely because a smoke test is faster; preserve proven routing unless role fit, stability, or cost materially improves.
 - Do not bypass mise tasks for routine verification.
 - Do not change config files during verification unless the user explicitly asks.
 

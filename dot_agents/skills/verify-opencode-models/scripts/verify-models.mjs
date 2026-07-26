@@ -116,33 +116,46 @@ function listModels(provider) {
 function parseVerboseMetadata(output) {
   const lines = output.split(/\r?\n/);
   const metadata = new Map();
-  let currentId = null;
 
-  for (let index = 0; index < lines.length; index += 1) {
-    const line = lines[index].trim();
-    if (!line) continue;
+  let index = 0;
+  while (index < lines.length) {
+    const idLine = lines[index].trim();
+    index += 1;
 
-    if (!currentId && !line.startsWith("{")) {
-      currentId = line;
+    if (!idLine || idLine.startsWith("{")) {
       continue;
     }
 
-    if (currentId && line.startsWith("{")) {
-      let depth = 0;
-      const chunk = [];
-      for (; index < lines.length; index += 1) {
-        const jsonLine = lines[index];
-        chunk.push(jsonLine);
-        depth += count(jsonLine, "{");
-        depth -= count(jsonLine, "}");
-        if (depth === 0) break;
+    // Find the start of the JSON block.
+    let jsonStartIndex = -1;
+    for (let j = index; j < lines.length; j += 1) {
+      if (lines[j].trim().startsWith("{")) {
+        jsonStartIndex = j;
+        break;
       }
-      try {
-        metadata.set(currentId, JSON.parse(chunk.join("\n")));
-      } catch {
-        // Ignore metadata parse failures; verification can still proceed.
+    }
+
+    if (jsonStartIndex === -1) {
+      continue;
+    }
+
+    index = jsonStartIndex;
+    let depth = 0;
+    const chunk = [];
+    for (; index < lines.length; index += 1) {
+      const jsonLine = lines[index];
+      chunk.push(jsonLine);
+      depth += count(jsonLine, "{");
+      depth -= count(jsonLine, "}");
+      if (depth === 0) {
+        try {
+          metadata.set(idLine, JSON.parse(chunk.join("\n")));
+        } catch {
+          // Ignore metadata parse failures.
+        }
+        index += 1; // Move to the next line after the JSON block.
+        break;
       }
-      currentId = null;
     }
   }
 
