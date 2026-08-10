@@ -27,37 +27,37 @@
   "permission": {{ includeTemplate ".chezmoitemplates/opencode/permission.json.tmpl" }},
 {{- if eq $profile "work-openai" }}
   "plugin": {{ includeTemplate ".chezmoitemplates/opencode/plugins-openai.json.tmpl" }},
-  "model": "openai/gpt-5.4",
-  "small_model": "openai/gpt-5.4-mini",
+  "model": "openai/gpt-5.6-terra",
+  "small_model": "openai/gpt-5.6-luna",
   "agent": {
-    "plan": { "model": "openai/gpt-5.5" },
-    "orchestrator": { "model": "openai/gpt-5.5" },
-    "reviewer": { "model": "openai/gpt-5.5" },
-    "architect": { "model": "openai/gpt-5.5" },
-    "ai-workflow-engineer": { "model": "openai/gpt-5.5" },
-    "oracle": { "model": "openai/gpt-5.5" },
-    "security-engineer": { "model": "openai/gpt-5.5" },
-    "ultrabrain": { "model": "openai/gpt-5.5" },
+    "plan": { "model": "openai/gpt-5.6-sol" },
+    "orchestrator": { "model": "openai/gpt-5.6-sol" },
+    "reviewer": { "model": "openai/gpt-5.6-sol" },
+    "architect": { "model": "openai/gpt-5.6-sol" },
+    "ai-workflow-engineer": { "model": "openai/gpt-5.6-sol" },
+    "oracle": { "model": "openai/gpt-5.6-sol" },
+    "security-engineer": { "model": "openai/gpt-5.6-sol" },
+    "ultrabrain": { "model": "openai/gpt-5.6-sol" },
 
-    "build": { "model": "openai/gpt-5.4" },
-    "platform-engineer": { "model": "openai/gpt-5.4" },
-    "developer-platform-engineer": { "model": "openai/gpt-5.4" },
-    "builder": { "model": "openai/gpt-5.4" },
-    "delivery-engineer": { "model": "openai/gpt-5.4" },
-    "observability-engineer": { "model": "openai/gpt-5.4" },
-    "explore": { "model": "openai/gpt-5.4" },
-    "deep": { "model": "openai/gpt-5.4" },
+    "build": { "model": "openai/gpt-5.6-terra" },
+    "platform-engineer": { "model": "openai/gpt-5.6-terra" },
+    "developer-platform-engineer": { "model": "openai/gpt-5.6-terra" },
+    "builder": { "model": "openai/gpt-5.6-terra" },
+    "delivery-engineer": { "model": "openai/gpt-5.6-terra" },
+    "observability-engineer": { "model": "openai/gpt-5.6-terra" },
+    "explore": { "model": "openai/gpt-5.6-terra" },
+    "deep": { "model": "openai/gpt-5.6-terra" },
 
-    "frontend-ui-ux-engineer": { "model": "openai/gpt-5.4-fast" },
-    "multimodal-looker": { "model": "openai/gpt-5.4-fast" },
-    "visual-engineering": { "model": "openai/gpt-5.4-fast" },
-    "multimodal": { "model": "openai/gpt-5.4-fast" },
+    "frontend-ui-ux-engineer": { "model": "openai/gpt-5.6-terra" },
+    "multimodal-looker": { "model": "openai/gpt-5.6-terra" },
+    "visual-engineering": { "model": "openai/gpt-5.6-terra" },
+    "multimodal": { "model": "openai/gpt-5.6-terra" },
 
-    "librarian": { "model": "openai/gpt-5.4-mini" },
-    "document-writer": { "model": "openai/gpt-5.4-mini" },
-    "quick": { "model": "openai/gpt-5.4-mini" },
-    "unspecified-low": { "model": "openai/gpt-5.4-mini" },
-    "documentation": { "model": "openai/gpt-5.4-mini" }
+    "librarian": { "model": "openai/gpt-5.6-luna" },
+    "document-writer": { "model": "openai/gpt-5.6-luna" },
+    "quick": { "model": "openai/gpt-5.6-luna" },
+    "unspecified-low": { "model": "openai/gpt-5.6-luna" },
+    "documentation": { "model": "openai/gpt-5.6-luna" }
   },
   "provider": {
     "openai": {
@@ -81,6 +81,24 @@
         },
         "gpt-5.5": {
           "name": "GPT 5.5 (allowlisted)"
+        },
+        "gpt-5.6-luna": {
+          "name": "GPT 5.6 Luna"
+        },
+        "gpt-5.6-luna-fast": {
+          "name": "GPT 5.6 Luna Fast"
+        },
+        "gpt-5.6-sol": {
+          "name": "GPT 5.6 Sol"
+        },
+        "gpt-5.6-sol-fast": {
+          "name": "GPT 5.6 Sol Fast"
+        },
+        "gpt-5.6-terra": {
+          "name": "GPT 5.6 Terra"
+        },
+        "gpt-5.6-terra-fast": {
+          "name": "GPT 5.6 Terra Fast"
         }
       }
     },
