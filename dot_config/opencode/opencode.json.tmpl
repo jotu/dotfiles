@@ -27,37 +27,37 @@
   "permission": {{ includeTemplate ".chezmoitemplates/opencode/permission.json.tmpl" }},
 {{- if eq $profile "work-openai" }}
   "plugin": {{ includeTemplate ".chezmoitemplates/opencode/plugins-openai.json.tmpl" }},
-  "model": "openai/gpt-5.6-terra",
+  "model": "openai/gpt-5.6-luna",
   "small_model": "openai/gpt-5.6-luna",
   "agent": {
-    "plan": { "model": "openai/gpt-5.6-sol" },
-    "orchestrator": { "model": "openai/gpt-5.6-sol" },
-    "reviewer": { "model": "openai/gpt-5.6-sol" },
-    "architect": { "model": "openai/gpt-5.6-sol" },
-    "ai-workflow-engineer": { "model": "openai/gpt-5.6-sol" },
-    "oracle": { "model": "openai/gpt-5.6-sol" },
-    "security-engineer": { "model": "openai/gpt-5.6-sol" },
-    "ultrabrain": { "model": "openai/gpt-5.6-sol" },
+    "plan": { "model": "openai/gpt-5.6-luna", "variant": "high" },
+    "orchestrator": { "model": "openai/gpt-5.6-luna", "variant": "high" },
+    "reviewer": { "model": "openai/gpt-5.6-luna", "variant": "high" },
+    "architect": { "model": "openai/gpt-5.6-luna", "variant": "high" },
+    "ai-workflow-engineer": { "model": "openai/gpt-5.6-luna", "variant": "high" },
+    "oracle": { "model": "openai/gpt-5.6-luna", "variant": "high" },
+    "security-engineer": { "model": "openai/gpt-5.6-luna", "variant": "high" },
+    "ultrabrain": { "model": "openai/gpt-5.6-sol", "variant": "high" },
 
-    "build": { "model": "openai/gpt-5.6-terra" },
-    "platform-engineer": { "model": "openai/gpt-5.6-terra" },
-    "developer-platform-engineer": { "model": "openai/gpt-5.6-terra" },
-    "builder": { "model": "openai/gpt-5.6-terra" },
-    "delivery-engineer": { "model": "openai/gpt-5.6-terra" },
-    "observability-engineer": { "model": "openai/gpt-5.6-terra" },
-    "explore": { "model": "openai/gpt-5.6-terra" },
-    "deep": { "model": "openai/gpt-5.6-terra" },
+    "build": { "model": "openai/gpt-5.6-luna", "variant": "medium" },
+    "platform-engineer": { "model": "openai/gpt-5.6-luna", "variant": "medium" },
+    "developer-platform-engineer": { "model": "openai/gpt-5.6-luna", "variant": "medium" },
+    "builder": { "model": "openai/gpt-5.6-luna", "variant": "medium" },
+    "delivery-engineer": { "model": "openai/gpt-5.6-luna", "variant": "medium" },
+    "observability-engineer": { "model": "openai/gpt-5.6-luna", "variant": "medium" },
+    "explore": { "model": "openai/gpt-5.6-luna", "variant": "medium" },
+    "deep": { "model": "openai/gpt-5.6-luna", "variant": "medium" },
 
-    "frontend-ui-ux-engineer": { "model": "openai/gpt-5.6-terra" },
-    "multimodal-looker": { "model": "openai/gpt-5.6-terra" },
-    "visual-engineering": { "model": "openai/gpt-5.6-terra" },
-    "multimodal": { "model": "openai/gpt-5.6-terra" },
+    "frontend-ui-ux-engineer": { "model": "openai/gpt-5.6-luna", "variant": "medium" },
+    "multimodal-looker": { "model": "openai/gpt-5.6-luna", "variant": "medium" },
+    "visual-engineering": { "model": "openai/gpt-5.6-luna", "variant": "medium" },
+    "multimodal": { "model": "openai/gpt-5.6-luna", "variant": "medium" },
 
-    "librarian": { "model": "openai/gpt-5.6-luna" },
-    "document-writer": { "model": "openai/gpt-5.6-luna" },
-    "quick": { "model": "openai/gpt-5.6-luna" },
-    "unspecified-low": { "model": "openai/gpt-5.6-luna" },
-    "documentation": { "model": "openai/gpt-5.6-luna" }
+    "librarian": { "model": "openai/gpt-5.6-luna", "variant": "low" },
+    "document-writer": { "model": "openai/gpt-5.6-luna", "variant": "low" },
+    "quick": { "model": "openai/gpt-5.6-luna", "variant": "low" },
+    "unspecified-low": { "model": "openai/gpt-5.6-luna", "variant": "low" },
+    "documentation": { "model": "openai/gpt-5.6-luna", "variant": "low" }
   },
   "provider": {
     "openai": {
@@ -83,13 +83,21 @@
           "name": "GPT 5.5 (allowlisted)"
         },
         "gpt-5.6-luna": {
-          "name": "GPT 5.6 Luna"
+          "name": "GPT 5.6 Luna",
+          "variants": {
+            "low": { "reasoningEffort": "low" },
+            "medium": { "reasoningEffort": "medium" },
+            "high": { "reasoningEffort": "high" }
+          }
         },
         "gpt-5.6-luna-fast": {
           "name": "GPT 5.6 Luna Fast"
         },
         "gpt-5.6-sol": {
-          "name": "GPT 5.6 Sol"
+          "name": "GPT 5.6 Sol",
+          "variants": {
+            "high": { "reasoningEffort": "high" }
+          }
         },
         "gpt-5.6-sol-fast": {
           "name": "GPT 5.6 Sol Fast"
