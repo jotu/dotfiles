@@ -31,13 +31,11 @@ function assertTieredRouting(config) {
   }
 }
 
-function assertNoReasoningDefaults(config) {
-  for (const [providerId, provider] of Object.entries(config.provider)) {
-    assert.equal(provider.options?.reasoningEffort, undefined, `${providerId} must not define a reasoning default`);
-
-    for (const [modelId, model] of Object.entries(provider.models ?? {})) {
-      assert.equal(model.options?.reasoningEffort, undefined, `${providerId}/${modelId} must not define a reasoning default`);
-    }
+function assertDirectReasoningPolicy(config) {
+  for (const [role, agent] of Object.entries(config.agent)) {
+    if (agent.model.includes('claude-sonnet-4.6')) continue;
+    assert.ok(['low', 'medium', 'high'].includes(agent.reasoningEffort), `${role} must define direct reasoningEffort`);
+    assert.equal(agent.variant, undefined, `${role} must not use a UI variant override`);
   }
 }
 
@@ -47,15 +45,15 @@ function assertOpenAIModelPolicy(config) {
 
   for (const role of ['plan', 'orchestrator', 'reviewer', 'architect', 'ai-workflow-engineer', 'oracle', 'security-engineer']) {
     assert.equal(config.agent[role].model, 'openai/gpt-5.6-luna');
-    assert.equal(config.agent[role].variant, 'high');
+    assert.equal(config.agent[role].reasoningEffort, 'high');
   }
 
   assert.equal(config.agent.ultrabrain.model, 'openai/gpt-5.6-sol');
-  assert.equal(config.agent.ultrabrain.variant, 'high');
+  assert.equal(config.agent.ultrabrain.reasoningEffort, 'high');
 
   for (const role of ['build', 'platform-engineer', 'developer-platform-engineer', 'builder', 'delivery-engineer', 'observability-engineer', 'explore', 'deep', 'frontend-ui-ux-engineer', 'multimodal-looker', 'visual-engineering', 'multimodal']) {
     assert.equal(config.agent[role].model, 'openai/gpt-5.6-luna');
-    assert.equal(config.agent[role].variant, 'medium');
+    assert.equal(config.agent[role].reasoningEffort, 'medium');
   }
 
   for (const [role, agent] of Object.entries(config.agent)) {
@@ -66,17 +64,17 @@ function assertOpenAIModelPolicy(config) {
 function assertCopilotModelPolicy(config, flagshipModel, codingModel, helperModel) {
   for (const role of ['plan', 'orchestrator', 'reviewer', 'architect', 'ai-workflow-engineer', 'oracle', 'security-engineer', 'ultrabrain']) {
     assert.equal(config.agent[role].model, flagshipModel);
-    assert.equal(config.agent[role].variant, 'high');
+    assert.equal(config.agent[role].reasoningEffort, 'high');
   }
 
   for (const role of ['build', 'platform-engineer', 'developer-platform-engineer', 'builder', 'delivery-engineer', 'observability-engineer', 'explore', 'deep']) {
     assert.equal(config.agent[role].model, codingModel);
-    assert.equal(config.agent[role].variant, 'medium');
+    assert.equal(config.agent[role].reasoningEffort, 'medium');
   }
 
   for (const role of ['librarian', 'document-writer', 'quick', 'unspecified-low', 'documentation']) {
     assert.equal(config.agent[role].model, helperModel);
-    assert.equal(config.agent[role].variant, 'low');
+    assert.equal(config.agent[role].reasoningEffort, 'low');
   }
 }
 
@@ -106,7 +104,7 @@ test('home-copilot renders distinct routing defaults and work profiles stay unch
   assertTieredRouting(home);
   assertTieredRouting(workCopilot);
   assertTieredRouting(workOpenAI);
-  assertNoReasoningDefaults(home);
-  assertNoReasoningDefaults(workCopilot);
-  assertNoReasoningDefaults(workOpenAI);
+  assertDirectReasoningPolicy(home);
+  assertDirectReasoningPolicy(workCopilot);
+  assertDirectReasoningPolicy(workOpenAI);
 });
