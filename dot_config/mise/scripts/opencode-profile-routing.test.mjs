@@ -31,6 +31,16 @@ function assertTieredRouting(config) {
   }
 }
 
+function assertNoReasoningDefaults(config) {
+  for (const [providerId, provider] of Object.entries(config.provider)) {
+    assert.equal(provider.options?.reasoningEffort, undefined, `${providerId} must not define a reasoning default`);
+
+    for (const [modelId, model] of Object.entries(provider.models ?? {})) {
+      assert.equal(model.options?.reasoningEffort, undefined, `${providerId}/${modelId} must not define a reasoning default`);
+    }
+  }
+}
+
 function assertOpenAIModelPolicy(config) {
   assert.equal(config.model, 'openai/gpt-5.6-luna');
   assert.equal(config.small_model, 'openai/gpt-5.6-luna');
@@ -96,4 +106,7 @@ test('home-copilot renders distinct routing defaults and work profiles stay unch
   assertTieredRouting(home);
   assertTieredRouting(workCopilot);
   assertTieredRouting(workOpenAI);
+  assertNoReasoningDefaults(home);
+  assertNoReasoningDefaults(workCopilot);
+  assertNoReasoningDefaults(workOpenAI);
 });
