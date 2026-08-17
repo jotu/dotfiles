@@ -26,11 +26,47 @@ function assertRoutesExistInCatalog(config) {
 }
 
 function assertTieredRouting(config) {
-  for (const role of ['plan', 'orchestrator', 'reviewer', 'architect', 'ai-workflow-engineer', 'oracle', 'security-engineer', 'ultrabrain']) {
-    assert.notEqual(config.agent[role].model, config.small_model, `${role} must not use small_model`);
-  }
   for (const role of ['librarian', 'document-writer', 'quick', 'unspecified-low', 'documentation']) {
     assert.equal(config.agent[role].model, config.small_model, `${role} must use small_model`);
+  }
+}
+
+function assertOpenAIModelPolicy(config) {
+  assert.equal(config.model, 'openai/gpt-5.6-luna');
+  assert.equal(config.small_model, 'openai/gpt-5.6-luna');
+
+  for (const role of ['plan', 'orchestrator', 'reviewer', 'architect', 'ai-workflow-engineer', 'oracle', 'security-engineer']) {
+    assert.equal(config.agent[role].model, 'openai/gpt-5.6-luna');
+    assert.equal(config.agent[role].variant, 'high');
+  }
+
+  assert.equal(config.agent.ultrabrain.model, 'openai/gpt-5.6-sol');
+  assert.equal(config.agent.ultrabrain.variant, 'high');
+
+  for (const role of ['build', 'platform-engineer', 'developer-platform-engineer', 'builder', 'delivery-engineer', 'observability-engineer', 'explore', 'deep', 'frontend-ui-ux-engineer', 'multimodal-looker', 'visual-engineering', 'multimodal']) {
+    assert.equal(config.agent[role].model, 'openai/gpt-5.6-luna');
+    assert.equal(config.agent[role].variant, 'medium');
+  }
+
+  for (const [role, agent] of Object.entries(config.agent)) {
+    if (role !== 'ultrabrain') assert.notEqual(agent.model, 'openai/gpt-5.6-sol', `${role} must not use Sol`);
+  }
+}
+
+function assertCopilotModelPolicy(config, flagshipModel, codingModel, helperModel) {
+  for (const role of ['plan', 'orchestrator', 'reviewer', 'architect', 'ai-workflow-engineer', 'oracle', 'security-engineer', 'ultrabrain']) {
+    assert.equal(config.agent[role].model, flagshipModel);
+    assert.equal(config.agent[role].variant, 'high');
+  }
+
+  for (const role of ['build', 'platform-engineer', 'developer-platform-engineer', 'builder', 'delivery-engineer', 'observability-engineer', 'explore', 'deep']) {
+    assert.equal(config.agent[role].model, codingModel);
+    assert.equal(config.agent[role].variant, 'medium');
+  }
+
+  for (const role of ['librarian', 'document-writer', 'quick', 'unspecified-low', 'documentation']) {
+    assert.equal(config.agent[role].model, helperModel);
+    assert.equal(config.agent[role].variant, 'low');
   }
 }
 
@@ -42,14 +78,17 @@ test('home-copilot renders distinct routing defaults and work profiles stay unch
   assert.equal(home.model, 'github-copilot/gpt-5.3-codex');
   assert.equal(home.small_model, 'github-copilot/gpt-5.4-mini');
   assert.equal(home.agent.plan.model, 'github-copilot/gpt-5.6-terra');
+  assertCopilotModelPolicy(home, 'github-copilot/gpt-5.6-terra', 'github-copilot/gpt-5.3-codex', 'github-copilot/gpt-5.4-mini');
 
   assert.equal(workCopilot.model, 'github-copilot/gpt-5.3-codex');
   assert.equal(workCopilot.small_model, 'github-copilot/gpt-5-mini');
   assert.equal(workCopilot.agent.plan.model, 'github-copilot/gpt-5.6-luna');
+  assertCopilotModelPolicy(workCopilot, 'github-copilot/gpt-5.6-luna', 'github-copilot/gpt-5.3-codex', 'github-copilot/gpt-5-mini');
 
-  assert.equal(workOpenAI.model, 'openai/gpt-5.4');
-  assert.equal(workOpenAI.small_model, 'openai/gpt-5.4-mini');
-  assert.equal(workOpenAI.agent.plan.model, 'openai/gpt-5.5');
+  assert.equal(workOpenAI.model, 'openai/gpt-5.6-luna');
+  assert.equal(workOpenAI.small_model, 'openai/gpt-5.6-luna');
+  assert.equal(workOpenAI.agent.plan.model, 'openai/gpt-5.6-luna');
+  assertOpenAIModelPolicy(workOpenAI);
 
   assertRoutesExistInCatalog(home);
   assertRoutesExistInCatalog(workCopilot);

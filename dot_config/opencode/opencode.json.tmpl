@@ -263,34 +263,34 @@
   "model": "{{ $copilotCoding }}",
   "small_model": "{{ $copilotHelper }}",
   "agent": {
-    "plan": { "model": "{{ $copilotFlagship }}" },
-    "orchestrator": { "model": "{{ $copilotFlagship }}" },
-    "reviewer": { "model": "{{ $copilotFlagship }}" },
-    "architect": { "model": "{{ $copilotFlagship }}" },
-    "ai-workflow-engineer": { "model": "{{ $copilotFlagship }}" },
-    "oracle": { "model": "{{ $copilotFlagship }}" },
-    "security-engineer": { "model": "{{ $copilotFlagship }}" },
-    "ultrabrain": { "model": "{{ $copilotFlagship }}" },
+    "plan": { "model": "{{ $copilotFlagship }}", "variant": "high" },
+    "orchestrator": { "model": "{{ $copilotFlagship }}", "variant": "high" },
+    "reviewer": { "model": "{{ $copilotFlagship }}", "variant": "high" },
+    "architect": { "model": "{{ $copilotFlagship }}", "variant": "high" },
+    "ai-workflow-engineer": { "model": "{{ $copilotFlagship }}", "variant": "high" },
+    "oracle": { "model": "{{ $copilotFlagship }}", "variant": "high" },
+    "security-engineer": { "model": "{{ $copilotFlagship }}", "variant": "high" },
+    "ultrabrain": { "model": "{{ $copilotFlagship }}", "variant": "high" },
 
-    "build": { "model": "{{ $copilotCoding }}" },
-    "platform-engineer": { "model": "{{ $copilotCoding }}" },
-    "developer-platform-engineer": { "model": "{{ $copilotCoding }}" },
-    "builder": { "model": "{{ $copilotCoding }}" },
-    "delivery-engineer": { "model": "{{ $copilotCoding }}" },
-    "observability-engineer": { "model": "{{ $copilotCoding }}" },
-    "explore": { "model": "{{ $copilotCoding }}" },
-    "deep": { "model": "{{ $copilotCoding }}" },
+    "build": { "model": "{{ $copilotCoding }}", "variant": "medium" },
+    "platform-engineer": { "model": "{{ $copilotCoding }}", "variant": "medium" },
+    "developer-platform-engineer": { "model": "{{ $copilotCoding }}", "variant": "medium" },
+    "builder": { "model": "{{ $copilotCoding }}", "variant": "medium" },
+    "delivery-engineer": { "model": "{{ $copilotCoding }}", "variant": "medium" },
+    "observability-engineer": { "model": "{{ $copilotCoding }}", "variant": "medium" },
+    "explore": { "model": "{{ $copilotCoding }}", "variant": "medium" },
+    "deep": { "model": "{{ $copilotCoding }}", "variant": "medium" },
 
     "frontend-ui-ux-engineer": { "model": "github-copilot/claude-sonnet-4.6" },
     "multimodal-looker": { "model": "github-copilot/claude-sonnet-4.6" },
     "visual-engineering": { "model": "github-copilot/claude-sonnet-4.6" },
     "multimodal": { "model": "github-copilot/claude-sonnet-4.6" },
 
-    "librarian": { "model": "{{ $copilotHelper }}" },
-    "document-writer": { "model": "{{ $copilotHelper }}" },
-    "quick": { "model": "{{ $copilotHelper }}" },
-    "unspecified-low": { "model": "{{ $copilotHelper }}" },
-    "documentation": { "model": "{{ $copilotHelper }}" }
+    "librarian": { "model": "{{ $copilotHelper }}", "variant": "low" },
+    "document-writer": { "model": "{{ $copilotHelper }}", "variant": "low" },
+    "quick": { "model": "{{ $copilotHelper }}", "variant": "low" },
+    "unspecified-low": { "model": "{{ $copilotHelper }}", "variant": "low" },
+    "documentation": { "model": "{{ $copilotHelper }}", "variant": "low" }
   },
   "provider": {
     "github-copilot": {
@@ -335,12 +335,40 @@
           "options": {
             "reasoningEffort": "medium",
             "textVerbosity": "low"
+          },
+          "variants": {
+            "low": {
+              "reasoningEffort": "low",
+              "textVerbosity": "low"
+            },
+            "medium": {
+              "reasoningEffort": "medium",
+              "textVerbosity": "low"
+            },
+            "high": {
+              "reasoningEffort": "high",
+              "textVerbosity": "medium"
+            }
           }
         },
         "gpt-5.6-terra": {
           "options": {
             "reasoningEffort": "medium",
             "textVerbosity": "low"
+          },
+          "variants": {
+            "low": {
+              "reasoningEffort": "low",
+              "textVerbosity": "low"
+            },
+            "medium": {
+              "reasoningEffort": "medium",
+              "textVerbosity": "low"
+            },
+            "high": {
+              "reasoningEffort": "high",
+              "textVerbosity": "medium"
+            }
           }
         },
         "gpt-5-mini": {
