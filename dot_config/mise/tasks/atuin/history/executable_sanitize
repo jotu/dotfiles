@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+#MISE description="Sanitize zsh history before importing it into Atuin."
+set -euo pipefail
+
+exec bash "$HOME/.config/mise/scripts/run-node-task" \
+  "$HOME/.config/mise/scripts/atuin-sanitize-zsh-history.mjs" "$@"

@@ -20,10 +20,6 @@ if command -v chezmoi >/dev/null; then
   load_or_generate_completion "$_zc_cache_dir/chezmoi.zsh" "source <(chezmoi completion zsh)"
 fi
 
-if command -v fzf >/dev/null; then
-  load_or_generate_completion "$_zc_cache_dir/fzf.zsh" "source <(fzf --zsh)"
-fi
-
 if command -v kubectl >/dev/null; then
   load_or_generate_completion "$_zc_cache_dir/kubectl.zsh" "source <(kubectl completion zsh)"
 fi

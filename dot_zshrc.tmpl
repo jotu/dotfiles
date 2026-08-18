@@ -3,18 +3,8 @@
 #setopt prompt_subst; zmodload zsh/datetime; PS4='+[$EPOCHREALTIME]%N:%i> ';
 #set -x
 
-# Configure zsh history
-HISTSIZE=100000
-SAVEHIST=100000
-
-# Write to the history file immediately, not when the shell exits.
-setopt INC_APPEND_HISTORY
-# Duplicates get trimmed first.
-setopt HIST_EXPIRE_DUPS_FIRST
-# Ignore immediate duplicate entries.
-setopt HIST_IGNORE_DUPS
-# Share history between sessions.
-setopt SHARE_HISTORY
+# Atuin owns history storage. Keep zsh from writing a second, unfiltered history file.
+HISTFILE=/dev/null
 
 if [ -d "$BREW_HOME/share/zsh-completions" ]; then
   FPATH="$BREW_HOME/share/zsh-completions:$FPATH"
@@ -54,3 +44,7 @@ fpath=($HOME/.docker/completions $fpath)
 autoload -Uz compinit
 compinit
 # End of Docker CLI completions
+
+if command -v atuin >/dev/null; then
+  eval "$(atuin init zsh)"
+fi

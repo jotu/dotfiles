@@ -1,0 +1,17 @@
+auto_sync = false
+update_check = false
+secrets_filter = true
+search_mode = "fuzzy"
+filter_mode = "global"
+
+# Keep credentials and secret-bearing commands out of local history.
+history_filter = [
+  '(?i)(--(password|passwd|pwd|passphrase|token|secret|api[-_]?key|access[-_]?key|private[-_]?key|client[-_]?secret)(=|[[:space:]]))',
+  '(?i)(^|[[:space:]])(export[[:space:]]+)?[A-Z][A-Z0-9_]*(TOKEN|SECRET|PASSWORD|PASSWD|API_KEY|PRIVATE_KEY|CREDENTIAL)[A-Z0-9_]*[[:space:]]*=',
+  '(?i)^(aws[[:space:]]+configure|az[[:space:]]+login|gcloud[[:space:]]+auth|docker[[:space:]]+login|npm[[:space:]]+(login|token)|gh[[:space:]]+auth[[:space:]]+login|kubectl[[:space:]]+create[[:space:]]+secret|security[[:space:]]+add-generic-password|op[[:space:]]+(read|item[[:space:]]+get)|pass([[:space:]]|$))',
+  '(?i)(authorization:[[:space:]]*bearer|curl.*[[:space:]](-u|--user|--header|-H)[[:space:]]*)',
+]
+
+cwd_filter = [
+  '(^|/)(\.aws|\.azure|\.config/gcloud|\.kube|\.ssh|secrets?|credentials?)(/|$)',
+]
