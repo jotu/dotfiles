@@ -258,13 +258,13 @@ mise run opencode:models:preflight
 
 | Profile | model | small_model |
 |---|---|---|
-| `work-openai` | `openai/gpt-5.4` | `openai/gpt-5.4-mini` |
-| `work-copilot` | `github-copilot/gpt-5.3-codex` | `github-copilot/gpt-5-mini` |
-| `home-copilot` | `github-copilot/gpt-5.3-codex` | `github-copilot/gpt-5.4-mini` |
+| `work-openai` | `openai/gpt-5.6-luna-medium` | `openai/gpt-5.6-luna-low` |
+| `work-copilot` | `github-copilot/gpt-5.3-codex-medium` | `github-copilot/gpt-5-mini-low` |
+| `home-copilot` | `github-copilot/gpt-5.3-codex-medium` | `github-copilot/gpt-5.4-mini-low` |
 
 Role-tier routing defaults (verified):
 
-- `work-openai`: flagship reasoning `openai/gpt-5.5`, coding-default `openai/gpt-5.4`, helper-cheap `openai/gpt-5.4-mini`.
+- `work-openai`: flagship reasoning `openai/gpt-5.6-luna-xhigh`, coding-default `openai/gpt-5.6-luna-medium`, helper-cheap `openai/gpt-5.6-luna-low`.
 - `work-copilot`: flagship reasoning `github-copilot/gpt-5.6-luna`, coding-default `github-copilot/gpt-5.3-codex`, helper-cheap `github-copilot/gpt-5-mini`.
 - `home-copilot`: flagship reasoning `github-copilot/gpt-5.6-terra`, coding-default `github-copilot/gpt-5.3-codex`, helper-cheap `github-copilot/gpt-5.4-mini`.
 
@@ -275,9 +275,9 @@ Compaction ground rule:
 
 Work profile routing notes:
 
-- `work-openai` keeps `build`/`builder` on `openai/gpt-5.4` for routine coding work such as Go and Java implementation.
-- `work-openai` keeps `platform-engineer` and `observability-engineer` on `openai/gpt-5.4` by default; escalate to `openai/gpt-5.5` only for complex incident/debug/design reasoning.
-- Use `openai/gpt-5.4` for mechanical dashboard JSON edits or straightforward Helm follow-through once the plan is clear.
+- `work-openai` keeps flagship planning, architecture, review, orchestration, workflow, security, and oracle roles on `openai/gpt-5.6-luna-xhigh`.
+- `work-openai` keeps `build` on `openai/gpt-5.6-luna-high` and routine coding roles on `openai/gpt-5.6-luna-medium`.
+- Use `openai/gpt-5.6-luna-medium` for mechanical dashboard JSON edits or straightforward Helm follow-through once the plan is clear.
 
 Selection rule (required):
 

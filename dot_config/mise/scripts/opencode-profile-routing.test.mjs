@@ -45,10 +45,11 @@ function assertOpenAIModelPolicy(config) {
   assertFixedReasoningModel(config, 'gpt-5.6-luna-low', 'gpt-5.6-luna', 'low');
   assertFixedReasoningModel(config, 'gpt-5.6-luna-medium', 'gpt-5.6-luna', 'medium');
   assertFixedReasoningModel(config, 'gpt-5.6-luna-high', 'gpt-5.6-luna', 'high');
+  assertFixedReasoningModel(config, 'gpt-5.6-luna-xhigh', 'gpt-5.6-luna', 'xhigh');
   assertFixedReasoningModel(config, 'gpt-5.6-sol-high', 'gpt-5.6-sol', 'high');
 
   for (const role of ['plan', 'orchestrator', 'reviewer', 'architect', 'ai-workflow-engineer', 'oracle', 'security-engineer']) {
-    assert.equal(config.agent[role].model, 'openai/gpt-5.6-luna-high');
+    assert.equal(config.agent[role].model, 'openai/gpt-5.6-luna-xhigh');
   }
 
   assert.equal(config.agent.ultrabrain.model, 'openai/gpt-5.6-sol-high');
@@ -114,7 +115,7 @@ test('home-copilot renders distinct routing defaults and work profiles stay unch
 
   assert.equal(workOpenAI.model, 'openai/gpt-5.6-luna-medium');
   assert.equal(workOpenAI.small_model, 'openai/gpt-5.6-luna-low');
-  assert.equal(workOpenAI.agent.plan.model, 'openai/gpt-5.6-luna-high');
+  assert.equal(workOpenAI.agent.plan.model, 'openai/gpt-5.6-luna-xhigh');
   assertOpenAIModelPolicy(workOpenAI);
 
   assertRoutesExistInCatalog(home);
