@@ -69,6 +69,12 @@ if (command === 'config-current') {
   const providers = Object.keys(data.provider ?? {}).sort().join(', ') || '(none)';
   console.log(`model: ${data.model ?? '(unset)'}`);
   console.log(`small_model: ${data.small_model ?? '(unset)'}`);
+  for (const role of ['plan', 'build']) {
+    const agent = data.agent?.[role];
+    const [provider, model] = agent?.model?.split('/') ?? [];
+    const reasoning = data.provider?.[provider]?.models?.[model]?.options?.reasoningEffort ?? agent?.reasoningEffort ?? agent?.variant;
+    console.log(`${role}: ${agent?.model ?? '(unset)'} / reasoning=${reasoning ?? '(default)'}`);
+  }
   console.log(`providers: ${providers}`);
   process.exit(0);
 }

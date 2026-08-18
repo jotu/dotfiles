@@ -25,39 +25,40 @@
 {{- end -}}
 {
   "permission": {{ includeTemplate ".chezmoitemplates/opencode/permission.json.tmpl" }},
+  "instructions": ["{{ .chezmoi.homeDir }}/.local/share/opencode/model-routing-private.md"],
 {{- if eq $profile "work-openai" }}
   "plugin": {{ includeTemplate ".chezmoitemplates/opencode/plugins-openai.json.tmpl" }},
-  "model": "openai/gpt-5.6-luna",
-  "small_model": "openai/gpt-5.6-luna",
+  "model": "openai/gpt-5.6-luna-medium",
+  "small_model": "openai/gpt-5.6-luna-low",
   "agent": {
-    "plan": { "model": "openai/gpt-5.6-luna", "reasoningEffort": "high" },
-    "orchestrator": { "model": "openai/gpt-5.6-luna", "reasoningEffort": "high" },
-    "reviewer": { "model": "openai/gpt-5.6-luna", "reasoningEffort": "high" },
-    "architect": { "model": "openai/gpt-5.6-luna", "reasoningEffort": "high" },
-    "ai-workflow-engineer": { "model": "openai/gpt-5.6-luna", "reasoningEffort": "high" },
-    "oracle": { "model": "openai/gpt-5.6-luna", "reasoningEffort": "high" },
-    "security-engineer": { "model": "openai/gpt-5.6-luna", "reasoningEffort": "high" },
-    "ultrabrain": { "model": "openai/gpt-5.6-sol", "reasoningEffort": "high" },
+    "plan": { "model": "openai/gpt-5.6-luna-high" },
+    "orchestrator": { "model": "openai/gpt-5.6-luna-high" },
+    "reviewer": { "model": "openai/gpt-5.6-luna-high" },
+    "architect": { "model": "openai/gpt-5.6-luna-high" },
+    "ai-workflow-engineer": { "model": "openai/gpt-5.6-luna-high" },
+    "oracle": { "model": "openai/gpt-5.6-luna-high" },
+    "security-engineer": { "model": "openai/gpt-5.6-luna-high" },
+    "ultrabrain": { "model": "openai/gpt-5.6-sol-high" },
 
-    "build": { "model": "openai/gpt-5.6-luna", "reasoningEffort": "medium" },
-    "platform-engineer": { "model": "openai/gpt-5.6-luna", "reasoningEffort": "medium" },
-    "developer-platform-engineer": { "model": "openai/gpt-5.6-luna", "reasoningEffort": "medium" },
-    "builder": { "model": "openai/gpt-5.6-luna", "reasoningEffort": "medium" },
-    "delivery-engineer": { "model": "openai/gpt-5.6-luna", "reasoningEffort": "medium" },
-    "observability-engineer": { "model": "openai/gpt-5.6-luna", "reasoningEffort": "medium" },
-    "explore": { "model": "openai/gpt-5.6-luna", "reasoningEffort": "medium" },
-    "deep": { "model": "openai/gpt-5.6-luna", "reasoningEffort": "medium" },
+    "build": { "model": "openai/gpt-5.6-luna-medium" },
+    "platform-engineer": { "model": "openai/gpt-5.6-luna-medium" },
+    "developer-platform-engineer": { "model": "openai/gpt-5.6-luna-medium" },
+    "builder": { "model": "openai/gpt-5.6-luna-medium" },
+    "delivery-engineer": { "model": "openai/gpt-5.6-luna-medium" },
+    "observability-engineer": { "model": "openai/gpt-5.6-luna-medium" },
+    "explore": { "model": "openai/gpt-5.6-luna-medium" },
+    "deep": { "model": "openai/gpt-5.6-luna-medium" },
 
-    "frontend-ui-ux-engineer": { "model": "openai/gpt-5.6-luna", "reasoningEffort": "medium" },
-    "multimodal-looker": { "model": "openai/gpt-5.6-luna", "reasoningEffort": "medium" },
-    "visual-engineering": { "model": "openai/gpt-5.6-luna", "reasoningEffort": "medium" },
-    "multimodal": { "model": "openai/gpt-5.6-luna", "reasoningEffort": "medium" },
+    "frontend-ui-ux-engineer": { "model": "openai/gpt-5.6-luna-medium" },
+    "multimodal-looker": { "model": "openai/gpt-5.6-luna-medium" },
+    "visual-engineering": { "model": "openai/gpt-5.6-luna-medium" },
+    "multimodal": { "model": "openai/gpt-5.6-luna-medium" },
 
-    "librarian": { "model": "openai/gpt-5.6-luna", "reasoningEffort": "low" },
-    "document-writer": { "model": "openai/gpt-5.6-luna", "reasoningEffort": "low" },
-    "quick": { "model": "openai/gpt-5.6-luna", "reasoningEffort": "low" },
-    "unspecified-low": { "model": "openai/gpt-5.6-luna", "reasoningEffort": "low" },
-    "documentation": { "model": "openai/gpt-5.6-luna", "reasoningEffort": "low" }
+    "librarian": { "model": "openai/gpt-5.6-luna-low" },
+    "document-writer": { "model": "openai/gpt-5.6-luna-low" },
+    "quick": { "model": "openai/gpt-5.6-luna-low" },
+    "unspecified-low": { "model": "openai/gpt-5.6-luna-low" },
+    "documentation": { "model": "openai/gpt-5.6-luna-low" }
   },
   "provider": {
     "openai": {
@@ -82,13 +83,82 @@
           "name": "GPT 5.5 (allowlisted)"
         },
         "gpt-5.6-luna": {
-          "name": "GPT 5.6 Luna"
+          "name": "GPT 5.6 Luna",
+          "variants": {
+            "low": { "reasoningEffort": "low" },
+            "medium": { "reasoningEffort": "medium" },
+            "high": { "reasoningEffort": "high" },
+            "xhigh": { "reasoningEffort": "xhigh" },
+            "max": { "reasoningEffort": "max" }
+          }
+        },
+        "gpt-5.6-luna-low": {
+          "id": "gpt-5.6-luna",
+          "name": "GPT 5.6 Luna Low",
+          "options": { "reasoningEffort": "low" },
+          "variants": {
+            "none": { "disabled": true },
+            "minimal": { "disabled": true },
+            "low": { "disabled": true },
+            "medium": { "disabled": true },
+            "high": { "disabled": true },
+            "xhigh": { "disabled": true },
+            "max": { "disabled": true }
+          }
+        },
+        "gpt-5.6-luna-medium": {
+          "id": "gpt-5.6-luna",
+          "name": "GPT 5.6 Luna Medium",
+          "options": { "reasoningEffort": "medium" },
+          "variants": {
+            "none": { "disabled": true },
+            "minimal": { "disabled": true },
+            "low": { "disabled": true },
+            "medium": { "disabled": true },
+            "high": { "disabled": true },
+            "xhigh": { "disabled": true },
+            "max": { "disabled": true }
+          }
+        },
+        "gpt-5.6-luna-high": {
+          "id": "gpt-5.6-luna",
+          "name": "GPT 5.6 Luna High",
+          "options": { "reasoningEffort": "high" },
+          "variants": {
+            "none": { "disabled": true },
+            "minimal": { "disabled": true },
+            "low": { "disabled": true },
+            "medium": { "disabled": true },
+            "high": { "disabled": true },
+            "xhigh": { "disabled": true },
+            "max": { "disabled": true }
+          }
         },
         "gpt-5.6-luna-fast": {
           "name": "GPT 5.6 Luna Fast"
         },
         "gpt-5.6-sol": {
-          "name": "GPT 5.6 Sol"
+          "name": "GPT 5.6 Sol",
+          "variants": {
+            "medium": { "reasoningEffort": "medium" },
+            "high": { "reasoningEffort": "high" },
+            "xhigh": { "reasoningEffort": "xhigh" },
+            "max": { "reasoningEffort": "max" }
+          }
+        },
+        "gpt-5.6-sol-high": {
+          "id": "gpt-5.6-sol",
+          "name": "GPT 5.6 Sol High",
+          "options": { "reasoningEffort": "high" },
+          "variants": {
+            "none": { "disabled": true },
+            "minimal": { "disabled": true },
+            "low": { "disabled": true },
+            "medium": { "disabled": true },
+            "high": { "disabled": true },
+            "xhigh": { "disabled": true },
+            "max": { "disabled": true }
+          }
         },
         "gpt-5.6-sol-fast": {
           "name": "GPT 5.6 Sol Fast"
@@ -206,34 +276,34 @@
   "model": "{{ $copilotCoding }}",
   "small_model": "{{ $copilotHelper }}",
   "agent": {
-    "plan": { "model": "{{ $copilotFlagship }}", "reasoningEffort": "high" },
-    "orchestrator": { "model": "{{ $copilotFlagship }}", "reasoningEffort": "high" },
-    "reviewer": { "model": "{{ $copilotFlagship }}", "reasoningEffort": "high" },
-    "architect": { "model": "{{ $copilotFlagship }}", "reasoningEffort": "high" },
-    "ai-workflow-engineer": { "model": "{{ $copilotFlagship }}", "reasoningEffort": "high" },
-    "oracle": { "model": "{{ $copilotFlagship }}", "reasoningEffort": "high" },
-    "security-engineer": { "model": "{{ $copilotFlagship }}", "reasoningEffort": "high" },
-    "ultrabrain": { "model": "{{ $copilotFlagship }}", "reasoningEffort": "high" },
+    "plan": { "model": "{{ $copilotFlagship }}", "variant": "high" },
+    "orchestrator": { "model": "{{ $copilotFlagship }}", "variant": "high" },
+    "reviewer": { "model": "{{ $copilotFlagship }}", "variant": "high" },
+    "architect": { "model": "{{ $copilotFlagship }}", "variant": "high" },
+    "ai-workflow-engineer": { "model": "{{ $copilotFlagship }}", "variant": "high" },
+    "oracle": { "model": "{{ $copilotFlagship }}", "variant": "high" },
+    "security-engineer": { "model": "{{ $copilotFlagship }}", "variant": "high" },
+    "ultrabrain": { "model": "{{ $copilotFlagship }}", "variant": "high" },
 
-    "build": { "model": "{{ $copilotCoding }}", "reasoningEffort": "medium" },
-    "platform-engineer": { "model": "{{ $copilotCoding }}", "reasoningEffort": "medium" },
-    "developer-platform-engineer": { "model": "{{ $copilotCoding }}", "reasoningEffort": "medium" },
-    "builder": { "model": "{{ $copilotCoding }}", "reasoningEffort": "medium" },
-    "delivery-engineer": { "model": "{{ $copilotCoding }}", "reasoningEffort": "medium" },
-    "observability-engineer": { "model": "{{ $copilotCoding }}", "reasoningEffort": "medium" },
-    "explore": { "model": "{{ $copilotCoding }}", "reasoningEffort": "medium" },
-    "deep": { "model": "{{ $copilotCoding }}", "reasoningEffort": "medium" },
+    "build": { "model": "{{ $copilotCoding }}", "variant": "medium" },
+    "platform-engineer": { "model": "{{ $copilotCoding }}", "variant": "medium" },
+    "developer-platform-engineer": { "model": "{{ $copilotCoding }}", "variant": "medium" },
+    "builder": { "model": "{{ $copilotCoding }}", "variant": "medium" },
+    "delivery-engineer": { "model": "{{ $copilotCoding }}", "variant": "medium" },
+    "observability-engineer": { "model": "{{ $copilotCoding }}", "variant": "medium" },
+    "explore": { "model": "{{ $copilotCoding }}", "variant": "medium" },
+    "deep": { "model": "{{ $copilotCoding }}", "variant": "medium" },
 
     "frontend-ui-ux-engineer": { "model": "github-copilot/claude-sonnet-4.6" },
     "multimodal-looker": { "model": "github-copilot/claude-sonnet-4.6" },
     "visual-engineering": { "model": "github-copilot/claude-sonnet-4.6" },
     "multimodal": { "model": "github-copilot/claude-sonnet-4.6" },
 
-    "librarian": { "model": "{{ $copilotHelper }}", "reasoningEffort": "low" },
-    "document-writer": { "model": "{{ $copilotHelper }}", "reasoningEffort": "low" },
-    "quick": { "model": "{{ $copilotHelper }}", "reasoningEffort": "low" },
-    "unspecified-low": { "model": "{{ $copilotHelper }}", "reasoningEffort": "low" },
-    "documentation": { "model": "{{ $copilotHelper }}", "reasoningEffort": "low" }
+    "librarian": { "model": "{{ $copilotHelper }}", "variant": "low" },
+    "document-writer": { "model": "{{ $copilotHelper }}", "variant": "low" },
+    "quick": { "model": "{{ $copilotHelper }}", "variant": "low" },
+    "unspecified-low": { "model": "{{ $copilotHelper }}", "variant": "low" },
+    "documentation": { "model": "{{ $copilotHelper }}", "variant": "low" }
   },
   "provider": {
     "github-copilot": {
@@ -277,21 +347,40 @@
         "gpt-5.6-luna": {
           "options": {
             "textVerbosity": "low"
+          },
+          "variants": {
+            "low": { "reasoningEffort": "low", "textVerbosity": "low" },
+            "medium": { "reasoningEffort": "medium", "textVerbosity": "low" },
+            "high": { "reasoningEffort": "high", "textVerbosity": "medium" }
           }
         },
         "gpt-5.6-terra": {
           "options": {
             "textVerbosity": "low"
+          },
+          "variants": {
+            "low": { "reasoningEffort": "low", "textVerbosity": "low" },
+            "medium": { "reasoningEffort": "medium", "textVerbosity": "low" },
+            "high": { "reasoningEffort": "high", "textVerbosity": "medium" }
           }
         },
         "gpt-5-mini": {
           "options": {
             "textVerbosity": "low"
+          },
+          "variants": {
+            "low": { "reasoningEffort": "low", "textVerbosity": "low" },
+            "medium": { "reasoningEffort": "medium", "textVerbosity": "low" }
           }
         },
         "gpt-5.3-codex": {
           "options": {
             "textVerbosity": "low"
+          },
+          "variants": {
+            "low": { "reasoningEffort": "low", "textVerbosity": "low" },
+            "medium": { "reasoningEffort": "medium", "textVerbosity": "low" },
+            "high": { "reasoningEffort": "high", "textVerbosity": "medium" }
           }
         },
         "gpt-5.4": {
@@ -302,6 +391,10 @@
         "gpt-5.4-mini": {
           "options": {
             "textVerbosity": "low"
+          },
+          "variants": {
+            "low": { "reasoningEffort": "low", "textVerbosity": "low" },
+            "medium": { "reasoningEffort": "medium", "textVerbosity": "low" }
           }
         }
       }
