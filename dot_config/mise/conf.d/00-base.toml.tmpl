@@ -218,6 +218,11 @@ postinstall = '''
   else
     mise proton:cli:install
   fi
+
+  if command -v pi >/dev/null 2>&1; then
+    pi install npm:@dietrichgebert/ponytail
+    pi update --extensions
+  fi
 '''
 
 [tools]
