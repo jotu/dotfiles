@@ -1,0 +1,19 @@
+{
+  "packages": [
+    "npm:@dietrichgebert/ponytail"
+  ],
+  "npmCommand": [
+    "mise",
+    "exec",
+    "node@latest",
+    "--",
+    "npm"
+  ],
+  "defaultProvider": "{{ if .work.enable }}openai{{ else }}github-copilot{{ end }}",
+  "defaultModel": "gpt-5.6-luna",
+  "defaultThinkingLevel": "high",
+  "enabledModels": [
+    "{{ if .work.enable }}openai{{ else }}github-copilot{{ end }}/gpt-5.6-luna"
+  ],
+  "theme": "dark"
+}
