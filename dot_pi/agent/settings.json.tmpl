@@ -1,3 +1,9 @@
+{{- $provider := "github-copilot" -}}
+{{- $model := "gpt-5.6-luna" -}}
+{{- if .work.enable -}}
+  {{- $provider = "openai-codex" -}}
+  {{- $model = "gpt-5.6-luna" -}}
+{{- end -}}
 {
   "packages": [
     "npm:@dietrichgebert/ponytail"
@@ -9,11 +15,11 @@
     "--",
     "npm"
   ],
-  "defaultProvider": "{{ if .work.enable }}openai{{ else }}github-copilot{{ end }}",
-  "defaultModel": "gpt-5.6-luna",
+  "defaultProvider": "{{ $provider }}",
+  "defaultModel": "{{ $model }}",
   "defaultThinkingLevel": "high",
   "enabledModels": [
-    "{{ if .work.enable }}openai{{ else }}github-copilot{{ end }}/gpt-5.6-luna"
+    "{{ $provider }}/{{ $model }}"
   ],
   "theme": "dark"
 }
