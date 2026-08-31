@@ -275,10 +275,20 @@ run = [
   "mise opencode:models:validate"
 ]
 
+[tasks."pi:plan-mode:sync"]
+description = "Sync Pi's bundled read-only plan-mode extension"
+run = '''
+MISE_TOOL_INSTALL_PATH="$(mise where npm:@earendil-works/pi-coding-agent)" \
+  bash "$HOME/.config/mise/scripts/install-pi-plan-mode"
+'''
+
 [tools]
 "npm:@github/copilot" = "latest"
 "npm:@openai/codex" = "latest"
-"npm:@earendil-works/pi-coding-agent" = "latest"
+
+[tools."npm:@earendil-works/pi-coding-agent"]
+version = "latest"
+postinstall = "bash \"$HOME/.config/mise/scripts/install-pi-plan-mode\""
 
 [tools."npm:opencode-ai"]
 version = "latest"

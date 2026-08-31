@@ -39,6 +39,18 @@ Reference sections:
 - OpenCode commands catalog policy: [OpenCode commands catalog policy](#opencode-commands-catalog-policy)
 - Working agreement: [Tidy First + CUPID + Ponytail](docs/working-agreement-tidy-cupid-ponytail.md)
 
+## Pi plan mode
+
+Pi and its official read-only plan-mode extension are installed through mise; the sync script is managed by chezmoi:
+
+```bash
+chezmoi apply                        # installs the sync hook
+mise install                         # installs Pi and syncs the extension
+mise run pi:plan-mode:sync           # sync manually when needed
+```
+
+Use `/plan` to toggle read-only planning and `/todos` to show progress. Pi updates resync the extension through mise's postinstall hook.
+
 # Git
 
 ## Generate SSH Keys for Laptop

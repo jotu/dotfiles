@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# Sync Pi's bundled plan-mode extension after mise installs or updates Pi.
+set -euo pipefail
+
+: "${HOME:?HOME is required}"
+: "${MISE_TOOL_INSTALL_PATH:?MISE_TOOL_INSTALL_PATH is required}"
+
+source_dir="$MISE_TOOL_INSTALL_PATH/lib/node_modules/@earendil-works/pi-coding-agent/examples/extensions/plan-mode"
+target_dir="$HOME/.pi/agent/extensions/plan-mode"
+
+if [[ ! -d "$source_dir" ]]; then
+  printf 'Pi plan-mode extension not found: %s\n' "$source_dir" >&2
+  exit 1
+fi
+
+rm -rf "$target_dir"
+mkdir -p "$target_dir"
+cp -R "$source_dir/." "$target_dir/"

@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# Sync Pi's bundled plan-mode extension when the managed setup changes.
+set -euo pipefail
+
+if ! command -v mise >/dev/null 2>&1; then
+  exit 0
+fi
+
+if ! mise where npm:@earendil-works/pi-coding-agent >/dev/null 2>&1; then
+  exit 0
+fi
+
+mise run pi:plan-mode:sync
