@@ -1,0 +1,30 @@
+# Shared Herdr defaults for focused local development.
+# Agent-specific configuration stays in Pi and OpenCode.
+
+[theme]
+name = "catppuccin"
+
+[terminal]
+shell_mode = "auto"
+new_cwd = "follow"
+
+[ui]
+sidebar_width = 26
+pane_borders = true
+pane_outer_borders = true
+pane_gaps = true
+show_agent_labels_on_pane_borders = true
+hide_tab_bar_when_single_tab = false
+agent_panel_sort = "spaces"
+status_indicators = "symbols"
+
+[ui.toast]
+delivery = "herdr"
+delay_seconds = 1
+
+[session]
+# Preserve the workspace without automatically restarting coding agents.
+resume_agents_on_restore = false
+
+[advanced]
+scrollback_limit_bytes = 10000000

@@ -51,6 +51,31 @@ mise run pi:plan-mode:sync           # sync manually when needed
 
 Use `/plan` to toggle read-only planning and `/todos` to show progress. Pi updates resync the extension through mise's postinstall hook.
 
+## Herdr work setup
+
+Herdr is the persistent terminal workspace for local development. Keep one workspace per repository and use separate tabs for focused roles:
+
+- `shell`: Git, Mise, tests, and logs.
+- `pi`: planning, exploration, and read-only analysis.
+- `opencode`: implementation and review, using the selected work profile.
+- `lazygit`: optional visual Git history and staging.
+
+Start Herdr from the repository root, then launch only the agents needed for the task:
+
+```bash
+herdr
+```
+
+Inside Herdr, use one tab for each role:
+
+```text
+shell:    mise run opencode:profile:set:work-openai  # or work-copilot
+pi:       pi
+opencode: opencode
+```
+
+Herdr preserves the workspace layout but does not automatically restart coding agents after a restart. Use `herdr agent list` to inspect detected Pi and OpenCode sessions.
+
 # Git
 
 ## Generate SSH Keys for Laptop
