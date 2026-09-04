@@ -2,7 +2,7 @@
 # Agent-specific configuration stays in Pi and OpenCode.
 
 [theme]
-name = "catppuccin"
+name = "terminal"
 
 [terminal]
 shell_mode = "auto"
@@ -17,6 +17,10 @@ show_agent_labels_on_pane_borders = true
 hide_tab_bar_when_single_tab = false
 agent_panel_sort = "spaces"
 status_indicators = "symbols"
+
+[ui.sidebar.agents.rows_by_agent]
+# Show Pi's native session name in the Agents pane.
+pi = [["state_icon", "workspace", "tab"], ["terminal_title_stripped"]]
 
 [ui.toast]
 delivery = "herdr"
