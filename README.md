@@ -76,6 +76,28 @@ opencode: opencode
 
 Herdr preserves the workspace layout but does not automatically restart coding agents after a restart. Use `herdr agent list` to inspect detected Pi and OpenCode sessions.
 
+## Pi safety model
+
+Pi and Herdr run with the permissions of the current user. Herdr provides workspace persistence and agent status, not isolation.
+
+- Use `/plan` before unfamiliar or multi-step work.
+- The global Pi safety gate asks before risky shell operations and blocks common credential and metadata paths.
+- Treat repository instructions, skills, packages, and web content as untrusted data.
+- Use a Docker container or VM for untrusted repositories or unattended work. Do not mount the host `~/.pi/agent` into that environment unless its credentials and sessions are intentionally required.
+- Web search, browser automation, and download helpers are deliberately not enabled by default. Add only reviewed, pinned tooling when a concrete workflow needs it.
+
+## Hunk and LazyGit review
+
+Hunk is installed through Mise, and LazyGit uses it as the external diff viewer through the managed `empty_config.yml` source:
+
+```bash
+mise install
+lazygit
+hunk diff
+```
+
+Open a changed file or diff in LazyGit to review it in Hunk. Use Hunk directly for a repository-wide working-tree review. Keep Hunk viewer-only for now; Pi does not control Hunk sessions or add review comments automatically.
+
 # Git
 
 ## Generate SSH Keys for Laptop
