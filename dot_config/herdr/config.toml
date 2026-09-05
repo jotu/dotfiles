@@ -2,7 +2,28 @@
 # Agent-specific configuration stays in Pi and OpenCode.
 
 [theme]
-name = "terminal"
+# Catppuccin Macchiato palette shared with Pi's catppuccin-macchiato theme.
+name = "catppuccin"
+
+[theme.custom]
+sidebar_bg = "#1e2030"
+active_row_bg = "#363a4f"
+selection_bg = "#494d64"
+panel_bg = "#24273a"
+accent = "#8aadf4"
+red = "#ed8796"
+green = "#a6da95"
+yellow = "#eed49f"
+surface_dim = "#363a4f"
+surface0 = "#363a4f"
+surface1 = "#494d64"
+overlay0 = "#6e738d"
+overlay1 = "#8087a2"
+text = "#cad3f5"
+subtext0 = "#a5adcb"
+mauve = "#c6a0f6"
+teal = "#8bd5ca"
+peach = "#f5a97f"
 
 [terminal]
 shell_mode = "auto"

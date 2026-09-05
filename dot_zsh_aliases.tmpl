@@ -1,7 +1,46 @@
 #general
 alias f="z"
-alias k="kubectl"
 alias ll="ls -al"
+
+# Common developer tools. Optional commands are only aliased when installed.
+if command -v herdr >/dev/null 2>&1; then
+  alias hr='herdr'
+fi
+if command -v chezmoi >/dev/null 2>&1; then
+  alias cm='chezmoi'
+fi
+if command -v kubectl >/dev/null 2>&1; then
+  alias k='kubectl'
+  alias kgp='kubectl get pods'
+  alias kgn='kubectl get nodes'
+  alias klf='kubectl logs -f'
+  alias kex='kubectl exec -it'
+fi
+if command -v k9s >/dev/null 2>&1; then
+  alias k9='k9s'
+fi
+if command -v lazygit >/dev/null 2>&1; then
+  alias lg='lazygit'
+fi
+if command -v docker >/dev/null 2>&1; then
+  alias dc='docker compose'
+fi
+if command -v gofmt >/dev/null 2>&1; then
+  alias gof='gofmt -w'
+fi
+if command -v golangci-lint >/dev/null 2>&1; then
+  alias gol='golangci-lint run'
+fi
+if command -v shellcheck >/dev/null 2>&1; then
+  alias shc='shellcheck'
+fi
+if command -v shfmt >/dev/null 2>&1; then
+  alias shf='shfmt -w'
+fi
+if command -v shellspec >/dev/null 2>&1; then
+  alias sht='shellspec'
+fi
+
 # sk (https://github.com/erikkinding/sk)
 alias skp="sk -p" # Previously selected context and namespace
 alias skn="sk -n" # Also prompt for namespace selection

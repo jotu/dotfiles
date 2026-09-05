@@ -60,11 +60,35 @@ Herdr is the persistent terminal workspace for local development. Keep one works
 - `opencode`: implementation and review, using the selected work profile.
 - `lazygit`: optional visual Git history and staging.
 
-Start Herdr from the repository root, then launch only the agents needed for the task:
+Start Herdr from the repository root with the short `hr` alias. It is intentionally manual rather than an automatic shell-startup hook, so Herdr does not nest inside its own shells or restart agents unexpectedly:
 
 ```bash
+hr
+# equivalent full command:
 herdr
 ```
+
+Common aliases are kept short and recognizable:
+
+| Alias | Command | Purpose |
+| --- | --- | --- |
+| `hr` | `herdr` | Start Herdr in the current directory |
+| `cm` | `chezmoi` | Manage the dotfiles source |
+| `k` | `kubectl` | Kubernetes CLI |
+| `kgp` | `kubectl get pods` | List pods |
+| `kgn` | `kubectl get nodes` | List nodes |
+| `klf` | `kubectl logs -f` | Follow pod logs |
+| `kex` | `kubectl exec -it` | Open an interactive pod command |
+| `k9` | `k9s` | Kubernetes terminal UI |
+| `lg` | `lazygit` | Git terminal UI |
+| `dc` | `docker compose` | Docker Compose commands |
+| `gof` | `gofmt -w` | Format Go files |
+| `gol` | `golangci-lint run` | Run Go linting |
+| `shc` | `shellcheck` | Check shell scripts |
+| `shf` | `shfmt -w` | Format shell scripts |
+| `sht` | `shellspec` | Run shell tests |
+
+Aliases for optional tools are defined only when the command is installed. Homebrew remains the macOS bootstrap layer, while Mise manages versioned developer tools and uses its native short commands such as `mise i`, `mise r`, and `mise x`; no separate `b` or `m` aliases are needed.
 
 Inside Herdr, use one tab for each role:
 
