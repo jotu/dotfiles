@@ -81,6 +81,8 @@ Common aliases are kept short and recognizable:
 | `kex` | `kubectl exec -it` | Open an interactive pod command |
 | `k9` | `k9s` | Kubernetes terminal UI |
 | `lg` | `lazygit` | Git terminal UI |
+| `hkd` | `hunk diff` | Review working-tree changes in Hunk |
+| `hks` | `hunk diff --staged` | Review staged changes in Hunk |
 | `dc` | `docker compose` | Docker Compose commands |
 | `gof` | `gofmt -w` | Format Go files |
 | `gol` | `golangci-lint run` | Run Go linting |
@@ -117,10 +119,11 @@ Hunk is installed through Mise, and LazyGit uses it as the external diff viewer 
 ```bash
 mise install
 lazygit
-hunk diff
+hkd
+hks
 ```
 
-Open a changed file or diff in LazyGit to review it in Hunk. Use Hunk directly for a repository-wide working-tree review. Keep Hunk viewer-only for now; Pi does not control Hunk sessions or add review comments automatically.
+Open a changed file or diff in LazyGit to review it in Hunk. Use `hkd` for a repository-wide working-tree review and `hks` for staged changes. Keep Hunk viewer-only for now; Pi does not control Hunk sessions or add review comments automatically.
 
 # Git
 

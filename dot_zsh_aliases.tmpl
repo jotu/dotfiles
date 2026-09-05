@@ -22,6 +22,10 @@ fi
 if command -v lazygit >/dev/null 2>&1; then
   alias lg='lazygit'
 fi
+if command -v hunk >/dev/null 2>&1; then
+  alias hkd='hunk diff'
+  alias hks='hunk diff --staged'
+fi
 if command -v docker >/dev/null 2>&1; then
   alias dc='docker compose'
 fi
