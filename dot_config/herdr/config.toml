@@ -20,7 +20,7 @@ surface1 = "#494d64"
 overlay0 = "#6e738d"
 overlay1 = "#8087a2"
 text = "#cad3f5"
-subtext0 = "#a5adcb"
+subtext0 = "#b8c0e0"
 mauve = "#c6a0f6"
 teal = "#8bd5ca"
 peach = "#f5a97f"
@@ -30,7 +30,7 @@ shell_mode = "auto"
 new_cwd = "follow"
 
 [ui]
-sidebar_width = 26
+sidebar_width = 32
 pane_borders = true
 pane_outer_borders = true
 pane_gaps = true
@@ -40,8 +40,12 @@ agent_panel_sort = "spaces"
 status_indicators = "symbols"
 
 [ui.sidebar.agents.rows_by_agent]
-# Show Pi's native session name in the Agents pane.
-pi = [["state_icon", "workspace", "tab"], ["terminal_title_stripped"]]
+# Keep the workspace and Pi session title readable at a glance.
+pi = [["state_icon", { token = "workspace", fg = "#cad3f5", bold = true }, { token = "tab", fg = "#b8c0e0" }], [{ token = "terminal_title_stripped", fg = "#b8c0e0", dim = false }]]
+
+[ui.sidebar.spaces]
+# Make space names stand out from their agent details.
+rows = [["state_icon", { token = "workspace", fg = "#cad3f5", bold = true }]]
 
 [ui.toast]
 delivery = "herdr"
