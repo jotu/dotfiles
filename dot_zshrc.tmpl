@@ -35,18 +35,18 @@ if command -v thefuck >/dev/null; then
   fi
 fi
 
+# The following lines have been added by Docker Desktop to enable Docker CLI completions.
+fpath=($HOME/.docker/completions $fpath)
+autoload -Uz compinit
+compinit
+# End of Docker CLI completions
+
 [ -f ~/.zsh_aliases ] && source ~/.zsh_aliases
 [ -f ~/.zsh_daily ] && source ~/.zsh_daily # Run expensive operations once per day
 [ -f ~/.zsh_completions ] && source ~/.zsh_completions
 if [ -f "$BREW_HOME/share/zsh-autosuggestions/zsh-autosuggestions.zsh" ]; then
   source "$BREW_HOME/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
 fi
-
-# The following lines have been added by Docker Desktop to enable Docker CLI completions.
-fpath=($HOME/.docker/completions $fpath)
-autoload -Uz compinit
-compinit
-# End of Docker CLI completions
 
 if command -v atuin >/dev/null; then
   eval "$(atuin init zsh)"
