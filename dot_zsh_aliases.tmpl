@@ -2,6 +2,13 @@
 alias f="z"
 alias ll="ls -al"
 
+if command -v mise >/dev/null 2>&1; then
+  sar() { eval "$(mise run --silent ssh:agent:restart)"; }
+fi
+if command -v mise >/dev/null 2>&1 && command -v aws-vault >/dev/null 2>&1; then
+  avr() { eval "$(mise run --silent aws-vault:refresh)"; }
+fi
+
 # Common developer tools. Optional commands are only aliased when installed.
 if command -v herdr >/dev/null 2>&1; then
   alias hr='herdr'
@@ -49,10 +56,12 @@ if command -v shellspec >/dev/null 2>&1; then
 fi
 
 # sk (https://github.com/erikkinding/sk)
-alias skp="sk -p" # Previously selected context and namespace
-alias skn="sk -n" # Also prompt for namespace selection
-alias skN="sk -N" # Only prompt for namespace selection
-alias skc="sk -c" # Print the currently selected context and namespace
+if command -v sk >/dev/null 2>&1; then
+  alias skp="sk -p" # Previously selected context and namespace
+  alias skn="sk -n" # Also prompt for namespace selection
+  alias skN="sk -N" # Only prompt for namespace selection
+  alias skc="sk -c" # Print the currently selected context and namespace
+fi
 alias ghlp='mise run gh:auth:login:personal'
 alias opos='mise run opencode:config:current'
 {{- if .work.enable }}

@@ -4,4 +4,4 @@
 #MISE alias="glub"
 set -euo pipefail
 
-git branch -vv | grep ': gone]' | awk '{print $1}'
+git branch -vv | awk '/: gone]/{print $1}'

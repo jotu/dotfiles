@@ -4,5 +4,5 @@ AWS_VAULT_BACKEND = "keychain"
 
 [tasks."aws-vault:refresh"]
 alias = "avr"
-description = "Refresh credentials in `aws-vault` subshell"
-run = "eval $(AWS_VAULT= aws-vault export --format=export-env $AWS_VAULT)"
+description = "Print AWS Vault environment exports for the current shell"
+run = "AWS_VAULT= aws-vault export --format=export-env \"$AWS_VAULT\""

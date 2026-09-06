@@ -16,7 +16,7 @@ Chezmoi dotfiles maintainer guide for secure, portable, low-risk changes.
 ## Repository Overview
 
 - Dotfiles are applied via chezmoi, with templates suffixed `.tmpl`.
-- User data is collected via a prompt config file (`.chezmoi.toml.tmpl`) and stored under `.data`.
+- Machine-specific user data is maintained in external private ChezMoi configuration and exposed to templates through `.data`.
 - Sensitive or machine-specific files reside under `private_*` paths.
 - Common templates:
   - `dot_gitconfig.tmpl` and `dot_gitconfig.work.tmpl` use `.data` identity fields.
@@ -35,7 +35,7 @@ You are an expert dotfiles engineer maintaining a ChezMoi-managed macOS reposito
    - Use OS-native secret stores (e.g., Keychain) and private templates for sensitive paths.
 2. Chezmoi best practices
    - Use `.tmpl` for any file that depends on `.data`.
-   - Add or update prompts in `.chezmoi.toml.tmpl` when introducing new `.data` keys.
+   - Keep external private data documentation updated when introducing new `.data` keys.
    - Keep machine-specific content under `private_*`.
 3. Portability and resilience
    - Assume tools may not exist; guard shell initialization with command checks.
@@ -56,9 +56,9 @@ You are an expert dotfiles engineer maintaining a ChezMoi-managed macOS reposito
   - Respect the custom vocabulary (Vocab: Base) — domain terms like "dotfiles", "chezmoi", "macOS", "OpenSSF", tool/language names, etc., are allowed and should not be altered unless inconsistent.
   - Avoid weasel words and maintain professional tone in documentation and commit messages.
 
-- Use `.data` fields from the prompt system instead of hardcoding values.
+- Use `.data` fields from the external private configuration instead of hardcoding values.
 - When adding new dynamic config:
-  - Create a `*.tmpl` and add corresponding `[[prompt]]` entries and defaults in `.chezmoi.toml.tmpl`.
+  - Create a `*.tmpl` and document the corresponding required values in the external private configuration.
 - When editing shell init:
   - Guard commands (brew, starship, mise, thefuck) with existence checks.
 - For Git:
@@ -73,7 +73,7 @@ You are an expert dotfiles engineer maintaining a ChezMoi-managed macOS reposito
 
 ## Recommended `.data` Keys
 
-Ensure `.chezmoi.toml.tmpl` defines or normalizes the following keys (extend as needed):
+Ensure the external private configuration defines or normalizes the following keys (extend as needed):
 
 - Identity:
   - `name`
@@ -161,7 +161,7 @@ Before committing changes:
 
 - Secrets: No secrets or private key material embedded.
 - Templates: Dynamic content is in `*.tmpl`; static content is not templated.
-- `.data` keys: All referenced keys exist in `.chezmoi.toml.tmpl`.
+- `.data` keys: All referenced keys exist in the external private configuration.
 - Portability: Shell init guards exist; no hard-coded machine paths.
 - Docs: Comments explain file purpose; README mentions any new flows.
 - CI: Workflows are pinned and unmodified unless intentionally updated.
@@ -173,7 +173,7 @@ Before committing changes:
 
 - First-time setup:
   - `chezmoi init <repo-url>`
-  - Complete prompts to populate `.data`.
+  - Configure the external private data required to populate `.data`.
 - Dry-run changes:
   - `chezmoi apply --preview`
 - Inspect data:
@@ -186,7 +186,7 @@ Before committing changes:
 
 ## Maintenance Notes
 
-- Update `.chezmoi.toml.tmpl` whenever new `.data` needs arise.
+- Update the external private data configuration whenever new `.data` needs arise.
 - Validate tool versions in `mise.toml` and adjust as necessary.
 - Consider templating `starship.toml` if `.data` should influence prompt.
 - Review and update pinned GitHub Actions SHAs periodically.

@@ -1,21 +1,23 @@
 [tasks."ssh:agent:restart"]
 alias = "sar"
-description = "Restart ssh agent"
+description = "Print SSH-agent environment exports for the current shell"
 run = '''
   set -eu
 
   add_if_exists() {
     if [ -f "$1" ]; then
-      ssh-add "$1"
+      ssh-add "$1" >&2
     fi
   }
 
-  eval $(ssh-agent -s)
+  agent_env=$(ssh-agent -s | sed '/^echo Agent pid/d')
+  eval "$agent_env"
 {{- if .work.enable }}
   add_if_exists "$HOME/.ssh/{{ .work.ssh.user.identityFile }}"
   add_if_exists "$HOME/.ssh/{{ .work.ssh.organization.identityFile }}"
 {{- end }}
   add_if_exists "$HOME/.ssh/{{ .personal.ssh.identityFile }}"
+  printf '%s\n' "$agent_env"
 '''
 
 {{- $ghConfigPersonal := "~/.config/gh-personal" -}}
@@ -207,34 +209,17 @@ run = '''
 [tasks."proton:mise:update"]
 hide = true
 description = "Update Proton CLI via mise hook"
-run = "mise proton:cli:update"
+run = "mise run proton:cli:update"
+
+[tasks."pi:ponytail:update"]
+alias = "ppu"
+description = "Update the managed Ponytail Pi package"
+run = "pi update npm:@dietrichgebert/ponytail"
 
 [hooks]
 postinstall = '''
-  set -eu
-
-  if ! command -v obsidian >/dev/null 2>&1; then
-    if ! command -v brew >/dev/null 2>&1; then
-      echo "ERROR: brew is required to install the Obsidian CLI" >&2
-      exit 1
-    fi
-
-    if brew list --cask obsidian >/dev/null 2>&1; then
-      brew reinstall --cask obsidian
-    else
-      brew install --cask obsidian
-    fi
-  fi
-
-  if command -v pass >/dev/null 2>&1; then
-    mise proton:mise:update
-  else
-    mise proton:cli:install
-  fi
-
   if command -v pi >/dev/null 2>&1; then
     pi install npm:@dietrichgebert/ponytail
-    pi update --extensions
   fi
 '''
 

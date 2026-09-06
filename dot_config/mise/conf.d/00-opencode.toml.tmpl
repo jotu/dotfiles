@@ -28,9 +28,12 @@ description = "Render OpenCode config for work OpenAI profile"
 run = '''
   set -eu
   template=$(chezmoi source-path "$HOME/.config/opencode/opencode.json")
+  target="$HOME/.config/opencode/opencode.json"
+  temp=$(mktemp "${target}.XXXXXX")
   chezmoi execute-template --file \
     --override-data '{"opencode":{"profile":"work-openai"}}' \
-    "$template" > "$HOME/.config/opencode/opencode.json"
+    "$template" > "$temp"
+  mv "$temp" "$target"
   mise run opencode:profile:current
 '''
 
@@ -39,9 +42,12 @@ description = "Render OpenCode config for work GitHub Copilot profile"
 run = '''
   set -eu
   template=$(chezmoi source-path "$HOME/.config/opencode/opencode.json")
+  target="$HOME/.config/opencode/opencode.json"
+  temp=$(mktemp "${target}.XXXXXX")
   chezmoi execute-template --file \
     --override-data '{"opencode":{"profile":"work-copilot"}}' \
-    "$template" > "$HOME/.config/opencode/opencode.json"
+    "$template" > "$temp"
+  mv "$temp" "$target"
   mise run opencode:profile:current
 '''
 
@@ -50,9 +56,12 @@ description = "Render OpenCode config for home GitHub Copilot profile"
 run = '''
   set -eu
   template=$(chezmoi source-path "$HOME/.config/opencode/opencode.json")
+  target="$HOME/.config/opencode/opencode.json"
+  temp=$(mktemp "${target}.XXXXXX")
   chezmoi execute-template --file \
     --override-data '{"opencode":{"profile":"home-copilot"}}' \
-    "$template" > "$HOME/.config/opencode/opencode.json"
+    "$template" > "$temp"
+  mv "$temp" "$target"
   mise run opencode:profile:current
 '''
 
@@ -270,9 +279,9 @@ run = '''
 alias = "oposu"
 description = "Install OpenCode tooling and validate the managed config"
 run = [
-  "mise opencode:deps:install",
-  "mise opencode:plugins:validate",
-  "mise opencode:models:validate"
+  "mise run opencode:deps:install",
+  "mise run opencode:plugins:validate",
+  "mise run opencode:models:validate"
 ]
 
 [tasks."pi:plan-mode:sync"]

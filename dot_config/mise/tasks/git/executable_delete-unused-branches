@@ -4,4 +4,6 @@
 #MISE alias="gdub"
 set -euo pipefail
 
-git branch -vv | grep ': gone]' | awk '{print $1}' | xargs git branch -D
+git branch -vv | awk '/: gone]/{print $1}' | while read -r branch; do
+  [ -n "$branch" ] && git branch -D "$branch"
+done

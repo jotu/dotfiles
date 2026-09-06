@@ -45,8 +45,9 @@ Pi and its official read-only plan-mode extension are installed through mise; th
 
 ```bash
 chezmoi apply                        # installs the sync hook
-mise install                         # installs Pi and syncs the extension
-mise run pi:plan-mode:sync           # sync manually when needed
+mise install                         # installs Pi, Ponytail, and syncs plan mode
+mise run pi:ponytail:update           # update only Ponytail
+mise run pi:plan-mode:sync             # sync plan mode manually when needed
 ```
 
 Use `/plan` to toggle read-only planning and `/todos` to show progress. Pi updates resync the extension through mise's postinstall hook.
@@ -91,6 +92,8 @@ Common aliases are kept short and recognizable:
 | `sht` | `shellspec` | Run shell tests |
 
 Aliases for optional tools are defined only when the command is installed. Homebrew remains the macOS bootstrap layer, while Mise manages versioned developer tools and uses its native short commands such as `mise i`, `mise r`, and `mise x`; no separate `b` or `m` aliases are needed.
+
+`sar` and `avr` are shell functions because SSH-agent and AWS Vault environment changes must persist in the current shell.
 
 Inside Herdr, use one tab for each role:
 
@@ -398,6 +401,12 @@ OpenCode config maintenance notes:
 - `README.md`: operator quick-start and day-1 usage.
 - `dot_config/opencode/AGENTS.md.tmpl`: agent routing, role boundaries, verification rules.
 - `dot_agents/skills/*/SKILL.md`: deep task workflows and specialized playbooks.
+
+### External Machine Data
+
+Machine-specific ChezMoi data is intentionally maintained outside this repository. Configure the required `.data` values before applying these templates, including personal/work identity, SSH filenames, Git roots, and GitHub profile paths. Do not commit that private configuration here.
+
+The committed `00-*` Mise fragments form the personal baseline. Unmanaged `10-*` and `20-*` fragments belong to local/company/project layers and remain outside this repository.
 
 ### Privacy Boundary
 
