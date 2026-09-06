@@ -213,6 +213,19 @@ run = "mise proton:cli:update"
 postinstall = '''
   set -eu
 
+  if ! command -v obsidian >/dev/null 2>&1; then
+    if ! command -v brew >/dev/null 2>&1; then
+      echo "ERROR: brew is required to install the Obsidian CLI" >&2
+      exit 1
+    fi
+
+    if brew list --cask obsidian >/dev/null 2>&1; then
+      brew reinstall --cask obsidian
+    else
+      brew install --cask obsidian
+    fi
+  fi
+
   if command -v pass >/dev/null 2>&1; then
     mise proton:mise:update
   else
