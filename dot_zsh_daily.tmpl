@@ -44,6 +44,8 @@ if [[ $last_run != $today ]]; then
   generate_completion_cache argocd "$zc_cache_dir/argocd.zsh" "argocd completion zsh" || daily_ok=0
   generate_completion_cache cilium "$zc_cache_dir/cilium.zsh" "cilium completion zsh" || daily_ok=0
   generate_completion_cache helm "$zc_cache_dir/helm.zsh" "helm completion zsh" || daily_ok=0
+  generate_completion_cache drv "$zc_cache_dir/drv.zsh" "drv completion zsh" || daily_ok=0
+  generate_completion_cache pls "$zc_cache_dir/pls.zsh" "pls completion zsh" || daily_ok=0
   {{- end }}
   if (( daily_ok )); then
     echo "$today" >| "$last_run_file"

@@ -50,4 +50,12 @@ if command -v helm >/dev/null; then
   load_or_generate_completion "$_zc_cache_dir/helm.zsh" "source <(helm completion zsh)"
 fi
 
+if command -v drv >/dev/null; then
+  load_or_generate_completion "$_zc_cache_dir/drv.zsh" "source <(drv completion zsh)"
+fi
+
+if command -v pls >/dev/null; then
+  load_or_generate_completion "$_zc_cache_dir/pls.zsh" "source <(pls completion zsh)"
+fi
+
 {{ end }}
