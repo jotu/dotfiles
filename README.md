@@ -121,7 +121,7 @@ Pi and Herdr run with the permissions of the current user. Herdr provides worksp
 - Use a Docker container or VM for untrusted repositories or unattended work. Do not mount the host `~/.pi/agent` into that environment unless its credentials and sessions are intentionally required.
 - Web search, browser automation, and download helpers are deliberately not enabled by default. Add only reviewed, pinned tooling when a concrete workflow needs it.
 
-## Hunk and LazyGit review
+## Hunk and Pi review
 
 Hunk is installed through Mise, and LazyGit uses it as the external diff viewer through the managed `empty_config.yml` source:
 
@@ -132,7 +132,7 @@ hkd
 hks
 ```
 
-Open a changed file or diff in LazyGit to review it in Hunk. Use `hkd` for a repository-wide working-tree review and `hks` for staged changes. Keep Hunk viewer-only for now; Pi does not control Hunk sessions or add review comments automatically.
+Use `hkd` for a repository-wide working-tree review and `hks` for staged changes. With a Hunk session open, start `pi` in another tab and run `/review`. Pi loads the installed Hunk skill through `hunk skill path`, inspects the live session through `hunk session`, and adds actionable inline comments to Hunk. It does not edit files, commit, push, or post GitHub comments automatically.
 
 # Git
 

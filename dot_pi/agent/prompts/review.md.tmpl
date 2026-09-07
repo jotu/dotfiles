@@ -1,0 +1,31 @@
+---
+description: Review current changes with Hunk and add actionable inline comments
+argument-hint: "[scope or review focus]"
+---
+
+Load the Hunk skill and use it for this review. Run `hunk skill path` to get
+the skill path, then read the returned `SKILL.md` before reviewing.
+
+You are the AI reviewer. Hunk is the live review surface and comment store.
+Use Hunk's `hunk session *` commands; do not run interactive `hunk diff` or
+`hunk show` commands yourself.
+
+Review the current Hunk session in read-only code mode:
+
+- Start with `hunk session list` and `hunk session get --repo .`.
+- If there is no active session, ask the user to launch `hkd` or `hks` and
+  stop; do not fall back to an unrelated raw diff review.
+- Inspect the review structure with `hunk session review --repo . --json`.
+- Check the affected files and relevant repository instructions.
+- Look for correctness, regressions, security issues, missing verification,
+  template errors, and unnecessary complexity.
+- Do not edit files, apply patches, commit, push, or post external comments.
+- Add only actionable findings as focused inline Hunk comments. Do not
+  comment on every hunk. Use `comment add` for one finding or `comment apply`
+  for a validated batch.
+- Navigate to a finding before commenting when practical.
+- If there are no actionable findings, say so and summarize what was checked.
+
+Additional review instructions:
+
+$@
