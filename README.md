@@ -245,13 +245,20 @@ ssh -T git@github.com
 mise run dotfiles:health:check
 ```
 
-If you use Rectangle on macOS, run the managed post-install setup once after it is installed:
+AeroSpace, SketchyBar, and JankyBorders are installed and configured on macOS by chezmoi. After applying the dotfiles, start the managed services and hide the native menu bar:
 
 ```bash
-mise run osx:setup-rectangle
+mise run osx:setup-sketchybar
 ```
 
-Then grant Rectangle Accessibility permission in System Settings when prompted.
+Grant AeroSpace and JankyBorders Accessibility permission in System Settings → Privacy & Security → Accessibility. AeroSpace starts automatically at login and uses `~/.aerospace.toml`; SketchyBar displays the AeroSpace workspaces and system status using Herdr's Catppuccin Macchiato palette.
+
+To restore the native menu bar:
+
+```bash
+defaults write NSGlobalDomain _HIHideMenuBar -bool false
+killall SystemUIServer
+```
 
 ## Atuin History Migration
 

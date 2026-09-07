@@ -2,6 +2,7 @@
 #!/bin/bash
 
 brew bundle --file=/dev/stdin <<EOF
+brew "borders"
 brew "curl"
 brew "git"
 brew "gnupg"
@@ -10,7 +11,10 @@ brew "openssl@3"
 brew "p7zip"
 brew "pinentry"
 brew "pinentry-mac"
-cask "rectangle"
+brew "sketchybar"
+tap "FelixKratz/formulae"
+tap "nikitabobko/tap"
+cask "aerospace"
 cask "obsidian"
 brew "tree"
 brew "wget"
