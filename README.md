@@ -52,6 +52,12 @@ mise run pi:plan-mode:sync             # sync plan mode manually when needed
 
 Use `/plan` to toggle read-only planning and `/todos` to show progress. Pi updates resync the extension through mise's postinstall hook.
 
+### Pi learning capture
+
+Pi includes `/learn [focus]`, which extracts one self-contained Zettelkasten-style concept from the current investigation and creates it through the Obsidian CLI. Chezmoi configures the non-sensitive CLI vault name (`base`), destination folder (`1 - Notes`), and template (`5 - Templates/Atomic Note.md`); it does not store a vault path, credentials, or note contents in this repository.
+
+Run `/learn` in Pi, or `/learn a specific concept`. Notes contain an idea, why it matters, an example when available, connections, and sources. Existing notes are never overwritten.
+
 ## Herdr work setup
 
 Herdr is the persistent terminal workspace for local development. Keep one workspace per repository and use separate tabs for focused roles:
