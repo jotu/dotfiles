@@ -233,6 +233,21 @@ run = '''
   fi
 '''
 
+[tasks."gh:enhance:install"]
+description = "Install or update the gh-enhance GitHub CLI extension"
+run = '''
+  set -eu
+
+  if ! command -v gh >/dev/null 2>&1; then
+    echo "Skipping gh-enhance: gh is not installed" >&2
+    exit 0
+  fi
+
+  if ! gh extension install dlvhdr/gh-enhance --force; then
+    echo "WARNING: gh-enhance was not installed; log in to the active gh profile and run mise run gh:enhance:install" >&2
+  fi
+'''
+
 [tasks."proton:mise:update"]
 hide = true
 description = "Update Proton CLI via mise hook"
@@ -251,6 +266,7 @@ postinstall = [
     fi
   ''' },
   { task = "gh:dash:install" },
+  { task = "gh:enhance:install" },
 ]
 
 [tools]

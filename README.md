@@ -173,6 +173,12 @@ brew install gh
 gh extension install dlvhdr/gh-dash --pin v4.25.2 --force
 ```
 
+## GitHub Actions dashboard
+
+Mise postinstall installs the stable `gh-enhance` GitHub CLI extension. The stable and insiders repositories are alternatives, not extensions to install together; use the insiders repository only if you are enrolled in the insiders program.
+
+See the [ENHANCE guide](https://www.gh-dash.dev/enhance) for usage and keybindings. The Fira Code Nerd Font recommended there is managed by the Darwin Homebrew bundle.
+
 # Git
 
 ## Generate SSH Keys for Laptop
