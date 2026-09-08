@@ -3,6 +3,7 @@ alias f="z"
 alias ll="ls -al"
 
 if command -v mise >/dev/null 2>&1; then
+  alias m='mise'
   sar() { eval "$(mise run --silent ssh:agent:restart)"; }
 fi
 if command -v mise >/dev/null 2>&1 && command -v aws-vault >/dev/null 2>&1; then
