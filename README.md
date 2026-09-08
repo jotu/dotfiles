@@ -294,20 +294,7 @@ ssh -T git@github.com
 mise run dotfiles:health:check
 ```
 
-AeroSpace, SketchyBar, and JankyBorders are installed and configured on macOS by chezmoi. After applying the dotfiles, start the managed services and hide the native menu bar:
-
-```bash
-mise run osx:setup-sketchybar
-```
-
-Grant AeroSpace and JankyBorders Accessibility permission in System Settings → Privacy & Security → Accessibility. AeroSpace starts automatically at login and uses `~/.aerospace.toml`; SketchyBar displays the AeroSpace workspaces and system status using Herdr's Catppuccin Macchiato palette.
-
-To restore the native menu bar:
-
-```bash
-defaults write NSGlobalDomain _HIHideMenuBar -bool false
-killall SystemUIServer
-```
+AeroSpace is installed and configured on macOS by chezmoi. Grant it Accessibility permission in System Settings → Privacy & Security → Accessibility. It starts automatically at login and uses `~/.aerospace.toml`.
 
 ## Atuin History Migration
 
