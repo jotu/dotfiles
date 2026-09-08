@@ -135,6 +135,10 @@ hks
 
 Use `hkd` for a repository-wide working-tree review and `hks` for staged changes. With a Hunk session open, start `pi` in another tab and run `/review`. Pi loads the installed Hunk skill through `hunk skill path`, inspects the live session through `hunk session`, and adds actionable inline comments to Hunk. It does not edit files, commit, push, or post GitHub comments automatically.
 
+## Sofka Kubernetes TUI
+
+Sofka is installed through Mise from its GitHub release artifacts and configured at `~/.config/sofka/config.toml`. The starter profile uses Catppuccin Macchiato and sets `readonly = true`, disabling mutating actions for the whole session. Use `sofka` alongside `k9s` for development and personal clusters; keep `k9s` for production until Sofka has signed/notarized artifacts, SBOMs, provenance attestations, compatibility documentation, and a longer production track record.
+
 ## GitHub pull request dashboard
 
 This setup uses gh-dash as a pinned GitHub CLI extension. mise already manages `gh`, so homebrew is not required for this integration.

@@ -12,3 +12,22 @@ defaults:
   refetchIntervalMinutes: 5
   preview:
     open: true
+
+theme:
+  colors:
+    text:
+      primary: '#cad3f5'
+      secondary: '#b8c0e0'
+      inverted: '#24273a'
+      faint: '#6e738d'
+      warning: '#f5a97f'
+      success: '#a6da95'
+    background:
+      selected: '#363a4f'
+    border:
+      primary: '#8aadf4'
+      secondary: '#494d64'
+      faint: '#363a4f'
+
+pager:
+  diff: diffnav

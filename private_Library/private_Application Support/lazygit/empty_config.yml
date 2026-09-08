@@ -5,10 +5,10 @@ gui:
   border: single
   theme:
     activeBorderColor:
-      - cyan
+      - '#8aadf4'
       - bold
     selectedLineBgColor:
-      - white
+      - '#363a4f'
 
 git:
   branchLogCmd: "git log --graph --color=always --oneline {{branchName}} --"

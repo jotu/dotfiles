@@ -1,0 +1,6 @@
+# Safe starter profile: inspect Kubernetes resources without mutating them.
+readonly = true
+
+[skin]
+name = "catppuccin-macchiato"
+background = true
