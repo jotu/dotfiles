@@ -1,0 +1,19 @@
+# Read-only Git worktree browser with a shell action to open a selection.
+[metadata]
+name = "git-worktrees"
+description = "List and preview Git worktrees"
+requirements = ["git"]
+
+[source]
+command = "git worktree list --porcelain | grep '^worktree' | cut -d' ' -f2-"
+
+[preview]
+command = "cd '{}' && git --no-pager log --oneline -10 --color=always && echo && git status --short"
+
+[keybindings]
+enter = "actions:cd"
+
+[actions.cd]
+description = "Open the selected worktree"
+command = "cd '{}' && $SHELL"
+mode = "execute"

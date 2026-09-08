@@ -24,6 +24,12 @@ if command -v kubectl >/dev/null; then
   load_or_generate_completion "$_zc_cache_dir/kubectl.zsh" "source <(kubectl completion zsh)"
 fi
 
+# AWS CLI uses its Bash completer through zsh's Bash compatibility layer.
+if command -v aws >/dev/null && command -v aws_completer >/dev/null; then
+  autoload -Uz bashcompinit && bashcompinit
+  complete -C "$(command -v aws_completer)" aws
+fi
+
 if command -v mise >/dev/null; then
   load_or_generate_completion "$_zc_cache_dir/mise.zsh" "source <(mise completion --raw zsh)"
 fi

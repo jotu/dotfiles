@@ -42,7 +42,7 @@ style = "yellow"
 
 [aws]
 disabled = false
-format = 'on [$symbol$profile]($style)'
+format = 'on [$symbol$profile( \($region\))]($style)'
 style = "italic peach"
 
 # Cloud providers: keep disabled by default

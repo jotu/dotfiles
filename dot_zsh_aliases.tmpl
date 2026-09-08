@@ -1,9 +1,40 @@
 #general
-alias f="z"
+if command -v z >/dev/null 2>&1; then
+  alias f='z'
+fi
 alias ll="ls -al"
+alias cl='clear'
+
+if command -v git >/dev/null 2>&1; then
+  alias gc='git commit -m'
+  alias gca='git commit -a -m'
+  alias gp='git push origin HEAD'
+  alias gpu='git pull origin'
+  alias gst='git status'
+  alias glog="git log --graph --topo-order --pretty='%w(100,0,6)%C(yellow)%h%C(bold)%C(black)%d %C(cyan)%ar %C(green)%an%n%C(bold)%C(white)%s %N' --abbrev-commit"
+  alias gdiff='git diff'
+  alias gco='git checkout'
+  alias gb='git branch'
+  alias gba='git branch -a'
+  alias gadd='git add'
+  alias ga='git add -p'
+  alias gcoall='git checkout -- .'
+  alias gr='git remote'
+  alias gre='git reset'
+fi
+
+if command -v docker >/dev/null 2>&1; then
+  alias dco='docker compose'
+  alias dps='docker ps'
+  alias dpa='docker ps -a'
+  alias dl='docker ps -l -q'
+  alias dx='docker exec -it'
+fi
 
 if command -v mise >/dev/null 2>&1; then
   alias m='mise'
+  alias ghlp='mise run gh:auth:login:personal'
+  alias opos='mise run opencode:config:current'
   sar() { eval "$(mise run --silent ssh:agent:restart)"; }
 fi
 if command -v mise >/dev/null 2>&1 && command -v aws-vault >/dev/null 2>&1; then
@@ -26,10 +57,25 @@ if command -v obsidian >/dev/null 2>&1; then
 fi
 if command -v kubectl >/dev/null 2>&1; then
   alias k='kubectl'
+  alias ka='kubectl apply -f'
+  alias kg='kubectl get'
+  alias kd='kubectl describe'
+  alias kdel='kubectl delete'
+  alias kl='kubectl logs -f'
+  alias klf='kubectl logs -f'
+  alias kgpo='kubectl get pods'
   alias kgp='kubectl get pods'
   alias kgn='kubectl get nodes'
-  alias klf='kubectl logs -f'
+  alias kgd='kubectl get deployments'
+  alias ke='kubectl exec -it'
   alias kex='kubectl exec -it'
+  alias kcns='kubectl config set-context --current --namespace'
+fi
+if command -v kubectx >/dev/null 2>&1; then
+  alias kc='kubectx'
+fi
+if command -v kubens >/dev/null 2>&1; then
+  alias kns='kubens'
 fi
 if command -v k9s >/dev/null 2>&1; then
   alias k9='k9s'
@@ -74,11 +120,15 @@ if command -v sk >/dev/null 2>&1; then
   alias skN="sk -N" # Only prompt for namespace selection
   alias skc="sk -c" # Print the currently selected context and namespace
 fi
-alias ghlp='mise run gh:auth:login:personal'
-alias opos='mise run opencode:config:current'
 {{- if .work.enable }}
-alias kinit="kinit --keychain {{ .work.employee.code }}@{{ .work.domain.name }}"
-alias goedemorgen='if command -v open >/dev/null; then open -a "Firefox" "{{ .work.saml.auth.url }}?nocache=$(date +%s)"; fi; if command -v mise >/dev/null; then mise tb:aws:login; fi'
-alias ghlw='mise run gh:auth:login:work'
-alias ghsa='mise run gh:auth:status:all'
+if command -v kinit >/dev/null 2>&1; then
+  alias kinit="kinit --keychain {{ .work.employee.code }}@{{ .work.domain.name }}"
+fi
+if command -v open >/dev/null 2>&1 || command -v mise >/dev/null 2>&1; then
+  alias goedemorgen='if command -v open >/dev/null; then open -a "Firefox" "{{ .work.saml.auth.url }}?nocache=$(date +%s)"; fi; if command -v mise >/dev/null; then mise tb:aws:login; fi'
+fi
+if command -v mise >/dev/null 2>&1; then
+  alias ghlw='mise run gh:auth:login:work'
+  alias ghsa='mise run gh:auth:status:all'
+fi
 {{- end }}

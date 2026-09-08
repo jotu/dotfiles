@@ -1,0 +1,23 @@
+# Browse recently changed files without requiring bat or other optional tools.
+[metadata]
+name = "recent-files"
+description = "List recently changed files"
+requirements = ["git", "sed"]
+
+[source]
+command = [
+  "git diff --name-only HEAD~10 HEAD 2>/dev/null || find . -type f -mtime -7 -not -path '*/.*' 2>/dev/null | head -100",
+  "find . -type f -mmin -60 -not -path '*/.*' 2>/dev/null | head -100",
+]
+
+[preview]
+command = "sed -n '1,240p' '{}'"
+
+[keybindings]
+enter = "actions:edit"
+
+[actions.edit]
+description = "Open the selected file in the editor"
+command = "${EDITOR:-vi} '{}'"
+shell = "zsh"
+mode = "execute"
