@@ -19,22 +19,97 @@ default-root-container-orientation = 'auto'
 [gaps]
 inner.horizontal = 10
 inner.vertical = 10
-outer.left = 10
-outer.right = 10
-outer.top = 10
-outer.bottom = 10
+outer.left = 0
+outer.right = 0
+outer.top = 0
+outer.bottom = 0
 
-# Keep the two applications already managed by this repository together.
+# Workspace conventions: 1 terminal, 2 browser, 3 Slack, 4 Teams, 5 other, 6 security, 7 Mail, 8 media, 9 editor.
 [[on-window-detected]]
 if.app-id = 'com.mitchellh.ghostty'
 run = 'move-node-to-workspace 1'
 
 [[on-window-detected]]
-if.app-id = 'dev.zed.Zed'
+if.app-id = 'org.mozilla.firefox'
 run = 'move-node-to-workspace 2'
+
+[[on-window-detected]]
+if.app-id = 'com.google.Chrome'
+run = 'move-node-to-workspace 2'
+
+[[on-window-detected]]
+if.app-id = 'com.vivaldi.Vivaldi'
+run = 'move-node-to-workspace 2'
+
+[[on-window-detected]]
+if.app-id = 'com.apple.Safari'
+run = 'move-node-to-workspace 2'
+
+[[on-window-detected]]
+if.app-id = 'com.tinyspeck.slackmacgap'
+run = 'move-node-to-workspace 3'
+
+[[on-window-detected]]
+if.app-id = 'com.microsoft.teams2'
+run = 'move-node-to-workspace 4'
+
+[[on-window-detected]]
+if.app-id = 'com.apple.mail'
+run = 'move-node-to-workspace 7'
+
+[[on-window-detected]]
+if.app-id = 'ch.protonmail.desktop'
+run = 'move-node-to-workspace 7'
+
+[[on-window-detected]]
+if.app-id = 'com.microsoft.Outlook'
+run = 'move-node-to-workspace 7'
+
+[[on-window-detected]]
+if.app-id = 'me.proton.pass.electron'
+run = 'move-node-to-workspace 6'
+
+[[on-window-detected]]
+if.app-id = 'ch.protonvpn.mac'
+run = 'move-node-to-workspace 6'
+
+[[on-window-detected]]
+if.app-id = 'dev.zed.Zed'
+run = 'move-node-to-workspace 9'
+
+[[on-window-detected]]
+if.app-id = 'com.microsoft.VSCode'
+run = 'move-node-to-workspace 9'
+
+[[on-window-detected]]
+if.app-id = 'com.apple.Music'
+run = 'move-node-to-workspace 8'
+
+[[on-window-detected]]
+if.app-id = 'com.apple.TV'
+run = 'move-node-to-workspace 8'
+
+# Keep small utility windows floating.
+[[on-window-detected]]
+if.app-id = 'com.apple.finder'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-id = 'com.apple.QuickTimePlayerX'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-id = 'com.apple.calculator'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-id = 'com.apple.systempreferences'
+run = 'layout floating'
 
 [mode.main.binding]
 # Layout
+alt-t = 'layout tiles horizontal vertical'
+alt-a = 'layout accordion horizontal vertical'
 alt-slash = 'layout tiles horizontal vertical'
 alt-comma = 'layout accordion horizontal vertical'
 alt-f = 'fullscreen'
@@ -45,6 +120,10 @@ alt-h = 'focus left'
 alt-j = 'focus down'
 alt-k = 'focus up'
 alt-l = 'focus right'
+alt-ctrl-h = 'focus-monitor left'
+alt-ctrl-l = 'focus-monitor right'
+alt-ctrl-shift-h = 'move-node-to-monitor left'
+alt-ctrl-shift-l = 'move-node-to-monitor right'
 alt-tab = 'workspace-back-and-forth'
 
 # Move windows
@@ -54,6 +133,7 @@ alt-shift-k = 'move up'
 alt-shift-l = 'move right'
 
 # Workspaces
+# 1 terminal, 2 browser, 3 Slack, 4 Teams, 5 other, 6 security, 7 Mail, 8 media, 9 editor.
 alt-1 = 'workspace 1'
 alt-2 = 'workspace 2'
 alt-3 = 'workspace 3'
@@ -74,8 +154,16 @@ alt-shift-7 = 'move-node-to-workspace 7'
 alt-shift-8 = 'move-node-to-workspace 8'
 alt-shift-9 = 'move-node-to-workspace 9'
 
-# Resize mode
+# Modes
 alt-r = 'mode resize'
+alt-s = 'mode service'
+
+[mode.service.binding]
+esc = 'mode main'
+r = ['reload-config', 'mode main']
+t = ['layout tiles horizontal vertical', 'mode main']
+a = ['layout accordion horizontal vertical', 'mode main']
+f = ['layout floating tiling', 'mode main']
 
 [mode.resize.binding]
 h = 'resize width -50'
