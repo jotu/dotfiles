@@ -90,6 +90,7 @@ Common aliases are kept short and recognizable:
 | `lg` | `lazygit` | Git terminal UI |
 | `hkd` | `hunk diff` | Review working-tree changes in Hunk |
 | `hks` | `hunk diff --staged` | Review staged changes in Hunk |
+| `ghd` | `gh dash` | Open the GitHub PR dashboard |
 | `dc` | `docker compose` | Docker Compose commands |
 | `gof` | `gofmt -w` | Format Go files |
 | `gol` | `golangci-lint run` | Run Go linting |
@@ -133,6 +134,44 @@ hks
 ```
 
 Use `hkd` for a repository-wide working-tree review and `hks` for staged changes. With a Hunk session open, start `pi` in another tab and run `/review`. Pi loads the installed Hunk skill through `hunk skill path`, inspects the live session through `hunk session`, and adds actionable inline comments to Hunk. It does not edit files, commit, push, or post GitHub comments automatically.
+
+## GitHub pull request dashboard
+
+This setup uses gh-dash as a pinned GitHub CLI extension. mise already manages `gh`, so homebrew is not required for this integration.
+
+After applying the dotfiles, `mise install` runs the postinstall hook and ensures the pinned extension exists. The same hook runs after mise upgrades tools. mise has no separate postupdate hook; use the task below when you want to reconcile gh-dash without changing other tools.
+
+To reconcile gh-dash independently:
+
+```bash
+mise run gh:dash:install
+# alias: ghdi
+```
+
+Launch the dashboard with:
+
+```bash
+ghd
+# equivalent: gh dash
+```
+
+For a selected PR, gh-dash provides built-in preview, diff, comment, and review actions. Its `c` action adds a general PR comment; it does not create a line-specific code suggestion.
+
+Chezmoi writes the dashboard configuration to `~/.config/gh-dash/config.yml`. It starts with PR queues for review requests, your PRs, and involved PRs. The existing GitHub CLI profiles select authentication:
+
+```bash
+GH_CONFIG_DIR="$HOME/.config/gh-personal" gh dash
+GH_CONFIG_DIR="$HOME/.config/gh-work" gh dash
+```
+
+The shared config intentionally omits `repoPaths`, because this setup has separate machine-dependent personal and work repository roots. Use `gh pr checkout` manually for now; the Hunk + Pi review flow remains unchanged.
+
+On a machine without mise, install `gh` with homebrew and then install the same pinned extension directly:
+
+```bash
+brew install gh
+gh extension install dlvhdr/gh-dash --pin v4.25.2 --force
+```
 
 # Git
 

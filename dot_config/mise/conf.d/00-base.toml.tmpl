@@ -212,6 +212,27 @@ run = '''
 '''
 {{- end }}
 
+[tasks."gh:dash:install"]
+alias = "ghdi"
+description = "Install or update the pinned gh-dash GitHub CLI extension"
+run = '''
+  set -eu
+
+  if ! command -v gh >/dev/null 2>&1; then
+    echo "Skipping gh-dash: gh is not installed" >&2
+    exit 0
+  fi
+
+  installed_version=$(NO_COLOR=1 gh extension list 2>/dev/null | awk '$1 == "gh" && $2 == "dash" && $3 == "dlvhdr/gh-dash" { print $4; exit }')
+  if [ "$installed_version" = "v4.25.2" ]; then
+    exit 0
+  fi
+
+  if ! gh extension install dlvhdr/gh-dash --pin v4.25.2 --force; then
+    echo "WARNING: gh-dash was not installed; log in to the active gh profile and run mise run ghdi" >&2
+  fi
+'''
+
 [tasks."proton:mise:update"]
 hide = true
 description = "Update Proton CLI via mise hook"
@@ -223,11 +244,14 @@ description = "Update the managed Ponytail Pi package"
 run = "pi update npm:@dietrichgebert/ponytail"
 
 [hooks]
-postinstall = '''
-  if command -v pi >/dev/null 2>&1; then
-    pi install npm:@dietrichgebert/ponytail
-  fi
-'''
+postinstall = [
+  { run = '''
+    if command -v pi >/dev/null 2>&1; then
+      pi install npm:@dietrichgebert/ponytail
+    fi
+  ''' },
+  { task = "gh:dash:install" },
+]
 
 [tools]
 adr-tools = "latest"

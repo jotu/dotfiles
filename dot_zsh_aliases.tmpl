@@ -13,6 +13,10 @@ fi
 if command -v herdr >/dev/null 2>&1; then
   alias hr='herdr'
 fi
+if command -v aerospace >/dev/null 2>&1; then
+  alias ae='aerospace'
+  compdef ae=aerospace
+fi
 if command -v chezmoi >/dev/null 2>&1; then
   alias cm='chezmoi'
 fi
@@ -35,6 +39,9 @@ fi
 if command -v hunk >/dev/null 2>&1; then
   alias hkd='hunk diff'
   alias hks='hunk diff --staged'
+fi
+if command -v gh >/dev/null 2>&1; then
+  alias ghd='gh dash'
 fi
 if command -v docker >/dev/null 2>&1; then
   alias dc='docker compose'

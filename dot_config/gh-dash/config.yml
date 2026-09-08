@@ -1,0 +1,14 @@
+# yaml-language-server: $schema=https://gh-dash.dev/schema.json
+prSections:
+  - title: Needs Review
+    filters: is:open review-requested:@me
+  - title: My PRs
+    filters: is:open author:@me
+  - title: Involved
+    filters: is:open involves:@me -author:@me
+
+defaults:
+  view: prs
+  refetchIntervalMinutes: 5
+  preview:
+    open: true
