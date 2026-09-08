@@ -7,6 +7,9 @@ config-version = 2
 # Workspaces are created on demand so they can follow the available monitors.
 # Do not pin the logical workspace set to a particular physical display.
 
+enable-normalization-flatten-containers = true
+enable-normalization-opposite-orientation-for-nested-containers = true
+
 start-at-login = true
 exec-on-workspace-change = ['/bin/bash', '-c', 'if command -v sketchybar >/dev/null 2>&1; then sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE=$AEROSPACE_FOCUSED_WORKSPACE; fi']
 
