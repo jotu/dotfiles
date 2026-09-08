@@ -1,6 +1,6 @@
 import { withFileMutationQueue, type ExtensionAPI } from "@earendil-works/pi-coding-agent";
 import { Type } from "typebox";
-import { isAbsolute, join, posix, resolve } from "node:path";
+import { basename, isAbsolute, join, posix, resolve } from "node:path";
 
 const noteSchema = Type.Object({
 	title: Type.String({ description: "A specific, concise concept title" }),
@@ -40,31 +40,26 @@ function cleanTitle(title: string): string {
 }
 
 async function resolveVault(pi: ExtensionAPI): Promise<{ name: string; path: string }> {
-	const result = await pi.exec("obsidian", ["vaults", "verbose"]);
-	if (result.code !== 0) throw new Error(result.stderr || "Could not list Obsidian vaults.");
-
-	const vaults = result.stdout
-		.split("\n")
-		.map((line) => {
-			const [name, ...pathParts] = line.split("\t");
-			return { name: name?.trim(), path: pathParts.join("\t").trim() };
-		})
-		.filter((vault): vault is { name: string; path: string } => Boolean(vault.name && vault.path));
-
-	const configuredName = process.env.OBSIDIAN_VAULT?.trim();
 	const configuredPath = process.env.OBSIDIAN_VAULT_PATH?.trim();
-	if (!configuredName && !configuredPath) {
-		throw new Error("Set OBSIDIAN_VAULT to the CLI vault name or OBSIDIAN_VAULT_PATH to its path.");
-	}
-	const vault = vaults.find(
-		(candidate) =>
-			(configuredName ? candidate.name === configuredName : true) &&
-			(configuredPath ? resolve(candidate.path) === resolve(configuredPath) : true),
-	);
+	const configuredName = process.env.OBSIDIAN_VAULT?.trim() || (configuredPath ? basename(configuredPath) : "base");
+	const result = await pi.exec("obsidian", [`vault=${configuredName}`, "vault"]);
+	if (result.code !== 0) throw new Error(result.stderr || `Obsidian vault not found: ${configuredName}`);
 
-	if (vault) return { name: vault.name, path: resolve(vault.path) };
-	const configured = configuredName || configuredPath || "(unset)";
-	throw new Error(`Obsidian vault not found for ${configured}. Available vaults: ${vaults.map((item) => item.name).join(", ")}`);
+	const info = Object.fromEntries(
+		result.stdout
+			.split("\n")
+			.map((line) => {
+				const [key, ...valueParts] = line.split("\t");
+				return [key?.trim(), valueParts.join("\t").trim()];
+			})
+			.filter(([key, value]) => key && value),
+	);
+	const vaultPath = info.path;
+	if (!vaultPath) throw new Error(`Obsidian did not return a path for vault: ${configuredName}`);
+	if (configuredPath && resolve(vaultPath) !== resolve(configuredPath)) {
+		throw new Error(`Obsidian vault path mismatch for ${configuredName}: expected ${configuredPath}, got ${vaultPath}`);
+	}
+	return { name: info.name || configuredName, path: resolve(vaultPath) };
 }
 
 function relativeNotePath(title: string): string {
