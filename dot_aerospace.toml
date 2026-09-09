@@ -22,7 +22,7 @@ outer.right = 0
 outer.top = 0
 outer.bottom = 0
 
-# Workspace conventions: 1 terminal, 2 browser, 3 Slack, 4 Teams, 5 other, 6 security, 7 Mail, 8 media, 9 editor.
+# Workspace conventions: 0 catch-all, 1 terminal, 2 browser, 3 Slack, 4 Teams, 5 notes, 6 security, 7 Mail, 8 media, 9 editors/coding.
 [[on-window-detected]]
 if.app-id = 'com.mitchellh.ghostty'
 run = 'move-node-to-workspace 1'
@@ -56,6 +56,18 @@ if.app-id = 'com.apple.mail'
 run = 'move-node-to-workspace 7'
 
 [[on-window-detected]]
+if.app-id = 'md.obsidian'
+run = 'move-node-to-workspace 5'
+
+[[on-window-detected]]
+if.app-id = 'com.usebruno.app'
+run = 'move-node-to-workspace 5'
+
+[[on-window-detected]]
+if.app-id = 'com.github.GitHubClient'
+run = 'move-node-to-workspace 5'
+
+[[on-window-detected]]
 if.app-id = 'ch.protonmail.desktop'
 run = 'move-node-to-workspace 7'
 
@@ -77,6 +89,30 @@ run = 'move-node-to-workspace 9'
 
 [[on-window-detected]]
 if.app-id = 'com.microsoft.VSCode'
+run = 'move-node-to-workspace 9'
+
+[[on-window-detected]]
+if.app-id = 'com.jetbrains.intellij'
+run = 'move-node-to-workspace 9'
+
+[[on-window-detected]]
+if.app-id = 'com.jetbrains.goland'
+run = 'move-node-to-workspace 9'
+
+[[on-window-detected]]
+if.app-id = 'com.apple.dt.Xcode'
+run = 'move-node-to-workspace 9'
+
+[[on-window-detected]]
+if.app-id = 'com.sublimetext.4'
+run = 'move-node-to-workspace 9'
+
+[[on-window-detected]]
+if.app-id = 'ai.opencode.desktop'
+run = 'move-node-to-workspace 9'
+
+[[on-window-detected]]
+if.app-id = 'com.openai.codex'
 run = 'move-node-to-workspace 9'
 
 [[on-window-detected]]
@@ -103,6 +139,11 @@ run = 'layout floating'
 [[on-window-detected]]
 if.app-id = 'com.apple.systempreferences'
 run = 'layout floating'
+
+# Unassigned applications go to the catch-all workspace.
+[[on-window-detected]]
+if = 'true'
+run = 'move-node-to-workspace 0'
 
 [mode.main.binding]
 # Layout
@@ -131,7 +172,8 @@ alt-shift-k = 'move up'
 alt-shift-l = 'move right'
 
 # Workspaces
-# 1 terminal, 2 browser, 3 Slack, 4 Teams, 5 other, 6 security, 7 Mail, 8 media, 9 editor.
+# 0 catch-all, 1 Terminal, 2 Browser, 3 Slack, 4 Teams, 5 Notes, 6 Security, 7 Mail, 8 Media, 9 Coding.
+alt-0 = 'workspace 0'
 alt-1 = 'workspace 1'
 alt-2 = 'workspace 2'
 alt-3 = 'workspace 3'
@@ -142,6 +184,7 @@ alt-7 = 'workspace 7'
 alt-8 = 'workspace 8'
 alt-9 = 'workspace 9'
 
+alt-shift-0 = 'move-node-to-workspace 0'
 alt-shift-1 = 'move-node-to-workspace 1'
 alt-shift-2 = 'move-node-to-workspace 2'
 alt-shift-3 = 'move-node-to-workspace 3'
