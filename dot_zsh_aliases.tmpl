@@ -4,6 +4,9 @@ if command -v z >/dev/null 2>&1; then
 fi
 alias ll="ls -al"
 alias cl='clear'
+if command -v tv >/dev/null 2>&1; then
+  alias al='tv alias'
+fi
 
 if command -v git >/dev/null 2>&1; then
   alias gc='git commit -m'

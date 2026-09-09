@@ -1,0 +1,8 @@
+# Browse aliases loaded by zsh.
+[metadata]
+name = "alias"
+description = "Browse shell aliases"
+requirements = ["zsh"]
+
+[source]
+command = "zsh -ic 'alias -L' | sort"
