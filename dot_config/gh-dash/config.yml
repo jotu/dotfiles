@@ -6,6 +6,8 @@ prSections:
     filters: is:open author:@me
   - title: All Involved PRs
     filters: is:open involves:@me
+  - title: All PRs
+    filters: is:open
 
 issuesSections:
   - title: My Issues
