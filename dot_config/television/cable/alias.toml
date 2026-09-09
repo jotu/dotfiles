@@ -5,4 +5,4 @@ description = "Browse shell aliases"
 requirements = ["zsh"]
 
 [source]
-command = "zsh -ic 'alias -L' | sort"
+command = "zsh -f -c 'source ~/.zsh_aliases; alias -L' 2>/dev/null | sort"
