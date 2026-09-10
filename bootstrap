@@ -30,14 +30,26 @@ case "$os_name" in
     command -v mise >/dev/null 2>&1 || error \
       'Mise should be preinstalled by Omarchy.'
 
-    # Omarchy provisions gh with its application wrappers. Refresh those
-    # wrappers only when gh is not available yet; do not install a competing
-    # Mise-managed copy from this repository.
-    if ! command -v gh >/dev/null 2>&1; then
+    # Omarchy provisions the AI harnesses and developer agents with its own
+    # Mise-backed wrappers. Refresh those wrappers if any core harness is
+    # missing; do not install competing copies from this repository.
+    omarchy_ai_commands=(codex claude crush gemini gh copilot opencode pi omp hunk)
+    omarchy_ai_refresh_needed=0
+    for command_name in "${omarchy_ai_commands[@]}"; do
+      if ! command -v "$command_name" >/dev/null 2>&1; then
+        omarchy_ai_refresh_needed=1
+        break
+      fi
+    done
+
+    if [ "$omarchy_ai_refresh_needed" -eq 1 ]; then
       omarchy refresh applications
     fi
-    command -v gh >/dev/null 2>&1 || error \
-      'Omarchy did not provide gh; run `omarchy refresh applications` and retry.'
+
+    for command_name in "${omarchy_ai_commands[@]}"; do
+      command -v "$command_name" >/dev/null 2>&1 || error \
+        "Omarchy did not provide $command_name; run `omarchy refresh applications` and retry."
+    done
     ;;
   *)
     error "Unsupported operating system: $os_name"

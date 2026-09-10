@@ -24,6 +24,8 @@ not_contains() {
 # These scripts are repository tooling and must remain executable shell.
 bash -n "$repo_root/bootstrap"
 bash -n "$repo_root/tests/test-platform-layout.sh"
+contains bootstrap 'omarchy_ai_commands=(codex claude crush gemini gh copilot opencode pi omp hunk)'
+contains bootstrap 'omarchy refresh applications'
 
 # Chezmoi templates are checked with template-control lines removed and inline
 # template expressions replaced by a harmless shell word. Full rendering tests
