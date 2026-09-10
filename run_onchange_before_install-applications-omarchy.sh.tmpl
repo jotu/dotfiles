@@ -1,0 +1,17 @@
+{{- if eq .chezmoi.os "linux" -}}
+#!/usr/bin/env bash
+# Install selected desktop applications through Omarchy, not Mise.
+set -euo pipefail
+
+if ! command -v omarchy >/dev/null 2>&1; then
+  echo "Skipping Omarchy applications: omarchy is not installed" >&2
+  exit 0
+fi
+
+if ! command -v zeditor >/dev/null 2>&1; then
+  omarchy install editor zed
+fi
+if ! command -v firefox >/dev/null 2>&1; then
+  omarchy install browser firefox
+fi
+{{- end -}}

@@ -1,0 +1,81 @@
+#!/usr/bin/env bash
+# Bootstrap Chezmoi and Omarchy's selected desktop applications.
+#
+# This script initializes Chezmoi but deliberately does not apply dotfiles.
+# Configure local Chezmoi data and review `chezmoi diff` before applying.
+set -euo pipefail
+
+repo_url="${DOTFILES_REPO_URL:-git@github.com:jotu/dotfiles.git}"
+os_name="$(uname -s)"
+
+error() {
+  printf 'ERROR: %s\n' "$*" >&2
+  exit 1
+}
+
+command -v git >/dev/null 2>&1 || error 'git is required to initialize Chezmoi'
+
+case "$os_name" in
+  Darwin)
+    command -v brew >/dev/null 2>&1 || error \
+      'Homebrew is required on macOS. Install it from https://brew.sh/ and run this script again.'
+
+    if ! command -v mise >/dev/null 2>&1; then
+      brew install mise
+    fi
+    ;;
+  Linux)
+    command -v omarchy >/dev/null 2>&1 || error \
+      'This Linux bootstrap supports Omarchy only.'
+    command -v mise >/dev/null 2>&1 || error \
+      'Mise should be preinstalled by Omarchy.'
+
+    # Omarchy provisions gh with its application wrappers. Refresh those
+    # wrappers only when gh is not available yet; do not install a competing
+    # Mise-managed copy from this repository.
+    if ! command -v gh >/dev/null 2>&1; then
+      omarchy refresh applications
+    fi
+    command -v gh >/dev/null 2>&1 || error \
+      'Omarchy did not provide gh; run `omarchy refresh applications` and retry.'
+    ;;
+  *)
+    error "Unsupported operating system: $os_name"
+    ;;
+esac
+
+if ! git ls-remote "$repo_url" HEAD >/dev/null 2>&1; then
+  error "GitHub access failed for $repo_url; authenticate Git before continuing."
+fi
+
+# Chezmoi is a bootstrap dependency on both platforms. After initialization,
+# the rendered Mise configuration keeps it available as part of the setup.
+mise use --global chezmoi@latest
+mise exec -- chezmoi init "$repo_url"
+
+if [ "$os_name" = Linux ]; then
+  # Use Omarchy installers for desktop applications so package installation,
+  # desktop entries, defaults, and Omarchy integration stay consistent.
+  if ! command -v zeditor >/dev/null 2>&1; then
+    omarchy install editor zed
+  fi
+  if ! command -v firefox >/dev/null 2>&1; then
+    omarchy install browser firefox
+  fi
+fi
+
+cat <<'EOF'
+
+Bootstrap finished without applying the dotfiles.
+
+1. Configure local Chezmoi data:
+   mise exec -- chezmoi edit-config
+2. Inspect rendered data:
+   mise exec -- chezmoi data
+3. Review proposed changes:
+   mise exec -- chezmoi diff
+4. Apply after reviewing the diff:
+   mise exec -- chezmoi apply
+5. Install Mise-managed tools not supplied by the platform:
+   mise install
+EOF

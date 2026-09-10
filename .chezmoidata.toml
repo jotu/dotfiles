@@ -1,0 +1,5 @@
+# Non-sensitive defaults for the personal profile.
+# Machine identity, Git signing, and SSH key names remain local Chezmoi data.
+work.enable = false
+github.username = "jotu"
+personal.git.username = "jotu"

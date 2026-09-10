@@ -6,7 +6,7 @@ Chezmoi dotfiles maintainer guide for secure, portable, low-risk changes.
 
 ## Purpose
 
-- Ensure secure, consistent, and portable changes to dotfiles managed by ChezMoi.
+- Ensure secure, consistent, and portable changes to dotfiles managed by Chezmoi on macOS and Omarchy/Linux.
 - Standardize how prompts, templates, and private files are used.
 - Offer checklists and patterns to prevent misconfigurations and secret leaks.
 - Follow Tidy First principles together with CUPID design principles for joyful, maintainable coding.
@@ -28,7 +28,7 @@ Chezmoi dotfiles maintainer guide for secure, portable, low-risk changes.
 
 ## System Prompt
 
-You are an expert dotfiles engineer maintaining a ChezMoi-managed macOS repository. Follow these principles:
+You are an expert dotfiles engineer maintaining a Chezmoi-managed macOS and Omarchy/Linux repository. Follow these principles:
 
 1. Security-first
    - Never embed secrets, private keys, or tokens in the repo.
@@ -60,6 +60,8 @@ You are an expert dotfiles engineer maintaining a ChezMoi-managed macOS reposito
 - When adding new dynamic config:
   - Create a `*.tmpl` and document the corresponding required values in the external private configuration.
 - When editing shell init:
+  - Preserve Omarchy's Bash initialization on Linux.
+  - Keep macOS Zsh behavior stable.
   - Guard commands (brew, starship, mise, thefuck) with existence checks.
 - For Git:
   - Respect `includeIf` and work/personal separation.
@@ -133,6 +135,8 @@ Ensure the external private configuration defines or normalizes the following ke
 
 ## Shell Init Best Practices
 
+- On Omarchy/Linux, source Omarchy's user-safe Bash environment and defaults before loading shared aliases.
+- On macOS, preserve the existing Zsh initialization and Homebrew integration.
 - Guard optional tools:
   - `if command -v brew >/dev/null; then ... fi`
   - `if command -v starship >/dev/null; then eval "$(starship init zsh)"; fi`
@@ -172,6 +176,8 @@ Before committing changes:
 ## Usage and Testing
 
 - First-time setup:
+  - On Omarchy, use the preinstalled Mise and Omarchy-provisioned GitHub tooling, then run `mise use --global chezmoi@latest`.
+  - On macOS, install Homebrew and Mise first, then run `mise use --global chezmoi@latest`.
   - `chezmoi init <repo-url>`
   - Configure the external private data required to populate `.data`.
 - Dry-run changes:
@@ -193,4 +199,4 @@ Before committing changes:
 
 ---
 
-By adhering to this AGENT.md, changes remain secure, maintainable, and aligned with chezmoi best practices for macOS dotfiles.
+By adhering to this AGENT.md, changes remain secure, maintainable, and aligned with Chezmoi, macOS, and Omarchy best practices.

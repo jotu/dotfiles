@@ -9,10 +9,12 @@
     "npm:@dietrichgebert/ponytail"
   ],
   "npmCommand": [
+{{- if eq .chezmoi.os "darwin" }}
     "mise",
     "exec",
     "node@22.22.2",
     "--",
+{{- end }}
     "npm"
   ],
   "defaultProvider": "{{ $provider }}",

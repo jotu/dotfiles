@@ -18,6 +18,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Platform layout checks
+        run: bash tests/test-platform-layout.sh
+
       - name: Vale (pull request)
         if: github.event_name == 'pull_request'
         uses: errata-ai/vale-action@v2

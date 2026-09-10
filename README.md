@@ -32,6 +32,157 @@ mise run opencode:profile:current
 mise run opencode:profile:validate
 ```
 
+## New machine bootstrap
+
+This repository supports two platform profiles:
+
+- **Omarchy/Linux:** Omarchy owns the operating system, base packages, desktop applications, and its provisioned tools. Chezmoi adds user configuration and Mise installs tools that Omarchy does not provide.
+- **macOS:** Homebrew remains the package layer, while Mise manages the configured CLI tools and runtimes. The existing macOS setup is intentionally preserved.
+
+### Omarchy/Linux
+
+The checked-in `bootstrap` helper performs the same platform checks and initializes Chezmoi without applying files. It can be run from a checked-out copy after the machine has GitHub access.
+
+Mise is preinstalled by Omarchy. Omarchy also provisions tools such as `git`, `gh`, Herdr, Pi, Hunk, OpenCode, Codex, and the base desktop applications. If `gh` is missing, restore Omarchy's application wrappers before authenticating:
+
+```bash
+omarchy refresh applications
+gh auth login --hostname github.com --git-protocol ssh
+gh auth status
+ssh -T git@github.com
+```
+
+Install Chezmoi through the existing Mise installation and initialize it from GitHub:
+
+```bash
+mise use --global chezmoi@latest
+mise exec -- chezmoi init git@github.com:jotu/dotfiles.git
+```
+
+Do not apply immediately. Configure local, machine-specific Chezmoi data first, then review the rendered changes. For this personal Omarchy computer, the local Chezmoi config must add the identity values that cannot be committed:
+
+```toml
+[data]
+name = "Your Name"
+editor = "zed"
+
+[data.personal.git]
+email = "personal@example.com"
+signingKey = "YOUR_GPG_KEY_ID"
+
+[data.personal.ssh]
+identityFile = "id_ed25519"
+```
+
+Then inspect and apply:
+
+```bash
+mise exec -- chezmoi data
+mise exec -- chezmoi diff
+mise exec -- chezmoi apply
+mise install
+```
+
+Applying the dotfiles installs the selected desktop applications through Omarchy:
+
+```bash
+omarchy install editor zed
+omarchy install browser firefox
+```
+
+Those commands are intentionally Omarchy-specific. Do not install Zed, Firefox, Herdr, Pi, Hunk, OpenCode, or `gh` again through the repository's Linux Mise configuration.
+
+### macOS
+
+The macOS setup remains Homebrew- and Zsh-based. Install Homebrew first if necessary, then install Mise with Homebrew:
+
+```bash
+# Install Homebrew from https://brew.sh/ if it is not installed
+brew install git mise
+
+eval "$(mise activate zsh)"
+mise use --global gh@latest
+mise use --global chezmoi@latest
+```
+
+Authenticate GitHub using the existing SSH setup or `gh`, then initialize Chezmoi:
+
+```bash
+gh auth login --hostname github.com --git-protocol ssh
+mise exec -- chezmoi init git@github.com:jotu/dotfiles.git
+mise exec -- chezmoi edit-config
+mise exec -- chezmoi data
+mise exec -- chezmoi diff
+mise exec -- chezmoi apply
+mise install
+```
+
+Chezmoi continues to install missing Homebrew packages through the Darwin package script. Keep updating macOS manually:
+
+```bash
+brew update
+brew upgrade
+mise up
+```
+
+The macOS profile keeps its current tool and configuration behavior; Linux support is added through platform-specific templates and ignores.
+
+## Platform ownership
+
+Use the platform's own package and application tooling before adding a repository-managed tool:
+
+| Tool or category | Omarchy/Linux | macOS |
+| --- | --- | --- |
+| Git | Omarchy base package | Homebrew |
+| Mise | Omarchy | Homebrew |
+| Chezmoi | Mise | Mise |
+| `gh`, Pi, Herdr, Hunk, OpenCode, Codex | Omarchy provisioning | Mise |
+| FD, jq, LazyGit, ripgrep, Starship, Zoxide | Omarchy base packages | Mise |
+| Kubernetes and AWS tooling | Mise | Mise |
+| Project runtimes | Mise project configuration | Mise project configuration |
+| Zed and Firefox | `omarchy install` | Existing macOS application workflow |
+| AeroSpace | Not applicable | Homebrew |
+
+The repository manages configuration for these tools on both platforms. It does not install a second Linux copy of tools already provided by Omarchy. Omarchy's `omarchy update` remains responsible for updating its base packages and provisioned tools. On macOS, continue to update Homebrew and Mise manually:
+
+```bash
+# Omarchy
+omarchy update
+
+# macOS
+brew update
+brew upgrade
+mise up
+```
+
+### Project-specific Mise versions
+
+Use project-local `mise.toml` or `.mise.toml` files when a project needs a particular runtime version:
+
+```toml
+[tools]
+go = "1.24"
+java = "temurin-21"
+node = "22"
+```
+
+Then trust and install the project configuration:
+
+```bash
+mise trust
+mise install
+```
+
+This allows different projects to use different Go, Java, and Node.js versions without changing the global platform setup.
+
+Before committing platform changes, run the local layout checks from the repository root:
+
+```bash
+mise run test:platform
+```
+
+On a machine with Chezmoi and local data configured, also render each supported OS/profile combination with `chezmoi execute-template`, review `chezmoi diff`, and use `chezmoi apply --dry-run`. Do not run the Omarchy or Homebrew installation scripts in unattended environments.
+
 Reference sections:
 - Git and identity setup: [Git](#git)
 - OpenCode profiles and model defaults: [OpenCode config defaults](#opencode-config-defaults)
@@ -41,13 +192,13 @@ Reference sections:
 
 ## Pi plan mode
 
-Pi and its official read-only plan-mode extension are installed through mise; the sync script is managed by chezmoi:
+Pi is provided by Omarchy on Linux and by Mise on macOS. The repository manages Pi configuration on both platforms. The read-only plan-mode package is installed through Mise on macOS; Omarchy-owned Pi tooling is not replaced on Linux:
 
 ```bash
 chezmoi apply                        # installs the sync hook
-mise install                         # installs Pi, Ponytail, and syncs plan mode
-mise run pi:ponytail:update           # update only Ponytail
-mise run pi:plan-mode:sync             # sync plan mode manually when needed
+mise install                         # installs macOS Mise tools and syncs plan mode
+mise run pi:ponytail:update           # update Ponytail on either platform
+mise run pi:plan-mode:sync             # sync plan mode on macOS when needed
 ```
 
 Use `/plan` to toggle read-only planning and `/todos` to show progress. Pi updates resync the extension through mise's postinstall hook.
@@ -124,7 +275,7 @@ Pi and Herdr run with the permissions of the current user. Herdr provides worksp
 
 ## Hunk and Pi review
 
-Hunk is installed through Mise, and LazyGit uses it as the external diff viewer through the managed `empty_config.yml` source:
+Hunk is provided by Omarchy on Linux and by Mise on macOS. LazyGit uses it as the external diff viewer through the managed `empty_config.yml` source:
 
 ```bash
 mise install
@@ -141,7 +292,7 @@ Sofka is installed through Mise from its GitHub release artifacts and configured
 
 ## GitHub pull request dashboard
 
-This setup uses gh-dash as a pinned GitHub CLI extension. mise already manages `gh`, so homebrew is not required for this integration.
+This setup uses gh-dash as a pinned GitHub CLI extension. On Linux, `gh` is provided by Omarchy; on macOS, Mise manages it. Homebrew is not required for this integration.
 
 After applying the dotfiles, `mise install` runs the postinstall hook and ensures the pinned extension exists. The same hook runs after mise upgrades tools. mise has no separate postupdate hook; use the task below when you want to reconcile gh-dash without changing other tools.
 
@@ -170,10 +321,11 @@ GH_CONFIG_DIR="$HOME/.config/gh-work" gh dash
 
 The shared config intentionally omits `repoPaths`, because this setup has separate machine-dependent personal and work repository roots. Use `gh pr checkout` manually for now; the Hunk + Pi review flow remains unchanged.
 
-On a machine without mise, install `gh` with homebrew and then install the same pinned extension directly:
+On a machine without the managed setup, install `gh` with the platform package manager and then install the same pinned extension directly:
 
 ```bash
-brew install gh
+# macOS: brew install gh
+# Omarchy: omarchy refresh applications
 gh extension install dlvhdr/gh-dash --pin v4.25.2 --force
 ```
 
@@ -453,7 +605,15 @@ OpenCode config maintenance notes:
 
 ### External Machine Data
 
-Machine-specific ChezMoi data is intentionally maintained outside this repository. Configure the required `.data` values before applying these templates, including personal/work identity, SSH filenames, Git roots, and GitHub profile paths. Do not commit that private configuration here.
+`.chezmoidata.toml` provides the non-sensitive personal baseline used by this repository:
+
+```toml
+work.enable = false
+github.username = "jotu"
+personal.git.username = "jotu"
+```
+
+Machine-specific Chezmoi data remains outside this repository. Configure the required `.data` values before applying these templates, including your name, editor, personal Git email and signing key, SSH key filename, Git roots, and GitHub profile paths. For work machines, set `github.workUsername` or `work.git.username`; those profile-specific values take precedence over the personal baseline username. Do not commit that private configuration here.
 
 The committed `00-*` Mise fragments form the personal baseline. Unmanaged `10-*` and `20-*` fragments belong to local/company/project layers and remain outside this repository.
 
@@ -546,4 +706,10 @@ mcpServerGithubToken = "<github_pat_for_mcp_server_github>"
 
 Shell completions are cached daily in `${XDG_CACHE_HOME:-~/.cache}/zsh_completions.d`.
 
-Install Zed manually from zed.dev if it is not already present.
+On Omarchy, install Zed through Omarchy so its desktop integration and theme defaults are configured:
+
+```bash
+omarchy install editor zed
+```
+
+On macOS, install Zed manually or through your preferred macOS application workflow if it is not already present.

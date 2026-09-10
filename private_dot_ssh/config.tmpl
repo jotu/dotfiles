@@ -9,7 +9,9 @@ Host github.com
 HostName github.com
 User git
 AddKeysToAgent yes
+{{- if eq .chezmoi.os "darwin" }}
 UseKeychain yes
+{{- end }}
 IdentityFile ~/.ssh/{{ .personal.ssh.identityFile }}
 IdentitiesOnly yes
 
@@ -17,7 +19,9 @@ Host {{ $orgAlias }}
 HostName github.com
 User git
 AddKeysToAgent yes
+{{- if eq .chezmoi.os "darwin" }}
 UseKeychain yes
+{{- end }}
 IdentityFile ~/.ssh/{{ .work.ssh.organization.identityFile }}
 IdentitiesOnly yes
 
@@ -26,13 +30,15 @@ Match host github.com user org-*
 
 {{- else }}
 # Personal profile:
-# - Use Keychain for convenience and add keys to agent.
+# - Use Keychain on macOS when available and add keys to agent.
 # - Reference only the filename from `.data.personal.ssh.identityFile`.
 Host github.com
 HostName github.com
 User git
 AddKeysToAgent yes
+{{- if eq .chezmoi.os "darwin" }}
 UseKeychain yes
+{{- end }}
 IdentityFile ~/.ssh/{{ .personal.ssh.identityFile }}
 IdentitiesOnly yes
 

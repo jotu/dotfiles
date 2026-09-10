@@ -5,7 +5,15 @@ export BREW_HOME="/usr/local"
 {{ end }}
 
 {{- $githubUsername := "" -}}
-{{- if and (hasKey . "github") (hasKey .github "username") -}}
+{{- if .work.enable -}}
+{{- if and (hasKey . "github") (hasKey .github "workUsername") -}}
+{{- $githubUsername = get .github "workUsername" -}}
+{{- else if and (hasKey . "work") (hasKey .work "git") (hasKey .work.git "username") -}}
+{{- $githubUsername = get .work.git "username" -}}
+{{- else if and (hasKey . "github") (hasKey .github "username") -}}
+{{- $githubUsername = get .github "username" -}}
+{{- end -}}
+{{- else if and (hasKey . "github") (hasKey .github "username") -}}
 {{- $githubUsername = get .github "username" -}}
 {{- else if and (hasKey . "personal") (hasKey .personal "git") (hasKey .personal.git "username") -}}
 {{- $githubUsername = get .personal.git "username" -}}

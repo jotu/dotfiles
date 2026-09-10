@@ -1,0 +1,21 @@
+{{- if eq .chezmoi.os "linux" }}
+# Keep Omarchy's Bash environment and defaults, then add personal settings.
+if [[ -r /usr/share/omarchy/default/bash/env-bootstrap ]]; then
+  source /usr/share/omarchy/default/bash/env-bootstrap
+fi
+
+# Non-interactive shells should retain Omarchy's environment but skip aliases.
+[[ $- != *i* ]] && return
+
+if [[ -n ${OMARCHY_PATH:-} && -r "$OMARCHY_PATH/default/bash/rc" ]]; then
+  source "$OMARCHY_PATH/default/bash/rc"
+fi
+
+if [[ -r "$HOME/.config/shell/aliases" ]]; then
+  source "$HOME/.config/shell/aliases"
+fi
+
+if command -v atuin >/dev/null 2>&1; then
+  eval "$(atuin init bash)"
+fi
+{{- end }}

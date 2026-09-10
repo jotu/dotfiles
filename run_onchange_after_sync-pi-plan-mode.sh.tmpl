@@ -1,3 +1,4 @@
+{{- if eq .chezmoi.os "darwin" -}}
 #!/usr/bin/env bash
 # Sync Pi's bundled plan-mode extension when the managed setup changes.
 set -euo pipefail
@@ -11,3 +12,4 @@ if ! mise where npm:@earendil-works/pi-coding-agent >/dev/null 2>&1; then
 fi
 
 mise run pi:plan-mode:sync
+{{- end }}

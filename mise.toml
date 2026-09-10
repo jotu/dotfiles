@@ -1,2 +1,6 @@
 [tools]
 vale = "latest"
+
+[tasks."test:platform"]
+description = "Validate platform-specific Chezmoi boundaries and shell syntax"
+run = "bash tests/test-platform-layout.sh"

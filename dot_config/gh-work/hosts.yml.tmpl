@@ -5,10 +5,10 @@
 {{- $workUser := "" -}}
 {{- if and (hasKey . "github") (hasKey .github "workUsername") -}}
 {{- $workUser = get .github "workUsername" -}}
-{{- else if and (hasKey . "github") (hasKey .github "username") -}}
-{{- $workUser = get .github "username" -}}
 {{- else if and (hasKey . "work") (hasKey .work "git") (hasKey .work.git "username") -}}
 {{- $workUser = get .work.git "username" -}}
+{{- else if and (hasKey . "github") (hasKey .github "username") -}}
+{{- $workUser = get .github "username" -}}
 {{- end -}}
 {{- $workGitProtocol := "ssh" -}}
 {{- if and (hasKey . "github") (hasKey .github "work") (hasKey (get .github "work") "gitProtocol") -}}

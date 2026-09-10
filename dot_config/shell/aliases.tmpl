@@ -1,0 +1,146 @@
+# Shared aliases and functions for Bash on Omarchy and Zsh on macOS.
+if command -v z >/dev/null 2>&1; then
+  alias f='z'
+fi
+alias ll="ls -al"
+alias cl='clear'
+if command -v tv >/dev/null 2>&1; then
+  alias al='tv alias'
+  alias tva='tv alias'
+  alias tvdi='tv dirs'
+  alias tvdo='tv docker-images'
+  alias tve='tv env'
+  alias tvf='tv files'
+  alias tvgb='tv git-branch'
+  alias tvgd='tv git-diff'
+  alias tvgl='tv git-log'
+  alias tvgr='tv git-repos'
+  alias tvgw='tv git-worktrees'
+  alias tvk='tv k8s-contexts'
+  alias tvrf='tv recent-files'
+  alias tvt='tv text'
+fi
+
+if command -v git >/dev/null 2>&1; then
+  alias gc='git commit -m'
+  alias gca='git commit -a -m'
+  alias gp='git push origin HEAD'
+  alias gpu='git pull origin'
+  alias gst='git status'
+  alias glog="git log --graph --topo-order --pretty='%w(100,0,6)%C(yellow)%h%C(bold)%C(black)%d %C(cyan)%ar %C(green)%an%n%C(bold)%C(white)%s %N' --abbrev-commit"
+  alias gdiff='git diff'
+  alias gco='git checkout'
+  alias gb='git branch'
+  alias gba='git branch -a'
+  alias gadd='git add'
+  alias ga='git add -p'
+  alias gcoall='git checkout -- .'
+  alias gr='git remote'
+  alias gre='git reset'
+fi
+
+if command -v docker >/dev/null 2>&1; then
+  alias dco='docker compose'
+  alias dps='docker ps'
+  alias dpa='docker ps -a'
+  alias dl='docker ps -l -q'
+  alias dx='docker exec -it'
+  alias dc='docker compose'
+fi
+
+if command -v mise >/dev/null 2>&1; then
+  alias m='mise'
+  alias ghlp='mise run gh:auth:login:personal'
+  alias opos='mise run opencode:config:current'
+  sar() { eval "$(mise run --silent ssh:agent:restart)"; }
+fi
+if command -v mise >/dev/null 2>&1 && command -v aws-vault >/dev/null 2>&1; then
+  avr() { eval "$(mise run --silent aws-vault:refresh)"; }
+fi
+
+# Common developer tools. Optional commands are only aliased when installed.
+if command -v herdr >/dev/null 2>&1; then
+  alias hr='herdr'
+fi
+if command -v chezmoi >/dev/null 2>&1; then
+  alias cm='chezmoi'
+fi
+if command -v obsidian >/dev/null 2>&1; then
+  alias ob='obsidian'
+fi
+if command -v kubectl >/dev/null 2>&1; then
+  alias k='kubectl'
+  alias ka='kubectl apply -f'
+  alias kg='kubectl get'
+  alias kd='kubectl describe'
+  alias kdel='kubectl delete'
+  alias kl='kubectl logs -f'
+  alias klf='kubectl logs -f'
+  alias kgpo='kubectl get pods'
+  alias kgp='kubectl get pods'
+  alias kgn='kubectl get nodes'
+  alias kgd='kubectl get deployments'
+  alias ke='kubectl exec -it'
+  alias kex='kubectl exec -it'
+  alias kcns='kubectl config set-context --current --namespace'
+fi
+if command -v kubectx >/dev/null 2>&1; then
+  alias kc='kubectx'
+fi
+if command -v kubens >/dev/null 2>&1; then
+  alias kns='kubens'
+fi
+if command -v k9s >/dev/null 2>&1; then
+  alias k9='k9s'
+fi
+if command -v sofka >/dev/null 2>&1; then
+  alias s9='sofka'
+fi
+if command -v lazygit >/dev/null 2>&1; then
+  alias lg='lazygit'
+fi
+if command -v hunk >/dev/null 2>&1; then
+  alias hkd='hunk diff'
+  alias hks='hunk diff --staged'
+fi
+if command -v gh >/dev/null 2>&1; then
+  alias ghd='gh dash'
+  alias ghe='gh enhance'
+fi
+if command -v gofmt >/dev/null 2>&1; then
+  alias gof='gofmt -w'
+fi
+if command -v golangci-lint >/dev/null 2>&1; then
+  alias gol='golangci-lint run'
+fi
+if command -v shellcheck >/dev/null 2>&1; then
+  alias shc='shellcheck'
+fi
+if command -v shfmt >/dev/null 2>&1; then
+  alias shf='shfmt -w'
+fi
+if command -v shellspec >/dev/null 2>&1; then
+  alias sht='shellspec'
+fi
+
+# sk (https://github.com/erikkinding/sk)
+if command -v sk >/dev/null 2>&1; then
+  alias skp="sk -p" # Previously selected context and namespace
+  alias skn="sk -n" # Also prompt for namespace selection
+  alias skN="sk -N" # Only prompt for namespace selection
+  alias skc="sk -c" # Print the currently selected context and namespace
+fi
+{{- if .work.enable }}
+{{- if eq .chezmoi.os "darwin" }}
+if command -v kinit >/dev/null 2>&1; then
+  alias kinit="kinit --keychain {{ .work.employee.code }}@{{ .work.domain.name }}"
+fi
+if command -v open >/dev/null 2>&1 || command -v mise >/dev/null 2>&1; then
+  alias goedemorgen='if command -v open >/dev/null; then open -a "Firefox" "{{ .work.saml.auth.url }}?nocache=$(date +%s)"; fi; if command -v mise >/dev/null; then mise tb:aws:login; fi'
+fi
+{{- end }}
+if command -v mise >/dev/null 2>&1; then
+  alias ghlw='mise run gh:auth:login:work'
+  alias ghsa='mise run gh:auth:status:all'
+fi
+{{- end }}
