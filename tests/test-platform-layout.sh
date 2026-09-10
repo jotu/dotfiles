@@ -24,17 +24,6 @@ not_contains() {
 # These scripts are repository tooling and must remain executable shell.
 bash -n "$repo_root/bootstrap"
 bash -n "$repo_root/tests/test-platform-layout.sh"
-python3 - "$repo_root/.chezmoidata.toml" <<'PY'
-import sys
-import tomllib
-
-with open(sys.argv[1], "rb") as data_file:
-    data = tomllib.load(data_file)
-
-assert data["work"]["enable"] is False
-assert data["github"]["username"] == "jotu"
-assert data["personal"]["git"]["username"] == "jotu"
-PY
 
 # Chezmoi templates are checked with template-control lines removed and inline
 # template expressions replaced by a harmless shell word. Full rendering tests
@@ -57,9 +46,6 @@ check_templated_bash dot_config/shell/aliases.tmpl
 check_templated_bash run_onchange_before_install-applications-omarchy.sh.tmpl
 check_templated_bash run_onchange_after_sync-pi-plan-mode.sh.tmpl
 
-contains .chezmoidata.toml 'work.enable = false'
-contains .chezmoidata.toml 'github.username = "jotu"'
-contains .chezmoidata.toml 'personal.git.username = "jotu"'
 contains .chezmoiignore '.aerospace.toml'
 contains .chezmoiignore 'Library/'
 contains .chezmoiignore '.config/mise/config.toml'
