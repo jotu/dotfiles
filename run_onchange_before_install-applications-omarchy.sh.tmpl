@@ -8,6 +8,8 @@ if ! command -v omarchy >/dev/null 2>&1; then
   exit 0
 fi
 
+omarchy pkg add zsh zsh-autosuggestions zsh-syntax-highlighting
+
 if ! command -v zeditor >/dev/null 2>&1; then
   omarchy install editor zed
 fi

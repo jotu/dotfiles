@@ -1,3 +1,10 @@
+{{- if eq .chezmoi.os "linux" }}
+# Keep Omarchy's environment defaults without sourcing its Bash-only rc.
+if [[ -r /usr/share/omarchy/default/bash/envs ]]; then
+  source /usr/share/omarchy/default/bash/envs
+fi
+{{- end }}
+
 {{ if and (eq .chezmoi.os "darwin") (eq .chezmoi.arch "arm64") }}
 export BREW_HOME="/opt/homebrew"
 {{ else if and (eq .chezmoi.os "darwin") (eq .chezmoi.arch "amd64") }}

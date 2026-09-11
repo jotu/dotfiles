@@ -1,4 +1,8 @@
 {{- if .work.enable }}
+{{- $workOrgIdentityFile := "" -}}
+{{- if and (hasKey . "work") (hasKey .work "ssh") (hasKey .work.ssh "organization") (hasKey .work.ssh.organization "identityFile") -}}
+  {{- $workOrgIdentityFile = .work.ssh.organization.identityFile -}}
+{{- end -}}
 {{- $ghConfigWork := "~/.config/gh-work" -}}
 {{- if hasKey .github "configDir" -}}
 {{- $ghConfig := get .github "configDir" -}}
@@ -19,8 +23,10 @@
 [url "ssh://git@github.com/"]
         insteadOf = https://github.com/
 
+{{- if $workOrgIdentityFile }}
 [core]
-        sshCommand = ssh -F /dev/null -i ~/.ssh/{{ .work.ssh.organization.identityFile }} -o IdentitiesOnly=yes
+        sshCommand = ssh -F /dev/null -i ~/.ssh/{{ $workOrgIdentityFile }} -o IdentitiesOnly=yes
+{{- end }}
 
 [commit]
         gpgsign = true

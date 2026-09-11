@@ -17,14 +17,14 @@ bootstrap
 .aerospace.toml
 Library/
 .config/mise/tasks/osx/
-.zprofile
-.zsh_aliases
-.zsh_completions
-.zsh_daily
-.zshenv
-.zsh_functions
-.zshrc
 {{- else }}
 # Omarchy/Linux Bash entrypoint.
 .bashrc
+{{- end }}
+
+# Zsh is the managed interactive shell on both supported platforms.
+# Do not create empty Bash startup files on macOS.
+{{- if eq .chezmoi.os "darwin" }}
+.bashrc
+.bash_completions
 {{- end }}

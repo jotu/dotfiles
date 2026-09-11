@@ -30,6 +30,12 @@ case "$os_name" in
     command -v mise >/dev/null 2>&1 || error \
       'Mise should be preinstalled by Omarchy.'
 
+    if ! command -v zsh >/dev/null 2>&1; then
+      omarchy pkg add zsh
+    fi
+    command -v zsh >/dev/null 2>&1 || error \
+      'Omarchy did not install zsh; install it with `omarchy pkg add zsh` and retry.'
+
     # Omarchy provisions the AI harnesses and developer agents with its own
     # Mise-backed wrappers. Refresh those wrappers if any core harness is
     # missing; do not install competing copies from this repository.

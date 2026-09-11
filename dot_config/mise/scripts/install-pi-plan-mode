@@ -1,16 +1,48 @@
 #!/usr/bin/env bash
-# Sync Pi's bundled plan-mode extension after mise installs or updates Pi.
+# Sync Pi's bundled plan-mode extension after Pi installs or updates.
 set -euo pipefail
 
 : "${HOME:?HOME is required}"
-: "${MISE_TOOL_INSTALL_PATH:?MISE_TOOL_INSTALL_PATH is required}"
 
-source_dir="$MISE_TOOL_INSTALL_PATH/lib/node_modules/@earendil-works/pi-coding-agent/examples/extensions/plan-mode"
 target_dir="$HOME/.pi/agent/extensions/plan-mode"
 
-if [[ ! -d "$source_dir" ]]; then
-  printf 'Pi plan-mode extension not found: %s\n' "$source_dir" >&2
-  exit 1
+find_source_dir() {
+  local candidate_root pi_bin
+
+  if [[ -n "${MISE_TOOL_INSTALL_PATH:-}" ]]; then
+    candidate_root="$MISE_TOOL_INSTALL_PATH"
+    if [[ -d "$candidate_root/examples/extensions/plan-mode" ]]; then
+      printf '%s\n' "$candidate_root/examples/extensions/plan-mode"
+      return 0
+    fi
+    if [[ -d "$candidate_root/lib/node_modules/@earendil-works/pi-coding-agent/examples/extensions/plan-mode" ]]; then
+      printf '%s\n' "$candidate_root/lib/node_modules/@earendil-works/pi-coding-agent/examples/extensions/plan-mode"
+      return 0
+    fi
+  fi
+
+  if ! command -v pi >/dev/null 2>&1; then
+    return 1
+  fi
+
+  pi_bin=$(readlink -f "$(command -v pi)")
+  for candidate_root in "$(dirname "$pi_bin")" "$(cd "$(dirname "$pi_bin")/.." && pwd)"; do
+    if [[ -d "$candidate_root/examples/extensions/plan-mode" ]]; then
+      printf '%s\n' "$candidate_root/examples/extensions/plan-mode"
+      return 0
+    fi
+    if [[ -d "$candidate_root/lib/node_modules/@earendil-works/pi-coding-agent/examples/extensions/plan-mode" ]]; then
+      printf '%s\n' "$candidate_root/lib/node_modules/@earendil-works/pi-coding-agent/examples/extensions/plan-mode"
+      return 0
+    fi
+  done
+
+  return 1
+}
+
+if ! source_dir=$(find_source_dir); then
+  printf 'Pi plan-mode extension source not found; skipping sync.\n' >&2
+  exit 0
 fi
 
 rm -rf "$target_dir"

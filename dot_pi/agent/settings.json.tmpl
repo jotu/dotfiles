@@ -23,7 +23,7 @@
   "enabledModels": [
     "{{ $provider }}/{{ $model }}"
   ],
-  "theme": "catppuccin-macchiato",
+  "theme": "{{ if eq .chezmoi.os "linux" }}omarchy-system{{ else }}catppuccin-macchiato{{ end }}",
   "compaction": {
     "enabled": true,
     "reserveTokens": 16384,

@@ -1,3 +1,45 @@
+{{- if eq .chezmoi.os "linux" }}
+# Use the same interactive Zsh setup on Omarchy and macOS.
+# The shared aliases and optional integrations stay guarded for minimal installs.
+
+HISTFILE=/dev/null
+export GPG_TTY="${GPG_TTY:-$(tty 2>/dev/null)}"
+
+if [[ -d "$HOME/.docker/completions" ]]; then
+  fpath=($HOME/.docker/completions $fpath)
+fi
+
+if command -v mise >/dev/null 2>&1; then
+  eval "$(mise activate zsh)"
+fi
+# Omarchy's managed wrappers must win over Mise's direct tool paths on Linux.
+export PATH="$HOME/.local/bin:$HOME/bin:$PATH"
+if command -v zoxide >/dev/null 2>&1; then
+  eval "$(zoxide init zsh)"
+fi
+if command -v starship >/dev/null 2>&1; then
+  eval "$(starship init zsh)"
+fi
+
+autoload -Uz compinit
+compinit
+bindkey -e
+
+if [[ -r /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh ]]; then
+  source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+fi
+
+[ -f ~/.zsh_aliases ] && source ~/.zsh_aliases
+[ -f ~/.zsh_daily ] && source ~/.zsh_daily
+[ -f ~/.zsh_completions ] && source ~/.zsh_completions
+
+if command -v atuin >/dev/null 2>&1; then
+  eval "$(atuin init zsh)"
+fi
+if [[ -r /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]]; then
+  source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+fi
+{{- else }}
 # Debug startup time
 #zmodload zsh/zprof
 #setopt prompt_subst; zmodload zsh/datetime; PS4='+[$EPOCHREALTIME]%N:%i> ';
@@ -51,3 +93,7 @@ fi
 if command -v atuin >/dev/null; then
   eval "$(atuin init zsh)"
 fi
+if [ -r "$BREW_HOME/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]; then
+  source "$BREW_HOME/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+fi
+{{- end }}

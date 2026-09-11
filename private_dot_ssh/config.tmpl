@@ -1,5 +1,14 @@
+{{- $personalIdentityFile := "" -}}
+{{- if and (hasKey . "personal") (hasKey .personal "ssh") (hasKey .personal.ssh "identityFile") -}}
+  {{- $personalIdentityFile = .personal.ssh.identityFile -}}
+{{- end -}}
+{{- $workOrgIdentityFile := "" -}}
+{{- if and (hasKey . "work") (hasKey .work "ssh") (hasKey .work.ssh "organization") (hasKey .work.ssh.organization "identityFile") -}}
+  {{- $workOrgIdentityFile = .work.ssh.organization.identityFile -}}
+{{- end -}}
 {{- if .work.enable }}
-{{- $orgAlias := trimPrefix "id_github_" .work.ssh.organization.identityFile }}
+{{- if and $personalIdentityFile $workOrgIdentityFile }}
+{{- $orgAlias := trimPrefix "id_github_" $workOrgIdentityFile }}
 # Work profile enabled:
 # - Keep github.com on the personal identity by default.
 # - Work repositories force their SSH key via git core.sshCommand.
@@ -12,7 +21,7 @@ AddKeysToAgent yes
 {{- if eq .chezmoi.os "darwin" }}
 UseKeychain yes
 {{- end }}
-IdentityFile ~/.ssh/{{ .personal.ssh.identityFile }}
+IdentityFile ~/.ssh/{{ $personalIdentityFile }}
 IdentitiesOnly yes
 
 Host {{ $orgAlias }}
@@ -22,16 +31,20 @@ AddKeysToAgent yes
 {{- if eq .chezmoi.os "darwin" }}
 UseKeychain yes
 {{- end }}
-IdentityFile ~/.ssh/{{ .work.ssh.organization.identityFile }}
+IdentityFile ~/.ssh/{{ $workOrgIdentityFile }}
 IdentitiesOnly yes
 
 Match host github.com user org-*
-  IdentityFile ~/.ssh/{{ .work.ssh.organization.identityFile }}
+  IdentityFile ~/.ssh/{{ $workOrgIdentityFile }}
+{{- else }}
+# Configure personal.ssh.identityFile and work.ssh.organization.identityFile in local chezmoi data.
+{{- end }}
 
 {{- else }}
 # Personal profile:
 # - Use Keychain on macOS when available and add keys to agent.
 # - Reference only the filename from `.data.personal.ssh.identityFile`.
+{{- if $personalIdentityFile }}
 Host github.com
 HostName github.com
 User git
@@ -39,7 +52,10 @@ AddKeysToAgent yes
 {{- if eq .chezmoi.os "darwin" }}
 UseKeychain yes
 {{- end }}
-IdentityFile ~/.ssh/{{ .personal.ssh.identityFile }}
+IdentityFile ~/.ssh/{{ $personalIdentityFile }}
 IdentitiesOnly yes
+{{- else }}
+# Configure personal.ssh.identityFile in local chezmoi data.
+{{- end }}
 
 {{- end }}

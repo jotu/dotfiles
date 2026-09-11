@@ -1,4 +1,8 @@
 {{- if .work.enable }}
+{{- $personalIdentityFile := "" -}}
+{{- if and (hasKey . "personal") (hasKey .personal "ssh") (hasKey .personal.ssh "identityFile") -}}
+  {{- $personalIdentityFile = .personal.ssh.identityFile -}}
+{{- end -}}
 {{- $ghConfigPersonal := "~/.config/gh-personal" -}}
 {{- if hasKey .github "configDir" -}}
 {{- $ghConfig := get .github "configDir" -}}
@@ -16,6 +20,8 @@
 [credential "https://gist.github.com"]
     helper = !GH_CONFIG_DIR={{ $ghConfigPersonal }} gh auth git-credential
 
+{{- if $personalIdentityFile }}
 [core]
-    sshCommand = ssh -F /dev/null -i ~/.ssh/{{ .personal.ssh.identityFile }} -o IdentitiesOnly=yes
+    sshCommand = ssh -F /dev/null -i ~/.ssh/{{ $personalIdentityFile }} -o IdentitiesOnly=yes
+{{- end }}
 {{- end }}

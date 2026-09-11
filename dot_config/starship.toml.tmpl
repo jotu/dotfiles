@@ -1,0 +1,333 @@
+{{- if eq .chezmoi.os "linux" }}
+"$schema" = 'https://starship.rs/config-schema.json'
+
+# Omarchy provides the Starship binary on Linux. Keep the macOS prompt's
+# module ordering and right-aligned layout, but use Omarchy's palette.
+add_newline = true
+command_timeout = 3000
+palette = "omarchy"
+
+format = '''
+$directory$nix_shell$java$golang$python$nodejs$lua$kubernetes$cmd_duration
+[$character](bold green)'''
+
+right_format = """
+$git_branch\
+$git_commit\
+$git_state\
+$git_status\
+$docker_context\
+$terraform\
+$aws\
+$gcloud\
+$openstack\
+$azure\
+$custom\
+$status"""
+
+[fill]
+symbol = '.'
+
+[character]
+success_symbol = '[➜](bold green)'
+error_symbol = '[✗](bold red)'
+
+[package]
+disabled = true
+
+[cmd_duration]
+min_time = 500
+style = "yellow"
+
+[aws]
+disabled = false
+format = 'on [$symbol$profile( \($region\))]($style)'
+style = "italic peach"
+
+# Cloud providers: keep disabled by default
+[azure]
+disabled = true
+format = 'on [$symbol($subscription)]($style)'
+style = "italic sapphire"
+
+[gcloud]
+disabled = true
+format = 'on [$symbol$profile]($style)'
+style = "italic blue"
+
+[directory]
+truncate_to_repo = true
+style = "blue"
+
+[docker_context]
+disabled = false
+style = "teal"
+
+[git_branch]
+style = "mauve"
+
+[git_commit]
+style = "overlay1"
+
+[git_state]
+style = "peach"
+
+[git_status]
+conflicted = '🏳'
+ahead = '🏎💨'
+behind = '😰'
+diverged = '😵'
+up_to_date = ''
+untracked = '🤷'
+stashed = ''
+modified = '📝'
+staged = '[++\($count\)](green)'
+renamed = '👅'
+deleted = '🗑'
+disabled = false
+style = "red"
+
+[java]
+format = "[${symbol}(${version} )]($style)"
+style = "italic blue"
+
+[golang]
+disabled = false
+format = "[ ${symbol}(${version} )]($style)"
+style = "italic teal"
+
+[nodejs]
+disabled = false
+style = "green"
+
+[python]
+disabled = false
+style = "yellow"
+
+[lua]
+style = "mauve"
+
+[kubernetes]
+disabled = false
+style = 'teal'
+format = '[$symbol$context]($style) '
+
+[[kubernetes.contexts]]
+context_pattern = 'arn.*/(?P<cluster>.*)'
+context_alias = "$cluster"
+style = "italic teal"
+
+[nix_shell]
+disabled = false
+impure_msg = 'devbox'
+format = '[$symbol$state](bold blue)'
+
+[sudo]
+disabled = false
+style = "red"
+
+[status]
+style = "red"
+
+[time]
+disabled = true
+format = "[ $time]($style)"
+time_format = "%R"
+utc_time_offset = "local"
+style = "italic overlay1"
+
+[palettes.omarchy]
+rosewater = "#c0caf5"
+flamingo = "#ff9e64"
+pink = "#bb9af7"
+mauve = "#ad8ee6"
+red = "#f7768e"
+maroon = "#f7768e"
+peach = "#e0af68"
+yellow = "#e0af68"
+green = "#9ece6a"
+teal = "#449dab"
+sky = "#0db9d7"
+sapphire = "#7aa2f7"
+blue = "#7aa2f7"
+lavender = "#7da6ff"
+text = "#a9b1d6"
+subtext1 = "#7b83ab"
+subtext0 = "#787e9a"
+overlay2 = "#565f89"
+overlay1 = "#414868"
+overlay0 = "#363b54"
+surface2 = "#292e42"
+surface1 = "#24283b"
+surface0 = "#1f2335"
+base = "#1a1b26"
+mantle = "#16161e"
+crust = "#11121a"
+{{- else }}
+"$schema" = 'https://starship.rs/config-schema.json'
+
+# Starship prompt for Herdr's Catppuccin Macchiato UI on macOS.
+# Herdr owns workspaces, tabs, agents, and session state; Starship shows
+# shell-local context such as the directory, Git state, and runtimes.
+
+add_newline = true
+command_timeout = 3000
+palette = "catppuccin_macchiato"
+
+format = '''
+$directory$nix_shell$java$golang$python$nodejs$lua$kubernetes$cmd_duration
+[$character](bold green)'''
+
+right_format = """
+$git_branch\
+$git_commit\
+$git_state\
+$git_status\
+$docker_context\
+$terraform\
+$aws\
+$gcloud\
+$openstack\
+$azure\
+$custom\
+$status"""
+
+[fill]
+symbol = '.'
+
+[character]
+success_symbol = '[➜](bold green)'
+error_symbol = '[✗](bold red)'
+
+[package]
+disabled = true
+
+[cmd_duration]
+min_time = 500
+style = "yellow"
+
+[aws]
+disabled = false
+format = 'on [$symbol$profile( \($region\))]($style)'
+style = "italic peach"
+
+# Cloud providers: keep disabled by default
+[azure]
+disabled = true
+format = 'on [$symbol($subscription)]($style)'
+style = "italic sapphire"
+
+[gcloud]
+disabled = true
+format = 'on [$symbol$profile]($style)'
+style = "italic blue"
+
+[directory]
+truncate_to_repo = true
+style = "blue"
+
+[docker_context]
+disabled = false
+style = "teal"
+
+[git_branch]
+style = "mauve"
+
+[git_commit]
+style = "overlay1"
+
+[git_state]
+style = "peach"
+
+[git_status]
+conflicted = '🏳'
+ahead = '🏎💨'
+behind = '😰'
+diverged = '😵'
+up_to_date = ''
+untracked = '🤷'
+stashed = ''
+modified = '📝'
+staged = '[++\($count\)](green)'
+renamed = '👅'
+deleted = '🗑'
+disabled = false
+style = "red"
+
+[java]
+format = "[${symbol}(${version} )]($style)"
+style = "italic blue"
+
+[golang]
+disabled = false
+format = "[ ${symbol}(${version} )]($style)"
+style = "italic teal"
+
+[nodejs]
+disabled = false
+style = "green"
+
+[python]
+disabled = false
+style = "yellow"
+
+[lua]
+style = "mauve"
+
+[kubernetes]
+disabled = false
+style = 'teal'
+format = '[$symbol$context]($style) '
+
+[[kubernetes.contexts]]
+context_pattern = 'arn.*/(?P<cluster>.*)'
+context_alias = "$cluster"
+style = "italic teal"
+
+[nix_shell]
+disabled = false
+impure_msg = 'devbox'
+format = '[$symbol$state](bold blue)'
+
+[sudo]
+disabled = false
+style = "red"
+
+[status]
+style = "red"
+
+[time]
+disabled = true
+format = "[ $time]($style)"
+time_format = "%R"
+utc_time_offset = "local"
+style = "italic overlay1"
+
+[palettes.catppuccin_macchiato]
+rosewater = "#f4dbd6"
+flamingo = "#f0c6c6"
+pink = "#f5bde6"
+mauve = "#c6a0f6"
+red = "#ed8796"
+maroon = "#ee99a0"
+peach = "#f5a97f"
+yellow = "#eed49f"
+green = "#a6da95"
+teal = "#8bd5ca"
+sky = "#91d7e3"
+sapphire = "#7dc4e4"
+blue = "#8aadf4"
+lavender = "#b7bdf8"
+text = "#cad3f5"
+subtext1 = "#b8c0e0"
+subtext0 = "#a5adcb"
+overlay2 = "#939ab7"
+overlay1 = "#8087a2"
+overlay0 = "#6e738d"
+surface2 = "#5b6078"
+surface1 = "#494d64"
+surface0 = "#363a4f"
+base = "#24273a"
+mantle = "#1e2030"
+crust = "#181926"
+{{- end }}

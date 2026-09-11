@@ -1,0 +1,6 @@
+{{- if eq .chezmoi.os "linux" }}
+# Let Omarchy's Hunk installation use its default theme on Linux.
+{{- else }}
+# Hunk review theme aligned with Herdr and Pi.
+theme = "catppuccin-macchiato"
+{{- end }}

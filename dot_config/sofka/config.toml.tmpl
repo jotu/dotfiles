@@ -1,6 +1,8 @@
 # Safe starter profile: inspect Kubernetes resources without mutating them.
 readonly = true
 
+{{- if eq .chezmoi.os "darwin" }}
 [skin]
 name = "catppuccin-macchiato"
 background = true
+{{- end }}

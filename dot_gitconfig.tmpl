@@ -1,3 +1,15 @@
+{{- $editor := "zed" -}}
+{{- if hasKey . "editor" -}}
+  {{- $editor = .editor -}}
+{{- end -}}
+{{- $personalIdentityFile := "" -}}
+{{- if and (hasKey . "personal") (hasKey .personal "ssh") (hasKey .personal.ssh "identityFile") -}}
+  {{- $personalIdentityFile = .personal.ssh.identityFile -}}
+{{- end -}}
+{{- $workOrgIdentityFile := "" -}}
+{{- if and (hasKey . "work") (hasKey .work "ssh") (hasKey .work.ssh "organization") (hasKey .work.ssh.organization "identityFile") -}}
+  {{- $workOrgIdentityFile = .work.ssh.organization.identityFile -}}
+{{- end -}}
 [user]
     name = {{ .name | quote }}
 {{- if .work.enable }}
@@ -32,11 +44,11 @@
     symlinks = false
     filemode = false
     whitespace = cr-at-eol
-    editor = {{ .editor | quote }}
-{{- if .work.enable }}
-    sshCommand = ssh -F /dev/null -i ~/.ssh/{{ .work.ssh.organization.identityFile }} -o IdentitiesOnly=yes
-{{- else }}
-    sshCommand = ssh -F /dev/null -i ~/.ssh/{{ .personal.ssh.identityFile }} -o IdentitiesOnly=yes
+    editor = {{ $editor | quote }}
+{{- if and .work.enable $workOrgIdentityFile }}
+    sshCommand = ssh -F /dev/null -i ~/.ssh/{{ $workOrgIdentityFile }} -o IdentitiesOnly=yes
+{{- else if and (not .work.enable) $personalIdentityFile }}
+    sshCommand = ssh -F /dev/null -i ~/.ssh/{{ $personalIdentityFile }} -o IdentitiesOnly=yes
 {{- end }}
 
 [commit]

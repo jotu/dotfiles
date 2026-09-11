@@ -43,7 +43,7 @@ This repository supports two platform profiles:
 
 The checked-in `bootstrap` helper performs the same platform checks and initializes Chezmoi without applying files. It can be run from a checked-out copy after the machine has GitHub access.
 
-Mise is preinstalled by Omarchy. Omarchy also provisions the base desktop applications and its AI harnesses and developer agents, including `codex`, `claude`, `crush`, `gemini`, `gh`, `copilot`, OpenCode, Pi, `omp`, Hunk, and Herdr. If one of these wrappers is missing, restore Omarchy's application wrappers before authenticating:
+Mise is preinstalled by Omarchy. The bootstrap keeps Bash as its interpreter, installs Zsh when needed, and leaves the login-shell switch for after the dotfiles have been reviewed and applied. Omarchy also provisions the base desktop applications and its AI harnesses and developer agents, including `codex`, `claude`, `crush`, `gemini`, `gh`, `copilot`, OpenCode, Pi, `omp`, Hunk, and Herdr. If one of these wrappers is missing, restore Omarchy's application wrappers before authenticating:
 
 ```bash
 omarchy refresh applications
@@ -85,6 +85,13 @@ mise exec -- chezmoi apply
 mise install
 ```
 
+After validating the rendered Zsh setup, make Zsh the default shell for your user. Bash remains installed for scripts and fallback sessions:
+
+```bash
+chsh -s "$(command -v zsh)"
+exec zsh -l
+```
+
 Applying the dotfiles installs the selected desktop applications through Omarchy:
 
 ```bash
@@ -92,7 +99,7 @@ omarchy install editor zed
 omarchy install browser firefox
 ```
 
-Those commands are intentionally Omarchy-specific. Do not install Zed, Firefox, Herdr, Pi, Hunk, OpenCode, Codex, Claude, Crush, Gemini, Copilot, `omp`, or `gh` again through the repository's Linux Mise configuration.
+Those commands are intentionally Omarchy-specific. Do not add Zed, Firefox, Herdr, Pi, Hunk, OpenCode, Codex, Claude, Crush, Gemini, Copilot, `omp`, or `gh` to the repository's Linux Mise fragments. Omarchy's managed wrappers live in `~/.local/bin`; the Linux Zsh profile puts that directory before Mise's shims so Omarchy remains authoritative. Omarchy may maintain global Mise state underneath those wrappers; that state is not the repository's source of ownership.
 
 ### macOS
 
@@ -141,9 +148,10 @@ Use the platform's own package and application tooling before adding a repositor
 | `gh`, Pi, Herdr, Hunk, OpenCode, Codex, Claude, Crush, Gemini, Copilot, `omp` | Omarchy provisioning | Existing macOS/Mise setup |
 | FD, jq, LazyGit, ripgrep, Starship, Zoxide | Omarchy base packages | Mise |
 | Kubernetes and AWS tooling | Mise | Mise |
-| Project runtimes | Mise project configuration | Mise project configuration |
+| Selected developer runtimes (`go`, `node`, `python`, `bun`) | Mise | Mise |
+| Project-specific runtime overrides | Mise project configuration | Mise project configuration |
 | Zed and Firefox | `omarchy install` | Existing macOS application workflow |
-| AeroSpace | Not applicable | Homebrew |
+| Window manager / tiling shell | Omarchy/Hyprland | AeroSpace |
 
 The repository manages configuration for these tools on both platforms. It does not install a second Linux copy of tools already provided by Omarchy. Omarchy's `omarchy update` remains responsible for updating its base packages and provisioned tools. On macOS, continue to update Homebrew and Mise manually:
 
@@ -181,9 +189,10 @@ Before committing platform changes, run the local layout checks from the reposit
 
 ```bash
 mise run test:platform
+mise run test:platform:render
 ```
 
-On a machine with Chezmoi and local data configured, also render each supported OS/profile combination with `chezmoi execute-template`, review `chezmoi diff`, and use `chezmoi apply --dry-run`. Do not run the Omarchy or Homebrew installation scripts in unattended environments.
+`test:platform:render` requires Chezmoi, Python, yq, and configured local data; it renders and validates both Linux and macOS outputs. On a machine with Chezmoi and local data configured, also review `chezmoi diff` and use `chezmoi apply --dry-run`. Do not run the Omarchy or Homebrew installation scripts in unattended environments.
 
 Reference sections:
 - Git and identity setup: [Git](#git)
@@ -194,16 +203,16 @@ Reference sections:
 
 ## Pi plan mode
 
-Pi is provided by Omarchy on Linux and by Mise on macOS. The repository manages Pi configuration on both platforms. The read-only plan-mode package is installed through Mise on macOS; Omarchy-owned Pi tooling is not replaced on Linux:
+Pi is provided by Omarchy on Linux and by Mise on macOS. The repository manages Pi configuration on both platforms. Omarchy-owned Pi tooling is not replaced on Linux, but the managed task still syncs the bundled read-only plan-mode extension from the installed Pi package:
 
 ```bash
 chezmoi apply                        # installs the sync hook
-mise install                         # installs macOS Mise tools and syncs plan mode
+mise install                         # installs managed tools and syncs Pi add-ons when available
 mise run pi:ponytail:update           # update Ponytail on either platform
-mise run pi:plan-mode:sync             # sync plan mode on macOS when needed
+mise run pi:plan-mode:sync             # sync plan mode from the installed Pi package
 ```
 
-Use `/plan` to toggle read-only planning and `/todos` to show progress. Pi updates resync the extension through mise's postinstall hook.
+Use `/plan` to toggle read-only planning and `/todos` to show progress. Pi updates resync the extension through the managed sync task.
 
 ### Pi learning capture
 
@@ -228,30 +237,40 @@ hr
 herdr
 ```
 
-Common aliases are kept short and recognizable:
+Common aliases are kept short and recognizable. Where Omarchy already has a short alias for a safe command, macOS keeps the same shape when the tool exists so muscle memory stays close across platforms:
 
 | Alias | Command | Purpose |
 | --- | --- | --- |
-| `hr` | `herdr` | Start Herdr in the current directory |
+| `h` / `hr` | `herdr` | Start Herdr in the current directory |
+| `c` / `oc` | `opencode --auto` / `opencode` | Start OpenCode |
+| `a` | `omarchy-agent --inline` | Start the Omarchy agent when installed |
+| `cx` | `claude --permission-mode auto` | Start Claude in auto-permission mode when installed |
+| `cy` | `codex --approve-for-me` | Start Codex with approval when installed |
 | `cm` | `chezmoi` | Manage the dotfiles source |
+| `m` / `mup` | `mise` / `MISE_MINIMUM_RELEASE_AGE=0 mise up` | Mise CLI and update |
+| `g` | `git` | Git CLI |
+| `d` | `docker` | Docker CLI |
 | `k` | `kubectl` | Kubernetes CLI |
 | `kgp` | `kubectl get pods` | List pods |
 | `kgn` | `kubectl get nodes` | List nodes |
 | `klf` | `kubectl logs -f` | Follow pod logs |
 | `kex` | `kubectl exec -it` | Open an interactive pod command |
 | `k9` | `k9s` | Kubernetes terminal UI |
+| `s9` | `sofka` | Sofka Kubernetes terminal UI |
+| `sf` | `spf` | Superfile terminal file manager |
 | `lg` | `lazygit` | Git terminal UI |
 | `hkd` | `hunk diff` | Review working-tree changes in Hunk |
 | `hks` | `hunk diff --staged` | Review staged changes in Hunk |
 | `ghd` | `gh dash` | Open the GitHub PR dashboard |
 | `dc` | `docker compose` | Docker Compose commands |
+| `t` | `tmux attach || tmux new -s Work` | Attach to or create the Work session when installed |
 | `gof` | `gofmt -w` | Format Go files |
 | `gol` | `golangci-lint run` | Run Go linting |
 | `shc` | `shellcheck` | Check shell scripts |
 | `shf` | `shfmt -w` | Format shell scripts |
 | `sht` | `shellspec` | Run shell tests |
 
-Aliases for optional tools are defined only when the command is installed. Homebrew remains the macOS bootstrap layer, while Mise manages versioned developer tools and uses its native short commands such as `mise i`, `mise r`, and `mise x`; no separate `b` or `m` aliases are needed.
+Aliases for optional tools are defined only when the command is installed. Homebrew remains the macOS bootstrap layer, while Mise manages versioned developer tools and uses its native short commands such as `mise i`, `mise r`, and `mise x`; no separate Homebrew alias is needed.
 
 `sar` and `avr` are shell functions because SSH-agent and AWS Vault environment changes must persist in the current shell.
 
@@ -263,7 +282,7 @@ pi:       pi
 opencode: opencode
 ```
 
-Herdr preserves the workspace layout but does not automatically restart coding agents after a restart. Use `herdr agent list` to inspect detected Pi and OpenCode sessions.
+Herdr preserves the workspace layout but does not automatically restart coding agents after a restart. Use `herdr agent list` to inspect detected Pi and OpenCode sessions. On macOS the repo keeps the custom Catppuccin Herdr theme; on Omarchy/Linux it keeps personal layout preferences but uses Herdr's terminal theme to stay aligned with Omarchy.
 
 ## Pi safety model
 
@@ -277,7 +296,7 @@ Pi and Herdr run with the permissions of the current user. Herdr provides worksp
 
 ## Hunk and Pi review
 
-Hunk is provided by Omarchy on Linux and by Mise on macOS. LazyGit uses it as the external diff viewer through the managed `empty_config.yml` source:
+Hunk is provided by Omarchy on Linux and by Mise on macOS. LazyGit uses it as the external diff viewer through the managed `empty_config.yml` source. On macOS the repo keeps the Catppuccin Hunk theme; on Omarchy/Linux it leaves Hunk on its default theme:
 
 ```bash
 mise install
@@ -290,7 +309,7 @@ Use `hkd` for a repository-wide working-tree review and `hks` for staged changes
 
 ## Sofka Kubernetes TUI
 
-Sofka is installed through Mise from its GitHub release artifacts and configured at `~/.config/sofka/config.toml`. The starter profile uses Catppuccin Macchiato and sets `readonly = true`, disabling mutating actions for the whole session. Use `sofka` alongside `k9s` for development and personal clusters; keep `k9s` for production until Sofka has signed/notarized artifacts, SBOMs, provenance attestations, compatibility documentation, and a longer production track record.
+Sofka is installed through Mise from its GitHub release artifacts and configured at `~/.config/sofka/config.toml`. The starter profile sets `readonly = true`, disabling mutating actions for the whole session. On macOS it also keeps the Catppuccin Macchiato skin; on Omarchy/Linux it follows the tool's default look instead of forcing a separate theme. Use `sofka` alongside `k9s` for development and personal clusters; keep `k9s` for production until Sofka has signed/notarized artifacts, SBOMs, provenance attestations, compatibility documentation, and a longer production track record.
 
 ## GitHub pull request dashboard
 
@@ -314,7 +333,7 @@ ghd
 
 For a selected PR, gh-dash provides built-in preview, diff, comment, and review actions. Its `c` action adds a general PR comment; it does not create a line-specific code suggestion.
 
-Chezmoi writes the dashboard configuration to `~/.config/gh-dash/config.yml`. It starts with PR queues for review requests, your PRs, and involved PRs. The existing GitHub CLI profiles select authentication:
+Chezmoi writes the dashboard configuration to `~/.config/gh-dash/config.yml`. It starts with PR queues for review requests, your PRs, and involved PRs. On macOS the config also keeps the custom Catppuccin-flavored color overrides; on Omarchy/Linux it leaves gh-dash on its default theme. The existing GitHub CLI profiles select authentication:
 
 ```bash
 GH_CONFIG_DIR="$HOME/.config/gh-personal" gh dash
@@ -676,9 +695,14 @@ Managed Zed files:
 Default keybindings:
 
 ```text
-cmd-shift-g -> LazyGit
-cmd-p       -> Television
-cmd-shift-f -> Superfile
+Workspace shortcuts keep the same layout on both platforms, with the platform-native primary modifier:
+
+macOS: cmd-shift-g -> LazyGit
+macOS: cmd-p       -> Television
+macOS: cmd-shift-f -> Superfile
+Linux: ctrl-shift-g -> LazyGit
+Linux: ctrl-p       -> Television
+Linux: ctrl-shift-f -> Superfile
 ```
 
 Quick verify after apply:
@@ -686,9 +710,9 @@ Quick verify after apply:
 ```bash
 git config --get core.excludesfile
 mise install
-which lazygit
-which tv
-which spf
+command -v lazygit
+command -v tv
+command -v spf
 ```
 
 Optional: set Zed MCP GitHub token via local chezmoi data (do not commit):
@@ -698,9 +722,9 @@ Optional: set Zed MCP GitHub token via local chezmoi data (do not commit):
 mcpServerGithubToken = "<github_pat_for_mcp_server_github>"
 ```
 
-Shell completions are cached daily in `${XDG_CACHE_HOME:-~/.cache}/zsh_completions.d`.
+Shell completions are platform-specific. On macOS and Omarchy/Linux Zsh, completions are cached daily in `${XDG_CACHE_HOME:-~/.cache}/zsh_completions.d`. Omarchy/Linux Bash continues to keep Omarchy's stock completion setup and then loads repo-managed Bash completions. Both shells cover commands such as `chezmoi`, `kubectl`, `mise`, `opencode`, `herdr`, `lazygit`, and optional work tools. Pi and Hunk do not currently expose first-party completion entrypoints here, so the profiles add lightweight custom subcommand completion for them.
 
-On Omarchy, install Zed through Omarchy so its desktop integration and theme defaults are configured:
+On Omarchy, install Zed through Omarchy so its desktop integration and theme defaults are configured. The Linux profile uses the Omarchy-aligned `Omazed` dark theme instead of the macOS Catppuccin override:
 
 ```bash
 omarchy install editor zed

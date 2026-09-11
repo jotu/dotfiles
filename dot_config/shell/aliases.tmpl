@@ -1,9 +1,66 @@
-# Shared aliases and functions for Bash on Omarchy and Zsh on macOS.
-if command -v z >/dev/null 2>&1; then
+# Shared aliases and functions for Bash and Zsh on Omarchy and macOS.
+if command -v zoxide >/dev/null 2>&1; then
   alias f='z'
+  zd() {
+    if (( $# == 0 )); then
+      builtin cd ~ || return
+    elif [[ -d $1 ]]; then
+      builtin cd "$1" || return
+    elif ! z "$@"; then
+      echo "Error: Directory not found"
+      return 1
+    else
+      printf "\U000F17A9 "
+      pwd
+    fi
+  }
+  alias cd='zd'
 fi
+
+if command -v eza >/dev/null 2>&1; then
+  alias ls='eza -lh --group-directories-first --icons=auto'
+  alias lsa='ls -a'
+  alias lt='eza --tree --level=2 --long --icons --git'
+  alias lta='lt -a'
+fi
+
+if command -v fzf >/dev/null 2>&1 && command -v bat >/dev/null 2>&1; then
+  if [[ "${TERM:-}" == "xterm-kitty" ]]; then
+    alias ff="fzf --preview 'case \$(file --mime-type -b {}) in image/*) kitty icat --clear --transfer-mode=memory --stdin=no --place=\${FZF_PREVIEW_COLUMNS}x\${FZF_PREVIEW_LINES}@0x0 {} ;; *) bat --style=numbers --color=always {} ;; esac'"
+  else
+    alias ff="fzf --preview 'bat --style=numbers --color=always {}'"
+  fi
+  if [[ -n "${EDITOR:-}" ]] && command -v "${EDITOR%% *}" >/dev/null 2>&1; then
+    alias eff='$EDITOR "$(ff)"'
+  fi
+fi
+if command -v fzf >/dev/null 2>&1 && command -v scp >/dev/null 2>&1; then
+  sff() {
+    if [ $# -eq 0 ]; then
+      echo "Usage: sff <destination> (e.g. sff host:/tmp/)"
+      return 1
+    fi
+    local file
+{{- if eq .chezmoi.os "linux" }}
+    file=$(find . -type f -printf '%T@\t%p\n' | sort -rn | cut -f2- | ff) && [ -n "$file" ] && scp "$file" "$1"
+{{- else }}
+    file=$(find . -type f -print | ff) && [ -n "$file" ] && scp "$file" "$1"
+{{- end }}
+  }
+fi
+
 alias ll="ls -al"
 alias cl='clear'
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+{{- if eq .chezmoi.os "linux" }}
+if command -v xdg-open >/dev/null 2>&1; then
+  open() (
+    xdg-open "$@" >/dev/null 2>&1 &
+  )
+fi
+{{- end }}
 if command -v tv >/dev/null 2>&1; then
   alias al='tv alias'
   alias tva='tv alias'
@@ -22,8 +79,12 @@ if command -v tv >/dev/null 2>&1; then
 fi
 
 if command -v git >/dev/null 2>&1; then
+  alias g='git'
   alias gc='git commit -m'
   alias gca='git commit -a -m'
+  alias gcm='git commit -m'
+  alias gcam='git commit -a -m'
+  alias gcad='git commit -a --amend'
   alias gp='git push origin HEAD'
   alias gpu='git pull origin'
   alias gst='git status'
@@ -40,6 +101,7 @@ if command -v git >/dev/null 2>&1; then
 fi
 
 if command -v docker >/dev/null 2>&1; then
+  alias d='docker'
   alias dco='docker compose'
   alias dps='docker ps'
   alias dpa='docker ps -a'
@@ -50,6 +112,7 @@ fi
 
 if command -v mise >/dev/null 2>&1; then
   alias m='mise'
+  alias mup='MISE_MINIMUM_RELEASE_AGE=0 mise up'
   alias ghlp='mise run gh:auth:login:personal'
   alias opos='mise run opencode:config:current'
   sar() { eval "$(mise run --silent ssh:agent:restart)"; }
@@ -58,12 +121,48 @@ if command -v mise >/dev/null 2>&1 && command -v aws-vault >/dev/null 2>&1; then
   avr() { eval "$(mise run --silent aws-vault:refresh)"; }
 fi
 
+# Omarchy developer shortcuts. Optional commands are only defined when installed.
+if command -v omarchy-agent >/dev/null 2>&1; then
+  alias a='omarchy-agent --inline'
+fi
+if command -v claude >/dev/null 2>&1; then
+  alias cx='claude --permission-mode auto'
+fi
+if command -v codex >/dev/null 2>&1; then
+  alias cy='codex --approve-for-me'
+fi
+if command -v tmux >/dev/null 2>&1; then
+  alias t='tmux attach || tmux new -s Work'
+fi
+if command -v rails >/dev/null 2>&1; then
+  alias r='rails'
+fi
+if command -v nvim >/dev/null 2>&1; then
+  n() {
+    if [ "$#" -eq 0 ]; then
+      command nvim .
+    else
+      command nvim "$@"
+    fi
+  }
+fi
+if command -v tdl >/dev/null 2>&1; then
+  alias ic='tdl c'
+  alias ix='tdl cx'
+  alias icx='tdl c cx'
+fi
+
 # Common developer tools. Optional commands are only aliased when installed.
 if command -v herdr >/dev/null 2>&1; then
+  alias h='herdr'
   alias hr='herdr'
 fi
 if command -v chezmoi >/dev/null 2>&1; then
   alias cm='chezmoi'
+fi
+if command -v opencode >/dev/null 2>&1; then
+  alias c='opencode --auto'
+  alias oc='opencode'
 fi
 if command -v obsidian >/dev/null 2>&1; then
   alias ob='obsidian'
@@ -95,6 +194,11 @@ if command -v k9s >/dev/null 2>&1; then
 fi
 if command -v sofka >/dev/null 2>&1; then
   alias s9='sofka'
+fi
+if command -v spf >/dev/null 2>&1; then
+  alias sf='spf'
+elif command -v superfile >/dev/null 2>&1; then
+  alias sf='superfile'
 fi
 if command -v lazygit >/dev/null 2>&1; then
   alias lg='lazygit'
@@ -130,6 +234,12 @@ if command -v sk >/dev/null 2>&1; then
   alias skN="sk -N" # Only prompt for namespace selection
   alias skc="sk -c" # Print the currently selected context and namespace
 fi
+{{- if eq .chezmoi.os "darwin" }}
+if command -v brew >/dev/null 2>&1; then
+  alias bud='brew update'
+  alias bug='brew upgrade'
+fi
+{{- end }}
 {{- if .work.enable }}
 {{- if eq .chezmoi.os "darwin" }}
 if command -v kinit >/dev/null 2>&1; then

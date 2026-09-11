@@ -41,6 +41,7 @@ defaults:
   preview:
     open: true
 
+{{- if eq .chezmoi.os "darwin" }}
 theme:
   colors:
     text:
@@ -56,6 +57,8 @@ theme:
       primary: '#8aadf4'
       secondary: '#494d64'
       faint: '#363a4f'
+
+{{- end }}
 
 pager:
   diff: diffnav

@@ -8,11 +8,24 @@ fi
 [[ $- != *i* ]] && return
 
 if [[ -n ${OMARCHY_PATH:-} && -r "$OMARCHY_PATH/default/bash/rc" ]]; then
+  _expand_aliases_was_on=0
+  if shopt -q expand_aliases; then
+    _expand_aliases_was_on=1
+    shopt -u expand_aliases
+  fi
   source "$OMARCHY_PATH/default/bash/rc"
+  if (( _expand_aliases_was_on )); then
+    shopt -s expand_aliases
+  fi
+  unset _expand_aliases_was_on
 fi
 
 if [[ -r "$HOME/.config/shell/aliases" ]]; then
   source "$HOME/.config/shell/aliases"
+fi
+
+if [[ -r "$HOME/.bash_completions" ]]; then
+  source "$HOME/.bash_completions"
 fi
 
 if command -v atuin >/dev/null 2>&1; then

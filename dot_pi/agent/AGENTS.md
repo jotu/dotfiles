@@ -6,7 +6,7 @@ This file is managed by chezmoi. Keep Pi configuration changes in the chezmoi so
 
 - Pi settings, context, skills, prompts, and custom extensions belong in this repository under `dot_pi/agent/`.
 - Herdr owns `~/.pi/agent/extensions/herdr-agent-state.ts`; never edit or replace that file manually.
-- Pi's plan-mode extension is synced from the installed Pi package by the managed Mise task.
+- Pi's plan-mode extension is synced from the installed Pi package by the managed Mise task on both Omarchy/Linux and macOS.
 - Keep Herdr workspace configuration, Pi configuration, and OpenCode configuration separate.
 
 ## Ask instead of assuming

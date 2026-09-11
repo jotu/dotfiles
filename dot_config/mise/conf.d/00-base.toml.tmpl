@@ -4,6 +4,19 @@ OBSIDIAN_VAULT = "base"
 OBSIDIAN_ATOMIC_NOTES_DIR = "1 - Notes"
 OBSIDIAN_ATOMIC_NOTE_TEMPLATE = "5 - Templates/Atomic Note.md"
 
+{{ $personalIdentityFile := "" }}
+{{ if and (hasKey . "personal") (hasKey .personal "ssh") (hasKey .personal.ssh "identityFile") }}
+  {{ $personalIdentityFile = .personal.ssh.identityFile }}
+{{ end }}
+{{ $workUserIdentityFile := "" }}
+{{ if and (hasKey . "work") (hasKey .work "ssh") (hasKey .work.ssh "user") (hasKey .work.ssh.user "identityFile") }}
+  {{ $workUserIdentityFile = .work.ssh.user.identityFile }}
+{{ end }}
+{{ $workOrgIdentityFile := "" }}
+{{ if and (hasKey . "work") (hasKey .work "ssh") (hasKey .work.ssh "organization") (hasKey .work.ssh.organization "identityFile") }}
+  {{ $workOrgIdentityFile = .work.ssh.organization.identityFile }}
+{{ end }}
+
 [tasks."ssh:agent:restart"]
 alias = "sar"
 description = "Print SSH-agent environment exports for the current shell"
@@ -18,11 +31,15 @@ run = '''
 
   agent_env=$(ssh-agent -s | sed '/^echo Agent pid/d')
   eval "$agent_env"
-{{- if .work.enable }}
-  add_if_exists "$HOME/.ssh/{{ .work.ssh.user.identityFile }}"
-  add_if_exists "$HOME/.ssh/{{ .work.ssh.organization.identityFile }}"
+{{- if and .work.enable $workUserIdentityFile }}
+  add_if_exists "$HOME/.ssh/{{ $workUserIdentityFile }}"
 {{- end }}
-  add_if_exists "$HOME/.ssh/{{ .personal.ssh.identityFile }}"
+{{- if and .work.enable $workOrgIdentityFile }}
+  add_if_exists "$HOME/.ssh/{{ $workOrgIdentityFile }}"
+{{- end }}
+{{- if $personalIdentityFile }}
+  add_if_exists "$HOME/.ssh/{{ $personalIdentityFile }}"
+{{- end }}
   printf '%s\n' "$agent_env"
 '''
 
@@ -90,20 +107,30 @@ run = '''
   fi
 {{- end }}
 
-  personal_key_path="$HOME/.ssh/{{ .personal.ssh.identityFile }}"
+{{- if $personalIdentityFile }}
+  personal_key_path="$HOME/.ssh/{{ $personalIdentityFile }}"
   if [ ! -f "$personal_key_path" ]; then
     echo "ERROR: required SSH key file is missing: $personal_key_path"
     exit 1
   fi
+{{- else }}
+  echo "ERROR: personal.ssh.identityFile is not configured in local chezmoi data"
+  exit 1
+{{- end }}
 
 {{- if .work.enable }}
-  org_key_path="$HOME/.ssh/{{ .work.ssh.organization.identityFile }}"
-  org_cert_path="$HOME/.ssh/{{ .work.ssh.organization.identityFile }}-cert.pub"
+{{- if $workOrgIdentityFile }}
+  org_key_path="$HOME/.ssh/{{ $workOrgIdentityFile }}"
+  org_cert_path="$HOME/.ssh/{{ $workOrgIdentityFile }}-cert.pub"
   if [ ! -f "$org_key_path" ] && [ ! -f "$org_cert_path" ]; then
     echo "ERROR: expected work org key or certificate file"
     echo "Missing both: $org_key_path and $org_cert_path"
     exit 1
   fi
+{{- else }}
+  echo "ERROR: work.ssh.organization.identityFile is not configured in local chezmoi data"
+  exit 1
+{{- end }}
 {{- end }}
 
   keys_output=$(ssh-add -l 2>&1 || true)
@@ -116,10 +143,14 @@ run = '''
   loaded_keys=$(printf "%s\n" "$keys_output" | grep -c "SHA256:" || true)
   if [ "$loaded_keys" -lt 1 ]; then
     echo "ERROR: ssh-agent has no loaded identities"
-    echo "Run: ssh-add ~/.ssh/{{ .personal.ssh.identityFile }}"
-{{- if .work.enable }}
-    echo "Then: ssh-add ~/.ssh/{{ .work.ssh.organization.identityFile }}"
-    echo "If your org uses SSH certificates, also run: ssh-add ~/.ssh/{{ .work.ssh.organization.identityFile }}-cert.pub"
+{{- if $personalIdentityFile }}
+    echo "Run: ssh-add ~/.ssh/{{ $personalIdentityFile }}"
+{{- else }}
+    echo "Run: configure personal.ssh.identityFile in local chezmoi data, then rerun this task"
+{{- end }}
+{{- if and .work.enable $workOrgIdentityFile }}
+    echo "Then: ssh-add ~/.ssh/{{ $workOrgIdentityFile }}"
+    echo "If your org uses SSH certificates, also run: ssh-add ~/.ssh/{{ $workOrgIdentityFile }}-cert.pub"
 {{- end }}
     exit 1
   fi
@@ -278,6 +309,7 @@ aws-cli = "latest"
 "github:ByteNess/aws-vault" = "latest"
 chezmoi = "latest"
 "aqua:git-lfs/git-lfs" = "latest"
+bun = "latest"
 go = "latest"
 golangci-lint = "latest"
 "go:golang.org/x/tools/gopls" = "latest"
@@ -292,6 +324,8 @@ kubebuilder = "latest"
 kubectl = "latest"
 kubelogin = "latest"
 "aqua:dlvhdr/diffnav" = "latest"
+node = "22.22.2"
+python = "3.14.2"
 superfile = "latest"
 television = "latest"
 "aqua:astral-sh/uv" = "latest"
@@ -311,19 +345,17 @@ vale = "latest"
 "github:errata-ai/vale-ls" = "latest"
 "github:dandavison/delta" = "latest"
 
-# macOS equivalents of tools supplied by Omarchy, plus macOS-only runtimes.
+# Selected developer runtimes stay version-managed through Mise on both
+# platforms. macOS equivalents of tools supplied by Omarchy remain darwin-only.
 {{- if eq .chezmoi.os "darwin" }}
-bun = "latest"
 fd = "latest"
 "aqua:cli/cli" = "latest"
 herdr = "latest"
 hunk = "latest"
 "aqua:jqlang/jq" = "latest"
 lazygit = "latest"
-node = "22.22.2"
 "aqua:BurntSushi/ripgrep" = "latest"
 "aqua:starship/starship" = "latest"
 "aqua:jdx/usage" = "latest"
 "aqua:ajeetdsouza/zoxide" = "latest"
-python = "3.14.2"
 {{- end }}

@@ -1,0 +1,115 @@
+{{- if eq .chezmoi.os "linux" }}
+# Additional Bash completions for commands not covered by Omarchy's stock setup.
+load_completion() {
+  local command_name="$1"
+  local generator_cmd="$2"
+
+  if ! command -v "$command_name" >/dev/null 2>&1; then
+    return 0
+  fi
+
+  eval "$generator_cmd" 2>/dev/null || true
+}
+
+load_completion chezmoi 'source <(chezmoi completion bash)'
+load_completion kubectl 'source <(kubectl completion bash)'
+load_completion mise 'source <(mise completion bash)'
+load_completion opencode 'source <(opencode completion bash)'
+load_completion starship 'source <(starship completions bash)'
+load_completion herdr 'source <(herdr completion bash)'
+load_completion lazygit 'source <(lazygit completion bash)'
+
+_pi_completion() {
+  local cur prev
+  cur="${COMP_WORDS[COMP_CWORD]}"
+  prev="${COMP_WORDS[COMP_CWORD-1]:-}"
+
+  if (( COMP_CWORD == 1 )); then
+    COMPREPLY=( $(compgen -W 'install remove uninstall update list config auth' -- "$cur") )
+    return 0
+  fi
+
+  case "${COMP_WORDS[1]:-}" in
+    update)
+      COMPREPLY=( $(compgen -W 'self pi' -- "$cur") )
+      ;;
+    install|remove|uninstall|config)
+      COMPREPLY=( $(compgen -W '--local -l --approve -a --no-approve -na' -- "$cur") )
+      ;;
+    auth)
+      COMPREPLY=( $(compgen -W 'print-api-key print-bearer-token status' -- "$cur") )
+      ;;
+    *)
+      COMPREPLY=( $(compgen -W '--provider --model --mode --print --continue --resume --session --session-id --fork --session-dir --name --models --no-tools --no-builtin-tools --tools --exclude-tools --thinking --extension --no-extensions --skill --no-skills --prompt-template --no-prompt-templates --theme --use-theme --no-themes --no-context-files --export --list-models --verbose --tui-mode --approve --no-approve --offline' -- "$cur") )
+      ;;
+  esac
+}
+if command -v pi >/dev/null 2>&1; then
+  complete -F _pi_completion pi
+fi
+
+_hunk_completion() {
+  local cur
+  cur="${COMP_WORDS[COMP_CWORD]}"
+
+  if (( COMP_CWORD == 1 )); then
+    COMPREPLY=( $(compgen -W 'diff show log stash patch pager difftool session markup skill extension update daemon' -- "$cur") )
+    return 0
+  fi
+
+  case "${COMP_WORDS[1]:-}" in
+    stash)
+      if (( COMP_CWORD == 2 )); then
+        COMPREPLY=( $(compgen -W 'show' -- "$cur") )
+      fi
+      ;;
+    session)
+      if (( COMP_CWORD == 2 )); then
+        COMPREPLY=( $(compgen -W 'list get review comment' -- "$cur") )
+      fi
+      ;;
+    markup)
+      if (( COMP_CWORD == 2 )); then
+        COMPREPLY=( $(compgen -W 'render guide' -- "$cur") )
+      fi
+      ;;
+    skill)
+      if (( COMP_CWORD == 2 )); then
+        COMPREPLY=( $(compgen -W 'path' -- "$cur") )
+      fi
+      ;;
+    extension)
+      if (( COMP_CWORD == 2 )); then
+        COMPREPLY=( $(compgen -W 'install remove update list' -- "$cur") )
+      fi
+      ;;
+    daemon)
+      if (( COMP_CWORD == 2 )); then
+        COMPREPLY=( $(compgen -W 'serve' -- "$cur") )
+      fi
+      ;;
+    diff|show|log|patch|pager|difftool|update)
+      COMPREPLY=( $(compgen -W '--help --theme --mode --watch --pager --line-numbers --no-line-numbers --wrap --no-wrap --sidebar --no-sidebar --agent-notes --no-agent-notes --transparent-bg --no-transparent-bg --extension --no-extensions' -- "$cur") )
+      ;;
+  esac
+}
+if command -v hunk >/dev/null 2>&1; then
+  complete -F _hunk_completion hunk
+fi
+
+# AWS CLI uses its dedicated Bash completer.
+if command -v aws >/dev/null 2>&1 && command -v aws_completer >/dev/null 2>&1; then
+  complete -C "$(command -v aws_completer)" aws
+fi
+
+# Television ships shell integration that includes completion helpers.
+load_completion tv 'eval "$(tv init bash)"'
+
+{{- if .work.enable }}
+load_completion argocd 'source <(argocd completion bash)'
+load_completion cilium 'source <(cilium completion bash)'
+load_completion helm 'source <(helm completion bash)'
+load_completion drv 'source <(drv completion bash)'
+load_completion pls 'source <(pls completion bash)'
+{{- end }}
+{{- end }}

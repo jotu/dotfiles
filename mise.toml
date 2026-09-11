@@ -4,3 +4,7 @@ vale = "latest"
 [tasks."test:platform"]
 description = "Validate platform-specific Chezmoi boundaries and shell syntax"
 run = "bash tests/test-platform-layout.sh"
+
+[tasks."test:platform:render"]
+description = "Render and validate Linux and macOS platform templates"
+run = "bash tests/test-platform-rendering.sh"

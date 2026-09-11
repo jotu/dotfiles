@@ -1,3 +1,7 @@
+{{- $mod := "cmd" -}}
+{{- if eq .chezmoi.os "linux" -}}
+  {{- $mod = "ctrl" -}}
+{{- end }}
 // Zed keymap
 //
 // For information on binding keys, see the Zed
@@ -10,21 +14,21 @@
     "context": "Workspace",
     "bindings": {
       // "shift shift": "file_finder::Toggle"
-      "cmd-shift-g": [
+      "{{ $mod }}-shift-g": [
         "task::Spawn",
         {
           "task_name": "LazyGit",
           "reveal_target": "center"
         }
       ],
-      "cmd-p": [
+      "{{ $mod }}-p": [
         "task::Spawn",
         {
           "task_name": "Television",
           "reveal_target": "center"
         }
       ],
-      "cmd-shift-f": [
+      "{{ $mod }}-shift-f": [
         "task::Spawn",
         {
           "task_name": "Superfile",
@@ -36,14 +40,14 @@
   {
     "context": "Editor",
     "bindings": {
-      "cmd-k cmd-left": "workspace::ActivatePaneLeft",
-      "cmd-k cmd-right": "workspace::ActivatePaneRight",
-      "cmd-k cmd-up": "workspace::ActivatePaneUp",
-      "cmd-k cmd-down": "workspace::ActivatePaneDown",
-      "cmd-k shift-left": "workspace::SwapPaneLeft",
-      "cmd-k shift-right": "workspace::SwapPaneRight",
-      "cmd-k shift-up": "workspace::SwapPaneUp",
-      "cmd-k shift-down": "workspace::SwapPaneDown"
+      "{{ $mod }}-k {{ $mod }}-left": "workspace::ActivatePaneLeft",
+      "{{ $mod }}-k {{ $mod }}-right": "workspace::ActivatePaneRight",
+      "{{ $mod }}-k {{ $mod }}-up": "workspace::ActivatePaneUp",
+      "{{ $mod }}-k {{ $mod }}-down": "workspace::ActivatePaneDown",
+      "{{ $mod }}-k shift-left": "workspace::SwapPaneLeft",
+      "{{ $mod }}-k shift-right": "workspace::SwapPaneRight",
+      "{{ $mod }}-k shift-up": "workspace::SwapPaneUp",
+      "{{ $mod }}-k shift-down": "workspace::SwapPaneDown"
     }
   },
   {
@@ -70,25 +74,25 @@
   {
     "context": "Editor",
     "bindings": {
-      "cmd-k right": "pane::SplitAndMoveRight"
+      "{{ $mod }}-k right": "pane::SplitAndMoveRight"
     }
   },
   {
     "context": "Editor",
     "bindings": {
-      "cmd-k left": "pane::SplitAndMoveLeft"
+      "{{ $mod }}-k left": "pane::SplitAndMoveLeft"
     }
   },
   {
     "context": "Editor",
     "bindings": {
-      "cmd-k down": "pane::SplitAndMoveDown"
+      "{{ $mod }}-k down": "pane::SplitAndMoveDown"
     }
   },
   {
     "context": "Editor",
     "bindings": {
-      "cmd-k up": "pane::SplitAndMoveUp"
+      "{{ $mod }}-k up": "pane::SplitAndMoveUp"
     }
   },
   {

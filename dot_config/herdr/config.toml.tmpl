@@ -1,3 +1,40 @@
+{{- if eq .chezmoi.os "linux" }}
+# Shared Herdr defaults for focused local development on Omarchy.
+# Keep the Omarchy terminal theme and preserve personal workflow preferences.
+
+[theme]
+name = "terminal"
+
+[terminal]
+shell_mode = "auto"
+new_cwd = "follow"
+
+[ui]
+sidebar_width = 32
+pane_borders = true
+pane_outer_borders = true
+pane_gaps = true
+show_agent_labels_on_pane_borders = true
+hide_tab_bar_when_single_tab = false
+agent_panel_sort = "spaces"
+status_indicators = "symbols"
+
+[ui.sidebar.agents.rows_by_agent]
+pi = [["state_icon", { token = "workspace", fg = "default", bold = true }, { token = "tab", fg = "default" }], [{ token = "terminal_title_stripped", fg = "default", dim = false }]]
+
+[ui.sidebar.spaces]
+rows = [["state_icon", { token = "workspace", fg = "default", bold = true }]]
+
+[ui.toast]
+delivery = "herdr"
+delay_seconds = 1
+
+[session]
+resume_agents_on_restore = false
+
+[advanced]
+scrollback_limit_bytes = 10000000
+{{- else }}
 # Shared Herdr defaults for focused local development.
 # Agent-specific configuration stays in Pi and OpenCode.
 
@@ -57,3 +94,4 @@ resume_agents_on_restore = false
 
 [advanced]
 scrollback_limit_bytes = 10000000
+{{- end }}

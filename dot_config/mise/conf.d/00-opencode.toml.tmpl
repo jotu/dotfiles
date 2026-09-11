@@ -284,14 +284,11 @@ run = [
   "mise run opencode:models:validate"
 ]
 
-{{- if eq .chezmoi.os "darwin" }}
 [tasks."pi:plan-mode:sync"]
 description = "Sync Pi's bundled read-only plan-mode extension"
-run = '''
-MISE_TOOL_INSTALL_PATH="$(mise where npm:@earendil-works/pi-coding-agent)" \
-  bash "$HOME/.config/mise/scripts/install-pi-plan-mode"
-'''
+run = "bash \"$HOME/.config/mise/scripts/install-pi-plan-mode\""
 
+{{- if eq .chezmoi.os "darwin" }}
 [tools]
 "npm:@github/copilot" = "latest"
 "npm:@openai/codex" = "latest"
