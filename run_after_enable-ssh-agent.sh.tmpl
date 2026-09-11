@@ -1,0 +1,13 @@
+{{- if eq .chezmoi.os "linux" -}}
+#!/usr/bin/env bash
+# Enable the shared SSH agent on Omarchy/Linux.
+set -euo pipefail
+
+if ! command -v systemctl >/dev/null 2>&1 || ! systemctl --user show-environment >/dev/null 2>&1; then
+  echo "Skipping SSH agent service: no systemd user session is available" >&2
+  exit 0
+fi
+
+systemctl --user daemon-reload
+systemctl --user enable --now ssh-agent.service
+{{- end -}}

@@ -1,0 +1,12 @@
+{{- if eq .chezmoi.os "linux" }}
+[Unit]
+Description=SSH authentication agent
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/ssh-agent -D -a %t/ssh-agent.sock
+Restart=on-failure
+
+[Install]
+WantedBy=default.target
+{{- end }}

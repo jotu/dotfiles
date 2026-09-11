@@ -4,6 +4,9 @@
 
 HISTFILE=/dev/null
 export GPG_TTY="${GPG_TTY:-$(tty 2>/dev/null)}"
+if [[ -z "${SSH_AUTH_SOCK:-}" && -n "${XDG_RUNTIME_DIR:-}" ]]; then
+  export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.sock"
+fi
 
 if [[ -d "$HOME/.docker/completions" ]]; then
   fpath=($HOME/.docker/completions $fpath)

@@ -19,7 +19,7 @@ OBSIDIAN_ATOMIC_NOTE_TEMPLATE = "5 - Templates/Atomic Note.md"
 
 [tasks."ssh:agent:restart"]
 alias = "sar"
-description = "Print SSH-agent environment exports for the current shell"
+description = "Ensure the shared SSH agent and load configured identities"
 run = '''
   set -eu
 
@@ -29,8 +29,23 @@ run = '''
     fi
   }
 
-  agent_env=$(ssh-agent -s | sed '/^echo Agent pid/d')
-  eval "$agent_env"
+  if [ -n "${SSH_AUTH_SOCK:-}" ]; then
+    agent_socket="$SSH_AUTH_SOCK"
+  elif [ -n "${XDG_RUNTIME_DIR:-}" ]; then
+    agent_socket="$XDG_RUNTIME_DIR/ssh-agent.sock"
+  else
+    echo "ERROR: XDG_RUNTIME_DIR is unavailable; cannot locate the SSH agent socket" >&2
+    exit 1
+  fi
+
+  if [ -S "$agent_socket" ]; then
+    export SSH_AUTH_SOCK="$agent_socket"
+    printf 'export SSH_AUTH_SOCK=%s\n' "$SSH_AUTH_SOCK"
+  else
+    agent_env=$(ssh-agent -a "$agent_socket" -s | sed '/^echo Agent pid/d')
+    eval "$agent_env"
+    printf '%s\n' "$agent_env"
+  fi
 {{- if and .work.enable $workUserIdentityFile }}
   add_if_exists "$HOME/.ssh/{{ $workUserIdentityFile }}"
 {{- end }}
@@ -40,7 +55,6 @@ run = '''
 {{- if $personalIdentityFile }}
   add_if_exists "$HOME/.ssh/{{ $personalIdentityFile }}"
 {{- end }}
-  printf '%s\n' "$agent_env"
 '''
 
 {{- $ghConfigPersonal := "~/.config/gh-personal" -}}

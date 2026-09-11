@@ -20,6 +20,8 @@ Library/
 {{- else }}
 # Omarchy/Linux Bash entrypoint.
 .bashrc
+# Linux user services.
+.config/systemd/
 {{- end }}
 
 # Zsh is the managed interactive shell on both supported platforms.
