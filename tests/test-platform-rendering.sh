@@ -42,6 +42,7 @@ PY
 }
 
 toml_sources=(
+  dot_config/voxtype/config.toml.tmpl
   dot_config/mise/conf.d/00-base.toml.tmpl
   dot_config/mise/conf.d/00-opencode.toml.tmpl
   dot_config/herdr/config.toml.tmpl

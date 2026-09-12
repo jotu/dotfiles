@@ -1,0 +1,16 @@
+{{- if eq .chezmoi.os "darwin" }}
+# Managed macOS Voxtype defaults. Model files stay outside Chezmoi.
+engine = "whisper"
+
+[hotkey]
+key = "RIGHTALT"
+mode = "push_to_talk"
+
+[whisper]
+model = "base.en"
+language = "en"
+
+[output]
+mode = "type"
+fallback_to_clipboard = true
+{{- end }}

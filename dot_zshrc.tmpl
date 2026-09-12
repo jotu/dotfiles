@@ -3,6 +3,7 @@
 # The shared aliases and optional integrations stay guarded for minimal installs.
 
 HISTFILE=/dev/null
+SAVEHIST=
 export GPG_TTY="${GPG_TTY:-$(tty 2>/dev/null)}"
 if [[ -z "${SSH_AUTH_SOCK:-}" && -n "${XDG_RUNTIME_DIR:-}" ]]; then
   export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.sock"
@@ -42,7 +43,7 @@ fi
 if [[ -r /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]]; then
   source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 fi
-{{- else }}
+{{- else if eq .chezmoi.os "darwin" }}
 # Debug startup time
 #zmodload zsh/zprof
 #setopt prompt_subst; zmodload zsh/datetime; PS4='+[$EPOCHREALTIME]%N:%i> ';
@@ -50,6 +51,7 @@ fi
 
 # Atuin owns history storage. Keep zsh from writing a second, unfiltered history file.
 HISTFILE=/dev/null
+SAVEHIST=
 
 if [ -d "$BREW_HOME/share/zsh-completions" ]; then
   FPATH="$BREW_HOME/share/zsh-completions:$FPATH"
@@ -98,5 +100,10 @@ if command -v atuin >/dev/null; then
 fi
 if [ -r "$BREW_HOME/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]; then
   source "$BREW_HOME/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+fi
+
+# Start Voxtype once per macOS interactive shell session when deployed.
+if command -v voxtype >/dev/null 2>&1 && ! pgrep -x voxtype >/dev/null 2>&1; then
+  voxtype daemon >/dev/null 2>&1 &!
 fi
 {{- end }}

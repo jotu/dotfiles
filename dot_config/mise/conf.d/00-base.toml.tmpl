@@ -303,6 +303,20 @@ alias = "ppu"
 description = "Update the managed Ponytail Pi package"
 run = "pi update npm:@dietrichgebert/ponytail"
 
+{{- if eq .chezmoi.os "darwin" }}
+[tasks."voxtype:setup"]
+description = "Download the managed Voxtype speech model"
+run = '''
+  set -eu
+
+  if command -v voxtype >/dev/null 2>&1; then
+    voxtype setup --download --model base.en
+  else
+    echo "Skipping Voxtype setup: voxtype is not installed" >&2
+  fi
+'''
+{{- end }}
+
 [hooks]
 postinstall = [
   { run = '''
@@ -312,6 +326,9 @@ postinstall = [
   ''' },
   { task = "gh:dash:install" },
   { task = "gh:enhance:install" },
+{{- if eq .chezmoi.os "darwin" }}
+  { task = "voxtype:setup" },
+{{- end }}
 ]
 
 [tools]
@@ -362,6 +379,7 @@ vale = "latest"
 # Selected developer runtimes stay version-managed through Mise on both
 # platforms. macOS equivalents of tools supplied by Omarchy remain darwin-only.
 {{- if eq .chezmoi.os "darwin" }}
+"github:peteonrails/voxtype" = "latest"
 fd = "latest"
 "aqua:cli/cli" = "latest"
 herdr = "latest"

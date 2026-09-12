@@ -165,6 +165,8 @@ brew upgrade
 mise up
 ```
 
+Voxtype is installed by the Darwin Mise configuration from the latest stable GitHub release and configured at `~/.config/voxtype/config.toml`. Mise downloads the managed `base.en` model after installing Voxtype. Grant Microphone, Accessibility, and Input Monitoring permissions, then start a new Zsh session. The macOS Zsh template starts the daemon when `voxtype` is deployed; hold Right Option (`⌥`) to dictate.
+
 ### Project-specific Mise versions
 
 Use project-local `mise.toml` or `.mise.toml` files when a project needs a particular runtime version:
