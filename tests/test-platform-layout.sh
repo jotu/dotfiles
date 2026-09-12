@@ -91,6 +91,8 @@ contains run_onchange_before_install-packages-darwin.sh.tmpl 'brew "zsh-autosugg
 contains dot_config/mise/conf.d/00-base.toml.tmpl '"github:peteonrails/voxtype" = "latest"'
 contains dot_config/mise/conf.d/00-base.toml.tmpl '[tasks."voxtype:setup"]'
 contains dot_config/mise/conf.d/00-base.toml.tmpl 'voxtype setup --download --model base.en'
+contains dot_config/mise/conf.d/00-base.toml.tmpl 'for command_name in brew mise aerospace voxtype'
+contains dot_config/mise/conf.d/00-base.toml.tmpl 'voxtype setup check'
 contains run_onchange_before_install-packages-darwin.sh.tmpl 'brew "zsh-syntax-highlighting"'
 contains run_onchange_before_install-applications-omarchy.sh.tmpl 'omarchy pkg add zsh zsh-autosuggestions zsh-syntax-highlighting'
 contains dot_config/television/cable/alias.toml.tmpl 'requirements = ["zsh"]'

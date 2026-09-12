@@ -482,6 +482,8 @@ ssh -T git@github.com
 mise run dotfiles:health:check
 ```
 
+On macOS, the health check also verifies Homebrew, Mise, AeroSpace, Voxtype, and the configured Voxtype model/output chain.
+
 AeroSpace is installed and configured on macOS by chezmoi. Grant it Accessibility permission in System Settings → Privacy & Security → Accessibility. It starts automatically at login and uses `~/.aerospace.toml`.
 
 ## Atuin History Migration

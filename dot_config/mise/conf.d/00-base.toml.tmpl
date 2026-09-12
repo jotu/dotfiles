@@ -67,9 +67,24 @@ run = '''
 
 [tasks."dotfiles:health:check"]
 alias = "dhc"
-description = "Validate gh, ssh agent, and repo roots"
+description = "Validate gh, ssh agent, repo roots, and macOS tooling"
 run = '''
   set -eu
+
+{{- if eq .chezmoi.os "darwin" }}
+  for command_name in brew mise aerospace voxtype; do
+    if ! command -v "$command_name" >/dev/null 2>&1; then
+      echo "ERROR: $command_name not found in PATH"
+      exit 1
+    fi
+  done
+
+  if ! voxtype setup check >/dev/null 2>&1; then
+    echo "ERROR: Voxtype system check failed"
+    echo "Run: voxtype setup check"
+    exit 1
+  fi
+{{- end }}
 
   expand_path() {
     case "$1" in
