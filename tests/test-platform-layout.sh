@@ -84,6 +84,7 @@ contains dot_zshrc.tmpl '$BREW_HOME/share/zsh-autosuggestions/zsh-autosuggestion
 contains dot_zshrc.tmpl '/usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh'
 contains dot_zshrc.tmpl '$BREW_HOME/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh'
 contains dot_zshrc.tmpl 'command -v voxtype >/dev/null 2>&1'
+contains dot_zshrc.tmpl '! pgrep -x voxtype-bin >/dev/null 2>&1'
 contains dot_zshrc.tmpl 'voxtype daemon >/dev/null 2>&1 &!'
 contains dot_config/voxtype/config.toml.tmpl 'key = "RIGHTALT"'
 contains dot_config/voxtype/config.toml.tmpl 'mode = "push_to_talk"'
