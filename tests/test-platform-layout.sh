@@ -94,6 +94,12 @@ contains dot_config/mise/conf.d/00-base.toml.tmpl 'voxtype setup --download --mo
 contains dot_config/mise/conf.d/00-base.toml.tmpl 'for command_name in brew mise aerospace voxtype'
 contains dot_config/mise/conf.d/00-base.toml.tmpl 'voxtype setup check'
 contains run_onchange_before_install-packages-darwin.sh.tmpl 'brew "zsh-syntax-highlighting"'
+bash -n "$repo_root/dot_config/mise/tasks/proton/cli/executable_install"
+bash -n "$repo_root/dot_config/mise/tasks/proton/cli/executable_update"
+contains dot_config/mise/tasks/proton/cli/executable_install 'version="2.3.3"'
+contains dot_config/mise/tasks/proton/cli/executable_install 'expected_sha256='
+contains dot_config/mise/tasks/proton/cli/executable_install 'curl --fail --silent --show-error'
+contains dot_config/mise/tasks/proton/cli/executable_update 'pass-cli update "$@"'
 contains run_onchange_before_install-applications-omarchy.sh.tmpl 'omarchy pkg add zsh zsh-autosuggestions zsh-syntax-highlighting'
 contains dot_config/television/cable/alias.toml.tmpl 'requirements = ["zsh"]'
 contains dot_config/television/cable/recent-files.toml.tmpl 'shell = "zsh"'

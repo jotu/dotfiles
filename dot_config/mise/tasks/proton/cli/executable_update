@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 #MISE description="Update Proton CLI"
 set -euo pipefail
-pass update
+pass-cli update "$@"
