@@ -1,5 +1,5 @@
 {
-  "*": "allow",
+  "*": "ask",
   "read": {
     "*": "allow",
     "*.env": "ask",
@@ -19,12 +19,13 @@
     "**/private/**": "deny",
     "**/.aws/**": "deny",
     "**/.aws/config": "ask",
+    "$HOME/.config/gh-*/**": "deny",
     "**/.ssh/**": "deny",
     "**/.ssh/config": "ask",
     "**/.gnupg/**": "deny",
     "*docker-compose*.yml": "ask",
     "$HOME/.kube/**": "deny",
-    "$HOME/.kube/agent-kubeconfig": "allow"
+    "$HOME/.kube/agent-kubeconfig": "ask"
   },
   "edit": {
     "*": "allow",
@@ -45,17 +46,17 @@
     "**/private/**": "deny",
     "**/.aws/**": "deny",
     "**/.aws/config": "ask",
+    "$HOME/.config/gh-*/**": "deny",
     "**/.ssh/**": "deny",
     "**/.ssh/config": "ask",
     "**/.gnupg/**": "deny",
     "*docker-compose*.yml": "ask",
     "$HOME/.kube/**": "deny",
-    "$HOME/.kube/agent-kubeconfig": "allow"
+    "$HOME/.kube/agent-kubeconfig": "ask"
   },
   "bash": {
-    "*": "allow",
+    "*": "ask",
     "cat *.env*": "deny",
-    "cat *.env.local": "allow",
     "cat *secret*": "deny",
     "cat *credential*": "deny",
     "cat *.pem": "deny",
@@ -69,14 +70,17 @@
     "mise env": "ask",
     "mise env *": "ask",
     "k9s*": "deny",
-    "KUBECONFIG=$HOME/.kube/agent-kubeconfig k9s*": "allow",
+    "KUBECONFIG=$HOME/.kube/agent-kubeconfig k9s*": "ask",
     "kubectl*": "deny",
-    "KUBECONFIG=$HOME/.kube/agent-kubeconfig kubectl*": "allow"
+    "KUBECONFIG=$HOME/.kube/agent-kubeconfig kubectl*": "ask",
+    "mise run*get-secret*": "deny",
+    "mise run*ogs*": "deny",
+    "mise run*aws-vault:refresh*": "deny",
+    "mise run*avr*": "deny"
   },
   "zsh": {
-    "*": "allow",
+    "*": "ask",
     "cat *.env*": "deny",
-    "cat *.env.local": "allow",
     "cat *secret*": "deny",
     "cat *credential*": "deny",
     "cat *.pem": "deny",
@@ -90,10 +94,14 @@
     "mise env": "ask",
     "mise env *": "ask",
     "k9s*": "deny",
-    "KUBECONFIG=$HOME/.kube/agent-kubeconfig k9s*": "allow",
+    "KUBECONFIG=$HOME/.kube/agent-kubeconfig k9s*": "ask",
     "kubectl*": "deny",
-    "KUBECONFIG=$HOME/.kube/agent-kubeconfig kubectl*": "allow"
+    "KUBECONFIG=$HOME/.kube/agent-kubeconfig kubectl*": "ask",
+    "mise run*get-secret*": "deny",
+    "mise run*ogs*": "deny",
+    "mise run*aws-vault:refresh*": "deny",
+    "mise run*avr*": "deny"
   },
-  "webfetch": "allow",
+  "webfetch": "ask",
   "external_directory": "ask"
 }

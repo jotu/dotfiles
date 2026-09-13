@@ -10,6 +10,8 @@ const protectedRoots = [
 	join(home, ".aws"),
 	join(home, ".kube"),
 	join(home, ".config", "gh"),
+	join(home, ".config", "gh-personal"),
+	join(home, ".config", "gh-work"),
 	join(home, ".npmrc"),
 	join(home, ".netrc"),
 	join(home, ".docker", "config.json"),
@@ -78,6 +80,9 @@ export function sensitiveCommandReason(command: string): string | undefined {
 	}
 	if (/\bsecurity\s+(?:find|find-generic-password)\b/i.test(command)) {
 		return "reading a keychain credential";
+	}
+	if (/\bmise\s+run(?:\s+--silent)?\s+(?:(?:osx:)?(?:get-secret|ogs)|(?:aws-vault:)?(?:refresh|avr))\b/i.test(command)) {
+		return "reading or exporting a credential through a Mise task";
 	}
 	return undefined;
 }

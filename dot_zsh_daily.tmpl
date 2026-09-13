@@ -8,6 +8,7 @@ typeset zc_cache_dir="${XDG_CACHE_HOME:-$HOME/.cache}/zsh_completions.d"
 # Ensure the path exists
 mkdir -p "$last_run_path"
 mkdir -p "$zc_cache_dir"
+chmod 700 "$last_run_path" "$zc_cache_dir"
 
 # Read last run (safely), get today's date
 typeset last_run=""
@@ -18,10 +19,11 @@ generate_completion_cache() {
   local tool_name="$1"
   local cache_file="$2"
   local command="$3"
-  local temp_file="${cache_file}.$$"
+  local temp_file
 
   if command -v "$tool_name" >/dev/null; then
-    if eval "$command" >| "$temp_file"; then
+    temp_file=$(mktemp "${cache_file}.XXXXXX") || return 1
+    if ( umask 077; eval "$command" >| "$temp_file" ); then
       mv "$temp_file" "$cache_file"
     else
       rm -f "$temp_file"

@@ -94,7 +94,7 @@ if (command === 'validate-model-routing') {
 if (command === 'validate-plugins') {
   const expected = new Map([
     ['.chezmoitemplates/opencode/plugins-openai.json.tmpl', [
-      'opencode-openai-codex-auth',
+      'opencode-openai-codex-auth@4.4.0',
       '@dietrichgebert/ponytail@4.8.3',
     ]],
     ['.chezmoitemplates/opencode/plugins-copilot.json.tmpl', [

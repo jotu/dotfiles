@@ -126,10 +126,10 @@ if command -v omarchy-agent >/dev/null 2>&1; then
   alias a='omarchy-agent --inline'
 fi
 if command -v claude >/dev/null 2>&1; then
-  alias cx='claude --permission-mode auto'
+  alias cx='claude'
 fi
 if command -v codex >/dev/null 2>&1; then
-  alias cy='codex --approve-for-me'
+  alias cy='codex'
 fi
 if command -v tmux >/dev/null 2>&1; then
   alias t='tmux attach || tmux new -s Work'
@@ -161,7 +161,7 @@ if command -v chezmoi >/dev/null 2>&1; then
   alias cm='chezmoi'
 fi
 if command -v opencode >/dev/null 2>&1; then
-  alias c='opencode --auto'
+  alias c='opencode'
   alias oc='opencode'
 fi
 if command -v obsidian >/dev/null 2>&1; then

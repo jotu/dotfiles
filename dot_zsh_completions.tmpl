@@ -4,7 +4,7 @@ load_or_generate_completion() {
   local cache_file="$1"
   local generator_cmd="$2"
 
-  if [[ -r "$cache_file" ]]; then
+  if [[ -r "$cache_file" && -O "$cache_file" && ! -L "$cache_file" ]]; then
     source "$cache_file"
     return
   fi

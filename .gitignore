@@ -1,1 +1,13 @@
 .vscode
+
+# Keep common local credentials out of Git by default.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+credentials.*
+secrets.*

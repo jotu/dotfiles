@@ -1,8 +1,3 @@
-{{- $mcpGitHubToken := "" -}}
-{{- if hasKey .github "mcpServerGithubToken" -}}
-{{- $mcpGitHubToken = get .github "mcpServerGithubToken" -}}
-{{- end }}
-
 // Zed settings
 //
 // For information on how to configure Zed, see the Zed
@@ -36,13 +31,7 @@
   "buffer_font_size": 14,
   "context_servers": {
     "mcp-server-github": {
-{{- if ne $mcpGitHubToken "" }}
-      "settings": {
-        "github_personal_access_token": {{ $mcpGitHubToken | quote }}
-      }
-{{- else }}
       "settings": {}
-{{- end }}
     }
   },
   "edit_predictions": {

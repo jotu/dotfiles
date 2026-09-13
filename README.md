@@ -244,10 +244,10 @@ Common aliases are kept short and recognizable. Where Omarchy already has a shor
 | Alias | Command | Purpose |
 | --- | --- | --- |
 | `h` / `hr` | `herdr` | Start Herdr in the current directory |
-| `c` / `oc` | `opencode --auto` / `opencode` | Start OpenCode |
+| `c` / `oc` | `opencode` / `opencode` | Start OpenCode |
 | `a` | `omarchy-agent --inline` | Start the Omarchy agent when installed |
-| `cx` | `claude --permission-mode auto` | Start Claude in auto-permission mode when installed |
-| `cy` | `codex --approve-for-me` | Start Codex with approval when installed |
+| `cx` | `claude` | Start Claude with its normal permission mode when installed |
+| `cy` | `codex` | Start Codex with its normal approval mode when installed |
 | `cm` | `chezmoi` | Manage the dotfiles source |
 | `m` / `mup` | `mise` / `MISE_MINIMUM_RELEASE_AGE=0 mise up` | Mise CLI and update |
 | `g` | `git` | Git CLI |
@@ -406,9 +406,9 @@ On Omarchy, the managed `ssh-agent.service` uses `$XDG_RUNTIME_DIR/ssh-agent.soc
 
 ## Add Copilot MCP Secret
 
-security add-generic-password -a "$(whoami)" \
- -s "mcp-server-github" \
- -w "<YOUR_GITHUB_PERSONAL_ACCESS_TOKEN>"
+Keep MCP credentials in the operating system’s secret store or configure them
+through the MCP client’s native secret mechanism. Do not place GitHub tokens in
+Chezmoi data or rendered editor settings.
 
 ## Personal/Work GH and Git Setup
 
@@ -732,12 +732,9 @@ command -v tv
 command -v spf
 ```
 
-Optional: set Zed MCP GitHub token via local chezmoi data (do not commit):
-
-```toml
-[data.github]
-mcpServerGithubToken = "<github_pat_for_mcp_server_github>"
-```
+Zed’s managed MCP configuration intentionally leaves the GitHub token unset.
+Configure MCP authentication through Zed or the MCP server’s native secret-store
+integration instead of adding a token to local Chezmoi data.
 
 Shell completions are platform-specific. On macOS and Omarchy/Linux Zsh, completions are cached daily in `${XDG_CACHE_HOME:-~/.cache}/zsh_completions.d`. Omarchy/Linux Bash continues to keep Omarchy's stock completion setup and then loads repo-managed Bash completions. Both shells cover commands such as `chezmoi`, `kubectl`, `mise`, `opencode`, `herdr`, `lazygit`, and optional work tools. Pi and Hunk do not currently expose first-party completion entrypoints here, so the profiles add lightweight custom subcommand completion for them.
 

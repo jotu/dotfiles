@@ -303,7 +303,7 @@ run = '''
     exit 0
   fi
 
-  if ! gh extension install dlvhdr/gh-enhance --force; then
+  if ! gh extension install dlvhdr/gh-enhance --pin v0.7.0 --force; then
     echo "WARNING: gh-enhance was not installed; log in to the active gh profile and run mise run gh:enhance:install" >&2
   fi
 '''
@@ -316,7 +316,7 @@ run = "mise run proton:cli:update"
 [tasks."pi:ponytail:update"]
 alias = "ppu"
 description = "Update the managed Ponytail Pi package"
-run = "pi update npm:@dietrichgebert/ponytail"
+run = "pi update npm:@dietrichgebert/ponytail@4.8.3"
 
 {{- if eq .chezmoi.os "darwin" }}
 [tasks."voxtype:setup"]
@@ -336,7 +336,7 @@ run = '''
 postinstall = [
   { run = '''
     if command -v pi >/dev/null 2>&1; then
-      pi install npm:@dietrichgebert/ponytail
+      pi install npm:@dietrichgebert/ponytail@4.8.3
     fi
   ''' },
   { task = "gh:dash:install" },
