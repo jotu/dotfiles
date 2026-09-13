@@ -39,7 +39,7 @@ case "$os_name" in
     # Omarchy provisions the AI harnesses and developer agents with its own
     # Mise-backed wrappers. Refresh those wrappers if any core harness is
     # missing; do not install competing copies from this repository.
-    omarchy_ai_commands=(codex claude crush gemini gh copilot opencode pi omp hunk)
+    omarchy_ai_commands=(codex claude crush gemini gh opencode pi omp hunk)
     omarchy_ai_refresh_needed=0
     for command_name in "${omarchy_ai_commands[@]}"; do
       if ! command -v "$command_name" >/dev/null 2>&1; then

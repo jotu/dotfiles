@@ -43,7 +43,7 @@ This repository supports two platform profiles:
 
 The checked-in `bootstrap` helper performs the same platform checks and initializes Chezmoi without applying files. It can be run from a checked-out copy after the machine has GitHub access.
 
-Mise is preinstalled by Omarchy. The bootstrap keeps Bash as its interpreter, installs Zsh when needed, and leaves the login-shell switch for after the dotfiles have been reviewed and applied. Omarchy also provisions the base desktop applications and its AI harnesses and developer agents, including `codex`, `claude`, `crush`, `gemini`, `gh`, `copilot`, OpenCode, Pi, `omp`, Hunk, and Herdr. If one of these wrappers is missing, restore Omarchy's application wrappers before authenticating:
+Mise is preinstalled by Omarchy. The bootstrap keeps Bash as its interpreter, installs Zsh when needed, and leaves the login-shell switch for after the dotfiles have been reviewed and applied. Omarchy also provisions the base desktop applications and its AI harnesses and developer agents, including `codex`, `claude`, `crush`, `gemini`, `gh`, OpenCode, Pi, `omp`, Hunk, and Herdr. If one of these wrappers is missing, restore Omarchy's application wrappers before authenticating:
 
 ```bash
 omarchy refresh applications
@@ -99,7 +99,7 @@ omarchy install editor zed
 omarchy install browser firefox
 ```
 
-Those commands are intentionally Omarchy-specific. Do not add Zed, Firefox, Herdr, Pi, Hunk, OpenCode, Codex, Claude, Crush, Gemini, Copilot, `omp`, or `gh` to the repository's Linux Mise fragments. Omarchy's managed wrappers live in `~/.local/bin`; the Linux Zsh profile puts that directory before Mise's shims so Omarchy remains authoritative. Omarchy may maintain global Mise state underneath those wrappers; that state is not the repository's source of ownership.
+Those commands are intentionally Omarchy-specific. Do not add Zed, Firefox, Herdr, Pi, Hunk, OpenCode, Codex, Claude, Crush, Gemini, `omp`, or `gh` to the repository's Linux Mise fragments. Omarchy's managed wrappers live in `~/.local/bin`; the Linux Zsh profile puts that directory before Mise's shims so Omarchy remains authoritative. Omarchy may maintain global Mise state underneath those wrappers; that state is not the repository's source of ownership.
 
 ### macOS
 
@@ -145,7 +145,7 @@ Use the platform's own package and application tooling before adding a repositor
 | Git | Omarchy base package | Homebrew |
 | Mise | Omarchy | Homebrew |
 | Chezmoi | Mise | Mise |
-| `gh`, Pi, Herdr, Hunk, OpenCode, Codex, Claude, Crush, Gemini, Copilot, `omp` | Omarchy provisioning | Existing macOS/Mise setup |
+| `gh`, Pi, Herdr, Hunk, OpenCode, Codex, Claude, Crush, Gemini, `omp` | Omarchy provisioning | Existing macOS/Mise setup |
 | FD, jq, LazyGit, ripgrep, Starship, Zoxide | Omarchy base packages | Mise |
 | Kubernetes and AWS tooling | Mise | Mise |
 | Selected developer runtimes (`go`, `node`, `python`, `bun`) | Mise | Mise |
