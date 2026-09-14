@@ -146,6 +146,7 @@ Use the platform's own package and application tooling before adding a repositor
 | Mise | Omarchy | Homebrew |
 | Chezmoi | Mise | Mise |
 | `gh`, Pi, Herdr, Hunk, OpenCode, Codex, Claude, Crush, Gemini, `omp` | Omarchy provisioning | Existing macOS/Mise setup |
+| Worktrunk (`wt`) | Omarchy/Arch package | Mise GitHub release |
 | FD, jq, LazyGit, ripgrep, Starship, Zoxide | Omarchy base packages | Mise |
 | Kubernetes and AWS tooling | Mise | Mise |
 | Selected developer runtimes (`go`, `node`, `python`, `bun`) | Mise | Mise |
@@ -153,7 +154,9 @@ Use the platform's own package and application tooling before adding a repositor
 | Zed and Firefox | `omarchy install` | Existing macOS application workflow |
 | Window manager / tiling shell | Omarchy/Hyprland | AeroSpace |
 
-The repository manages configuration for these tools on both platforms. It does not install a second Linux copy of tools already provided by Omarchy. Omarchy's `omarchy update` remains responsible for updating its base packages and provisioned tools. On macOS, continue to update Homebrew and Mise manually:
+The repository manages configuration for these tools on both platforms. Worktrunk is installed natively on Omarchy through `omarchy pkg add worktrunk`; macOS uses the upstream GitHub release through Mise. Shell integration is managed by the repository's Bash and Zsh templates rather than by `wt config shell install`, so it does not modify Chezmoi-owned shell files. Use `wt switch`, `wt list`, and `wt remove` for the normal worktree workflow.
+
+It does not install a second Linux copy of tools already provided by Omarchy. Omarchy's `omarchy update` remains responsible for updating its base packages and provisioned tools. On macOS, continue to update Homebrew and Mise manually:
 
 ```bash
 # Omarchy
@@ -209,10 +212,13 @@ Pi is provided by Omarchy on Linux and by Mise on macOS. The repository manages 
 
 ```bash
 chezmoi apply                        # installs the sync hook
-mise install                         # installs managed tools and syncs Pi add-ons when available
-mise run pi:ponytail:update           # update Ponytail on either platform
-mise run pi:plan-mode:sync             # sync plan mode from the installed Pi package
+mise install                          # installs managed tools and syncs Pi add-ons when available
+mise run pi:ponytail:update            # update Ponytail on either platform
+mise run pi:plan-mode:sync              # sync plan mode from the installed Pi package
+mise run pi:worktrunk:install           # install the oh-my-pi Worktrunk hook when omp exists
 ```
+
+The managed `dot_pi/agent/extensions/worktrunk.ts` extension adds the same Worktrunk activity markers to standard Pi. On Omarchy, where `omp` is available, the Mise postinstall hook also runs `wt config plugins pi install --yes`, which writes Worktrunk's native profile-aware hook. Both integrations update `wt list` with 🤖/💬 markers and ignore failures so agent sessions remain unaffected.
 
 Use `/plan` to toggle read-only planning and `/todos` to show progress. Pi updates resync the extension through the managed sync task.
 

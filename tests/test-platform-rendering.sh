@@ -78,10 +78,12 @@ if os == "linux":
     assert "gh" not in tools
     assert "hunk" not in tools
     assert "herdr" not in tools
+    assert "github:max-sixty/worktrunk" not in tools
 else:
     assert "aqua:cli/cli" in tools
     assert "hunk" in tools
     assert "herdr" in tools
+    assert "github:max-sixty/worktrunk" in tools
 PY
 
   for source in "${toml_sources[@]}"; do

@@ -313,6 +313,14 @@ hide = true
 description = "Update Proton CLI via mise hook"
 run = "mise run proton:cli:update"
 
+[tasks."pi:worktrunk:install"]
+description = "Install Worktrunk activity tracking for oh-my-pi when available"
+run = '''
+  if command -v wt >/dev/null 2>&1 && command -v omp >/dev/null 2>&1; then
+    wt config plugins pi install --yes
+  fi
+'''
+
 [tasks."pi:ponytail:update"]
 alias = "ppu"
 description = "Update the managed Ponytail Pi package"
@@ -341,6 +349,7 @@ postinstall = [
   ''' },
   { task = "gh:dash:install" },
   { task = "gh:enhance:install" },
+  { task = "pi:worktrunk:install" },
 {{- if eq .chezmoi.os "darwin" }}
   { task = "voxtype:setup" },
 {{- end }}
@@ -394,6 +403,7 @@ vale = "latest"
 # Selected developer runtimes stay version-managed through Mise on both
 # platforms. macOS equivalents of tools supplied by Omarchy remain darwin-only.
 {{- if eq .chezmoi.os "darwin" }}
+"github:max-sixty/worktrunk" = "latest"
 "github:peteonrails/voxtype" = "latest"
 fd = "latest"
 "aqua:cli/cli" = "latest"

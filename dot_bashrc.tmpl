@@ -28,6 +28,10 @@ if [[ -r "$HOME/.bash_completions" ]]; then
   source "$HOME/.bash_completions"
 fi
 
+if command -v wt >/dev/null 2>&1; then
+  eval "$(wt config shell init bash)"
+fi
+
 if command -v atuin >/dev/null 2>&1; then
   eval "$(atuin init bash)"
 fi
