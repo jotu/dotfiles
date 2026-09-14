@@ -325,7 +325,7 @@ run = '''
   set -eu
 
   if command -v voxtype >/dev/null 2>&1; then
-    voxtype setup --download --model base.en
+    voxtype setup --download --model small.en
   else
     echo "Skipping Voxtype setup: voxtype is not installed" >&2
   fi
