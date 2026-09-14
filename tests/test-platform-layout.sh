@@ -86,6 +86,8 @@ contains dot_zshrc.tmpl '$BREW_HOME/share/zsh-syntax-highlighting/zsh-syntax-hig
 contains dot_zshrc.tmpl 'command -v voxtype >/dev/null 2>&1'
 contains dot_zshrc.tmpl '! pgrep -x voxtype-bin >/dev/null 2>&1'
 contains dot_zshrc.tmpl 'voxtype daemon >/dev/null 2>&1 &!'
+contains dot_aerospace.toml "if.app-id = 'com.apple.MobileSMS'"
+contains dot_aerospace.toml "if.app-id = 'org.whispersystems.signal-desktop'"
 contains dot_config/voxtype/config.toml.tmpl 'key = "RIGHTALT"'
 contains dot_config/voxtype/config.toml.tmpl 'mode = "push_to_talk"'
 contains run_onchange_before_install-packages-darwin.sh.tmpl 'brew "zsh-autosuggestions"'
