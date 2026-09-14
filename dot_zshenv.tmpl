@@ -35,9 +35,16 @@ fi
 
 # GITHUB
 # Keep gh auth controlled explicitly by your chosen GH_CONFIG_DIR/session.
-# Load the Mise GitHub token from the macOS keychain without persisting it here.
+# Prefer gh's active authenticated token; fall back to the macOS keychain.
+if command -v gh >/dev/null 2>&1; then
+  _mise_github_token=$(gh auth token 2>/dev/null || true)
+  if [[ -n "$_mise_github_token" ]]; then
+    export MISE_GITHUB_TOKEN="$_mise_github_token"
+  fi
+  unset _mise_github_token
+fi
 {{- if ne $githubUsername "" }}
-if command -v security >/dev/null 2>&1; then
+if [[ -z "${MISE_GITHUB_TOKEN:-}" ]] && command -v security >/dev/null 2>&1; then
   _mise_github_token=$(security find-generic-password -s "github" -a {{ $githubUsername | quote }} -w 2>/dev/null || true)
   if [[ -n "$_mise_github_token" ]]; then
     export MISE_GITHUB_TOKEN="$_mise_github_token"
