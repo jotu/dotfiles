@@ -77,12 +77,17 @@ fi
 if command -v starship >/dev/null; then
   eval "$(starship init zsh)"
 fi
-if command -v thefuck >/dev/null; then
-  # Python 3.12+ removed distutils; older thefuck builds can crash on import.
-  # Only initialize alias when runtime check succeeds.
-  if thefuck --version >/dev/null 2>&1; then
-    eval "$(thefuck --alias fuck)"
-  fi
+if (( $+commands[thefuck] )); then
+  # Load the Python-backed alias only when it is actually used.
+  fuck() {
+    unfunction fuck
+    # Python 3.12+ removed distutils; older thefuck builds can crash on import.
+    if ! thefuck --version >/dev/null 2>&1; then
+      return 127
+    fi
+    eval "$(thefuck --alias fuck)" || return
+    fuck "$@"
+  }
 fi
 
 # The following lines have been added by Docker Desktop to enable Docker CLI completions.
