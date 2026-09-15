@@ -52,5 +52,4 @@ if [[ $last_run != $today ]]; then
   if (( daily_ok )); then
     echo "$today" >| "$last_run_file"
   fi
-  [ -f ~/.zsh_completions ] && source ~/.zsh_completions
 fi

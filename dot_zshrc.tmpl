@@ -87,8 +87,13 @@ fi
 
 # The following lines have been added by Docker Desktop to enable Docker CLI completions.
 fpath=($HOME/.docker/completions $fpath)
-autoload -Uz compinit
-compinit
+autoload -Uz compinit compaudit
+# ponytail: trust the checked fpath and reuse the dump; remove ~/.zcompdump after changing completion paths.
+if (( ${#$(compaudit)} == 0 )); then
+  compinit -C
+else
+  compinit
+fi
 if command -v wt >/dev/null 2>&1; then
   eval "$(wt config shell init zsh)"
 fi
