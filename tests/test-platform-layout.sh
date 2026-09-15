@@ -25,6 +25,9 @@ not_contains() {
 bash -n "$repo_root/bootstrap"
 bash -n "$repo_root/tests/test-platform-layout.sh"
 contains bootstrap 'omarchy_ai_commands=(codex claude crush gemini gh opencode pi omp hunk)'
+contains bootstrap 'This macOS bootstrap supports Apple Silicon only.'
+contains bootstrap 'curl -fsSL https://mise.run | sh'
+contains bootstrap 'mise bootstrap packages apply --dry-run'
 contains bootstrap 'omarchy refresh applications'
 
 # Chezmoi templates are checked with template-control lines removed and inline
@@ -90,14 +93,20 @@ contains dot_aerospace.toml "if.app-id = 'com.apple.MobileSMS'"
 contains dot_aerospace.toml "if.app-id = 'org.whispersystems.signal-desktop'"
 contains dot_config/voxtype/config.toml.tmpl 'key = "RIGHTALT"'
 contains dot_config/voxtype/config.toml.tmpl 'mode = "push_to_talk"'
-contains run_onchange_before_install-packages-darwin.sh.tmpl 'brew "zsh-autosuggestions"'
-contains run_onchange_before_install-packages-darwin.sh.tmpl 'cask "signal"'
+contains dot_config/mise/conf.d/00-base.toml.tmpl '[bootstrap.packages]'
+contains dot_config/mise/conf.d/00-base.toml.tmpl '"brew:curl" = "latest"'
+contains dot_config/mise/conf.d/00-base.toml.tmpl 'ruby = "3"'
+contains dot_config/mise/conf.d/00-base.toml.tmpl '"brew-cask:nikitabobko/tap/aerospace" = "latest"'
+contains dot_config/mise/conf.d/00-base.toml.tmpl '"brew-cask:signal" = "latest"'
 contains dot_config/mise/conf.d/00-base.toml.tmpl '"github:peteonrails/voxtype" = "latest"'
 contains dot_config/mise/conf.d/00-base.toml.tmpl '[tasks."voxtype:setup"]'
 contains dot_config/mise/conf.d/00-base.toml.tmpl 'voxtype setup --download --model small.en'
-contains dot_config/mise/conf.d/00-base.toml.tmpl 'for command_name in brew mise aerospace voxtype'
+contains dot_config/mise/conf.d/00-base.toml.tmpl 'for command_name in mise aerospace voxtype'
 contains dot_config/mise/conf.d/00-base.toml.tmpl 'voxtype setup check'
-contains run_onchange_before_install-packages-darwin.sh.tmpl 'brew "zsh-syntax-highlighting"'
+[ ! -e "$repo_root/run_onchange_before_install-packages-darwin.sh.tmpl" ] || fail 'the Darwin package script should be removed'
+not_contains dot_zshenv.tmpl 'amd64'
+not_contains private_dot_gnupg/gpg-agent.conf.tmpl 'amd64'
+not_contains dot_config/mise/tasks/proton/cli/executable_install 'Darwin:x86_64'
 bash -n "$repo_root/dot_config/mise/tasks/proton/cli/executable_install"
 bash -n "$repo_root/dot_config/mise/tasks/proton/cli/executable_update"
 contains dot_config/mise/tasks/proton/cli/executable_install 'version="2.3.3"'
@@ -110,7 +119,7 @@ contains dot_config/television/cable/recent-files.toml.tmpl 'shell = "zsh"'
 not_contains dot_config/television/cable/alias.toml.tmpl 'bash -ic'
 contains dot_config/shell/aliases.tmpl 'command -v nvim'
 contains private_dot_ssh/config.tmpl 'eq .chezmoi.os "darwin"'
-contains run_onchange_before_install-packages-darwin.sh.tmpl 'eq .chezmoi.os "darwin"'
+not_contains dot_config/mise/conf.d/00-base.toml.tmpl 'brew "mise"'
 contains run_onchange_before_install-applications-omarchy.sh.tmpl 'eq .chezmoi.os "linux"'
 contains run_onchange_before_install-applications-omarchy.sh.tmpl 'omarchy install editor zed'
 contains run_onchange_before_install-applications-omarchy.sh.tmpl 'omarchy install browser firefox'
@@ -131,6 +140,9 @@ contains dot_config/mise/conf.d/00-opencode.toml.tmpl '[tasks."pi:plan-mode:sync
 contains dot_config/mise/conf.d/00-opencode.toml.tmpl 'eq .chezmoi.os "darwin"'
 contains dot_config/gh-work/hosts.yml.tmpl 'else if and (hasKey . "work")'
 contains dot_zshenv.tmpl 'hasKey .github "workUsername"'
+contains dot_zshenv.tmpl 'export GITHUB_TOKEN='
+contains dot_zshenv.tmpl 'gh-work'
+not_contains dot_zshenv.tmpl 'export MISE_GITHUB_TOKEN='
 not_contains dot_config/shell/aliases.tmpl 'compdef'
 contains dot_zsh_aliases.tmpl 'compdef ae=aerospace'
 

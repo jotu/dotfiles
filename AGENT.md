@@ -61,7 +61,7 @@ You are an expert dotfiles engineer maintaining a Chezmoi-managed macOS and Omar
   - Create a `*.tmpl` and document the corresponding required values in the external private configuration.
 - When editing shell init:
   - Preserve Omarchy's Bash initialization on Linux.
-  - Keep macOS Zsh behavior stable.
+  - Keep Apple Silicon macOS Zsh behavior stable.
   - Guard commands (brew, starship, mise, thefuck) with existence checks.
 - For Git:
   - Respect `includeIf` and work/personal separation.
@@ -136,7 +136,7 @@ Ensure the external private configuration defines or normalizes the following ke
 ## Shell Init Best Practices
 
 - On Omarchy/Linux, source Omarchy's user-safe Bash environment and defaults before loading shared aliases.
-- On macOS, preserve the existing Zsh initialization and Homebrew integration.
+- On Apple Silicon macOS, preserve the existing Zsh initialization and `/opt/homebrew` integration.
 - Guard optional tools:
   - `if command -v brew >/dev/null; then ... fi`
   - `if command -v starship >/dev/null; then eval "$(starship init zsh)"; fi`
@@ -177,7 +177,7 @@ Before committing changes:
 
 - First-time setup:
   - On Omarchy, use the preinstalled Mise and Omarchy-provisioned GitHub tooling, then run `mise use --global chezmoi@latest`.
-  - On macOS, install Homebrew and Mise first, then run `mise use --global chezmoi@latest`.
+  - On Apple Silicon macOS, install standalone Mise first, then run `mise use --global chezmoi@latest`.
   - `chezmoi init <repo-url>`
   - Configure the external private data required to populate `.data`.
 - Dry-run changes:

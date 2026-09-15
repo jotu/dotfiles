@@ -72,7 +72,7 @@ run = '''
   set -eu
 
 {{- if eq .chezmoi.os "darwin" }}
-  for command_name in brew mise aerospace voxtype; do
+  for command_name in mise aerospace voxtype; do
     if ! command -v "$command_name" >/dev/null 2>&1; then
       echo "ERROR: $command_name not found in PATH"
       exit 1
@@ -355,7 +355,36 @@ postinstall = [
 {{- end }}
 ]
 
+{{- if eq .chezmoi.os "darwin" }}
+# Mise manages the macOS host package layer directly in the Apple Silicon
+# Homebrew prefix; a real Homebrew installation is not required.
+[bootstrap.brew.taps]
+"nikitabobko/tap" = "https://github.com/nikitabobko/homebrew-tap.git"
+
+[bootstrap.packages]
+"brew:curl" = "latest"
+"brew:git" = "latest"
+"brew:gnupg" = "latest"
+"brew:openssl@3" = "latest"
+"brew:p7zip" = "latest"
+"brew:pinentry" = "latest"
+"brew:pinentry-mac" = "latest"
+"brew:tree" = "latest"
+"brew:wget" = "latest"
+"brew:zsh-autosuggestions" = "latest"
+"brew:zsh-completions" = "latest"
+"brew:zsh-syntax-highlighting" = "latest"
+"brew-cask:nikitabobko/tap/aerospace" = "latest"
+"brew-cask:font-fira-code-nerd-font" = "latest"
+"brew-cask:obsidian" = "latest"
+"brew-cask:signal" = "latest"
+{{- end }}
+
 [tools]
+{{- if eq .chezmoi.os "darwin" }}
+# Mise needs Ruby 3 to evaluate the AeroSpace tap's cask definition.
+ruby = "3"
+{{- end }}
 # These tools are not part of Omarchy's base image and are shared across
 # supported platforms. Omarchy-owned tools are intentionally absent here.
 adr-tools = "latest"

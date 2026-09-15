@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Bootstrap Chezmoi and Omarchy's selected desktop applications.
+# Bootstrap Chezmoi and platform prerequisites.
 #
 # This script initializes Chezmoi but deliberately does not apply dotfiles.
 # Configure local Chezmoi data and review `chezmoi diff` before applying.
@@ -7,6 +7,7 @@ set -euo pipefail
 
 repo_url="${DOTFILES_REPO_URL:-git@github.com:jotu/dotfiles.git}"
 os_name="$(uname -s)"
+mise_bin=""
 
 error() {
   printf 'ERROR: %s\n' "$*" >&2
@@ -17,11 +18,15 @@ command -v git >/dev/null 2>&1 || error 'git is required to initialize Chezmoi'
 
 case "$os_name" in
   Darwin)
-    command -v brew >/dev/null 2>&1 || error \
-      'Homebrew is required on macOS. Install it from https://brew.sh/ and run this script again.'
+    [ "$(uname -m)" = arm64 ] || error \
+      'This macOS bootstrap supports Apple Silicon only.'
 
-    if ! command -v mise >/dev/null 2>&1; then
-      brew install mise
+    if command -v mise >/dev/null 2>&1; then
+      mise_bin="$(command -v mise)"
+    elif [ -x "$HOME/.local/bin/mise" ]; then
+      mise_bin="$HOME/.local/bin/mise"
+    else
+      error 'Mise is required on Apple Silicon macOS. Install it with: curl -fsSL https://mise.run | sh'
     fi
     ;;
   Linux)
@@ -29,6 +34,7 @@ case "$os_name" in
       'This Linux bootstrap supports Omarchy only.'
     command -v mise >/dev/null 2>&1 || error \
       'Mise should be preinstalled by Omarchy.'
+    mise_bin="$(command -v mise)"
 
     if ! command -v zsh >/dev/null 2>&1; then
       omarchy pkg add zsh
@@ -68,8 +74,8 @@ fi
 
 # Chezmoi is a bootstrap dependency on both platforms. After initialization,
 # the rendered Mise configuration keeps it available as part of the setup.
-mise use --global chezmoi@latest
-mise exec -- chezmoi init "$repo_url"
+"$mise_bin" use --global chezmoi@latest
+"$mise_bin" exec -- chezmoi init "$repo_url"
 
 if [ "$os_name" = Linux ]; then
   # Use Omarchy installers for desktop applications so package installation,
@@ -94,6 +100,24 @@ Bootstrap finished without applying the dotfiles.
    mise exec -- chezmoi diff
 4. Apply after reviewing the diff:
    mise exec -- chezmoi apply
+EOF
+
+if [ "$os_name" = Darwin ]; then
+  cat <<'EOF'
+5. Install Ruby for third-party cask metadata:
+   mise install ruby
+6. Inspect declared host packages:
+   mise exec -- mise bootstrap packages status
+7. Review the package plan:
+   mise exec -- mise bootstrap packages apply --dry-run
+8. Install declared macOS packages:
+   mise exec -- mise bootstrap packages apply
+9. Install remaining Mise-managed tools:
+   mise install
+EOF
+else
+  cat <<'EOF'
 5. Install Mise-managed tools not supplied by the platform:
    mise install
 EOF
+fi

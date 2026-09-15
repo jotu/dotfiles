@@ -36,8 +36,10 @@ mise run opencode:profile:validate
 
 This repository supports two platform profiles:
 
+The checked-in `bootstrap` helper initializes `git@github.com:jotu/dotfiles.git` by default. It runs `mise exec -- chezmoi init git@github.com:jotu/dotfiles.git` and deliberately stops before applying files. Set `DOTFILES_REPO_URL` to initialize a different dotfiles repository.
+
 - **Omarchy/Linux:** Omarchy owns the operating system, base packages, desktop applications, and its provisioned tools. Chezmoi adds user configuration and Mise installs tools that Omarchy does not provide.
-- **macOS:** Homebrew remains the package layer, while Mise manages the configured CLI tools and runtimes. The existing macOS setup is intentionally preserved.
+- **macOS:** Mise manages the package layer through its Homebrew-compatible backend, while also managing the configured CLI tools and runtimes. The profile targets Apple Silicon.
 
 ### Omarchy/Linux
 
@@ -103,34 +105,37 @@ Those commands are intentionally Omarchy-specific. Do not add Zed, Firefox, Herd
 
 ### macOS
 
-The macOS setup remains Homebrew- and Zsh-based. Install Homebrew first if necessary, then install Mise with Homebrew:
+The macOS setup targets Apple Silicon and uses standalone Mise with its Homebrew-compatible package backend. A real Homebrew installation is not required. Install Mise first:
 
 ```bash
-# Install Homebrew from https://brew.sh/ if it is not installed
-brew install git mise
+curl -fsSL https://mise.run | sh
+export PATH="$HOME/.local/bin:$PATH"
 
 eval "$(mise activate zsh)"
 mise use --global gh@latest
-mise use --global chezmoi@latest
 ```
 
-Authenticate GitHub using the existing SSH setup or `gh`, then initialize Chezmoi:
+Authenticate GitHub using the existing SSH setup or `gh`, then run the checked-in bootstrap helper. The helper installs Chezmoi through Mise and initializes this repository by default; set `DOTFILES_REPO_URL` first when using another repository:
 
 ```bash
 gh auth login --hostname github.com --git-protocol ssh
-mise exec -- chezmoi init git@github.com:jotu/dotfiles.git
+bash bootstrap
+# Or: DOTFILES_REPO_URL=git@github.com:you/dotfiles.git bash bootstrap
 mise exec -- chezmoi edit-config
 mise exec -- chezmoi data
 mise exec -- chezmoi diff
 mise exec -- chezmoi apply
+mise install ruby
+mise exec -- mise bootstrap packages status
+mise exec -- mise bootstrap packages apply --dry-run
+mise exec -- mise bootstrap packages apply
 mise install
 ```
 
-Chezmoi continues to install missing Homebrew packages through the Darwin package script. Keep updating macOS manually:
+Mise installs the declared macOS formulae and casks into `/opt/homebrew`. Keep them updated with Mise:
 
 ```bash
-brew update
-brew upgrade
+mise exec -- mise bootstrap packages upgrade
 mise up
 ```
 
@@ -142,8 +147,8 @@ Use the platform's own package and application tooling before adding a repositor
 
 | Tool or category | Omarchy/Linux | macOS |
 | --- | --- | --- |
-| Git | Omarchy base package | Homebrew |
-| Mise | Omarchy | Homebrew |
+| Git | Omarchy base package | Mise `brew` backend |
+| Mise | Omarchy | Standalone Mise |
 | Chezmoi | Mise | Mise |
 | `gh`, Pi, Herdr, Hunk, OpenCode, Codex, Claude, Crush, Gemini, `omp` | Omarchy provisioning | Existing macOS/Mise setup |
 | Worktrunk (`wt`) | Omarchy/Arch package | Mise GitHub release |
@@ -156,15 +161,14 @@ Use the platform's own package and application tooling before adding a repositor
 
 The repository manages configuration for these tools on both platforms. Worktrunk is installed natively on Omarchy through `omarchy pkg add worktrunk`; macOS uses the upstream GitHub release through Mise. Shell integration is managed by the repository's Bash and Zsh templates rather than by `wt config shell install`, so it does not modify Chezmoi-owned shell files. Use `wt switch`, `wt list`, and `wt remove` for the normal worktree workflow.
 
-It does not install a second Linux copy of tools already provided by Omarchy. Omarchy's `omarchy update` remains responsible for updating its base packages and provisioned tools. On macOS, continue to update Homebrew and Mise manually:
+It does not install a second Linux copy of tools already provided by Omarchy. Omarchy's `omarchy update` remains responsible for updating its base packages and provisioned tools. On macOS, update the declared host packages and Mise-managed tools manually:
 
 ```bash
 # Omarchy
 omarchy update
 
 # macOS
-brew update
-brew upgrade
+mise exec -- mise bootstrap packages upgrade
 mise up
 ```
 
@@ -197,7 +201,7 @@ mise run test:platform
 mise run test:platform:render
 ```
 
-`test:platform:render` requires Chezmoi, Python, yq, and configured local data; it renders and validates both Linux and macOS outputs. On a machine with Chezmoi and local data configured, also review `chezmoi diff` and use `chezmoi apply --dry-run`. Do not run the Omarchy or Homebrew installation scripts in unattended environments.
+`test:platform:render` requires Chezmoi, Python, yq, and configured local data; it renders and validates both Linux and macOS outputs. On a machine with Chezmoi and local data configured, also review `chezmoi diff` and use `chezmoi apply --dry-run`. Do not run the Omarchy installation scripts or package installs in unattended environments.
 
 Reference sections:
 - Git and identity setup: [Git](#git)
@@ -278,7 +282,7 @@ Common aliases are kept short and recognizable. Where Omarchy already has a shor
 | `shf` | `shfmt -w` | Format shell scripts |
 | `sht` | `shellspec` | Run shell tests |
 
-Aliases for optional tools are defined only when the command is installed. Homebrew remains the macOS bootstrap layer, while Mise manages versioned developer tools and uses its native short commands such as `mise i`, `mise r`, and `mise x`; no separate Homebrew alias is needed.
+Aliases for optional tools are defined only when the command is installed. Mise is the macOS bootstrap layer, using its Homebrew-compatible backend for host packages and its native short commands such as `mise i`, `mise r`, and `mise x` for versioned developer tools.
 
 `sar` and `avr` are shell functions because SSH-agent and AWS Vault environment changes must persist in the current shell.
 
@@ -353,7 +357,7 @@ The shared config intentionally omits `repoPaths`, because this setup has separa
 On a machine without the managed setup, install `gh` with the platform package manager and then install the same pinned extension directly:
 
 ```bash
-# macOS: brew install gh
+# macOS: mise use --global gh@latest
 # Omarchy: omarchy refresh applications
 gh extension install dlvhdr/gh-dash --pin v4.25.2 --force
 ```
@@ -362,7 +366,7 @@ gh extension install dlvhdr/gh-dash --pin v4.25.2 --force
 
 Mise postinstall installs the stable `gh-enhance` GitHub CLI extension. The stable and insiders repositories are alternatives, not extensions to install together; use the insiders repository only if you are enrolled in the insiders program.
 
-See the [ENHANCE guide](https://www.gh-dash.dev/enhance) for usage and keybindings. The Fira Code Nerd Font recommended there is managed by the Darwin Homebrew bundle.
+See the [ENHANCE guide](https://www.gh-dash.dev/enhance) for usage and keybindings. The Fira Code Nerd Font recommended there is managed by Mise's macOS package declarations.
 
 # Git
 
@@ -488,7 +492,7 @@ ssh -T git@github.com
 mise run dotfiles:health:check
 ```
 
-On macOS, the health check also verifies Homebrew, Mise, AeroSpace, Voxtype, and the configured Voxtype model/output chain.
+On macOS, the health check also verifies Mise, AeroSpace, Voxtype, and the configured Voxtype model/output chain.
 
 AeroSpace is installed and configured on macOS by chezmoi. Grant it Accessibility permission in System Settings → Privacy & Security → Accessibility. It starts automatically at login and uses `~/.aerospace.toml`.
 

@@ -71,10 +71,13 @@ import sys
 import tomllib
 
 with open(sys.argv[1], "rb") as file:
-    tools = tomllib.load(file)["tools"]
+    config = tomllib.load(file)
+tools = config["tools"]
+packages = config.get("bootstrap", {}).get("packages", {})
 os = sys.argv[2]
 
 if os == "linux":
+    assert not packages
     assert "gh" not in tools
     assert "hunk" not in tools
     assert "herdr" not in tools
@@ -84,6 +87,10 @@ else:
     assert "hunk" in tools
     assert "herdr" in tools
     assert "github:max-sixty/worktrunk" in tools
+    assert packages["brew:curl"] == "latest"
+    assert packages["brew-cask:nikitabobko/tap/aerospace"] == "latest"
+    assert packages["brew-cask:signal"] == "latest"
+    assert tools["ruby"] == "3"
 PY
 
   for source in "${toml_sources[@]}"; do
