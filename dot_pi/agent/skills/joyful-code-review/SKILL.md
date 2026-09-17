@@ -105,9 +105,16 @@ Rules:
 - Do not report personal style preferences without explaining their impact.
 - Do not duplicate multiple comments for the same root cause.
 
-## Conventional Commits as a Learning Aid
+## Conventional Commits
 
-Do not review, score, or block on existing commit messages.
+Do not review, score, or block on existing commit messages. This skill does not
+create commits. When a new commit is explicitly requested, it should be
+reviewable and use Conventional Commits:
+
+- keep it atomic and focused on one coherent change
+- separate structural cleanup from behavior changes when practical
+- include only verified changes within the requested scope
+- use `!` or `BREAKING CHANGE:` for breaking changes
 
 When useful, include a short practice note showing how the change could be
 organized using Conventional Commits:
@@ -181,6 +188,10 @@ XP, review technique, or Conventional Commits.
 ```
 
 Base `Request changes` only on at least one `issue (blocking)` comment.
+
+When running under `joyful-workflow`, mark review passed with `/joyful reviewed`
+or the `joyful_workflow` tool only after reporting the review and receiving
+confirmation. Never mark review passed when blocking findings remain.
 
 If there are no findings, write:
 
