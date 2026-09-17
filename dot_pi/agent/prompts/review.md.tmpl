@@ -3,10 +3,14 @@ description: Review current changes with Hunk and add actionable inline comments
 argument-hint: "[scope or review focus]"
 ---
 
-Load the Hunk skill and use it for this review. Run `hunk skill path` to get
-the skill path, then read the returned `SKILL.md` before reviewing.
+Load both skills before reviewing:
 
-You are the AI reviewer. Hunk is the live review surface and comment store.
+1. Load the Hunk review skill and use it for the live review session.
+2. Load the `joyful-code-review` skill and use it as the review method.
+
+Hunk is the live review surface and local comment store. The joyful-code-review
+skill defines what to look for and how to communicate it.
+
 Use Hunk's `hunk session *` commands; do not run interactive `hunk diff` or
 `hunk show` commands yourself.
 
@@ -19,12 +23,35 @@ Review the current Hunk session in read-only code mode:
 - Check the affected files and relevant repository instructions.
 - Look for correctness, regressions, security issues, missing verification,
   template errors, and unnecessary complexity.
+- Apply Tidy First, CUPID, and XP as review lenses.
 - Do not edit files, apply patches, commit, push, or post external comments.
 - Add only actionable findings as focused inline Hunk comments. Do not
   comment on every hunk. Use `comment add` for one finding or `comment apply`
   for a validated batch.
 - Navigate to a finding before commenting when practical.
 - If there are no actionable findings, say so and summarize what was checked.
+
+## Hunk comment format
+
+Use Conventional Comments in every actionable Hunk comment. Put the label,
+decorations, and subject in `--summary`; put the explanation, evidence, and
+smallest useful fix in `--rationale`.
+
+Examples:
+
+```text
+issue (blocking,security): Validate authorization before loading the record
+suggestion (non-blocking): Reuse the existing date formatter
+question (non-blocking): Should this timeout include queueing time?
+```
+
+Use `issue (blocking)` only for problems that should prevent merging. Do not
+use invented prefixes such as `P0` or `P1`.
+
+Keep optional Conventional Commit, CUPID, Tidy First, and XP lessons in the
+final response rather than adding them as Hunk comments. Only add educational
+`note (non-blocking)` comments when the user explicitly asks for an
+instructional review.
 
 Additional review instructions:
 
