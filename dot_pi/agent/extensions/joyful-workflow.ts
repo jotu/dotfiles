@@ -1,8 +1,10 @@
+import { resolve } from "node:path";
 import { StringEnum } from "@earendil-works/pi-ai";
 import type { ExtensionAPI, ExtensionContext } from "@earendil-works/pi-coding-agent";
 import { Type } from "typebox";
 
 type Phase = "ask" | "plan" | "implement" | "verify" | "review" | "done" | "break";
+type Workspace = "main" | "branch" | "worktree" | "worktrunk" | "existing";
 type Action =
 	| "start"
 	| "status"
@@ -20,7 +22,7 @@ type WorkflowState = {
 	reason?: string;
 	worktree?: string;
 	branch?: string;
-	base?: string;
+	workspace?: Workspace;
 	verificationPassed?: boolean;
 	reviewPassed?: boolean;
 	updatedAt: string;
@@ -49,8 +51,12 @@ const WorkflowParams = Type.Object({
 		"break",
 	] as const),
 	goal: Type.Optional(Type.String({ description: "Goal for a new workflow" })),
-	base: Type.Optional(Type.String({ description: "Base ref, default origin/main" })),
-	allowExisting: Type.Optional(Type.Boolean({ description: "Use an explicitly requested existing worktree" })),
+	workspace: Type.Optional(
+		StringEnum(["main", "branch", "worktree", "worktrunk", "existing"] as const, {
+			description: "Where to work; Worktrunk is optional",
+		}),
+	),
+	allowExisting: Type.Optional(Type.Boolean({ description: "Use the current checkout without requiring Worktrunk" })),
 	reason: Type.Optional(Type.String({ description: "Reason for the transition" })),
 });
 
@@ -62,11 +68,15 @@ function isPhase(value: unknown): value is Phase {
 	return typeof value === "string" && phases.includes(value as Phase);
 }
 
+function isWorkspace(value: unknown): value is Workspace {
+	return typeof value === "string" && ["main", "branch", "worktree", "worktrunk", "existing"].includes(value);
+}
+
 function reconstructState(ctx: ExtensionContext): WorkflowState {
 	let result = initialState();
 	for (const entry of ctx.sessionManager.getBranch()) {
 		if (entry.type !== "custom" || entry.customType !== STATE_TYPE) continue;
-		const data = entry.data as Partial<WorkflowState> | undefined;
+		const data = entry.data as (Partial<WorkflowState> & { base?: unknown }) | undefined;
 		if (data && isPhase(data.phase)) {
 			result = {
 				phase: data.phase,
@@ -74,7 +84,11 @@ function reconstructState(ctx: ExtensionContext): WorkflowState {
 				reason: typeof data.reason === "string" ? data.reason : undefined,
 				worktree: typeof data.worktree === "string" ? data.worktree : undefined,
 				branch: typeof data.branch === "string" ? data.branch : undefined,
-				base: typeof data.base === "string" ? data.base : undefined,
+				workspace: isWorkspace(data.workspace)
+					? data.workspace
+					: typeof data.base === "string"
+						? "worktrunk"
+						: undefined,
 				verificationPassed: data.verificationPassed === true,
 				reviewPassed: data.reviewPassed === true,
 				updatedAt: typeof data.updatedAt === "string" ? data.updatedAt : new Date().toISOString(),
@@ -88,14 +102,6 @@ function result(text: string, details: Record<string, unknown> = {}) {
 	return { content: [{ type: "text" as const, text }], details };
 }
 
-function parseBase(base: string): { remote: string; branch: string; ref: string } {
-	const slash = base.indexOf("/");
-	if (slash <= 0 || slash === base.length - 1) {
-		return { remote: "origin", branch: base, ref: `origin/${base}` };
-	}
-	return { remote: base.slice(0, slash), branch: base.slice(slash + 1), ref: base };
-}
-
 export default function joyfulWorkflow(pi: ExtensionAPI): void {
 	let state = initialState();
 
@@ -107,75 +113,74 @@ export default function joyfulWorkflow(pi: ExtensionAPI): void {
 	function statusText(): string {
 		const goal = state.goal ? `\nGoal: ${state.goal}` : "";
 		const location = state.worktree
-			? `\nWorktree: ${state.worktree}\nBranch: ${state.branch}\nBase: ${state.base}`
-			: "\nWorktree: not prepared";
+			? `\nWorktree: ${state.worktree}\nBranch: ${state.branch}\nWorkspace: ${state.workspace}`
+			: "\nWorkspace: not prepared";
 		const evidence = `\nVerification: ${state.verificationPassed ? "passed" : "pending"}\nReview: ${state.reviewPassed ? "passed" : "pending"}`;
 		const reason = state.reason ? `\nReason: ${state.reason}` : "";
 		return `Joyful workflow phase: ${state.phase}${goal}${location}${evidence}${reason}`;
 	}
 
-	async function prepare(ctx: ExtensionContext, baseInput: string | undefined, allowExisting = false) {
+	async function prepare(ctx: ExtensionContext, workspaceInput: string | undefined, allowExisting = false) {
 		if (!state.goal) return { ok: false, text: "Start a workflow with a goal before preparing it." };
-		if (!ctx.hasUI) return { ok: false, text: "Cannot prepare a Worktrunk workflow without an interactive UI." };
+		if (!ctx.hasUI) return { ok: false, text: "Cannot prepare a joyful workflow without an interactive UI." };
 
-		const base = allowExisting ? { remote: "", branch: "", ref: "existing" } : parseBase(baseInput?.trim() || "main");
-		const approved = await ctx.ui.confirm(
-			allowExisting ? "Use the explicitly requested existing Worktrunk?" : `Prepare joyful workflow from ${base.ref}?`,
-			allowExisting
-				? "Verify this is a clean, dedicated, non-main Worktrunk worktree."
-				: `Fetch ${base.remote}/${base.branch} and verify this is a clean, fresh Worktrunk worktree.`,
-		);
-		if (!approved) return { ok: false, text: "Worktrunk preparation cancelled by user." };
-
-		if (!allowExisting) {
-			const fetch = await pi.exec("git", ["fetch", base.remote, base.branch], { cwd: ctx.cwd });
-			if (fetch.code !== 0) {
-				return { ok: false, text: `Could not fetch ${base.ref}: ${fetch.stderr || "git fetch failed"}` };
-			}
+		const requested = workspaceInput?.trim().toLowerCase();
+		if (requested && !isWorkspace(requested)) {
+			return { ok: false, text: "Choose a workspace: main, branch, worktree, worktrunk, or existing." };
 		}
 
-		const baseResultPromise = allowExisting
-			? Promise.resolve({ code: 0, stdout: "", stderr: "" })
-			: pi.exec("git", ["rev-parse", base.ref], { cwd: ctx.cwd });
-		const [worktreeResult, branchResult, headResult, baseResult, statusResult, wtResult] = await Promise.all([
+		const [worktreeResult, branchResult, statusResult, gitDirResult, commonDirResult] = await Promise.all([
 			pi.exec("git", ["rev-parse", "--show-toplevel"], { cwd: ctx.cwd }),
 			pi.exec("git", ["branch", "--show-current"], { cwd: ctx.cwd }),
-			pi.exec("git", ["rev-parse", "HEAD"], { cwd: ctx.cwd }),
-			baseResultPromise,
 			pi.exec("git", ["status", "--porcelain"], { cwd: ctx.cwd }),
-			pi.exec("wt", ["list"], { cwd: ctx.cwd }),
+			pi.exec("git", ["rev-parse", "--git-dir"], { cwd: ctx.cwd }),
+			pi.exec("git", ["rev-parse", "--git-common-dir"], { cwd: ctx.cwd }),
 		]);
-
-		if (wtResult.code !== 0) return { ok: false, text: `Worktrunk is unavailable: ${wtResult.stderr || "wt list failed"}` };
-		if ([worktreeResult, branchResult, headResult, baseResult, statusResult].some((item) => item.code !== 0)) {
-			return { ok: false, text: "Could not inspect the current Git worktree." };
+		if ([worktreeResult, branchResult, statusResult, gitDirResult, commonDirResult].some((item) => item.code !== 0)) {
+			return { ok: false, text: "Could not inspect the current Git checkout." };
 		}
 
 		const worktree = worktreeResult.stdout.trim();
 		const branch = branchResult.stdout.trim();
-		const head = headResult.stdout.trim();
-		const baseHead = baseResult.stdout.trim();
 		const dirty = statusResult.stdout.trim();
+		const linkedWorktree = resolve(ctx.cwd, gitDirResult.stdout.trim()) !== resolve(ctx.cwd, commonDirResult.stdout.trim());
+		const isMain = branch === "main" || branch === "master";
+		let workspace: Workspace | undefined;
+		if (allowExisting || requested === "existing") workspace = "existing";
+		else if (requested) workspace = requested as Workspace;
+		else if (!isMain) workspace = "branch";
 
-		if (!branch || branch === "main" || branch === "master") {
-			return { ok: false, text: "Start Pi inside a dedicated Worktrunk branch, not the base branch." };
+		if (!workspace) {
+			return { ok: false, text: "You are on the base branch. Choose explicitly: main, branch, worktree, worktrunk, or existing." };
 		}
-		if (dirty) return { ok: false, text: "The selected Worktrunk is not clean; commit or discard changes before starting." };
-		if (!allowExisting && head !== baseHead) {
-			return { ok: false, text: `The worktree is not fresh from ${base.ref}; create a new Worktrunk from the fetched base.` };
+		if (!branch) return { ok: false, text: "A checked-out branch is required; detached HEAD is not supported." };
+		if (workspace === "main" && !isMain) return { ok: false, text: "Workspace main requires the main or master branch." };
+		if (workspace === "branch" && isMain) return { ok: false, text: "Workspace branch requires a non-main branch. Create or switch to one first." };
+		if (workspace === "worktree" && !linkedWorktree) return { ok: false, text: "Workspace worktree requires a linked Git worktree. Create or switch to one first." };
+		if (workspace === "worktrunk") {
+			const wt = await pi.exec("wt", ["list"], { cwd: ctx.cwd });
+			if (wt.code !== 0) return { ok: false, text: `Worktrunk is unavailable: ${wt.stderr || "wt list failed"}` };
+			if (!linkedWorktree || isMain) return { ok: false, text: "Workspace worktrunk requires a linked worktree on a non-main branch." };
 		}
+		if (dirty) return { ok: false, text: "The selected checkout is not clean; commit or discard changes before starting." };
+
+		const approved = await ctx.ui.confirm(
+			`Use the ${workspace} workspace?`,
+			`Continue in ${worktree} on ${branch}. No workspace will be created or switched automatically.`,
+		);
+		if (!approved) return { ok: false, text: "Workspace preparation cancelled by user." };
 
 		persist({
 			...state,
 			worktree,
 			branch,
-			base: allowExisting ? "existing" : base.ref,
+			workspace,
 			verificationPassed: false,
 			reviewPassed: false,
-			reason: allowExisting ? "Existing Worktrunk preflight passed." : "Fresh Worktrunk preflight passed.",
+			reason: `${workspace} workspace prepared.`,
 			updatedAt: new Date().toISOString(),
 		});
-		return { ok: true, text: `Worktrunk preflight passed.\nWorktree: ${worktree}\nBranch: ${branch}\nBase: ${allowExisting ? "existing" : base.ref}` };
+		return { ok: true, text: `Workspace prepared.\nWorkspace: ${workspace}\nWorktree: ${worktree}\nBranch: ${branch}` };
 	}
 
 	async function moveTo(target: Phase, reason: string | undefined, ctx: ExtensionContext) {
@@ -191,8 +196,8 @@ export default function joyfulWorkflow(pi: ExtensionAPI): void {
 				text: `Cannot move from ${state.phase} to ${target}. Expected ${expected ?? "start a new workflow or break"}.`,
 			};
 		}
-		if (target === "plan" && (!state.worktree || !state.branch || !state.base)) {
-			return { ok: false, text: "Run Worktrunk preflight before entering Plan." };
+		if (target === "plan" && (!state.worktree || !state.branch || !state.workspace)) {
+			return { ok: false, text: "Prepare a workspace before entering Plan." };
 		}
 		if (target === "review" && !state.verificationPassed) {
 			return { ok: false, text: "Mark verification passed before entering Review." };
@@ -233,7 +238,7 @@ export default function joyfulWorkflow(pi: ExtensionAPI): void {
 	async function handleAction(
 		action: Action,
 		goal: string | undefined,
-		base: string | undefined,
+		workspace: string | undefined,
 		allowExisting: boolean | undefined,
 		reason: string | undefined,
 		ctx: ExtensionContext,
@@ -242,9 +247,9 @@ export default function joyfulWorkflow(pi: ExtensionAPI): void {
 		if (action === "start") {
 			if (!goal?.trim()) return { ok: false, text: "A goal is required to start a joyful workflow." };
 			persist({ phase: "ask", goal: goal.trim(), reason: undefined, updatedAt: new Date().toISOString() });
-			return { ok: true, text: `Workflow started in ask phase.\nGoal: ${goal.trim()}\nRun Worktrunk preflight before Plan.` };
+			return { ok: true, text: `Workflow started in ask phase.\nGoal: ${goal.trim()}\nChoose a workspace before Plan (main, branch, worktree, worktrunk, or existing).` };
 		}
-		if (action === "prepare") return prepare(ctx, base, allowExisting === true);
+		if (action === "prepare") return prepare(ctx, workspace, allowExisting === true);
 		if (action === "mark-verified") return markEvidence("verificationPassed", ctx);
 		if (action === "mark-reviewed") return markEvidence("reviewPassed", ctx);
 		if (action === "advance") {
@@ -281,14 +286,21 @@ export default function joyfulWorkflow(pi: ExtensionAPI): void {
 		promptSnippet: "Advance the joyful development workflow with explicit user confirmation",
 		parameters: WorkflowParams,
 		async execute(_toolCallId, params, _signal, _onUpdate, ctx) {
-			const outcome = await handleAction(params.action, params.goal, params.base, params.allowExisting, params.reason, ctx);
+			const outcome = await handleAction(
+				params.action,
+				params.goal,
+				params.workspace,
+				params.allowExisting,
+				params.reason,
+				ctx,
+			);
 			return result(outcome.text, {
 				phase: state.phase,
 				ok: outcome.ok,
 				goal: state.goal,
 				worktree: state.worktree,
 				branch: state.branch,
-				base: state.base,
+				workspace: state.workspace,
 				verificationPassed: state.verificationPassed,
 				reviewPassed: state.reviewPassed,
 			});
@@ -313,7 +325,7 @@ export default function joyfulWorkflow(pi: ExtensionAPI): void {
 			}
 			const action = command === "next" ? "advance" : command === "verified" ? "mark-verified" : command === "reviewed" ? "mark-reviewed" : command;
 			if (!["status", "advance", "replan", "mark-verified", "mark-reviewed", "finish", "break"].includes(action)) {
-				ctx.ui.notify("Usage: /joyful status|start <goal>|prepare [base]|next|verified|reviewed|replan|finish|break", "error");
+				ctx.ui.notify("Usage: /joyful status|start <goal>|prepare [main|branch|worktree|worktrunk|existing]|next|verified|reviewed|replan|finish|break", "error");
 				return;
 			}
 			const outcome = await handleAction(

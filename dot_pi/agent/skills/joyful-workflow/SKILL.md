@@ -25,36 +25,33 @@ command, and user confirmation. The skill provides the behavior the agent must
 follow. The guardrail is not a sandbox; shell commands can still have side
 effects and remain subject to the normal safety gates.
 
-## Worktrunk Boundary
+## Workspace Boundary
 
-Use Worktrunk for every joyful workflow:
+Worktrunk is optional. Do not force a branch, worktree, fetch, or network
+operation when the user has not chosen one. First establish where the user
+wants to work:
 
-1. Unless the user names an existing worktree or explicitly asks to use the
-   current checkout, default to a new Worktrunk branch and worktree from the
-   fresh latest `main`.
-2. Confirm the base branch and remote. Unless the user specifies otherwise,
-   fetch `origin/main` before creating the worktree.
-3. Derive a concise, descriptive kebab-case name from the goal, such as
-   `fix-auth-timeout`, `add-invoice-export`, or `refactor-cache-boundary`.
-4. Show the proposed base, fetch, and branch name. Ask for confirmation before
-   running the network operation or creating/switching worktrees. Then run
-   `git fetch origin main` followed by `wt switch --create <name> --base origin/main`.
-5. Start or relaunch Pi in the new worktree, run `/joyful start <goal>`, and
-   then run `/joyful prepare` (or the `joyful_workflow` tool with `action:
-   "prepare"`). The extension must verify the clean worktree, non-main branch,
-   fresh base commit, and Worktrunk.
-6. Before planning or implementation, confirm that Pi is running in the new
-   worktree. Do not continue in the base checkout after creating one. If the
-   user explicitly chose an existing worktree, use `/joyful prepare existing`;
-   it still must be a clean, dedicated, non-main Worktrunk.
-7. Keep Plan, Implement, Verify, and Review in the same worktree.
-8. Include the selected base, branch, and worktree in phase handoffs and the
-   final review.
+- **main** — work in the current `main`/`master` checkout when the user says
+  `work on main`.
+- **branch** — use the current non-main branch. This is the default when the
+  current checkout is already on a branch other than `main`/`master`.
+- **worktree** — use a linked Git worktree when the user asks for one.
+- **worktrunk** — use Worktrunk only when the user asks for it.
+- **existing** — use the explicitly selected current checkout as-is.
 
-If Worktrunk is unavailable, the name is ambiguous, or the current directory
-is not the agreed worktree, stop at Ask or Break rather than silently using the
-base checkout. The existing Worktrunk Pi extension may show 🤖/💬 activity
-markers, but those markers do not replace selecting the correct worktree.
+Use `/joyful prepare main|branch|worktree|worktrunk|existing` to record the
+choice. `/joyful prepare` auto-selects `branch` on a non-main branch and asks
+for an explicit choice on `main`. Preparation only verifies the selected
+checkout is a clean Git checkout; it does not create or switch workspaces.
+
+If the user asks to create a branch or worktree, explain the proposed command,
+ask for confirmation before changing Git state, perform that change, then run
+`/joyful prepare branch` or `/joyful prepare worktree`. Keep Plan, Implement,
+Verify, and Review in the selected checkout. Include the selected workspace,
+branch, and path in phase handoffs and the final review.
+
+The Worktrunk activity extension may still show 🤖/💬 markers, but those markers
+are optional convenience only and never determine where work happens.
 
 ## Required User Checkpoints
 
@@ -83,7 +80,7 @@ Do not implement.
 
 Use `/skill:joyful-planning`.
 Inspect the repository and produce the smallest implementation-ready plan.
-Do not modify code. Worktrunk preflight must already be recorded as passed.
+Do not modify code. Workspace preparation must already be recorded as passed.
 
 ### Implement
 
