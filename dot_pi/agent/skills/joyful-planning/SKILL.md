@@ -76,14 +76,12 @@ Do not include unrelated cleanup or speculative refactoring.
 Use XP practices to keep the feedback loop short:
 
 - make one behavior increment at a time
-- use Red -> Green -> Refactor for behavior changes
-- identify focused tests before implementation
+- use TDD: Red -> Green -> Refactor
+- choose focused unit tests for isolated behavior and approval tests only for stable whole-output contracts
+- keep the smallest test set; do not duplicate assertions or accept baselines blindly
 - prefer simple design and executable examples
 - expose failures instead of hiding them
 - use the fastest useful feedback available
-
-Do not enforce XP practices mechanically when they do not fit the repository or
-the risk of the change.
 
 ## Planning Output
 
@@ -121,14 +119,15 @@ Return:
 
 ## Tidy + TDD Sequence
 
-1. <structural preparation, if needed>
-2. <failing test or check>
+1. <behavior-preserving structural preparation, if needed>
+2. <smallest failing unit or approval test>
 3. <smallest implementation>
-4. <behavior-preserving cleanup>
+4. <review any baseline change and tidy>
 
 ## Verification Plan
 
-- <focused test or check>
+- <focused unit tests>
+- <approval tests and deliberate review of any baseline changes, when applicable>
 - <broader check, if needed>
 
 ## Risks and Open Decisions

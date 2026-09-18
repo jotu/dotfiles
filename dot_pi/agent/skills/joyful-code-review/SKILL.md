@@ -60,6 +60,7 @@ Use these as questions, not rigid rules:
 Look for:
 
 - clear communication through names, tests, and contracts
+- focused TDD evidence: no duplicated assertions; approval tests only for stable whole-output contracts, with baseline changes reviewed deliberately
 - the simplest design that solves the current problem
 - fast feedback through focused tests and verification
 - courage to expose failures instead of hiding them

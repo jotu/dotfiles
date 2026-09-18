@@ -25,6 +25,17 @@ command, and user confirmation. The skill provides the behavior the agent must
 follow. The guardrail is not a sandbox; shell commands can still have side
 effects and remain subject to the normal safety gates.
 
+## Testing Policy
+
+Use TDD for behavior changes: Red → Green → Refactor. Write the smallest
+focused unit tests for isolated behavior; add approval tests only for stable
+whole-output contracts. Use one or both only when they provide distinct
+evidence—never duplicate assertions or accept approval baselines blindly.
+
+Keep tests, baselines, and guidance terse and focused: fast feedback (Lean),
+clear separation (Tidy First), visible contracts (CUPID), and a short
+test-first loop (XP).
+
 ## Workspace Boundary
 
 Worktrunk is optional. Do not force a branch, worktree, fetch, or network
@@ -79,29 +90,32 @@ Do not implement.
 ### Plan
 
 Use `/skill:joyful-planning`.
-Inspect the repository and produce the smallest implementation-ready plan.
+Inspect the repository and produce the smallest implementation-ready plan,
+including only the unit-test and approval-test cases the behavior needs.
 Do not modify code. Workspace preparation must already be recorded as passed.
 
 ### Implement
 
 Use `/skill:joyful-implementation`.
-Implement one behavior increment at a time with Red → Green → Refactor.
-Keep the change within the accepted scope.
+Implement one behavior increment at a time with TDD: Red → Green → Refactor.
+Write focused tests first; use approval tests only when they add distinct
+whole-output evidence. Keep the change within the accepted scope.
 
 ### Verify
 
 Use `/skill:joyful-verification`.
-Run objective checks against the acceptance criteria and record exact evidence.
-Do not fix failures in this phase; replan first. After the evidence is reported,
-mark verification passed with `/joyful verified` or the workflow tool.
+Run the smallest relevant unit and approval checks, record exact evidence, and
+review any baseline changes deliberately. Do not fix failures in this phase;
+replan first. After reporting evidence, mark verification passed with
+`/joyful verified` or the workflow tool.
 
 ### Review
 
 Use `/skill:joyful-code-review`.
-Review correctness, security, data integrity, compatibility, CUPID, Tidy First,
-and XP concerns. Report only actionable findings. After review reports no
-blocking findings, mark review passed with `/joyful reviewed` or the workflow
-tool.
+Review correctness, security, data integrity, compatibility, focused test
+evidence, CUPID, Tidy First, and XP concerns. Report only actionable findings.
+After review reports no blocking findings, mark review passed with
+`/joyful reviewed` or the workflow tool.
 
 ### Done
 

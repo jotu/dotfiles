@@ -78,15 +78,14 @@ changes recognizable in the diff and behavior changes independently verifiable.
 Use XP practices to keep the feedback loop short:
 
 - make one behavior increment at a time
-- write or update a focused test before implementation when practical
+- use TDD: write the smallest focused unit or approval test first
+- use approval tests only for stable whole-output contracts
 - use Red -> Green -> Refactor
+- review baseline changes as behavior, not incidental output
 - prefer simple design and executable examples
 - expose failures instead of hiding them
 - use the fastest useful feedback available
 - leave the code and tests clearer than they were
-
-Do not enforce XP practices mechanically when they do not fit the repository or
-the risk of the change.
 
 ## Implementation Rules
 

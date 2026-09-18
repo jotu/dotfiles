@@ -36,7 +36,7 @@ stop and ask for clarification instead of guessing.
 Prefer the project’s documented commands. Otherwise use the smallest relevant
 sequence:
 
-1. focused test or executable example
+1. focused unit tests, plus approval tests only when they add distinct whole-output evidence
 2. formatter or lint
 3. typecheck
 4. broader tests
@@ -70,6 +70,8 @@ Use these questions to identify missing evidence:
 - Do not mix verification with unrelated cleanup.
 - Treat a failing check as information, not as a reason to hide the failure.
 - Keep one behavior increment and its feedback together where possible.
+- Verify only the focused tests that add evidence; never duplicate assertions.
+- Review approval-test baseline changes as part of the behavior diff.
 - If verification reveals a structural problem, record it for replanning instead
   of expanding the current change without agreement.
 - Preserve the distinction between a behavior failure and a code-review concern.
