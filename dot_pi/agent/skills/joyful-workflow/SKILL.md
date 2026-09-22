@@ -20,10 +20,15 @@ Ask → Plan → Implement → Verify → Review → Done
 Any stage → Break
 ```
 
-The `joyful-workflow` Pi extension provides the phase guardrail, state, status
-command, and user confirmation. The skill provides the behavior the agent must
-follow. The guardrail is not a sandbox; shell commands can still have side
-effects and remain subject to the normal safety gates.
+For non-trivial work, Ask and Plan produce a small issue tree: one root goal,
+small independently verifiable leaves, dependencies, and a done check per leaf.
+Work one leaf through Implement → Verify → Review before starting the next.
+Skip the tree for a one-slice change.
+
+The `joyful-workflow` Pi extension provides the phase guardrail, state, and
+status command. The skill provides the behavior the agent must follow. The
+guardrail is not a sandbox; shell commands can still have side effects and
+remain subject to the normal safety gates.
 
 ## Testing Policy
 
@@ -74,11 +79,11 @@ Ask instead of guessing when:
 - verification fails and the fix may change scope
 - review finds a blocking issue
 - a check would be skipped, weakened, or replaced by a risky workaround
-- the work is ready to move to the next phase
+- a destructive, cluster, credential, branch/worktree, or external-write gate is reached
 
 Use the `joyful_workflow` tool or `/joyful` command to record phase changes.
-Phase changes always require user confirmation. Explicit commands select the
-requested transition but do not bypass confirmation.
+Routine phase changes and evidence recording do not require an extra confirmation;
+the safety gate and the Ask decision points remain authoritative.
 
 ## Phase Rules
 
@@ -90,16 +95,17 @@ Do not implement.
 ### Plan
 
 Use `/skill:joyful-planning`.
-Inspect the repository and produce the smallest implementation-ready plan,
-including only the unit-test and approval-test cases the behavior needs.
-Do not modify code. Workspace preparation must already be recorded as passed.
+Inspect the repository and produce the smallest implementation-ready plan for
+the next issue-tree leaf, including its done check and only the tests that add
+distinct evidence. Do not modify code. Workspace preparation must already be
+recorded as passed.
 
 ### Implement
 
 Use `/skill:joyful-implementation`.
-Implement one behavior increment at a time with TDD: Red → Green → Refactor.
-Write focused tests first; use approval tests only when they add distinct
-whole-output evidence. Keep the change within the accepted scope.
+Implement one issue-tree leaf at a time with TDD when behavior changes: Red →
+Green → Refactor. Keep the change within the accepted scope and stop for a
+new decision instead of silently adding another leaf.
 
 ### Verify
 
@@ -166,5 +172,8 @@ it must use Conventional Commits and be suitable for review:
 - use `!` or `BREAKING CHANGE:` for breaking changes
 - do not rewrite existing history unless explicitly asked
 
-The normal commit point is after Verify and Review. Ask before committing if the
-scope, commit split, or breaking-change status is unclear.
+The normal commit point is after Verify and Review. If the user explicitly
+requests commit, push, PR creation, or a similar delivery batch, execute the
+whole batch together, compose the commit message and PR description, and ask
+only when its scope, destination, or breaking-change status is unclear. Keep
+merge, deletion, and unrelated risky actions as separate gates.

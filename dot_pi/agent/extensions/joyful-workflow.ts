@@ -122,8 +122,6 @@ export default function joyfulWorkflow(pi: ExtensionAPI): void {
 
 	async function prepare(ctx: ExtensionContext, workspaceInput: string | undefined, allowExisting = false) {
 		if (!state.goal) return { ok: false, text: "Start a workflow with a goal before preparing it." };
-		if (!ctx.hasUI) return { ok: false, text: "Cannot prepare a joyful workflow without an interactive UI." };
-
 		const requested = workspaceInput?.trim().toLowerCase();
 		if (requested && !isWorkspace(requested)) {
 			return { ok: false, text: "Choose a workspace: main, branch, worktree, worktrunk, or existing." };
@@ -164,12 +162,6 @@ export default function joyfulWorkflow(pi: ExtensionAPI): void {
 		}
 		if (dirty) return { ok: false, text: "The selected checkout is not clean; commit or discard changes before starting." };
 
-		const approved = await ctx.ui.confirm(
-			`Use the ${workspace} workspace?`,
-			`Continue in ${worktree} on ${branch}. No workspace will be created or switched automatically.`,
-		);
-		if (!approved) return { ok: false, text: "Workspace preparation cancelled by user." };
-
 		persist({
 			...state,
 			worktree,
@@ -183,7 +175,7 @@ export default function joyfulWorkflow(pi: ExtensionAPI): void {
 		return { ok: true, text: `Workspace prepared.\nWorkspace: ${workspace}\nWorktree: ${worktree}\nBranch: ${branch}` };
 	}
 
-	async function moveTo(target: Phase, reason: string | undefined, ctx: ExtensionContext) {
+	async function moveTo(target: Phase, reason: string | undefined) {
 		if (state.phase === target) return { ok: true, text: `Already in phase: ${target}` };
 
 		const expected = nextPhase[state.phase];
@@ -205,14 +197,6 @@ export default function joyfulWorkflow(pi: ExtensionAPI): void {
 		if (target === "done" && (!state.verificationPassed || !state.reviewPassed)) {
 			return { ok: false, text: "Mark verification and review passed before finishing." };
 		}
-		if (!ctx.hasUI) return { ok: false, text: `Cannot confirm ${state.phase} → ${target} without an interactive UI.` };
-
-		const approved = await ctx.ui.confirm(
-			`Joyful workflow: ${state.phase} → ${target}?`,
-			reason || `Continue the workflow in the ${target} phase.`,
-		);
-		if (!approved) return { ok: false, text: "Phase transition cancelled by user." };
-
 		persist({
 			...state,
 			phase: target,
@@ -224,13 +208,10 @@ export default function joyfulWorkflow(pi: ExtensionAPI): void {
 		return { ok: true, text: `Moved to ${target}.` };
 	}
 
-	async function markEvidence(kind: "verificationPassed" | "reviewPassed", ctx: ExtensionContext) {
+	async function markEvidence(kind: "verificationPassed" | "reviewPassed") {
 		const expectedPhase = kind === "verificationPassed" ? "verify" : "review";
 		if (state.phase !== expectedPhase) return { ok: false, text: `Evidence can only be marked in ${expectedPhase}.` };
-		if (!ctx.hasUI) return { ok: false, text: "Cannot record evidence without an interactive UI." };
 		const label = kind === "verificationPassed" ? "verification" : "review";
-		const approved = await ctx.ui.confirm(`Mark ${label} passed?`, `Only confirm after the ${label} evidence has been reported.`);
-		if (!approved) return { ok: false, text: `${label} evidence was not marked passed.` };
 		persist({ ...state, [kind]: true, reason: `${label} evidence recorded.`, updatedAt: new Date().toISOString() });
 		return { ok: true, text: `${label} marked passed.` };
 	}
@@ -250,16 +231,16 @@ export default function joyfulWorkflow(pi: ExtensionAPI): void {
 			return { ok: true, text: `Workflow started in ask phase.\nGoal: ${goal.trim()}\nChoose a workspace before Plan (main, branch, worktree, worktrunk, or existing).` };
 		}
 		if (action === "prepare") return prepare(ctx, workspace, allowExisting === true);
-		if (action === "mark-verified") return markEvidence("verificationPassed", ctx);
-		if (action === "mark-reviewed") return markEvidence("reviewPassed", ctx);
+		if (action === "mark-verified") return markEvidence("verificationPassed");
+		if (action === "mark-reviewed") return markEvidence("reviewPassed");
 		if (action === "advance") {
 			const target = nextPhase[state.phase];
 			if (!target) return { ok: false, text: `No automatic next phase from ${state.phase}.` };
-			return moveTo(target, reason, ctx);
+			return moveTo(target, reason);
 		}
-		if (action === "replan") return moveTo("plan", reason || "Replan after verification or review feedback.", ctx);
-		if (action === "finish") return moveTo("done", reason || "Verification and review are complete.", ctx);
-		return moveTo("break", reason || "Stop the workflow.", ctx);
+		if (action === "replan") return moveTo("plan", reason || "Replan after verification or review feedback.");
+		if (action === "finish") return moveTo("done", reason || "Verification and review are complete.");
+		return moveTo("break", reason || "Stop the workflow.");
 	}
 
 	pi.on("session_start", async (_event, ctx) => {
@@ -282,8 +263,8 @@ export default function joyfulWorkflow(pi: ExtensionAPI): void {
 	pi.registerTool({
 		name: "joyful_workflow",
 		label: "Joyful Workflow",
-		description: "Start, prepare, inspect, and advance the Ask → Plan → Implement → Verify → Review workflow with user confirmation.",
-		promptSnippet: "Advance the joyful development workflow with explicit user confirmation",
+		description: "Start, prepare, inspect, and advance the Ask → Plan → Implement → Verify → Review workflow with safety gates.",
+		promptSnippet: "Advance the joyful development workflow while stopping at safety and decision gates",
 		parameters: WorkflowParams,
 		async execute(_toolCallId, params, _signal, _onUpdate, ctx) {
 			const outcome = await handleAction(

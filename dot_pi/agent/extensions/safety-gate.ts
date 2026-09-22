@@ -54,18 +54,19 @@ export function protectedPathReason(inputPath: string, cwd: string): string | un
 
 // ponytail: regex checks miss shell indirection; use a VM for real isolation.
 const riskyCommands: Array<[RegExp, string]> = [
-	[/\brm(?:\s|$)/i, "deleting files"],
+	[/\b(?:rm|rmdir|unlink|trash)(?:\s|$)/i, "deleting files"],
+	[/\bfind\b[^;\n]*\s-delete\b/i, "deleting files"],
 	[/\bsudo\b/i, "elevated privileges"],
 	[/\b(?:chmod|chown)\b/i, "changing file permissions or ownership"],
 	[/\bgit\s+pull\b/i, "a remote Git operation that changes the checkout"],
-	[/\bgit\s+(?:switch|checkout)\s+(?:-c|-C|-b|--create)\b/i, "creating or switching branches"],
+	[/\bgit\s+(?:switch|checkout)\b/i, "switching branches"],
 	[/\bgit\s+branch\s+(?:-+[dDcmCM]\b|--(?:delete|move|copy|create)\b|(?!-)[^;\n\s|&]+)/i, "creating, deleting, or moving branches"],
 	[/\bgit\s+worktree\s+(?:add|remove|move|lock|unlock)\b/i, "changing Git worktrees"],
 	[/\bgit\s+(?:reset\s+--hard|clean\b|checkout\s+--|restore\s+--)/i, "a destructive Git operation"],
 	[/\b(?:npm|pnpm|yarn|bun|pip|uv|brew|mise)\s+(?:install|ci|add|remove|uninstall|update|upgrade)\b/i, "changing installed tooling or dependencies"],
-	[/\b(?:gh\s+auth|gh\s+pr\s+(?:create|merge)|gh\s+issue\s+(?:comment|close)|npm\s+publish|docker\s+push)\b/i, "an externally visible operation"],
 	[/\b(?:kubectl|helm|k9s|oc|argocd|kargo|flux|stern)\b/i, "connecting to or inspecting a Kubernetes control plane"],
-	[/\b(?:aws\s+eks\s+(?:get-token|describe-cluster)|gcloud\s+container\s+clusters\s+(?:get-credentials|describe)|az\s+aks\s+(?:get-credentials|show))\b/i, "connecting to a Kubernetes control plane"],
+	[/\b(?:aws\s+eks\s+(?:get-token|update-kubeconfig|describe-cluster|list-clusters)|gcloud\s+container\s+clusters\s+(?:get-credentials|describe|list)|az\s+aks\s+(?:get-credentials|show|list))\b/i, "connecting to a Kubernetes control plane"],
+	[/\b(?:git\s+push|gh\s+auth|gh\s+pr\s+(?:create|merge)|gh\s+issue\s+(?:comment|close)|npm\s+publish|docker\s+push)\b/i, "an externally visible operation"],
 	[/\b(?:terraform)\b[^;\n]*(?:apply|destroy)\b/i, "an infrastructure change"],
 	[/\bsecurity\s+(?:add|delete|set|remove)\b/i, "a credential or keychain change"],
 ];
@@ -77,6 +78,20 @@ function isNetworkWrite(command: string): boolean {
 export function riskyCommandReason(command: string): string | undefined {
 	if (isNetworkWrite(command)) return "uploading data or executing downloaded content";
 	return riskyCommands.find(([pattern]) => pattern.test(command))?.[1];
+}
+
+function isExplicitDeliveryRequest(text: string): boolean {
+	if (/\b(?:do not|don't|never|avoid|without)\b[^.!?]{0,30}\b(?:commit|push|publish|pull request|pr)\b/i.test(text)) {
+		return false;
+	}
+	const action = /\b(?:commit|push|publish|create|open)\b/i.test(text);
+	const target = /\b(?:commit|push|publish|pull request|pr)\b/i.test(text);
+	return action && target;
+}
+
+function isAuthorizedDeliveryCommand(command: string): boolean {
+	if (!/\bgit\s+push\b|\bgh\s+pr\s+create\b/i.test(command)) return false;
+	return !/\b(?:gh\s+pr\s+merge|gh\s+issue\s+(?:comment|close)|gh\s+auth|kubectl|helm|k9s|oc|argocd|kargo|flux|stern|terraform|sudo|rm|rmdir|unlink|trash)(?:\s|\b)/i.test(command);
 }
 
 export function sensitiveCommandReason(command: string): string | undefined {
@@ -101,6 +116,16 @@ function commandFromInput(input: ToolInput): string {
 }
 
 export default function safetyGate(pi: ExtensionAPI): void {
+	let deliveryBatchAuthorized = false;
+
+	pi.on("input", (event) => {
+		deliveryBatchAuthorized = isExplicitDeliveryRequest(event.text);
+	});
+
+	pi.on("agent_end", () => {
+		deliveryBatchAuthorized = false;
+	});
+
 	pi.on("tool_call", async (event, ctx) => {
 		const input = event.input as ToolInput;
 
@@ -119,6 +144,7 @@ export default function safetyGate(pi: ExtensionAPI): void {
 
 		const reason = riskyCommandReason(command);
 		if (!reason) return;
+		if (deliveryBatchAuthorized && isAuthorizedDeliveryCommand(command)) return;
 
 		if (!ctx.hasUI) {
 			return { block: true, reason: `Safety gate blocked ${reason}; no interactive confirmation is available.` };
