@@ -225,7 +225,7 @@ run = '''
   }
 
   gh_personal_dir=$(expand_path "{{ $ghConfigPersonal }}")
-  GH_CONFIG_DIR="$gh_personal_dir" gh auth login --hostname github.com --git-protocol https
+  env -u GITHUB_TOKEN -u GH_TOKEN GH_CONFIG_DIR="$gh_personal_dir" gh auth login --hostname github.com --git-protocol https
 '''
 
 {{- if .work.enable }}
@@ -244,7 +244,7 @@ run = '''
   }
 
   gh_work_dir=$(expand_path "{{ $ghConfigWork }}")
-  GH_CONFIG_DIR="$gh_work_dir" gh auth login --hostname github.com --git-protocol ssh
+  env -u GITHUB_TOKEN -u GH_TOKEN GH_CONFIG_DIR="$gh_work_dir" gh auth login --hostname github.com --git-protocol ssh
 '''
 
 [tasks."gh:auth:status:all"]
