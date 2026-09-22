@@ -24,6 +24,7 @@ not_contains() {
 # These scripts are repository tooling and must remain executable shell.
 bash -n "$repo_root/bootstrap"
 bash -n "$repo_root/tests/test-platform-layout.sh"
+bash -n "$repo_root/tests/test-pi-skills.sh"
 contains bootstrap 'omarchy_ai_commands=(codex claude crush gemini gh opencode pi omp hunk)'
 contains bootstrap 'This macOS bootstrap supports Apple Silicon only.'
 contains bootstrap 'curl -fsSL https://mise.run | sh'
@@ -137,6 +138,19 @@ contains dot_config/mise/conf.d/00-base.toml.tmpl 'wt config plugins pi install 
 contains dot_pi/agent/extensions/worktrunk.ts 'agent_start'
 contains dot_pi/agent/extensions/worktrunk.ts 'session_shutdown'
 contains dot_config/mise/conf.d/00-opencode.toml.tmpl '[tasks."pi:plan-mode:sync"]'
+contains dot_config/mise/conf.d/00-opencode.toml.tmpl '[tasks."pi:subagent:sync"]'
+contains dot_config/mise/conf.d/00-opencode.toml.tmpl '[tasks."pi:matt:skills:install"]'
+contains dot_config/mise/conf.d/00-opencode.toml.tmpl '[tasks."herdr:pi:install"]'
+contains dot_config/mise/conf.d/00-opencode.toml.tmpl 'install-pi-subagent'
+contains dot_config/mise/conf.d/00-base.toml.tmpl 'pi:matt:skills:install'
+contains dot_config/mise/scripts/manage-matt-pi-skills 'MISE_INSTALLED_TOOLS'
+contains dot_config/mise/scripts/install-pi-subagent 'MISE_TOOL_INSTALL_PATH'
+contains dot_config/mise/scripts/install-pi-subagent 'command -v pi'
+contains dot_pi/agent/AGENTS.md '/skill:grill-with-docs'
+contains README.md 'mise run pi:matt:skills:update'
+contains dot_config/mise/scripts/manage-matt-pi-skills 'skills/engineering and skills/productivity'
+contains dot_pi/agent/agents/scout.md 'name: scout'
+contains dot_pi/agent/prompts/implement-and-review.md 'subagent tool'
 contains dot_config/mise/conf.d/00-opencode.toml.tmpl 'eq .chezmoi.os "darwin"'
 contains dot_config/gh-work/hosts.yml.tmpl 'else if and (hasKey . "work")'
 contains dot_zshrc.tmpl 'hasKey .github "workUsername"'

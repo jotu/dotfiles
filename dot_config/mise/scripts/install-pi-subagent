@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+# Sync Pi's bundled sub-agent extension after Pi installs or updates.
+set -euo pipefail
+
+: "${HOME:?HOME is required}"
+
+target_dir="$HOME/.pi/agent/extensions/subagent"
+
+find_source_dir() {
+  local candidate_root pi_bin resolved_pi_bin
+
+  find_in_root() {
+    candidate_root="$1"
+    if [ -d "$candidate_root/examples/extensions/subagent" ]; then
+      printf '%s\n' "$candidate_root/examples/extensions/subagent"
+      return 0
+    fi
+    if [ -d "$candidate_root/lib/node_modules/@earendil-works/pi-coding-agent/examples/extensions/subagent" ]; then
+      printf '%s\n' "$candidate_root/lib/node_modules/@earendil-works/pi-coding-agent/examples/extensions/subagent"
+      return 0
+    fi
+    return 1
+  }
+
+  if [ -n "${MISE_TOOL_INSTALL_PATH:-}" ] && find_in_root "$MISE_TOOL_INSTALL_PATH"; then
+    return 0
+  fi
+
+  if command -v mise >/dev/null 2>&1; then
+    candidate_root=$(mise where npm:@earendil-works/pi-coding-agent 2>/dev/null || true)
+    if [ -n "$candidate_root" ] && find_in_root "$candidate_root"; then
+      return 0
+    fi
+  fi
+
+  if ! command -v pi >/dev/null 2>&1; then
+    return 1
+  fi
+  pi_bin=$(command -v pi)
+  if command -v realpath >/dev/null 2>&1; then
+    resolved_pi_bin=$(realpath "$pi_bin" 2>/dev/null || printf '%s' "$pi_bin")
+  elif resolved_pi_bin=$(readlink -f "$pi_bin" 2>/dev/null); then
+    :
+  else
+    resolved_pi_bin="$pi_bin"
+  fi
+  for candidate_root in "$(dirname "$resolved_pi_bin")" "$(cd "$(dirname "$resolved_pi_bin")/.." && pwd)"; do
+    if find_in_root "$candidate_root"; then
+      return 0
+    fi
+  done
+
+  return 1
+}
+
+if ! source_dir=$(find_source_dir); then
+  printf 'Pi sub-agent extension source not found; skipping sync.\n' >&2
+  exit 0
+fi
+
+rm -rf "$target_dir"
+mkdir -p "$target_dir"
+cp "$source_dir/index.ts" "$source_dir/agents.ts" "$target_dir/"

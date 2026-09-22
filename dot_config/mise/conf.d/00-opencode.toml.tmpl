@@ -288,13 +288,40 @@ run = [
 description = "Sync Pi's bundled read-only plan-mode extension"
 run = "bash \"$HOME/.config/mise/scripts/install-pi-plan-mode\""
 
+[tasks."pi:subagent:sync"]
+description = "Sync Pi's bundled sub-agent extension"
+run = "bash \"$HOME/.config/mise/scripts/install-pi-subagent\""
+
+[tasks."pi:matt:skills:check"]
+description = "Check the selected stable Matt Pocock skills installed for Pi"
+run = "bash \"$HOME/.config/mise/scripts/manage-matt-pi-skills\" check"
+
+[tasks."pi:matt:skills:install"]
+description = "Install missing Matt skills; refresh them after Mise tool installs"
+run = "bash \"$HOME/.config/mise/scripts/manage-matt-pi-skills\" install"
+
+[tasks."pi:matt:skills:update"]
+description = "Update installed stable Matt Pocock skills for Pi"
+run = "bash \"$HOME/.config/mise/scripts/manage-matt-pi-skills\" update"
+
+[tasks."herdr:pi:install"]
+description = "Install Herdr's Pi lifecycle and session integration"
+run = '''
+  set -eu
+  if command -v herdr >/dev/null 2>&1 && command -v pi >/dev/null 2>&1; then
+    herdr integration install pi
+  else
+    echo "Skipping Herdr Pi integration: herdr or pi is not installed" >&2
+  fi
+'''
+
 {{- if eq .chezmoi.os "darwin" }}
 [tools]
 "npm:@openai/codex" = "latest"
 
 [tools."npm:@earendil-works/pi-coding-agent"]
 version = "latest"
-postinstall = "bash \"$HOME/.config/mise/scripts/install-pi-plan-mode\""
+postinstall = "bash \"$HOME/.config/mise/scripts/install-pi-plan-mode\" && bash \"$HOME/.config/mise/scripts/install-pi-subagent\""
 
 [tools."npm:opencode-ai"]
 version = "latest"

@@ -1,0 +1,169 @@
+#!/usr/bin/env bash
+# Install missing or refresh selected stable Matt Pocock skills for global Pi use.
+set -euo pipefail
+
+: "${HOME:?HOME is required}"
+
+source_repo='mattpocock/skills'
+skills_cli=(npx --yes skills@1.7.0)
+skills_dir="$HOME/.pi/agent/skills"
+managed_matt_skills=''
+
+if ! command -v pi >/dev/null 2>&1; then
+  printf 'Skipping Matt skills: pi is not installed.\n' >&2
+  exit 0
+fi
+
+# Stable catalog only: skills/engineering and skills/productivity.
+matt_skills=(
+  ask-matt
+  code-review
+  codebase-design
+  diagnosing-bugs
+  domain-modeling
+  grill-with-docs
+  implement
+  improve-codebase-architecture
+  prototype
+  research
+  resolving-merge-conflicts
+  setup-matt-pocock-skills
+  tdd
+  to-spec
+  to-tickets
+  triage
+  wayfinder
+  wizard
+  grill-me
+  grilling
+  handoff
+  teach
+  to-questionnaire
+  wait-what
+  writing-for-agents
+)
+
+# These are Pi-adapted and owned by chezmoi, so never overwrite them upstream.
+local_pi_skills=(grill-me grilling grill-with-docs)
+
+is_local_pi_skill() {
+  local skill="$1"
+  local candidate
+  for candidate in "${local_pi_skills[@]}"; do
+    [ "$candidate" = "$skill" ] && return 0
+  done
+  return 1
+}
+
+is_local_installed() {
+  [ -f "$skills_dir/$1/SKILL.md" ]
+}
+
+load_managed_matt_skills() {
+  local json
+  command -v npx >/dev/null 2>&1 || { printf 'ERROR: npx is required to inspect Matt skills\n' >&2; return 1; }
+  command -v node >/dev/null 2>&1 || { printf 'ERROR: node is required to inspect Matt skills\n' >&2; return 1; }
+  if ! json=$("${skills_cli[@]}" list --global --agent pi --json 2>/dev/null); then
+    printf 'ERROR: unable to inspect globally installed Pi skills\n' >&2
+    return 1
+  fi
+  if ! managed_matt_skills=$(printf '%s' "$json" | node -e '
+    const fs = require("fs");
+    const skills = JSON.parse(fs.readFileSync(0, "utf8"));
+    for (const skill of skills) {
+      const source = skill.source || skill.sourceUrl || "";
+      if (source === "mattpocock/skills" || source.startsWith("https://github.com/mattpocock/skills")) {
+        console.log(skill.name);
+      }
+    }
+  '); then
+    printf 'ERROR: unable to parse globally installed Pi skills\n' >&2
+    return 1
+  fi
+}
+
+is_managed_matt_skill() {
+  case $'\n'"$managed_matt_skills"$'\n' in
+    *$'\n'"$1"$'\n'*) return 0 ;;
+    *) return 1 ;;
+  esac
+}
+
+check_skills() {
+  load_managed_matt_skills
+  local skill state
+  for skill in "${matt_skills[@]}"; do
+    if is_local_pi_skill "$skill" && is_local_installed "$skill"; then
+      state=installed
+    elif is_managed_matt_skill "$skill"; then
+      state=installed
+    else
+      state=missing
+    fi
+    printf '%-35s %s\n' "$skill" "$state"
+  done
+}
+
+install_skills() {
+  command -v npx >/dev/null 2>&1 || { printf 'ERROR: npx is required to install or update Matt skills\n' >&2; return 1; }
+  load_managed_matt_skills
+  local skill update_existing=false
+  local -a missing_skills=() refresh_skills=()
+  if [ "${MISE_INSTALLED_TOOLS:-[]}" != '[]' ]; then
+    update_existing=true
+  fi
+  for skill in "${matt_skills[@]}"; do
+    if is_local_pi_skill "$skill"; then
+      if is_local_installed "$skill"; then
+        printf 'Keeping Pi adaptation: %s\n' "$skill"
+      else
+        printf 'Waiting for chezmoi-managed Pi adaptation: %s\n' "$skill"
+      fi
+    elif ! is_managed_matt_skill "$skill"; then
+      missing_skills+=("$skill")
+    elif [ "$update_existing" = true ]; then
+      refresh_skills+=("$skill")
+    else
+      printf 'Keeping installed skill: %s\n' "$skill"
+    fi
+  done
+
+  if ((${#missing_skills[@]} > 0)); then
+    printf 'Installing missing skills: %s\n' "${missing_skills[*]}"
+    "${skills_cli[@]}" add "$source_repo" --skill "${missing_skills[@]}" --agent pi --global --yes
+  fi
+  if ((${#refresh_skills[@]} > 0)); then
+    printf 'Updating installed skills: %s\n' "${refresh_skills[*]}"
+    "${skills_cli[@]}" update "${refresh_skills[@]}" --global --yes
+  fi
+}
+
+update_skills() {
+  command -v npx >/dev/null 2>&1 || { printf 'ERROR: npx is required to update Matt skills\n' >&2; return 1; }
+  load_managed_matt_skills
+  local skill
+  local -a refresh_skills=()
+  for skill in "${matt_skills[@]}"; do
+    if is_local_pi_skill "$skill"; then
+      printf 'Keeping Pi adaptation: %s\n' "$skill"
+    elif ! is_managed_matt_skill "$skill"; then
+      printf 'Skipping missing skill: %s\n' "$skill"
+    else
+      refresh_skills+=("$skill")
+    fi
+  done
+  if ((${#refresh_skills[@]} > 0)); then
+    printf 'Updating installed skills: %s\n' "${refresh_skills[*]}"
+    "${skills_cli[@]}" update "${refresh_skills[@]}" --global --yes
+  fi
+}
+
+case "${1:-}" in
+  check) check_skills ;;
+  install) install_skills ;;
+  update) update_skills ;;
+  *)
+    printf 'Usage: %s {check|install|update}\n' "$0" >&2
+    exit 2
+    ;;
+esac

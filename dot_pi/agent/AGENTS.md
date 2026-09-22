@@ -5,9 +5,26 @@ This file is managed by chezmoi. Keep Pi configuration changes in the chezmoi so
 ## Ownership
 
 - Pi settings, context, skills, prompts, and custom extensions belong in this repository under `dot_pi/agent/`.
+- The bundled Pi sub-agent extension is synced by Mise from the installed Pi package; agent definitions and prompt templates remain managed here.
+- The selected upstream Matt skills are intentionally managed by the `pi:matt:skills:*` Mise tasks in `~/.pi/agent/skills`; keep them out of `dot_pi/agent/skills` except for explicit Pi adaptations.
 - Herdr owns `~/.pi/agent/extensions/herdr-agent-state.ts`; never edit or replace that file manually.
 - Pi's plan-mode extension is synced from the installed Pi package by the managed Mise task on both Omarchy/Linux and macOS.
 - Keep Herdr workspace configuration, Pi configuration, and OpenCode configuration separate.
+- When a third-party skill says to call a generic `Skill` tool, read and follow the named Pi skill with `/skill:name`; when it asks for a sub-agent, use Pi's `subagent` tool.
+
+## Matt Pocock engineering workflow
+
+Before using `to-spec` or `to-tickets` in a repository, run `/skill:setup-matt-pocock-skills` once from that repository. It creates the repository-specific issue-tracker, triage-label, and domain-doc configuration; it is not a global Mise setup step.
+
+For substantial work, use this sequence:
+
+1. `/skill:grill-with-docs` — align on the problem and record domain decisions.
+2. `/skill:to-spec` — turn the agreed conversation into a tracker-backed specification.
+3. `/skill:to-tickets` — split multi-session work into tracer-bullet tickets with dependencies.
+4. `/skill:implement` — implement the approved spec or tickets.
+5. `/skill:code-review` — run the standards and specification review with Pi sub-agents.
+
+For a small, self-contained change, keep `/skill:grill-with-docs`, skip `to-spec` and `to-tickets`, then use `/skill:implement` followed by `/skill:code-review`. Do not create commits or publish changes unless the user explicitly asks.
 
 ## Ask instead of assuming
 

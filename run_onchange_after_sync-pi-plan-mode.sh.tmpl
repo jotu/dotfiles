@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Sync Pi's bundled plan-mode extension when the managed setup changes.
+# Sync Pi's bundled plan-mode and sub-agent extensions when the managed setup changes.
 set -euo pipefail
 
 if ! command -v mise >/dev/null 2>&1; then
@@ -11,3 +11,4 @@ if ! command -v pi >/dev/null 2>&1; then
 fi
 
 mise run pi:plan-mode:sync
+mise run pi:subagent:sync

@@ -219,12 +219,23 @@ chezmoi apply                        # installs the sync hook
 mise install                          # installs managed tools and syncs Pi add-ons when available
 mise run pi:ponytail:update            # update Ponytail on either platform
 mise run pi:plan-mode:sync              # sync plan mode from the installed Pi package
+mise run pi:subagent:sync              # sync Pi's bundled sub-agent extension
+mise run pi:matt:skills:check          # show the selected stable Matt skills
+mise run pi:matt:skills:install        # install missing or update existing stable Matt skills
+mise run pi:matt:skills:update         # update installed stable Matt skills
+mise run herdr:pi:install              # install Herdr's Pi lifecycle/session integration
 mise run pi:worktrunk:install           # install the oh-my-pi Worktrunk hook when omp exists
 ```
 
 The managed `dot_pi/agent/extensions/worktrunk.ts` extension adds the same Worktrunk activity markers to standard Pi. On Omarchy, where `omp` is available, the Mise postinstall hook also runs `wt config plugins pi install --yes`, which writes Worktrunk's native profile-aware hook. Both integrations update `wt list` with 🤖/💬 markers and ignore failures so agent sessions remain unaffected.
 
-Use `/plan` to toggle read-only planning and `/todos` to show progress. Pi updates resync the extension through the managed sync task.
+Pi's bundled sub-agent extension is synced by Mise from the installed Pi package. The managed user agents (`scout`, `planner`, `reviewer`, and `worker`) use inherited models so they work with the active provider. Use `/implement`, `/scout-and-plan`, or `/implement-and-review` after the sync. Herdr provides durable panes and lifecycle/session state; it does not replace Pi's in-session `subagent` tool.
+
+The Matt skill tasks manage an explicit allowlist from the stable `skills/engineering` and `skills/productivity` directories only. They exclude `skills/in-progress` and `skills/misc`. Pi-adapted `grill-me`, `grilling`, and `grill-with-docs` remain chezmoi-owned and are never overwritten by the update task.
+
+For substantial work, first run `/skill:setup-matt-pocock-skills` once from the repository to create its issue-tracker, triage-label, and domain-doc configuration. Then use the recommended Matt flow: `/skill:grill-with-docs` → `/skill:to-spec` → `/skill:to-tickets` → `/skill:implement` → `/skill:code-review`. Small, self-contained jobs can keep `/skill:grill-with-docs` and skip `to-spec` and `to-tickets`. The Mise postinstall hook installs missing selected skills on every install, and refreshes existing upstream skills only when Mise actually installs or upgrades a tool. A no-op `mise install` leaves existing skill content unchanged. Pi-adapted skills remain chezmoi-owned. Use `mise run pi:matt:skills:update` for an explicit update-only operation.
+
+Use `/plan` to toggle read-only planning and `/todos` to show progress. Pi updates resync the extensions through the managed sync task.
 
 ### Pi learning capture
 
