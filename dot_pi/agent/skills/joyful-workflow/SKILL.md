@@ -24,8 +24,11 @@ Work one leaf through Implement -> Verify -> Review before starting the next.
 Skip the tree for a one-slice change.
 
 The `joyful-workflow` Pi extension provides the phase guardrail, state, and
-status command. The guardrail is not a sandbox; shell commands can still have
-side effects and remain subject to the normal safety gates.
+status command. Joyful is opt-in: normal Pi sessions leave the guardrail
+inactive so standalone Matt skills can work normally. Run `/joyful start
+<goal>` to activate it; `/joyful finish` and `/joyful break` deactivate it.
+The guardrail is not a sandbox; shell commands can still have side effects and
+remain subject to the normal safety gates.
 
 ## Shared Engineering Discipline
 

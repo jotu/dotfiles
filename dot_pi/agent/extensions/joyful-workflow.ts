@@ -18,6 +18,7 @@ type Action =
 
 type WorkflowState = {
 	phase: Phase;
+	active?: boolean;
 	goal?: string;
 	reason?: string;
 	worktree?: string;
@@ -61,7 +62,7 @@ const WorkflowParams = Type.Object({
 });
 
 function initialState(): WorkflowState {
-	return { phase: "ask", updatedAt: new Date().toISOString() };
+	return { phase: "ask", active: false, updatedAt: new Date().toISOString() };
 }
 
 function isPhase(value: unknown): value is Phase {
@@ -80,6 +81,7 @@ function reconstructState(ctx: ExtensionContext): WorkflowState {
 		if (data && isPhase(data.phase)) {
 			result = {
 				phase: data.phase,
+				active: data.active === true,
 				goal: typeof data.goal === "string" ? data.goal : undefined,
 				reason: typeof data.reason === "string" ? data.reason : undefined,
 				worktree: typeof data.worktree === "string" ? data.worktree : undefined,
@@ -112,12 +114,13 @@ export default function joyfulWorkflow(pi: ExtensionAPI): void {
 
 	function statusText(): string {
 		const goal = state.goal ? `\nGoal: ${state.goal}` : "";
+		const workflow = `\nWorkflow: ${state.active ? "active" : "inactive"}`;
 		const location = state.worktree
 			? `\nWorktree: ${state.worktree}\nBranch: ${state.branch}\nWorkspace: ${state.workspace}`
 			: "\nWorkspace: not prepared";
 		const evidence = `\nVerification: ${state.verificationPassed ? "passed" : "pending"}\nReview: ${state.reviewPassed ? "passed" : "pending"}`;
 		const reason = state.reason ? `\nReason: ${state.reason}` : "";
-		return `Joyful workflow phase: ${state.phase}${goal}${location}${evidence}${reason}`;
+		return `Joyful workflow phase: ${state.phase}${workflow}${goal}${location}${evidence}${reason}`;
 	}
 
 	async function prepare(ctx: ExtensionContext, workspaceInput: string | undefined, allowExisting = false) {
@@ -200,6 +203,7 @@ export default function joyfulWorkflow(pi: ExtensionAPI): void {
 		persist({
 			...state,
 			phase: target,
+			active: target === "done" || target === "break" ? false : state.active === true,
 			reason,
 			verificationPassed: target === "plan" ? false : state.verificationPassed,
 			reviewPassed: target === "plan" ? false : state.reviewPassed,
@@ -227,7 +231,7 @@ export default function joyfulWorkflow(pi: ExtensionAPI): void {
 		if (action === "status") return { ok: true, text: statusText() };
 		if (action === "start") {
 			if (!goal?.trim()) return { ok: false, text: "A goal is required to start a joyful workflow." };
-			persist({ phase: "ask", goal: goal.trim(), reason: undefined, updatedAt: new Date().toISOString() });
+			persist({ phase: "ask", active: true, goal: goal.trim(), reason: undefined, updatedAt: new Date().toISOString() });
 			return { ok: true, text: `Workflow started in ask phase.\nGoal: ${goal.trim()}\nChoose a workspace before Plan (main, branch, worktree, worktrunk, or existing).` };
 		}
 		if (action === "prepare") return prepare(ctx, workspace, allowExisting === true);
@@ -252,7 +256,7 @@ export default function joyfulWorkflow(pi: ExtensionAPI): void {
 	});
 
 	pi.on("tool_call", async (event) => {
-		if (!["write", "edit"].includes(event.toolName)) return;
+		if (!state.active || !["write", "edit"].includes(event.toolName)) return;
 		if (state.phase === "implement") return;
 		return {
 			block: true,
@@ -282,6 +286,7 @@ export default function joyfulWorkflow(pi: ExtensionAPI): void {
 				worktree: state.worktree,
 				branch: state.branch,
 				workspace: state.workspace,
+				active: state.active === true,
 				verificationPassed: state.verificationPassed,
 				reviewPassed: state.reviewPassed,
 			});

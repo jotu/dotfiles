@@ -24,7 +24,7 @@ For substantial work, use this sequence:
 4. Verify — run the smallest relevant check for that leaf.
 5. Review — review the completed slice before moving on.
 
-Use `/skill:grill-with-docs` when domain decisions need alignment, `/skill:to-spec` and `/skill:to-tickets` only when the repository already uses that tracker workflow, `/skill:implement` for implementation, and `/skill:code-review` for review. For a small self-contained change, skip the tree and use the smallest applicable implement → verify → review loop. Do not create commits or publish changes unless the user explicitly asks.
+Use `/skill:grill-with-docs` when domain decisions need alignment, `/skill:to-spec` and `/skill:to-tickets` only when the repository already uses that tracker workflow, `/skill:implement` for implementation, and `/skill:code-review` for review. Matt skills are the default workflow; Joyful skills and `/joyful` are an opt-in alternative for explicitly coordinated work. Supporting skills may compose, but choose one primary planning, implementation, or review skill for each step. For a small self-contained change, skip the tree and use the smallest applicable implement → verify → review loop. Do not create commits or publish changes unless the user explicitly asks.
 
 ## Ask instead of assuming
 
