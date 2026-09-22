@@ -1,45 +1,43 @@
 ---
 name: joyful-workflow
-description: Orchestrates the joyful development loop of Ask, Plan, Implement, Verify, Review, Done, Replan, or Break. Use to coordinate the joyful planning, implementation, verification, and review skills.
+description: Explicitly coordinate the joyful Ask -> Plan -> Implement -> Verify -> Review -> Done workflow.
+disable-model-invocation: true
 ---
 
 # Joyful Workflow
 
-## Purpose
-
 Keep non-trivial work moving through explicit stages without skipping decisions
-or hiding failures.
-
-The workflow is:
+or hiding failures. When you also invoke `/skill:joyful-principles`, use it as
+the shared vocabulary and engineering reference.
 
 ```text
-Ask → Plan → Implement → Verify → Review → Done
-              ↑             │         │
-              └── Replan ←──┴─────────┘
+Ask -> Plan -> Implement -> Verify -> Review -> Done
+              ^             |         |
+              +-- Replan <--+---------+
 
-Any stage → Break
+Any stage -> Break
 ```
 
 For non-trivial work, Ask and Plan produce a small issue tree: one root goal,
 small independently verifiable leaves, dependencies, and a done check per leaf.
-Work one leaf through Implement → Verify → Review before starting the next.
+Work one leaf through Implement -> Verify -> Review before starting the next.
 Skip the tree for a one-slice change.
 
 The `joyful-workflow` Pi extension provides the phase guardrail, state, and
-status command. The skill provides the behavior the agent must follow. The
-guardrail is not a sandbox; shell commands can still have side effects and
-remain subject to the normal safety gates.
+status command. The guardrail is not a sandbox; shell commands can still have
+side effects and remain subject to the normal safety gates.
 
-## Testing Policy
+## Shared Engineering Discipline
 
-Use TDD for behavior changes: Red → Green → Refactor. Write the smallest
-focused unit tests for isolated behavior; add approval tests only for stable
-whole-output contracts. Use one or both only when they provide distinct
-evidence—never duplicate assertions or accept approval baselines blindly.
+When `/skill:joyful-principles` was explicitly invoked, use it for decisions
+involving design, testing, refactoring, or review. Its keywords are the working
+language for this workflow:
+**shared language, seam, tracer bullet, vertical slice, feedback loop, root
+cause, behavior-preserving tidy, and small batch**.
 
-Keep tests, baselines, and guidance terse and focused: fast feedback (Lean),
-clear separation (Tidy First), visible contracts (CUPID), and a short
-test-first loop (XP).
+XP's test-first practice is TDD: Red -> Green -> Refactor. Use it when a
+behavior change benefits from a test seam; do not create tests or process for
+ceremony alone.
 
 ## Workspace Boundary
 
@@ -66,8 +64,8 @@ ask for confirmation before changing Git state, perform that change, then run
 Verify, and Review in the selected checkout. Include the selected workspace,
 branch, and path in phase handoffs and the final review.
 
-The Worktrunk activity extension may still show 🤖/💬 markers, but those markers
-are optional convenience only and never determine where work happens.
+The Worktrunk activity extension may still show robot/chat markers, but those
+markers are optional convenience only and never determine where work happens.
 
 ## Required User Checkpoints
 
@@ -79,49 +77,49 @@ Ask instead of guessing when:
 - verification fails and the fix may change scope
 - review finds a blocking issue
 - a check would be skipped, weakened, or replaced by a risky workaround
-- a destructive, cluster, credential, branch/worktree, or external-write gate is reached
+- a destructive, cluster, credential, branch/worktree, or external-write gate
+  is reached
 
 Use the `joyful_workflow` tool or `/joyful` command to record phase changes.
-Routine phase changes and evidence recording do not require an extra confirmation;
-the safety gate and the Ask decision points remain authoritative.
+Routine phase changes and evidence recording do not require an extra
+confirmation; safety gates and Ask decisions remain authoritative.
 
 ## Phase Rules
 
 ### Ask
 
-Clarify the goal, value, constraints, acceptance criteria, and non-goals.
-Do not implement.
+Clarify the goal, value, constraints, acceptance criteria, and non-goals. Do
+not implement.
 
 ### Plan
 
-Use `/skill:joyful-planning`.
-Inspect the repository and produce the smallest implementation-ready plan for
-the next issue-tree leaf, including its done check and only the tests that add
-distinct evidence. Do not modify code. Workspace preparation must already be
-recorded as passed.
+Have the user invoke `/skill:joyful-planning`. That skill inspects the repository
+and produces the smallest implementation-ready plan for the next issue-tree
+leaf, including its done check and only the tests that add distinct evidence.
+Workspace preparation must already be recorded as passed.
 
 ### Implement
 
-Use `/skill:joyful-implementation`.
-Implement one issue-tree leaf at a time with TDD when behavior changes: Red →
-Green → Refactor. Keep the change within the accepted scope and stop for a
-new decision instead of silently adding another leaf.
+Have the user invoke `/skill:joyful-implementation`. That skill implements one
+issue-tree leaf at a time with TDD when behavior changes: Red -> Green ->
+Refactor. Keep the change within the accepted scope and stop for a new decision
+instead of silently adding another leaf.
 
 ### Verify
 
-Use `/skill:joyful-verification`.
-Run the smallest relevant unit and approval checks, record exact evidence, and
-review any baseline changes deliberately. Do not fix failures in this phase;
-replan first. After reporting evidence, mark verification passed with
-`/joyful verified` or the workflow tool.
+Have the user invoke `/skill:joyful-verification`. That skill runs the smallest
+relevant unit and approval checks, records exact evidence, and reviews any
+baseline changes deliberately. Do not fix failures in this phase; replan first.
+After reporting evidence, mark verification passed with `/joyful verified` or
+the workflow tool.
 
 ### Review
 
-Use `/skill:joyful-code-review`.
-Review correctness, security, data integrity, compatibility, focused test
-evidence, CUPID, Tidy First, and XP concerns. Report only actionable findings.
-After review reports no blocking findings, mark review passed with
-`/joyful reviewed` or the workflow tool.
+Have the user invoke `/skill:joyful-code-review`. That skill reviews
+correctness, security, data integrity, compatibility, focused test evidence,
+CUPID boundaries, Tidy First separation, XP feedback, and Fowler refactoring
+smells. Report only actionable findings. After review reports no blocking
+findings, mark review passed with `/joyful reviewed` or the workflow tool.
 
 ### Done
 
@@ -145,7 +143,7 @@ At every transition, report:
 ```markdown
 ## Phase
 
-<current phase> → <requested next phase>
+<current phase> -> <requested next phase>
 
 ## Evidence
 
@@ -156,7 +154,7 @@ At every transition, report:
 <decision required from the user, or “none”>
 ```
 
-Never silently jump from Implement to Done. Verification and review are
+Never silently jump from Implement to Done. Verification and Review are
 separate gates, even when the same check is useful to both. The extension must
 have recorded both evidence gates before allowing Done.
 
@@ -167,7 +165,7 @@ it must use Conventional Commits and be suitable for review:
 
 - use `<type>[optional scope][!]: <description>`
 - keep each commit atomic and focused on one coherent change
-- separate structural cleanup from behavior changes when practical
+- separate structural and behavioral changes when practical
 - commit only verified and reviewed changes
 - use `!` or `BREAKING CHANGE:` for breaking changes
 - do not rewrite existing history unless explicitly asked

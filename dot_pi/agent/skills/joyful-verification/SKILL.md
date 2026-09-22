@@ -1,20 +1,18 @@
 ---
 name: joyful-verification
-description: Verifies an implemented change against its acceptance criteria using objective checks and evidence, then decides whether to review, replan, finish, or stop. Use after implementation and before final completion.
+description: Verify an implemented feature, bug fix, refactor, or configuration change against its acceptance criteria.
+disable-model-invocation: true
 ---
 
 # Joyful Verification
 
-## Purpose
-
 Determine whether an implemented change works as intended and is ready for
-review or completion.
+review or completion. If you also invoke `/skill:joyful-principles`, use it for
+the shared Pragmatic Programmer, XP/TDD, Tidy First, CUPID, and Fowler vocabulary.
 
 Verification is an evidence gate, not a second implementation phase or a design
 review. It must not modify code, create commits, amend history, or claim checks
 that were not run.
-
-Conventional Commits are not part of this verification workflow.
 
 ## Workflow
 
@@ -22,10 +20,10 @@ Conventional Commits are not part of this verification workflow.
 2. Read repository instructions and inspect the complete diff.
 3. Confirm that each acceptance criterion has an objective check or explicit
    manual verification step.
-4. Run the smallest relevant checks first.
+4. Run the shortest reliable feedback loop first.
 5. Run broader checks when the change or repository risk requires them.
 6. Record exact commands, outcomes, failures, and skipped checks.
-7. Decide whether to hand off to review, replan, finish, or stop.
+7. Decide whether to hand off to Review, Replan, Done, or Break.
 8. Ask before changing scope, weakening a criterion, or choosing a risky bypass.
 
 If the goal, acceptance criteria, or expected behavior is materially ambiguous,
@@ -33,48 +31,36 @@ stop and ask for clarification instead of guessing.
 
 ## Verification Order
 
-Prefer the project’s documented commands. Otherwise use the smallest relevant
+Prefer the project's documented commands. Otherwise use the smallest relevant
 sequence:
 
-1. focused unit tests, plus approval tests only when they add distinct whole-output evidence
+1. focused unit or integration tests
 2. formatter or lint
 3. typecheck
 4. broader tests
 5. build or package validation
 6. manual checks for behavior not covered by automation
 
-Do not run expensive or unrelated checks without a reason. Do not report a
-check as passed when it was skipped, unavailable, or only inferred.
+Use approval tests only when they add distinct evidence for a stable whole-output
+contract. Review baseline changes as behavior, not incidental output. Do not run
+expensive or unrelated checks without a reason, and do not report a check as
+passed when it was skipped or unavailable.
 
-## Lean Verification
+## Evidence Questions
 
-- verify the smallest useful increment first
-- fail fast on the first meaningful blocker
-- avoid duplicate checks that provide no new evidence
-- use existing project commands and tooling
-- keep feedback fast while matching the risk of the change
-- make failures and uncertainty visible
+Use the shared principles to keep evidence concrete:
 
-## CUPID Verification Questions
+- **Seam:** Does the check exercise the highest useful public boundary?
+- **Feedback:** Is this the shortest command that can disprove the change?
+- **Predictability:** Are success, failure, side effects, and boundaries covered?
+- **CUPID:** Are the changed interface and its callers independently usable and
+  observable?
+- **Tidy First:** Did structural and behavioral changes remain distinguishable?
+- **Fowler:** If a refactoring was included, does behavior remain stable behind
+  the tests?
 
-Use these questions to identify missing evidence:
-
-- **Composable** — Do focused checks cover the changed interface and its callers?
-- **Unix-like** — Can the changed unit be verified independently?
-- **Predictable** — Are success, failure, side effects, and boundaries checked?
-- **Idiomatic** — Do the checks match project and language conventions?
-- **Domain-based** — Do assertions and scenarios express real domain behavior?
-
-## Tidy First and XP
-
-- Do not mix verification with unrelated cleanup.
-- Treat a failing check as information, not as a reason to hide the failure.
-- Keep one behavior increment and its feedback together where possible.
-- Verify only the focused tests that add evidence; never duplicate assertions.
-- Review approval-test baseline changes as part of the behavior diff.
-- If verification reveals a structural problem, record it for replanning instead
-  of expanding the current change without agreement.
-- Preserve the distinction between a behavior failure and a code-review concern.
+Do not fix failures in verification. A failure is evidence for replanning, not a
+reason to hide it or silently expand scope.
 
 ## Decision Gate
 

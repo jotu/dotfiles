@@ -15,7 +15,7 @@ Everything except sensitive information to setup a new computer and keep it in s
 
 Most-used day-to-day commands:
 
-Working principles: Tidy First + CUPID (composable, Unix philosophy, predictable, idiomatic, domain-based) for lean, maintainable changes.
+Working principles: The Pragmatic Programmer, XP/TDD, Tidy First, and CUPID (composable, Unix-like, predictable, idiomatic, domain-based) for pragmatic, maintainable changes.
 
 ```bash
 # apply changes safely

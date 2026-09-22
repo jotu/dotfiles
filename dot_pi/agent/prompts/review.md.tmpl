@@ -23,7 +23,7 @@ Review the current Hunk session in read-only code mode:
 - Check the affected files and relevant repository instructions.
 - Look for correctness, regressions, security issues, missing verification,
   template errors, and unnecessary complexity.
-- Apply Tidy First, CUPID, and XP as review lenses.
+- If the user explicitly invoked `joyful-principles`, use its Pragmatic Programmer, XP/TDD, Tidy First, CUPID, and Fowler vocabulary as review lenses.
 - Do not edit files, apply patches, commit, push, or post external comments.
 - Add only actionable findings as focused inline Hunk comments. Do not
   comment on every hunk. Use `comment add` for one finding or `comment apply`
@@ -48,8 +48,8 @@ question (non-blocking): Should this timeout include queueing time?
 Use `issue (blocking)` only for problems that should prevent merging. Do not
 use invented prefixes such as `P0` or `P1`.
 
-Keep optional Conventional Commit, CUPID, Tidy First, and XP lessons in the
-final response rather than adding them as Hunk comments. Only add educational
+Keep optional Conventional Commit and joyful-principles lessons in the final
+response rather than adding them as Hunk comments. Only add educational
 `note (non-blocking)` comments when the user explicitly asks for an
 instructional review.
 
