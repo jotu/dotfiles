@@ -1,6 +1,20 @@
-# AGENT.md
+# AGENTS.md
 
 Chezmoi dotfiles maintainer guide for secure, portable, low-risk changes.
+
+## Agent skills
+
+### Issue tracker
+
+Issues and specs live as markdown files under `.scratch/<feature-slug>/`. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Uses the default labels: `needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, and `wontfix`. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Uses the single-context layout. See `docs/agents/domain.md`.
 
 ---
 
@@ -112,7 +126,7 @@ Ensure the external private configuration defines or normalizes the following ke
   - Use non-templated files where content is universally the same.
   - Consider templating when behavior should adapt to `.data`.
 - Ignore policies:
-  - Keep non-home-targeted documentation out of apply scope (e.g., add `AGENT.md` to `.chezmoiignore` if undesired in `$HOME`).
+  - Keep non-home-targeted documentation out of apply scope (e.g., add `AGENTS.md` to `.chezmoiignore` if undesired in `$HOME`).
 
 ---
 
@@ -199,4 +213,4 @@ Before committing changes:
 
 ---
 
-By adhering to this AGENT.md, changes remain secure, maintainable, and aligned with Chezmoi, macOS, and Omarchy best practices.
+By adhering to this AGENTS.md, changes remain secure, maintainable, and aligned with Chezmoi, macOS, and Omarchy best practices.
