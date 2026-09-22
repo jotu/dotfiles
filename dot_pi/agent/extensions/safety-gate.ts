@@ -57,16 +57,25 @@ const riskyCommands: Array<[RegExp, string]> = [
 	[/\brm(?:\s|$)/i, "deleting files"],
 	[/\bsudo\b/i, "elevated privileges"],
 	[/\b(?:chmod|chown)\b/i, "changing file permissions or ownership"],
-	[/\bgit\s+(?:push|pull|fetch)\b/i, "a remote Git operation"],
+	[/\bgit\s+pull\b/i, "a remote Git operation that changes the checkout"],
+	[/\bgit\s+(?:switch|checkout)\s+(?:-c|-C|-b|--create)\b/i, "creating or switching branches"],
+	[/\bgit\s+branch\s+(?:-+[dDcmCM]\b|--(?:delete|move|copy|create)\b|(?!-)[^;\n\s|&]+)/i, "creating, deleting, or moving branches"],
+	[/\bgit\s+worktree\s+(?:add|remove|move|lock|unlock)\b/i, "changing Git worktrees"],
 	[/\bgit\s+(?:reset\s+--hard|clean\b|checkout\s+--|restore\s+--)/i, "a destructive Git operation"],
 	[/\b(?:npm|pnpm|yarn|bun|pip|uv|brew|mise)\s+(?:install|ci|add|remove|uninstall|update|upgrade)\b/i, "changing installed tooling or dependencies"],
 	[/\b(?:gh\s+auth|gh\s+pr\s+(?:create|merge)|gh\s+issue\s+(?:comment|close)|npm\s+publish|docker\s+push)\b/i, "an externally visible operation"],
-	[/\b(?:kubectl|helm|terraform|aws|gcloud|az)\b[^;\n]*(?:apply|delete|destroy|deploy|patch|rollout|create)\b/i, "an infrastructure change"],
-	[/\b(?:curl|wget)\b/i, "network access or a download"],
+	[/\b(?:kubectl|helm|k9s|oc|argocd|kargo|flux|stern)\b/i, "connecting to or inspecting a Kubernetes control plane"],
+	[/\b(?:aws\s+eks\s+(?:get-token|describe-cluster)|gcloud\s+container\s+clusters\s+(?:get-credentials|describe)|az\s+aks\s+(?:get-credentials|show))\b/i, "connecting to a Kubernetes control plane"],
+	[/\b(?:terraform)\b[^;\n]*(?:apply|destroy)\b/i, "an infrastructure change"],
 	[/\bsecurity\s+(?:add|delete|set|remove)\b/i, "a credential or keychain change"],
 ];
 
+function isNetworkWrite(command: string): boolean {
+	return /\b(?:curl|wget)\b[^;\n]*(?:--request|-X)\s*(?:POST|PUT|PATCH|DELETE)\b|\b(?:curl|wget)\b[^;\n]*(?:--data(?:-raw|-binary)?|-d|--form|-F|--upload-file|-T)\b|\b(?:curl|wget)\b[^;\n]*\|\s*(?:sh|bash|zsh|fish)\b/i.test(command);
+}
+
 export function riskyCommandReason(command: string): string | undefined {
+	if (isNetworkWrite(command)) return "uploading data or executing downloaded content";
 	return riskyCommands.find(([pattern]) => pattern.test(command))?.[1];
 }
 
