@@ -148,6 +148,11 @@ run = 'layout floating'
 if.app-id = 'com.apple.systempreferences'
 run = 'layout floating'
 
+# Sol's launcher is a floating panel; AeroSpace owns all window management.
+[[on-window-detected]]
+if.app-id = 'com.ospfranco.sol'
+run = 'layout floating'
+
 # Unassigned applications go to the catch-all workspace.
 [[on-window-detected]]
 if = 'true'

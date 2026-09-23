@@ -510,6 +510,8 @@ On macOS, the health check also verifies Mise, AeroSpace, Voxtype, and the confi
 
 AeroSpace is installed and configured on macOS by chezmoi. Grant it Accessibility permission in System Settings → Privacy & Security → Accessibility. It starts automatically at login and uses `~/.aerospace.toml`.
 
+Sol is installed on macOS through Mise's Homebrew-compatible package layer and configured by chezmoi at `~/.config/sol/config.json`. Sol owns app/file search, scripts, shortcuts, clipboard, notes, and utilities; AeroSpace remains authoritative for tiling, focus, workspaces, and window movement. Sol's window-management actions and shortcuts are disabled to avoid conflicts, and its launcher panel is kept floating by the AeroSpace configuration. Add user scripts under `dot_config/sol/scripts/` when needed; Sol discovers `.sh` and `.applescript` files from `~/.config/sol/scripts/`.
+
 ## Atuin History Migration
 
 Atuin is installed through mise and configured through chezmoi on both home and work machines. It stores history locally; synchronization is disabled.
