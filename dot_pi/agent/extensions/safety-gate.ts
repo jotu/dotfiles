@@ -81,6 +81,13 @@ export function riskyCommandReason(command: string): string | undefined {
 }
 
 function isExplicitDeliveryRequest(text: string): boolean {
+	if (
+		/[?]/.test(text) ||
+		/^(?:can|could|should|would|may|might|shall|is|are|do)\b/i.test(text.trim()) ||
+		/\b(?:maybe|perhaps|not sure|whether)\b/i.test(text)
+	) {
+		return false;
+	}
 	if (/\b(?:do not|don't|never|avoid|without)\b[^.!?]{0,30}\b(?:commit|push|publish|pull request|pr)\b/i.test(text)) {
 		return false;
 	}
