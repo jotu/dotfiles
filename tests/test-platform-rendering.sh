@@ -56,6 +56,7 @@ toml_sources=(
 json_sources=(
   dot_config/opencode/opencode.json.tmpl
   dot_pi/agent/settings.json.tmpl
+  dot_pi/agent/models.json
 )
 
 for os in linux darwin; do
@@ -75,6 +76,15 @@ with open(sys.argv[1], "rb") as file:
 tools = config["tools"]
 packages = config.get("bootstrap", {}).get("packages", {})
 os = sys.argv[2]
+with open(sys.argv[1]) as file:
+    rendered_text = file.read()
+
+if os == "linux":
+    assert '[tasks."omlx:model:install"]' not in rendered_text
+    assert '[tasks."omlx:start"]' not in rendered_text
+else:
+    assert '[tasks."omlx:model:install"]' in rendered_text
+    assert '[tasks."omlx:start"]' in rendered_text
 
 if os == "linux":
     assert not packages
@@ -87,6 +97,8 @@ else:
     assert "hunk" in tools
     assert "herdr" in tools
     assert "github:max-sixty/worktrunk" in tools
+    assert config["bootstrap"]["brew"]["taps"]["jundot/omlx"] == "https://github.com/jundot/omlx"
+    assert packages["brew:jundot/omlx/omlx"] == "latest"
     assert packages["brew:curl"] == "latest"
     assert packages["brew-cask:nikitabobko/tap/aerospace"] == "latest"
     assert packages["brew-cask:signal"] == "latest"

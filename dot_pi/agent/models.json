@@ -1,0 +1,17 @@
+{
+  "providers": {
+    "omlx": {
+      "baseUrl": "http://127.0.0.1:8000/v1",
+      "api": "openai-completions",
+      "apiKey": "local",
+      "models": [
+        {
+          "id": "qwen3-4b-4bit",
+          "name": "Qwen3 4B (local oMLX)",
+          "contextWindow": 40960,
+          "maxTokens": 8192
+        }
+      ]
+    }
+  }
+}

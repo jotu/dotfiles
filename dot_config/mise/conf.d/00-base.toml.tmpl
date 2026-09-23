@@ -72,7 +72,7 @@ run = '''
   set -eu
 
 {{- if eq .chezmoi.os "darwin" }}
-  for command_name in mise aerospace voxtype; do
+  for command_name in mise aerospace voxtype omlx; do
     if ! command -v "$command_name" >/dev/null 2>&1; then
       echo "ERROR: $command_name not found in PATH"
       exit 1
@@ -327,6 +327,57 @@ description = "Update the managed Ponytail Pi package"
 run = "pi update npm:@dietrichgebert/ponytail@4.8.3"
 
 {{- if eq .chezmoi.os "darwin" }}
+[tasks."omlx:model:install"]
+description = "Download the pinned Qwen3 MLX model for oMLX"
+run = '''
+  set -eu
+
+  model_id="qwen3-4b-4bit"
+  model_revision="4dcb3d101c2a062e5c1d4bb173588c54ea6c4d25"
+  model_dir="$HOME/.omlx/models/$model_id"
+  revision_file="$model_dir/.omlx-revision"
+
+  model_complete=true
+  for required_file in config.json model.safetensors tokenizer.json tokenizer_config.json vocab.json merges.txt; do
+    if [ ! -f "$model_dir/$required_file" ]; then
+      model_complete=false
+      break
+    fi
+  done
+
+  if [ "$model_complete" = true ] && [ -f "$revision_file" ] && \
+     [ "$(cat "$revision_file")" = "$model_revision" ]; then
+    echo "oMLX model already present: $model_id@$model_revision"
+    exit 0
+  fi
+
+  omlx_prefix=$(mise bootstrap packages where brew:jundot/omlx/omlx)
+  hf="$omlx_prefix/libexec/bin/hf"
+  if [ ! -x "$hf" ]; then
+    echo "ERROR: oMLX is installed but its bundled hf command is missing: $hf" >&2
+    exit 1
+  fi
+
+  mkdir -p "$model_dir"
+  "$hf" download "mlx-community/Qwen3-4B-4bit" \
+    --revision "$model_revision" \
+    --local-dir "$model_dir"
+  printf '%s\n' "$model_revision" > "$revision_file"
+'''
+
+[tasks."omlx:start"]
+description = "Start the local oMLX OpenAI-compatible server"
+run = '''
+  set -eu
+
+  if ! command -v omlx >/dev/null 2>&1; then
+    echo "ERROR: oMLX is not installed; run: mise bootstrap packages apply" >&2
+    exit 1
+  fi
+
+  omlx start
+'''
+
 [tasks."voxtype:setup"]
 description = "Download the managed Voxtype speech model"
 run = '''
@@ -361,8 +412,11 @@ postinstall = [
 # Homebrew prefix; a real Homebrew installation is not required.
 [bootstrap.brew.taps]
 "nikitabobko/tap" = "https://github.com/nikitabobko/homebrew-tap.git"
+"jundot/omlx" = "https://github.com/jundot/omlx"
 
 [bootstrap.packages]
+# oMLX bundles MLX and mlx-lm; no separate MLX package is needed.
+"brew:jundot/omlx/omlx" = "latest"
 "brew:curl" = "latest"
 "brew:git" = "latest"
 "brew:gnupg" = "latest"

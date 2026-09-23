@@ -129,10 +129,12 @@ mise install ruby
 mise exec -- mise bootstrap packages status
 mise exec -- mise bootstrap packages apply --dry-run
 mise exec -- mise bootstrap packages apply
+mise run omlx:model:install
+mise run omlx:start
 mise install
 ```
 
-Mise installs the declared macOS formulae and casks into `/opt/homebrew`. Keep them updated with Mise:
+Mise installs the declared macOS formulae and casks into `/opt/homebrew`. oMLX provides the MLX and `mlx-lm` runtime, so no separate MLX package is installed. The macOS-only Pi configuration registers the oMLX endpoint at `http://127.0.0.1:8000/v1` and makes the pinned Qwen3 4B MLX model available through `/model`. Keep the packages updated with Mise:
 
 ```bash
 mise exec -- mise bootstrap packages upgrade

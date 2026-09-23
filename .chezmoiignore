@@ -13,6 +13,7 @@ bootstrap
 
 {{- if ne .chezmoi.os "darwin" }}
 # macOS-only targets and tasks.
+.pi/agent/models.json
 .config/mise/config.toml
 .aerospace.toml
 Library/
