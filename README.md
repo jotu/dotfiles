@@ -136,6 +136,19 @@ mise install
 
 Mise installs the declared macOS formulae and casks into `/opt/homebrew`. oMLX provides the MLX and `mlx-lm` runtime, so no separate MLX package is installed. The macOS-only Pi configuration registers the oMLX endpoint at `http://127.0.0.1:8000/v1` and makes the pinned Qwen3 4B MLX model available through `/model`. Keep the packages updated with Mise:
 
+### oMLX and older Mise releases
+
+The oMLX tap formula uses Homebrew's `MacOS.version` API. Older Mise releases, including `2026.9.12`, do not expose that API while evaluating third-party tap formulae, so package bootstrap can fail with `uninitialized constant Omlx::MacOS`. The accompanying API metadata `404` is expected for this tap; it is not the root cause.
+
+Keep the oMLX declaration managed by Mise and update Mise when a release containing the tap-formula compatibility fix is available:
+
+```bash
+mise self-update --force
+mise bootstrap packages apply
+```
+
+Do not replace the oMLX declaration with a direct Homebrew install unless the Mise fix is unavailable and an immediate workaround is required.
+
 ```bash
 mise exec -- mise bootstrap packages upgrade
 mise up
