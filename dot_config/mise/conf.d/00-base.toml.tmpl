@@ -351,10 +351,13 @@ run = '''
     exit 0
   fi
 
-  omlx_prefix=$(mise bootstrap packages where brew:jundot/omlx/omlx)
-  hf="$omlx_prefix/libexec/bin/hf"
+  hf="$(command -v hf || true)"
+  if [ -z "$hf" ] && command -v brew >/dev/null 2>&1; then
+    omlx_prefix="$(brew --prefix omlx 2>/dev/null || true)"
+    hf="$omlx_prefix/libexec/bin/hf"
+  fi
   if [ ! -x "$hf" ]; then
-    echo "ERROR: oMLX is installed but its bundled hf command is missing: $hf" >&2
+    echo "ERROR: oMLX is installed but its bundled hf command is missing" >&2
     exit 1
   fi
 
@@ -412,11 +415,10 @@ postinstall = [
 # Homebrew prefix; a real Homebrew installation is not required.
 [bootstrap.brew.taps]
 "nikitabobko/tap" = "https://github.com/nikitabobko/homebrew-tap.git"
-"jundot/omlx" = "https://github.com/jundot/omlx"
 
 [bootstrap.packages]
-# oMLX bundles MLX and mlx-lm; no separate MLX package is needed.
-"brew:jundot/omlx/omlx" = "latest"
+# oMLX is intentionally not managed here: older Mise releases cannot evaluate
+# its tap formula. Keep the existing installation available to the tasks above.
 "brew:curl" = "latest"
 "brew:git" = "latest"
 "brew:gnupg" = "latest"

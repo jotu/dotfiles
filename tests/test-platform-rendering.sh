@@ -97,8 +97,8 @@ else:
     assert "hunk" in tools
     assert "herdr" in tools
     assert "github:max-sixty/worktrunk" in tools
-    assert config["bootstrap"]["brew"]["taps"]["jundot/omlx"] == "https://github.com/jundot/omlx"
-    assert packages["brew:jundot/omlx/omlx"] == "latest"
+    assert "jundot/omlx" not in config["bootstrap"]["brew"]["taps"]
+    assert "brew:jundot/omlx/omlx" not in packages
     assert packages["brew:curl"] == "latest"
     assert packages["brew-cask:nikitabobko/tap/aerospace"] == "latest"
     assert packages["brew-cask:signal"] == "latest"
