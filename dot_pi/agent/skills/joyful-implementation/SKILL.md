@@ -11,7 +11,10 @@ If you also invoke `/skill:joyful-principles`, use it for the shared Pragmatic
 Programmer, XP/TDD, Tidy First, CUPID, and Fowler vocabulary.
 
 This skill may modify code when implementation is requested. It must not create
-commits, amend history, or change configuration unless explicitly asked.
+commits during implementation, amend history, or change configuration unless
+explicitly asked. After verification and review, a local Conventional Commit
+is the normal delivery step unless the user opts out; publishing remains a
+separate explicit request.
 
 ## Workflow
 
@@ -48,11 +51,12 @@ decision is unresolved.
   integrity; do not simplify them away.
 - Separate unrelated refactors from the requested behavior change.
 - Never claim a check passed unless it was actually run.
-- Do not create commits unless explicitly requested.
+- Do not create commits during implementation.
 
 ## Commit Rules
 
-When a commit is explicitly requested:
+After verification and review, create a local commit by default unless the user
+opts out:
 
 - use `<type>[optional scope][!]: <description>`
 - keep the commit atomic and easy to review
@@ -61,8 +65,9 @@ When a commit is explicitly requested:
 - use `!` or `BREAKING CHANGE:` for breaking changes
 - do not rewrite existing history unless explicitly asked
 
-Create commits only after verification and review, unless the user explicitly
-chooses a different checkpoint.
+Pushes and PR creation are external delivery actions and require an explicit
+user request. If the user requests `commit, push, create PR/draft`, execute
+that batch only after verification and review.
 
 ## Output
 
@@ -91,7 +96,7 @@ Return:
 
 <diff review against the goal, risks, and remaining work>
 
-## Commit (if requested)
+## Commit
 
 <Conventional Commit message and why the commit is atomic>
 ```

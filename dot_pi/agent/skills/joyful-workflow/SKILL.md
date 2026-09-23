@@ -163,18 +163,20 @@ have recorded both evidence gates before allowing Done.
 
 ## Commit Gate
 
-Commits are never created automatically. When a commit is explicitly requested,
-it must use Conventional Commits and be suitable for review:
+The normal local commit point is after Verify and Review. Create one atomic
+Conventional Commit unless the user opts out:
 
 - use `<type>[optional scope][!]: <description>`
-- keep each commit atomic and focused on one coherent change
+- keep each commit focused on one coherent change
 - separate structural and behavioral changes when practical
 - commit only verified and reviewed changes
 - use `!` or `BREAKING CHANGE:` for breaking changes
 - do not rewrite existing history unless explicitly asked
 
-The normal commit point is after Verify and Review. If the user explicitly
-requests commit, push, PR creation, or a similar delivery batch, execute the
-whole batch together, compose the commit message and PR description, and ask
-only when its scope, destination, or breaking-change status is unclear. Keep
-merge, deletion, and unrelated risky actions as separate gates.
+Pushes, PR creation, and draft PR creation are separate external delivery
+steps and are never automatic. If the user explicitly requests a delivery
+batch such as `commit, push, create draft PR`, execute it after Verify and
+Review, compose the commit message and PR description, and ask only when the
+scope, destination, or breaking-change status is unclear. If the final diff
+materially exceeds the agreed scope, ask before committing or publishing it.
+Keep merge, deletion, and unrelated risky actions as separate gates.

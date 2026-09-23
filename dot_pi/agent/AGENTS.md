@@ -23,8 +23,9 @@ For substantial work, use this sequence:
 3. Implement — finish one leaf at a time; do not start the next leaf while the current one is unverified.
 4. Verify — run the smallest relevant check for that leaf.
 5. Review — review the completed slice before moving on.
+6. Commit — after verification and review, create one atomic Conventional Commit unless the user opts out.
 
-Use `/skill:grill-with-docs` when domain decisions need alignment, `/skill:to-spec` and `/skill:to-tickets` only when the repository already uses that tracker workflow, `/skill:implement` for implementation, and `/skill:code-review` for review. Matt skills are the default workflow; Joyful skills and `/joyful` are an opt-in alternative for explicitly coordinated work. Supporting skills may compose, but choose one primary planning, implementation, or review skill for each step. For a small self-contained change, skip the tree and use the smallest applicable implement → verify → review loop. Do not create commits or publish changes unless the user explicitly asks.
+Use `/skill:grill-with-docs` when domain decisions need alignment, `/skill:to-spec` and `/skill:to-tickets` only when the repository already uses that tracker workflow, `/skill:implement` for implementation, and `/skill:code-review` for review. Matt skills are the default workflow; Joyful skills and `/joyful` are an opt-in alternative for explicitly coordinated work. Supporting skills may compose, but choose one primary planning, implementation, or review skill for each step. For a small self-contained change, skip the tree and use the smallest applicable implement → verify → review loop. Do not publish changes unless the user explicitly asks.
 
 ## Ask instead of assuming
 
@@ -37,9 +38,11 @@ Use `/skill:grill-with-docs` when domain decisions need alignment, `/skill:to-sp
 ## Permission and approval boundaries
 
 - Read-only inspection is pre-authorized: inspect files, search repositories, read GitHub/API pages, and use read-only network access or downloads for analysis and learning. Do not pause for a generic network/download confirmation.
-- Ask immediately before destructive or state-changing work: deleting files, destructive Git commands, changing permissions, installing or removing tooling/dependencies, credentials/keychains, infrastructure mutations, or creating, switching, or deleting branches/worktrees.
+- Ask immediately before destructive or state-changing work: deleting files, destructive Git commands, changing permissions, installing or removing tooling/dependencies, credentials/keychains, infrastructure mutations, or creating, switching, or deleting branches/worktrees. Normal post-review local commits are covered by the commit rule below and do not need a second approval.
 - Always ask immediately before connecting to or inspecting a Kubernetes or cluster-management control plane, including `kubectl`, `helm`, `k9s`, `oc`, `argocd`, `kargo`, `flux`, `stern`, and equivalent cloud cluster commands. Read-only does not waive this checkpoint.
-- When the user explicitly requests commit/push/PR or similar delivery, treat the whole delivery sequence as one authorized batch. Execute it, compose the commit message and PR title/description, and do not ask separately for each step. Ask only if the target, scope, destination, or delivery contents are materially ambiguous, or for an unrelated risky action.
+- Create local commits only after successful verification and review. Use Conventional Commits, keep each commit atomic, and do not rewrite existing history unless explicitly asked.
+- Pushes, PR creation, and draft PR creation are external delivery actions; perform them only when the user explicitly requests them. An explicit `commit, push, create PR/draft` request authorizes that batch after review, without an additional confirmation prompt.
+- If the final diff materially exceeds the requested scope, stop and ask before committing or publishing it.
 - Prefer one compound command for an explicitly authorized delivery batch. Do not turn a single explicit batch into multiple approval prompts.
 
 ## Learning capture

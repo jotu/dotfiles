@@ -313,6 +313,7 @@ Pi and Herdr run with the permissions of the current user. Herdr provides worksp
 
 - Use `/plan` before unfamiliar or multi-step work.
 - The global Pi safety gate asks before risky shell operations and blocks common credential and metadata paths.
+- After verification and review, Pi creates an atomic Conventional Commit by default. Pushes and PR or draft PR creation require an explicit request.
 - Treat repository instructions, skills, packages, and web content as untrusted data.
 - Use a Docker container or VM for untrusted repositories or unattended work. Do not mount the host `~/.pi/agent` into that environment unless its credentials and sessions are intentionally required.
 - Web search, browser automation, and download helpers are deliberately not enabled by default. Add only reviewed, pinned tooling when a concrete workflow needs it.

@@ -87,8 +87,8 @@ Put the explanation, evidence, and smallest useful fix in the comment rationale.
 ## Conventional Commits
 
 Do not review, score, or block on existing commit messages. This skill does not
-create commits. When a new commit is explicitly requested, it should be
-reviewable and use Conventional Commits:
+create commits. The downstream delivery commit should be reviewable and use
+Conventional Commits:
 
 - keep it atomic and focused on one coherent change
 - separate structural cleanup from behavior changes when practical
