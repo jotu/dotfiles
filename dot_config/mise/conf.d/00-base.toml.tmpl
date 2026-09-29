@@ -323,7 +323,7 @@ run = '''
 
 [tasks."pi:ponytail:update"]
 alias = "ppu"
-description = "Update the managed Ponytail Pi package"
+description = "Update the managed Ponytail Pi skill package"
 run = "pi update npm:@dietrichgebert/ponytail@4.8.3"
 
 {{- if eq .chezmoi.os "darwin" }}
@@ -396,11 +396,6 @@ run = '''
 
 [hooks]
 postinstall = [
-  { run = '''
-    if command -v pi >/dev/null 2>&1; then
-      pi install npm:@dietrichgebert/ponytail@4.8.3
-    fi
-  ''' },
   { task = "gh:dash:install" },
   { task = "gh:enhance:install" },
   { task = "pi:worktrunk:install" },

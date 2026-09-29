@@ -7,7 +7,12 @@
   {{- $thinkingLevel = "xhigh" -}}
 {{- end -}}
 {
-  "packages": [],
+  "packages": [
+    {
+      "source": "npm:@dietrichgebert/ponytail@4.8.3",
+      "extensions": []
+    }
+  ],
   "npmCommand": [
 {{- if eq .chezmoi.os "darwin" }}
     "mise",
