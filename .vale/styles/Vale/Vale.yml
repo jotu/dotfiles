@@ -1,5 +1,5 @@
 # Vale core style config enabling consistent English and tone checks.
-# Place this file at: dotfiles/.github/styles/Vale/Vale.yml
+# Place this file at: dotfiles/.vale/styles/Vale/Vale.yml
 # These rules complement installed packages (alex, write-good) and a custom vocabulary (Vocab/Base).
 # They aim for consistent English style and professional tone while avoiding false positives in technical docs.
 

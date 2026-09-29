@@ -14,6 +14,7 @@ gpg
 ed25519
 homebrew
 brew
+Herdr
 mise
 ghostty
 zed
@@ -43,4 +44,10 @@ Catppuccin
 Macchiato
 vim
 nvim
+Pocock
+replan
+untrusted
 vale
+Worktrunk
+worktree
+worktrees

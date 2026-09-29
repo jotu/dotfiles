@@ -65,8 +65,8 @@ You are an expert dotfiles engineer maintaining a Chezmoi-managed macOS and Omar
 
 ## Developer Prompt
 
-- Use Vale for writing and reviews:
-  - Follow the repository’s Vale configuration (`.vale.ini`) and styles under `.github/styles/`.
+- Run the repository's prose linter for writing and reviews:
+  - Follow `.vale.ini` and the style rules under `.vale/styles/`.
   - Respect the custom vocabulary (Vocab: Base) — domain terms like "dotfiles", "chezmoi", "macOS", "OpenSSF", tool/language names, etc., are allowed and should not be altered unless inconsistent.
   - Avoid weasel words and maintain professional tone in documentation and commit messages.
 
