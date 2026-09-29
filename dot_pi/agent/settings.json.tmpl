@@ -1,8 +1,10 @@
 {{- $provider := "github-copilot" -}}
 {{- $model := "gpt-5.6-luna" -}}
+{{- $thinkingLevel := "high" -}}
 {{- if .work.enable -}}
   {{- $provider = "openai-codex" -}}
-  {{- $model = "gpt-5.6-luna" -}}
+  {{- $model = "gpt-6-luna-6" -}}
+  {{- $thinkingLevel = "xhigh" -}}
 {{- end -}}
 {
   "packages": [],
@@ -17,7 +19,7 @@
   ],
   "defaultProvider": "{{ $provider }}",
   "defaultModel": "{{ $model }}",
-  "defaultThinkingLevel": "high",
+  "defaultThinkingLevel": "{{ $thinkingLevel }}",
   "enabledModels": [
     "{{ $provider }}/{{ $model }}"
   ],
