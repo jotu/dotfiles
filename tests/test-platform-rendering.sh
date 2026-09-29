@@ -148,4 +148,22 @@ PY
   yq eval '.' "$yaml_output" >/dev/null
 done
 
+for work_enabled in true false; do
+  settings_output="$tmp_dir/settings-work-$work_enabled.json"
+  chezmoi execute-template \
+    --override-data "{\"chezmoi\":{\"os\":\"linux\",\"arch\":\"arm64\"},\"work\":{\"enable\":$work_enabled}}" \
+    --file "$repo_root/dot_pi/agent/settings.json.tmpl" >"$settings_output"
+  validate_json "$settings_output"
+  python3 - "$settings_output" "$work_enabled" <<'PY'
+import json
+import sys
+
+with open(sys.argv[1]) as file:
+    packages = {package["source"] for package in json.load(file)["packages"]}
+
+assert "npm:pi-mcp-adapter@3.2.0" in packages
+assert ("npm:pi-chatgpt-limit@0.3.1" in packages) == (sys.argv[2] == "true")
+PY
+done
+
 printf 'Linux and macOS platform templates rendered and validated.\n'
