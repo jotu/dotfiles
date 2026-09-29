@@ -36,6 +36,11 @@ python
 golang
 java
 lua
+superfile
+zoxide
+Omarchy
+Catppuccin
+Macchiato
 vim
 nvim
 vale

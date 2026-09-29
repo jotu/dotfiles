@@ -86,23 +86,49 @@ else:
     assert '[tasks."omlx:model:install"]' in rendered_text
     assert '[tasks."omlx:start"]' in rendered_text
 
+assert tools["superfile"] == "latest"
 if os == "linux":
     assert not packages
     assert "gh" not in tools
     assert "hunk" not in tools
     assert "herdr" not in tools
     assert "github:max-sixty/worktrunk" not in tools
+    assert "aqua:ajeetdsouza/zoxide" not in tools
 else:
     assert "aqua:cli/cli" in tools
     assert "hunk" in tools
     assert "herdr" in tools
     assert "github:max-sixty/worktrunk" in tools
+    assert "aqua:ajeetdsouza/zoxide" in tools
     assert "jundot/omlx" not in config["bootstrap"]["brew"]["taps"]
     assert "brew:jundot/omlx/omlx" not in packages
     assert packages["brew:curl"] == "latest"
     assert packages["brew-cask:nikitabobko/tap/aerospace"] == "latest"
     assert packages["brew-cask:signal"] == "latest"
     assert tools["ruby"] == "3"
+PY
+
+  if [[ "$os" == linux ]]; then
+    superfile_source=dot_config/superfile/config.toml.tmpl
+  else
+    superfile_source='private_Library/private_Application Support/superfile/config.toml.tmpl'
+  fi
+  superfile_output="$tmp_dir/$os-superfile.toml"
+  render "$os" "$superfile_source" "$superfile_output"
+  validate_toml "$superfile_output"
+  python3 - "$superfile_output" "$os" <<'PY'
+import sys
+import tomllib
+
+with open(sys.argv[1], "rb") as file:
+    config = tomllib.load(file)
+
+assert config["zoxide_support"] is True
+assert config["ignore_missing_fields"] is True
+if sys.argv[2] == "darwin":
+    assert config["theme"] == "catppuccin-macchiato"
+else:
+    assert "theme" not in config
 PY
 
   for source in "${toml_sources[@]}"; do

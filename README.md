@@ -343,6 +343,10 @@ Use `hkd` for a repository-wide working-tree review and `hks` for staged changes
 
 Sofka is installed through Mise from its GitHub release artifacts and configured at `~/.config/sofka/config.toml`. The starter profile sets `readonly = true`, disabling mutating actions for the whole session. On macOS it also keeps the Catppuccin Macchiato skin; on Omarchy/Linux it follows the tool's default look instead of forcing a separate theme. Use `sofka` alongside `k9s` for development and personal clusters; keep `k9s` for production until Sofka has signed/notarized artifacts, SBOMs, provenance attestations, compatibility documentation, and a longer production track record.
 
+## superfile terminal file manager
+
+mise installs superfile on both platforms and zoxide on macOS; Omarchy supplies zoxide on Linux. The Chezmoi config enables the zoxide navigation modal; press `z` inside superfile. Chezmoi writes the config to `~/.config/superfile/config.toml` on Linux and `~/Library/Application Support/superfile/config.toml` on macOS. The macOS config selects superfile's built-in Catppuccin Macchiato theme; Linux keeps the default theme to follow Omarchy. Launch it with `sf` or `spf`.
+
 ## GitHub pull request dashboard
 
 This setup uses gh-dash as a pinned GitHub CLI extension. On Linux, `gh` is provided by Omarchy; on macOS, Mise manages it. Homebrew is not required for this integration.
