@@ -95,6 +95,7 @@ if os == "linux":
     assert "github:max-sixty/worktrunk" not in tools
     assert "aqua:ajeetdsouza/zoxide" not in tools
 else:
+    assert packages["brew:libpq"] == "latest"
     assert "aqua:cli/cli" in tools
     assert "hunk" in tools
     assert "herdr" in tools

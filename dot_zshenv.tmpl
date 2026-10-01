@@ -14,6 +14,9 @@ if [[ -n "${BREW_HOME:-}" ]]; then
   export LDFLAGS="-L$BREW_HOME/opt/openssl@3/lib"
   export CPPFLAGS="-I$BREW_HOME/opt/openssl@3/include"
   export PATH="$BREW_HOME/opt/openssl@3/bin:$PATH"
+  if [[ -d "$BREW_HOME/opt/libpq/bin" ]]; then
+    export PATH="$BREW_HOME/opt/libpq/bin:$PATH"
+  fi
 fi
 
 
