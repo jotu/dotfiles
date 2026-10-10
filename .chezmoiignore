@@ -16,7 +16,6 @@ bootstrap
 .pi/agent/models.json
 .config/mise/config.toml
 .aerospace.toml
-.config/sol/
 Library/
 .config/mise/tasks/osx/
 {{- else }}
