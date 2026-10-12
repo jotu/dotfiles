@@ -23,10 +23,15 @@ matt_skills=(
   domain-modeling
   grill-with-docs
   implement
+  implement-spec
   improve-codebase-architecture
+{{ if not .work.enable }}
+  # Personal-only: work setups use their own PR skill.
+  pr
+{{ end }}
   prototype
   research
-  resolving-merge-conflicts
+  retro
   setup-matt-pocock-skills
   tdd
   to-spec

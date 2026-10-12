@@ -3,7 +3,7 @@ name: grilling
 description: Grill the user relentlessly about a plan, decision, or idea. Use when the user wants to stress-test their thinking, or uses any 'grill' trigger phrases.
 ---
 
-<!-- Imported from mattpocock/skills at commit c55ee46073ed923f86ce59a5eb3b6d895095d1b7. Pi adaptation: use available tools instead of sub-agents. -->
+<!-- Imported from mattpocock/skills v1.3.1 at commit 24fe0ef7737efae15c87225755e9f6f5965e4888. Pi adaptation: use available tools instead of sub-agents. -->
 
 Interview the user relentlessly until you reach a shared understanding. Map this as a **design tree**: every decision branches into the decisions that hang off it.
 
