@@ -25,6 +25,51 @@ personal_script="$tmp_dir/manage-matt-pi-skills-personal"
 work_script="$tmp_dir/manage-matt-pi-skills-work"
 render_manager false "$personal_script"
 render_manager true "$work_script"
+node - "$repo_root" "$tmp_dir" <<'EOF_NODE'
+const assert = require("node:assert/strict");
+const { execFileSync } = require("node:child_process");
+const fs = require("node:fs");
+const path = require("node:path");
+const [repoRoot, tmpDir] = process.argv.slice(2);
+const sharedSkills = [
+  "ask-matt",
+  "code-review",
+  "codebase-design",
+  "diagnosing-bugs",
+  "domain-modeling",
+  "handoff",
+  "implement",
+  "improve-codebase-architecture",
+  "setup-matt-pocock-skills",
+  "tdd",
+  "teach",
+  "to-tickets",
+  "triage",
+  "wait-what",
+  "wayfinder",
+  "wizard",
+];
+const templatePath = path.join(repoRoot, "dot_pi/agent/settings.json.tmpl");
+const sharedHome = path.join(tmpDir, "shared-home");
+for (const name of sharedSkills) {
+  const skillPath = path.join(sharedHome, ".agents/skills", name, "SKILL.md");
+  fs.mkdirSync(path.dirname(skillPath), { recursive: true });
+  fs.writeFileSync(skillPath, "fixture\n");
+}
+const renderSettings = (home) => JSON.parse(execFileSync("chezmoi", [
+  "execute-template",
+  "--override-data",
+  JSON.stringify({ work: { enable: false }, chezmoi: { homeDir: home } }),
+  "--file",
+  templatePath,
+], { encoding: "utf8" }));
+const sharedSettings = renderSettings(sharedHome);
+const expected = sharedSkills.map((name) => `-${sharedHome}/.pi/agent/skills/${name}`);
+const missing = expected.filter((entry) => !sharedSettings.skills?.includes(entry));
+assert.deepEqual(missing, [], "shared skills must exclude their native Pi copies");
+const freshSettings = renderSettings(path.join(tmpDir, "fresh-home"));
+assert.deepEqual(freshSettings.skills, [], "fresh installs must keep native Pi skills discoverable");
+EOF_NODE
 : >"$tmp_dir/bin/pi"
 chmod +x "$tmp_dir/bin/pi"
 

@@ -6,6 +6,30 @@
   {{- $model = "gpt-6-luna" -}}
   {{- $thinkingLevel = "xhigh" -}}
 {{- end -}}
+{{- $sharedSkills := list
+  "ask-matt"
+  "code-review"
+  "codebase-design"
+  "diagnosing-bugs"
+  "domain-modeling"
+  "handoff"
+  "implement"
+  "improve-codebase-architecture"
+  "setup-matt-pocock-skills"
+  "tdd"
+  "teach"
+  "to-tickets"
+  "triage"
+  "wait-what"
+  "wayfinder"
+  "wizard"
+-}}
+{{- $skillExclusions := list -}}
+{{- range $skill := $sharedSkills -}}
+  {{- if stat (joinPath $.chezmoi.homeDir ".agents" "skills" $skill "SKILL.md") -}}
+    {{- $skillExclusions = append $skillExclusions (printf "-%s" (joinPath $.chezmoi.homeDir ".pi" "agent" "skills" $skill)) -}}
+  {{- end -}}
+{{- end -}}
 {
   "packages": [
     {
@@ -37,6 +61,8 @@
   "enabledModels": [
     "{{ $provider }}/{{ $model }}"
   ],
+{{/* Pi discovers ~/.agents/skills too. Exclude native copies only when the shared copy exists. */}}
+  "skills": {{ toJson $skillExclusions }},
   "theme": "{{ if eq .chezmoi.os "linux" }}omarchy-system{{ else }}catppuccin-macchiato{{ end }}",
   "compaction": {
     "enabled": true,
