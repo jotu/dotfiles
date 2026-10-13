@@ -104,10 +104,25 @@ run_reconcile() {
     bash "$manager_script" install
 }
 
+run_update() {
+  local manager_script="$1"
+  local fake_skills_json="${FAKE_SKILLS_JSON:-}"
+  if [ -z "$fake_skills_json" ]; then
+    fake_skills_json='[{"name":"ask-matt","source":"mattpocock/skills"}]'
+  fi
+  FAKE_LOG="$tmp_dir/skills.log" \
+    FAKE_SKILLS_JSON="$fake_skills_json" \
+    PATH="$tmp_dir/bin:$PATH" \
+    HOME="$tmp_dir/home" \
+    bash "$manager_script" update
+}
+
 : >"$tmp_dir/skills.log"
 run_reconcile "$personal_script" '[]'
 test "$(grep -c ' add ' "$tmp_dir/skills.log")" = 1
 test "$(grep -c ' update ' "$tmp_dir/skills.log" || true)" = 0
+grep -Fq 'https://github.com/mattpocock/skills/tree/49dd158d1076134a641b33efb035946536778336' "$tmp_dir/skills.log"
+grep -Fq ' --agent pi --global --yes' "$tmp_dir/skills.log"
 grep -Fq ' implement-spec ' "$tmp_dir/skills.log"
 grep -Fq ' retro ' "$tmp_dir/skills.log"
 grep -Fq ' pr ' "$tmp_dir/skills.log"
@@ -116,17 +131,26 @@ grep -Fq ' pr ' "$tmp_dir/skills.log"
 : >"$tmp_dir/skills.log"
 run_reconcile "$work_script" '[]'
 test "$(grep -c ' add ' "$tmp_dir/skills.log")" = 1
+grep -Fq ' --agent pi --global --yes' "$tmp_dir/skills.log"
 ! grep -Fq ' pr ' "$tmp_dir/skills.log"
 
 : >"$tmp_dir/skills.log"
 run_reconcile "$personal_script" '[{"name":"node","version":"22.0.0"}]'
-test "$(grep -c ' add ' "$tmp_dir/skills.log")" = 1
-test "$(grep -c ' update ' "$tmp_dir/skills.log")" = 1
+test "$(grep -c ' add ' "$tmp_dir/skills.log")" = 2
+test "$(grep -c ' update ' "$tmp_dir/skills.log" || true)" = 0
+grep -Fq ' add https://github.com/mattpocock/skills/tree/49dd158d1076134a641b33efb035946536778336 --skill ask-matt --agent pi --global --yes' "$tmp_dir/skills.log"
+test "$(grep -c -- '--agent pi --global --yes' "$tmp_dir/skills.log")" = 2
 grep -Fq 'ask-matt' "$tmp_dir/skills.log"
 
 : >"$tmp_dir/skills.log"
 FAKE_SKILLS_JSON='[{"name":"ask-matt","source":"another/repository"}]' run_reconcile "$personal_script" '[]'
 grep -Fq 'ask-matt' "$tmp_dir/skills.log"
 test "$(grep -c ' update ' "$tmp_dir/skills.log" || true)" = 0
+
+: >"$tmp_dir/skills.log"
+run_update "$personal_script"
+test "$(grep -c ' add ' "$tmp_dir/skills.log")" = 1
+test "$(grep -c ' update ' "$tmp_dir/skills.log" || true)" = 0
+grep -Fq ' add https://github.com/mattpocock/skills/tree/49dd158d1076134a641b33efb035946536778336 --skill ask-matt --agent pi --global --yes' "$tmp_dir/skills.log"
 
 printf 'Pi skill reconciliation checks passed.\n'

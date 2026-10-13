@@ -4,7 +4,9 @@ set -euo pipefail
 
 : "${HOME:?HOME is required}"
 
-source_repo='mattpocock/skills'
+# Advance this immutable upstream ref only after reviewing its skill changes.
+matt_skills_ref='49dd158d1076134a641b33efb035946536778336'
+source_repo="https://github.com/mattpocock/skills/tree/$matt_skills_ref"
 skills_cli=(npx --yes skills@1.7.0)
 skills_dir="$HOME/.pi/agent/skills"
 managed_matt_skills=''
@@ -109,6 +111,13 @@ check_skills() {
   done
 }
 
+refresh_pi_skills() {
+  local -a skills=("$@")
+  printf 'Updating installed skills: %s\n' "${skills[*]}"
+  # `skills update` has no agent filter; use an explicit Pi target instead.
+  "${skills_cli[@]}" add "$source_repo" --skill "${skills[@]}" --agent pi --global --yes
+}
+
 install_skills() {
   command -v npx >/dev/null 2>&1 || { printf 'ERROR: npx is required to install or update Matt skills\n' >&2; return 1; }
   load_managed_matt_skills
@@ -138,8 +147,7 @@ install_skills() {
     "${skills_cli[@]}" add "$source_repo" --skill "${missing_skills[@]}" --agent pi --global --yes
   fi
   if ((${#refresh_skills[@]} > 0)); then
-    printf 'Updating installed skills: %s\n' "${refresh_skills[*]}"
-    "${skills_cli[@]}" update "${refresh_skills[@]}" --global --yes
+    refresh_pi_skills "${refresh_skills[@]}"
   fi
 }
 
@@ -158,8 +166,7 @@ update_skills() {
     fi
   done
   if ((${#refresh_skills[@]} > 0)); then
-    printf 'Updating installed skills: %s\n' "${refresh_skills[*]}"
-    "${skills_cli[@]}" update "${refresh_skills[@]}" --global --yes
+    refresh_pi_skills "${refresh_skills[@]}"
   fi
 }
 
