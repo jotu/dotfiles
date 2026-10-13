@@ -1,0 +1,31 @@
+name: Pi Skill Manager Tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  pi-skill-manager:
+    name: Validate Pi skill manager
+    runs-on: ubuntu-latest
+    env:
+      MISE_ENABLE_TOOLS: chezmoi,node
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up mise and pinned test tools
+        uses: jdx/mise-action@08ae2a091c038e1e05ec6f5115dc5c69d5a2a6b8 # v5.1.2
+        with:
+          version: 2026.10.8
+
+      - name: Test Pi skill manager
+        run: mise run test:pi:skills
