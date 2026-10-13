@@ -1,5 +1,5 @@
 ---
-description: Scout, plan, then implement a change
+description: Full multi-agent implementation with scout, planner, worker, review, and commit
 ---
 
 Use the subagent tool with this chain:

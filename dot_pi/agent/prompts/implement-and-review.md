@@ -1,5 +1,5 @@
 ---
-description: Implement a change, review it, then apply the review
+description: Worker-reviewer-worker loop to implement, review, and apply fixes
 ---
 
 Use the subagent tool with this chain:
