@@ -32,16 +32,15 @@
 {{- end -}}
 {
   "packages": [
-    {
-      "source": "npm:@dietrichgebert/ponytail@4.8.3",
-      "extensions": []
-    }{{ if .work.enable }},
+{{- if .work.enable }}
     {
       "source": "npm:pi-chatgpt-limit@0.3.1"
-    }{{ else }},
+    },
+{{- else }}
     {
       "source": "npm:pi-copilot-usage@1.0.0"
-    }{{ end }},
+    },
+{{- end }}
     {
       "source": "npm:pi-mcp-adapter@3.2.0"
     }

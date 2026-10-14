@@ -56,10 +56,10 @@ for (const name of sharedSkills) {
   fs.mkdirSync(path.dirname(skillPath), { recursive: true });
   fs.writeFileSync(skillPath, "fixture\n");
 }
-const renderSettings = (home) => JSON.parse(execFileSync("chezmoi", [
+const renderSettings = (home, workEnabled = false) => JSON.parse(execFileSync("chezmoi", [
   "execute-template",
   "--override-data",
-  JSON.stringify({ work: { enable: false }, chezmoi: { homeDir: home } }),
+  JSON.stringify({ work: { enable: workEnabled }, chezmoi: { homeDir: home } }),
   "--file",
   templatePath,
 ], { encoding: "utf8" }));
@@ -67,6 +67,16 @@ const sharedSettings = renderSettings(sharedHome);
 const expected = sharedSkills.map((name) => `-${sharedHome}/.pi/agent/skills/${name}`);
 const missing = expected.filter((entry) => !sharedSettings.skills?.includes(entry));
 assert.deepEqual(missing, [], "shared skills must exclude their native Pi copies");
+const workSettings = renderSettings(sharedHome, true);
+const hasPackage = (settings, prefix) => settings.packages?.some(({ source }) => source?.startsWith(prefix));
+assert.ok(!hasPackage(sharedSettings, "npm:@dietrichgebert/ponytail@"), "personal Pi must not load Ponytail");
+assert.ok(!hasPackage(workSettings, "npm:@dietrichgebert/ponytail@"), "work Pi must not load Ponytail");
+assert.ok(!hasPackage(sharedSettings, "npm:opencode-ai@"), "personal Pi must not load OpenCode");
+assert.ok(!hasPackage(workSettings, "npm:opencode-ai@"), "work Pi must not load OpenCode");
+assert.ok(hasPackage(sharedSettings, "npm:pi-copilot-usage@1.0.0"), "personal Pi must load its usage package");
+assert.ok(!hasPackage(sharedSettings, "npm:pi-chatgpt-limit@0.3.1"), "personal Pi must not load the work usage package");
+assert.ok(hasPackage(workSettings, "npm:pi-chatgpt-limit@0.3.1"), "work Pi must load its usage package");
+assert.ok(!hasPackage(workSettings, "npm:pi-copilot-usage@1.0.0"), "work Pi must not load the personal usage package");
 const freshSettings = renderSettings(path.join(tmpDir, "fresh-home"));
 assert.deepEqual(freshSettings.skills, [], "fresh installs must keep native Pi skills discoverable");
 EOF_NODE

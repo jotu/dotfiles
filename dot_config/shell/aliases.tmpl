@@ -114,7 +114,6 @@ if command -v mise >/dev/null 2>&1; then
   alias m='mise'
   alias mup='MISE_MINIMUM_RELEASE_AGE=0 mise up'
   alias ghlp='mise run gh:auth:login:personal'
-  alias opos='mise run opencode:config:current'
   sar() { eval "$(mise run --silent ssh:agent:restart)"; }
 fi
 if command -v mise >/dev/null 2>&1 && command -v aws-vault >/dev/null 2>&1; then
@@ -159,10 +158,6 @@ if command -v herdr >/dev/null 2>&1; then
 fi
 if command -v chezmoi >/dev/null 2>&1; then
   alias cm='chezmoi'
-fi
-if command -v opencode >/dev/null 2>&1; then
-  alias c='opencode'
-  alias oc='opencode'
 fi
 if command -v obsidian >/dev/null 2>&1; then
   alias ob='obsidian'

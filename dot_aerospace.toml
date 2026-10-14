@@ -116,10 +116,6 @@ if.app-id = 'com.sublimetext.4'
 run = 'move-node-to-workspace 9'
 
 [[on-window-detected]]
-if.app-id = 'ai.opencode.desktop'
-run = 'move-node-to-workspace 9'
-
-[[on-window-detected]]
 if.app-id = 'com.openai.codex'
 run = 'move-node-to-workspace 9'
 

@@ -26,10 +26,6 @@ chezmoi apply
 mise run dotfiles:health:check
 mise run gh:auth:status:all
 
-# OpenCode profile switch + verify
-mise run opencode:profile:set:work-openai   # or work-copilot / home-copilot
-mise run opencode:profile:current
-mise run opencode:profile:validate
 ```
 
 ## New machine bootstrap
@@ -45,7 +41,7 @@ The checked-in `bootstrap` helper initializes `git@github.com:jotu/dotfiles.git`
 
 The checked-in `bootstrap` helper performs the same platform checks and initializes Chezmoi without applying files. It can be run from a checked-out copy after the machine has GitHub access.
 
-Mise is preinstalled by Omarchy. The bootstrap keeps Bash as its interpreter, installs Zsh when needed, and leaves the login-shell switch for after the dotfiles have been reviewed and applied. Omarchy also provisions the base desktop applications and its AI harnesses and developer agents, including `codex`, `claude`, `crush`, `gemini`, `gh`, OpenCode, Pi, `omp`, Hunk, and Herdr. If one of these wrappers is missing, restore Omarchy's application wrappers before authenticating:
+Mise is preinstalled by Omarchy. The bootstrap keeps Bash as its interpreter, installs Zsh when needed, and leaves the login-shell switch for after the dotfiles have been reviewed and applied. Omarchy also provisions the base desktop applications and its AI harnesses and developer agents, including `codex`, `claude`, `crush`, `gemini`, `gh`, OpenCode, Pi, `omp`, Hunk, and Herdr. The repository leaves OpenCode configuration to Omarchy. If one of these wrappers is missing, restore Omarchy's application wrappers before authenticating:
 
 ```bash
 omarchy refresh applications
@@ -147,7 +143,7 @@ mise exec -- mise bootstrap packages upgrade
 mise up
 ```
 
-The macOS profile keeps its current tool and configuration behavior; Linux support is added through platform-specific templates and ignores.
+The macOS profile keeps its existing mise-managed host tools; Linux support uses platform-specific templates and ignores.
 
 ## Platform ownership
 
@@ -158,7 +154,8 @@ Use the platform's own package and application tooling before adding a repositor
 | Git | Omarchy base package | Mise `brew` backend |
 | Mise | Omarchy | Standalone Mise |
 | Chezmoi | Mise | Mise |
-| `gh`, Pi, Herdr, Hunk, OpenCode, Codex, Claude, Crush, Gemini, `omp` | Omarchy provisioning | Existing macOS/Mise setup |
+| `gh`, Pi, Herdr, Hunk, Codex, Claude, Crush, Gemini, `omp` | Omarchy provisioning | Existing macOS/Mise setup |
+| OpenCode | Omarchy provisioning, external to this repository | Not managed in this repository |
 | Worktrunk (`wt`) | Omarchy/Arch package | Mise GitHub release |
 | FD, jq, LazyGit, ripgrep, Starship, Zoxide | Omarchy base packages | Mise |
 | Kubernetes and AWS tooling | Mise | Mise |
@@ -213,9 +210,6 @@ mise run test:platform:render
 
 Reference sections:
 - Git and identity setup: [Git](#git)
-- OpenCode profiles and model defaults: [OpenCode config defaults](#opencode-config-defaults)
-- OpenCode skills catalog policy: [OpenCode skills catalog policy](#opencode-skills-catalog-policy)
-- OpenCode commands catalog policy: [OpenCode commands catalog policy](#opencode-commands-catalog-policy)
 - Working agreement: [Tidy First + CUPID + Ponytail](docs/working-agreement-tidy-cupid-ponytail.md)
 
 ## Pi plan mode
@@ -225,7 +219,6 @@ Pi is provided by Omarchy on Linux and by Mise on macOS. The repository manages 
 ```bash
 chezmoi apply                        # installs the sync hook
 mise install                          # installs managed tools and syncs Pi add-ons when available
-mise run pi:ponytail:update            # update Ponytail on either platform
 mise run pi:plan-mode:sync              # sync plan mode from the installed Pi package
 mise run pi:subagent:sync              # sync Pi's bundled sub-agent extension
 mise run pi:matt:skills:check          # show the selected stable Matt skills
@@ -261,7 +254,6 @@ Herdr is the persistent terminal workspace for local development. Keep one works
 
 - `shell`: Git, Mise, tests, and logs.
 - `pi`: planning, exploration, and read-only analysis.
-- `opencode`: implementation and review, using the selected work profile.
 - `lazygit`: optional visual Git history and staging.
 
 Start Herdr from the repository root with the short `hr` alias. It is intentionally manual rather than an automatic shell-startup hook, so Herdr does not nest inside its own shells or restart agents unexpectedly:
@@ -277,7 +269,6 @@ Common aliases are kept short and recognizable. Where Omarchy already has a shor
 | Alias | Command | Purpose |
 | --- | --- | --- |
 | `h` / `hr` | `herdr` | Start Herdr in the current directory |
-| `c` / `oc` | `opencode` / `opencode` | Start OpenCode |
 | `a` | `omarchy-agent --inline` | Start the Omarchy agent when installed |
 | `cx` | `claude` | Start Claude with its normal permission mode when installed |
 | `cy` | `codex` | Start Codex with its normal approval mode when installed |
@@ -312,12 +303,11 @@ Aliases for optional tools are defined only when the command is installed. Mise 
 Inside Herdr, use one tab for each role:
 
 ```text
-shell:    mise run opencode:profile:set:work-openai  # or work-copilot
+shell:    mise run dotfiles:health:check
 pi:       pi
-opencode: opencode
 ```
 
-Herdr preserves the workspace layout but does not automatically restart coding agents after a restart. Use `herdr agent list` to inspect detected Pi and OpenCode sessions. On macOS the repo keeps the custom Catppuccin Herdr theme; on Omarchy/Linux it keeps personal layout preferences but uses Herdr's terminal theme to stay aligned with Omarchy.
+Herdr preserves the workspace layout but does not automatically restart coding agents after a restart. Use `herdr agent list` to inspect detected Pi sessions. On macOS the repo keeps the custom Catppuccin Herdr theme; on Omarchy/Linux it keeps personal layout preferences but uses Herdr's terminal theme to stay aligned with Omarchy.
 
 ## Pi safety model
 
@@ -596,74 +586,7 @@ mise run gh:auth:login:work
 mise run gh:auth:status:all
 ```
 
-## OpenCode Config Defaults
-
-- Profiles: `work-openai`, `work-copilot`, `home-copilot`.
-- Fallback: if `opencode.profile` is unset and `work.enable = true`, use `work-openai`; otherwise use `home-copilot`.
-
-### OpenCode Quick Start
-
-```bash
-# pick a profile
-mise run opencode:profile:set:work-openai
-mise run opencode:profile:set:work-copilot
-mise run opencode:profile:set:home-copilot
-
-# inspect active config
-mise run opencode:profile:current
-
-# validate template renders
-mise run opencode:profile:validate
-mise run opencode:models:validate
-
-# preflight before changing model/profile routing
-mise run opencode:models:preflight
-```
-
-### Profile Defaults
-
-| Profile | model | small_model |
-|---|---|---|
-| `work-openai` | `openai/gpt-5.6-luna-medium` | `openai/gpt-5.6-luna-low` |
-| `work-copilot` | `github-copilot/gpt-5.3-codex-medium` | `github-copilot/gpt-5-mini-low` |
-| `home-copilot` | `github-copilot/gpt-5.3-codex-medium` | `github-copilot/gpt-5.4-mini-low` |
-
-Role-tier routing defaults (verified):
-
-- `work-openai`: flagship reasoning `openai/gpt-5.6-luna-xhigh`, coding-default `openai/gpt-5.6-luna-medium`, helper-cheap `openai/gpt-5.6-luna-low`.
-- `work-copilot`: flagship reasoning `github-copilot/gpt-5.6-luna`, coding-default `github-copilot/gpt-5.3-codex`, helper-cheap `github-copilot/gpt-5-mini`.
-- `home-copilot`: flagship reasoning `github-copilot/gpt-5.6-terra`, coding-default `github-copilot/gpt-5.3-codex`, helper-cheap `github-copilot/gpt-5.4-mini`.
-
-Compaction ground rule:
-
-- Keep automatic compaction enabled with `tail_turns: 10` to avoid long-thread token burn.
-- If a session is still growing expensive, compact manually before large prompts or file-heavy tasks.
-
-Work profile routing notes:
-
-- `work-openai` keeps flagship planning, architecture, review, orchestration, workflow, security, and oracle roles on `openai/gpt-5.6-luna-xhigh`.
-- `work-openai` keeps `build` on `openai/gpt-5.6-luna-high` and routine coding roles on `openai/gpt-5.6-luna-medium`.
-- Use `openai/gpt-5.6-luna-medium` for mechanical dashboard JSON edits or straightforward Helm follow-through once the plan is clear.
-
-Selection rule (required):
-
-- Always pick models by role tier, not one "best" model for everything.
-- When updating model defaults, include both decisions together:
-  1. **Model selection** (`model`, `small_model`, and flagship recommendation)
-  2. **Profile intent** (`work-openai`, `work-copilot`, `home-copilot`) and which roles each profile is expected to serve.
-- Before adopting defaults for any profile, confirm the chosen models pass live verification on the active auth path.
-
-OpenCode config maintenance notes:
-
-- Shared runtime-critical sections live in `.chezmoitemplates/opencode/`:
-  - `permission.json.tmpl`
-  - `plugins-openai.json.tmpl`
-  - `plugins-copilot.json.tmpl`
-- These shared fragments are included by `dot_config/opencode/opencode.json.tmpl`.
-- Keep only genuinely shared blocks there. Provider catalogs, model routes, and other profile-specific behavior should stay in the owning template.
-- When changing OpenCode config templates, always run `mise run opencode:models:validate` so chezmoi renders the templates before JSON validation.
-
-### Mise Task Conventions
+## Mise Task Conventions
 
 - Manage only repo-owned personal mise fragments here, primarily `dot_config/mise/conf.d/00-*` and managed helpers under `dot_config/mise/scripts/` and `dot_config/mise/tasks/`.
 - Treat unmanaged or externally owned local fragments such as `10-*`, `20-*`, and other non-chezmoi files as out of scope unless explicitly requested.
@@ -673,63 +596,16 @@ OpenCode config maintenance notes:
 - Prefer invoking behavior through `mise` tasks rather than ad hoc scripts.
 - Do not assume the current working directory; use `chezmoi source-path` or other stable paths when tasks may be run from anywhere.
 
-### Docs Ownership Map
-
-- `README.md`: operator quick-start and day-1 usage.
-- `dot_config/opencode/AGENTS.md.tmpl`: agent routing, role boundaries, verification rules.
-- `dot_agents/skills/*/SKILL.md`: deep task workflows and specialized playbooks.
-
-### External Machine Data
+## External Machine Data
 
 Chezmoi configuration is created manually on each machine at `~/.config/chezmoi/chezmoi.toml`; it is not stored in this repository. Configure the required `.data` values before applying these templates, including `work.enable`, your name, editor, GitHub username, personal Git email, Git username, signing key, SSH key filename, Git roots, and GitHub profile paths. For work machines, set `github.workUsername` or `work.git.username`; those profile-specific values remain local and take precedence over personal values. Do not commit that private configuration here.
 
 The committed `00-*` Mise fragments form the personal baseline. Unmanaged `10-*` and `20-*` fragments belong to local/company/project layers and remain outside this repository.
 
-### Privacy Boundary
+## Privacy Boundary
 
 - Keep all repo context repo-local.
 - Do not store notes, summaries, or decisions from this repo in external long-term memory systems (for example Obsidian/team vault) unless explicitly requested.
-
-### OpenCode Skills Catalog Policy
-
-Use `~/.agents/skills` as the canonical runtime custom-skills catalog (agent-agnostic and shared).
-
-- Keep `~/.config/opencode` for runtime config, commands, and `AGENTS.md`.
-- Do not store active custom skills in `~/.config/opencode/skill` or `~/.config/opencode/skills`; keep those out of the active search path to prevent precedence drift.
-- Do not treat `~/.agents/skills` as a fully repo-owned tree; unmanaged local skills, Company skills, and team-provided skills may coexist there.
-- In this repo, manage only explicitly selected skills via `dot_agents/skills/<skill-name>/SKILL.md`.
-
-Quick validation:
-
-```bash
-chezmoi source-path ~/.agents/skills/<skill-name>/SKILL.md
-chezmoi source-path ~/.config/opencode/opencode.json
-```
-
-If `chezmoi source-path` says a skill file is "not managed", that is expected for local-only or external team skills.
-
-Example:
-
-```bash
-chezmoi source-path ~/.agents/skills/some-company-or-team-skill/SKILL.md
-# -> not managed
-```
-
-### OpenCode Commands Catalog Policy
-
-Use `~/.config/opencode/commands` as the canonical runtime commands location.
-
-- Keep active commands in `~/.config/opencode/commands` only.
-- Do not use alternate active command paths (for example `~/.config/opencode/command`) to avoid precedence drift.
-- Manage the intended command set through this repo under `dot_config/opencode/commands/*.md.tmpl`, so `chezmoi apply` reproduces the same command catalog.
-- Local-only experimental commands are fine, but they should be intentionally unmanaged and understood as non-reproducible.
-
-Quick validation:
-
-```bash
-chezmoi source-path ~/.config/opencode/commands/brainstorm.md
-chezmoi source-path ~/.config/opencode/commands/write-plan.md
-```
 
 ## Zed Workflow Shortcuts
 
@@ -774,7 +650,7 @@ Zed’s managed MCP configuration intentionally leaves the GitHub token unset.
 Configure MCP authentication through Zed or the MCP server’s native secret-store
 integration instead of adding a token to local Chezmoi data.
 
-Shell completions are platform-specific. On macOS and Omarchy/Linux Zsh, completions are cached daily in `${XDG_CACHE_HOME:-~/.cache}/zsh_completions.d`. Omarchy/Linux Bash continues to keep Omarchy's stock completion setup and then loads repo-managed Bash completions. Both shells cover commands such as `chezmoi`, `kubectl`, `mise`, `opencode`, `herdr`, `lazygit`, and optional work tools. Pi and Hunk do not currently expose first-party completion entrypoints here, so the profiles add lightweight custom subcommand completion for them.
+Shell completions are platform-specific. On macOS and Omarchy/Linux Zsh, completions are cached daily in `${XDG_CACHE_HOME:-~/.cache}/zsh_completions.d`. Omarchy/Linux Bash continues to keep Omarchy's stock completion setup and then loads repo-managed Bash completions. Both shells cover commands such as `chezmoi`, `kubectl`, `mise`, `herdr`, `lazygit`, and optional work tools. Pi and Hunk do not currently expose first-party completion entrypoints here, so the profiles add lightweight custom subcommand completion for them.
 
 On Omarchy, install Zed through Omarchy so its desktop integration and theme defaults are configured. The Linux profile uses the Omarchy-aligned `Omazed` dark theme instead of the macOS Catppuccin override:
 

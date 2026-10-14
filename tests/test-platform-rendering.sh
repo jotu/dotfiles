@@ -44,7 +44,6 @@ PY
 toml_sources=(
   dot_config/voxtype/config.toml.tmpl
   dot_config/mise/conf.d/00-base.toml.tmpl
-  dot_config/mise/conf.d/00-opencode.toml.tmpl
   dot_config/herdr/config.toml.tmpl
   dot_config/hunk/config.toml.tmpl
   dot_config/sofka/config.toml.tmpl
@@ -54,7 +53,6 @@ toml_sources=(
   dot_config/television/config.toml.tmpl
 )
 json_sources=(
-  dot_config/opencode/opencode.json.tmpl
   dot_pi/agent/settings.json.tmpl
   dot_pi/agent/models.json
 )
@@ -75,6 +73,7 @@ with open(sys.argv[1], "rb") as file:
     config = tomllib.load(file)
 tools = config["tools"]
 packages = config.get("bootstrap", {}).get("packages", {})
+npm_settings = config.get("settings", {}).get("npm", {})
 os = sys.argv[2]
 with open(sys.argv[1]) as file:
     rendered_text = file.read()
@@ -87,6 +86,8 @@ else:
     assert '[tasks."omlx:start"]' in rendered_text
 
 assert tools["superfile"] == "latest"
+assert "npm:opencode-ai" not in tools
+assert npm_settings.get("package_manager") == "npm"
 if os == "linux":
     assert not packages
     assert "gh" not in tools
@@ -94,12 +95,19 @@ if os == "linux":
     assert "herdr" not in tools
     assert "github:max-sixty/worktrunk" not in tools
     assert "aqua:ajeetdsouza/zoxide" not in tools
+    assert "npm:@openai/codex" not in tools
+    assert "npm:@earendil-works/pi-coding-agent" not in tools
 else:
     assert "aqua:cli/cli" in tools
     assert "hunk" in tools
     assert "herdr" in tools
     assert "github:max-sixty/worktrunk" in tools
     assert "aqua:ajeetdsouza/zoxide" in tools
+    assert tools["npm:@openai/codex"] == "latest"
+    pi = tools["npm:@earendil-works/pi-coding-agent"]
+    assert pi["version"] == "latest"
+    assert "install-pi-plan-mode" in pi["postinstall"]
+    assert "install-pi-subagent" in pi["postinstall"]
     assert "jundot/omlx" not in config["bootstrap"]["brew"]["taps"]
     assert "brew:jundot/omlx/omlx" not in packages
     assert packages["brew:curl"] == "latest"
