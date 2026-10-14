@@ -210,7 +210,7 @@ mise run test:platform:render
 
 Reference sections:
 - Git and identity setup: [Git](#git)
-- Working agreement: [Tidy First + CUPID + Ponytail](docs/working-agreement-tidy-cupid-ponytail.md)
+- Working agreement: [Tidy First + CUPID](docs/working-agreement-tidy-cupid.md)
 
 ## Pi plan mode
 

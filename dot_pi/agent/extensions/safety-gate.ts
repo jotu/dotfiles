@@ -52,7 +52,7 @@ export function protectedPathReason(inputPath: string, cwd: string): string | un
 	return undefined;
 }
 
-// ponytail: regex checks miss shell indirection; use a VM for real isolation.
+// Regex checks miss shell indirection; use a VM for real isolation.
 const riskyCommands: Array<[RegExp, string]> = [
 	[/\b(?:rm|rmdir|unlink|trash)(?:\s|$)/i, "deleting files"],
 	[/\bfind\b[^;\n]*\s-delete\b/i, "deleting files"],
