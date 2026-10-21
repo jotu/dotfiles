@@ -1,0 +1,317 @@
+#!/usr/bin/env bash
+# Install selected, reviewed Addy Osmani skills for global Pi use.
+set -euo pipefail
+
+: "${HOME:?HOME is required}"
+
+# Advance this immutable upstream ref only after reviewing its skill changes.
+addy_skills_ref='aeac41d4d005999432bb7312f7ff06383a91d59d'
+source_repo="https://github.com/addyosmani/agent-skills/tree/$addy_skills_ref"
+skills_cli=(npx --yes skills@1.7.0)
+skills_dir="$HOME/.pi/agent/skills"
+references_dir="$HOME/.pi/agent/references"
+references_marker="$references_dir/.addy-agent-skills-ref"
+managed_addy_skills=''
+
+if ! command -v pi >/dev/null 2>&1; then
+	printf 'Skipping Addy skills: pi is not installed.\n' >&2
+	exit 0
+fi
+
+# These domain skills may be selected automatically when their descriptions match.
+auto_skills=(
+	api-and-interface-design
+	frontend-ui-engineering
+	observability-and-instrumentation
+	security-and-hardening
+)
+
+# Keep episodic or overlapping workflows available through explicit /skill commands.
+manual_skills=(
+	browser-testing-with-devtools
+	ci-cd-and-automation
+	code-simplification
+	deprecation-and-migration
+	documentation-and-adrs
+	doubt-driven-development
+	performance-optimization
+	shipping-and-launch
+	source-driven-development
+)
+addy_skills=("${auto_skills[@]}" "${manual_skills[@]}")
+
+# The selected skills reach these shared checklists through ../../references/.
+reference_files=(
+	accessibility-checklist.md
+	definition-of-done.md
+	observability-checklist.md
+	orchestration-patterns.md
+	performance-checklist.md
+	security-checklist.md
+)
+
+is_manual_skill() {
+	local skill="$1" candidate
+	for candidate in "${manual_skills[@]}"; do
+		[ "$candidate" = "$skill" ] && return 0
+	done
+	return 1
+}
+
+load_managed_addy_skills() {
+	local json
+	command -v npx >/dev/null 2>&1 || {
+		printf 'ERROR: npx is required to inspect Addy skills\n' >&2
+		return 1
+	}
+	command -v node >/dev/null 2>&1 || {
+		printf 'ERROR: node is required to inspect Addy skills\n' >&2
+		return 1
+	}
+	if ! json=$("${skills_cli[@]}" list --global --agent pi --json 2>/dev/null); then
+		printf 'ERROR: unable to inspect globally installed Pi skills\n' >&2
+		return 1
+	fi
+	if ! managed_addy_skills=$(printf '%s' "$json" | node -e '
+    const fs = require("fs");
+    const skills = JSON.parse(fs.readFileSync(0, "utf8"));
+    function isManagedSource(skill) {
+      if (skill.source === "addyosmani/agent-skills") return true;
+      for (const candidate of [skill.source, skill.sourceUrl]) {
+        if (!candidate || !candidate.startsWith("https://")) continue;
+        try {
+          const url = new URL(candidate);
+          const path = url.pathname.replace(/\.git$/, "").replace(/\/+$/, "");
+          if (url.hostname === "github.com" && (
+            path === "/addyosmani/agent-skills" ||
+            /^\/addyosmani\/agent-skills\/tree\/[0-9a-f]{40}$/i.test(path)
+          )) return true;
+        } catch {}
+      }
+      return false;
+    }
+    for (const skill of skills) {
+      if (isManagedSource(skill)) console.log(skill.name);
+    }
+  '); then
+		printf 'ERROR: unable to parse globally installed Pi skills\n' >&2
+		return 1
+	fi
+}
+
+is_managed_addy_skill() {
+	case $'\n'"$managed_addy_skills"$'\n' in
+	*$'\n'"$1"$'\n'*) return 0 ;;
+	*) return 1 ;;
+	esac
+}
+
+set_frontmatter_field() {
+	local file="$1" field="$2" value="$3"
+	node - "$file" "$field" "$value" <<'EOF_NODE'
+const fs = require("node:fs");
+const [file, field, value] = process.argv.slice(2);
+const content = fs.readFileSync(file, "utf8");
+const match = content.match(/^(---\r?\n)([\s\S]*?)(\r?\n---(?:\r?\n|$))/);
+if (!match) throw new Error(`Missing YAML frontmatter: ${file}`);
+const lines = match[2].split(/\r?\n/);
+const keyPattern = new RegExp(`^${field.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}:`);
+const index = lines.findIndex((line) => keyPattern.test(line));
+if (value === "__REMOVE__") {
+  if (index !== -1) lines.splice(index, 1);
+} else {
+  const yamlValue = value === "true" || value === "false" ? value : JSON.stringify(value);
+  const line = `${field}: ${yamlValue}`;
+  if (index === -1) lines.push(line);
+  else lines[index] = line;
+}
+const frontmatter = `${match[1]}${lines.join("\n")}${match[3]}`;
+fs.writeFileSync(file, frontmatter + content.slice(match[0].length));
+EOF_NODE
+}
+
+patch_pi_skill_metadata() {
+	local skill file
+	for skill in "${addy_skills[@]}"; do
+		file="$skills_dir/$skill/SKILL.md"
+		is_managed_addy_skill "$skill" || continue
+		[ -f "$file" ] || continue
+		if is_manual_skill "$skill"; then
+			set_frontmatter_field "$file" disable-model-invocation true
+		else
+			set_frontmatter_field "$file" disable-model-invocation __REMOVE__
+		fi
+	done
+
+	# The upstream wording also triggers on every production feature. Keep Pi routing focused on telemetry work.
+	file="$skills_dir/observability-and-instrumentation/SKILL.md"
+	if is_managed_addy_skill observability-and-instrumentation && [ -f "$file" ]; then
+		set_frontmatter_field "$file" description \
+			'Use when adding, changing, or assessing application telemetry: structured logs, metrics, traces, dashboards, alerting, or instrumentation. Use when an incident is hard to diagnose because telemetry is missing.'
+	fi
+}
+
+skill_assets_present() {
+	case "$1" in
+	security-and-hardening)
+		[ -f "$skills_dir/security-and-hardening/references/hardening-patterns.md" ]
+		;;
+	performance-optimization)
+		[ -f "$skills_dir/performance-optimization/references/optimization-patterns.md" ]
+		;;
+	*) return 0 ;;
+	esac
+}
+
+references_present() {
+	local file
+	[ -f "$references_marker" ] || return 1
+	[ "$(<"$references_marker")" = "$addy_skills_ref" ] || return 1
+	for file in "${reference_files[@]}"; do
+		[ -f "$references_dir/$file" ] || return 1
+	done
+}
+
+sync_references() {
+	local force="$1" file temp_dir
+	if [ "$force" != true ] && references_present; then
+		return 0
+	fi
+
+	command -v curl >/dev/null 2>&1 || {
+		printf 'ERROR: curl is required to sync Addy skill references\n' >&2
+		return 1
+	}
+	mkdir -p "$references_dir"
+	if [ ! -f "$references_marker" ]; then
+		for file in "${reference_files[@]}"; do
+			if [ -e "$references_dir/$file" ] || [ -L "$references_dir/$file" ]; then
+				printf 'ERROR: refusing to overwrite unowned reference: %s\n' "$references_dir/$file" >&2
+				return 1
+			fi
+		done
+	fi
+
+	temp_dir=$(mktemp -d "${TMPDIR:-/tmp}/addy-pi-references.XXXXXX")
+	for file in "${reference_files[@]}"; do
+		if ! curl -fsSL \
+			"https://raw.githubusercontent.com/addyosmani/agent-skills/$addy_skills_ref/references/$file" \
+			-o "$temp_dir/$file"; then
+			rm -rf "$temp_dir"
+			printf 'ERROR: unable to download pinned Addy reference: %s\n' "$file" >&2
+			return 1
+		fi
+	done
+
+	printf 'pending:%s\n' "$addy_skills_ref" >"$temp_dir/.addy-agent-skills-ref.pending"
+	mv -f "$temp_dir/.addy-agent-skills-ref.pending" "$references_marker"
+	for file in "${reference_files[@]}"; do
+		mv -f "$temp_dir/$file" "$references_dir/$file"
+	done
+	printf '%s\n' "$addy_skills_ref" >"$temp_dir/.addy-agent-skills-ref"
+	mv -f "$temp_dir/.addy-agent-skills-ref" "$references_marker"
+	rmdir "$temp_dir"
+}
+
+check_skills() {
+	load_managed_addy_skills
+	local skill state file
+	for skill in "${addy_skills[@]}"; do
+		file="$skills_dir/$skill/SKILL.md"
+		if ! is_managed_addy_skill "$skill" || [ ! -f "$file" ]; then
+			state=missing
+		elif ! skill_assets_present "$skill"; then
+			state='missing bundled references'
+		elif is_manual_skill "$skill"; then
+			if grep -Eq '^disable-model-invocation:[[:space:]]*true[[:space:]]*$' "$file"; then
+				state='installed (manual-only)'
+			else
+				state='installed (needs manual-only setting)'
+			fi
+		elif grep -Eq '^disable-model-invocation:[[:space:]]*true[[:space:]]*$' "$file"; then
+			state='installed (unexpectedly manual-only)'
+		else
+			state='installed (automatic)'
+		fi
+		printf '%-38s %s\n' "$skill" "$state"
+	done
+
+	if references_present; then
+		printf 'Addy shared references                 installed\n'
+	else
+		printf 'Addy shared references                 missing or outdated\n'
+	fi
+}
+
+refresh_pi_skills() {
+	local -a skills=("$@")
+	printf 'Updating selected Addy skills: %s\n' "${skills[*]}"
+	# `skills update` has no agent filter; use an explicit Pi target instead.
+	"${skills_cli[@]}" add "$source_repo" --skill "${skills[@]}" --agent pi --global --yes
+}
+
+install_skills() {
+	command -v npx >/dev/null 2>&1 || {
+		printf 'ERROR: npx is required to install or update Addy skills\n' >&2
+		return 1
+	}
+	load_managed_addy_skills
+	local skill update_existing=false
+	local -a missing_skills=() refresh_skills=()
+	if [ "${MISE_INSTALLED_TOOLS:-[]}" != '[]' ]; then
+		update_existing=true
+	fi
+	for skill in "${addy_skills[@]}"; do
+		if ! is_managed_addy_skill "$skill" || ! skill_assets_present "$skill"; then
+			missing_skills+=("$skill")
+		elif [ "$update_existing" = true ]; then
+			refresh_skills+=("$skill")
+		fi
+	done
+
+	if ((${#missing_skills[@]} > 0)); then
+		printf 'Installing selected Addy skills: %s\n' "${missing_skills[*]}"
+		"${skills_cli[@]}" add "$source_repo" --skill "${missing_skills[@]}" --agent pi --global --yes
+		for skill in "${missing_skills[@]}"; do
+			managed_addy_skills+=$'\n'"$skill"
+		done
+	fi
+	if ((${#refresh_skills[@]} > 0)); then
+		refresh_pi_skills "${refresh_skills[@]}"
+	fi
+
+	patch_pi_skill_metadata
+	sync_references "$update_existing"
+}
+
+update_skills() {
+	command -v npx >/dev/null 2>&1 || {
+		printf 'ERROR: npx is required to update Addy skills\n' >&2
+		return 1
+	}
+	load_managed_addy_skills
+	local skill
+	local -a refresh_skills=()
+	for skill in "${addy_skills[@]}"; do
+		if is_managed_addy_skill "$skill"; then
+			refresh_skills+=("$skill")
+		else
+			printf 'Skipping missing skill: %s\n' "$skill"
+		fi
+	done
+	if ((${#refresh_skills[@]} > 0)); then
+		refresh_pi_skills "${refresh_skills[@]}"
+	fi
+	patch_pi_skill_metadata
+	sync_references true
+}
+
+case "${1:-}" in
+check) check_skills ;;
+install) install_skills ;;
+update) update_skills ;;
+*)
+	printf 'Usage: %s {check|install|update}\n' "$0" >&2
+	exit 2
+	;;
+esac

@@ -6,7 +6,9 @@ Chezmoi manages this file. Edit `dot_pi/agent/AGENTS.md` and apply it with `chez
 
 - Keep Pi settings, context, skills, prompts, and custom extensions in this repository under `dot_pi/agent/`.
 - `mise` tasks sync Pi's bundled subagent and plan-mode extensions from the installed Pi package; keep agent definitions and prompt templates in this repository.
-- The `pi:matt:skills:*` tasks manage selected upstream Matt skills in `~/.pi/agent/skills`; keep them out of `dot_pi/agent/skills` except for explicit Pi adaptations.
+- The `pi:matt:skills:*` and `pi:addy:skills:*` tasks manage selected, pinned upstream skills in `~/.pi/agent/skills`; the latter also syncs the shared references its selected skills require. Keep upstream copies out of `dot_pi/agent/skills` except for explicit Pi adaptations.
+- Invoke the `using-agent-skills` Pi adaptation manually for skill routing. Use Matt as the default development workflow and upstream skills as task-specific specialists. Map references to omitted workflow skills to Matt's `tdd`, `diagnosing-bugs`, `implement`, and `code-review` skills.
+- Keep `security-auditor`, `test-engineer`, and `web-performance-auditor` as read-only specialist agents. Invoke only the perspective the task needs; the parent agent owns orchestration and synthesis.
 - Herdr owns `~/.pi/agent/extensions/herdr-agent-state.ts`; never edit or replace that file manually.
 - Keep Herdr workspace configuration separate from Pi configuration.
 - Delegate with Pi's `subagent` tool and Herdr when available. Keep agents within their assigned workspaces. When a third-party skill calls for a generic `Skill` tool, follow its named Pi skill with `/skill:name`.

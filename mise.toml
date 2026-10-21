@@ -12,5 +12,5 @@ description = "Render and validate Linux and macOS platform templates"
 run = "bash tests/test-platform-rendering.sh"
 
 [tasks."test:pi:skills"]
-description = "Test Pi skill reconciliation without changing global skills"
-run = "bash tests/test-pi-skills.sh"
+description = "Test Matt and Addy Pi skill reconciliation without changing global skills"
+run = "bash tests/test-pi-skills.sh && bash tests/test-pi-addy-skills.sh"

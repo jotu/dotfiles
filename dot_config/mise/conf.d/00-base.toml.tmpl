@@ -341,6 +341,18 @@ run = "bash \"$HOME/.config/mise/scripts/manage-matt-pi-skills\" install"
 description = "Update installed stable Matt Pocock skills for Pi"
 run = "bash \"$HOME/.config/mise/scripts/manage-matt-pi-skills\" update"
 
+[tasks."pi:addy:skills:check"]
+description = "Check the selected Addy Osmani skills installed for Pi"
+run = "bash \"$HOME/.config/mise/scripts/manage-addy-pi-skills\" check"
+
+[tasks."pi:addy:skills:install"]
+description = "Install missing Addy skills; refresh after mise tool installs"
+run = "bash \"$HOME/.config/mise/scripts/manage-addy-pi-skills\" install"
+
+[tasks."pi:addy:skills:update"]
+description = "Update selected Addy skills pinned for Pi"
+run = "bash \"$HOME/.config/mise/scripts/manage-addy-pi-skills\" update"
+
 [tasks."herdr:pi:install"]
 description = "Install Herdr's Pi lifecycle and session integration"
 run = '''
@@ -426,6 +438,7 @@ postinstall = [
   { task = "gh:enhance:install" },
   { task = "pi:worktrunk:install" },
   { task = "pi:matt:skills:install" },
+  { task = "pi:addy:skills:install" },
 {{- if eq .chezmoi.os "darwin" }}
   { task = "voxtype:setup" },
 {{- end }}
