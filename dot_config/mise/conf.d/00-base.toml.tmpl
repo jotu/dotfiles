@@ -377,6 +377,19 @@ run = '''
   fi
 '''
 
+[tasks."tuios:completion:sync"]
+description = "Refresh the Chezmoi-managed TUIOS Zsh completion"
+run = '''
+  set -eu
+  if command -v tuios >/dev/null 2>&1 && command -v chezmoi >/dev/null 2>&1; then
+    if ! chezmoi apply "$HOME/.config/zsh/completions/_tuios"; then
+      echo "WARNING: TUIOS Zsh completion was not refreshed; run mise run tuios:completion:sync to retry" >&2
+    fi
+  else
+    echo "Skipping TUIOS Zsh completion sync: tuios or chezmoi is not installed" >&2
+  fi
+'''
+
 {{- if eq .chezmoi.os "darwin" }}
 [tasks."omlx:model:install"]
 description = "Download the pinned Qwen3 MLX model for oMLX"
@@ -453,6 +466,7 @@ postinstall = [
   { task = "pi:matt:skills:install" },
   { task = "pi:addy:skills:install" },
   { task = "tuios:pi:install" },
+  { task = "tuios:completion:sync" },
 {{- if eq .chezmoi.os "darwin" }}
   { task = "voxtype:setup" },
 {{- end }}

@@ -177,6 +177,7 @@ contains dot_zshrc.tmpl 'export GITHUB_TOKEN='
 contains dot_zshrc.tmpl 'gh-work'
 not_contains dot_zshenv.tmpl 'export MISE_GITHUB_TOKEN='
 not_contains dot_config/shell/aliases.tmpl 'compdef'
+contains dot_zsh_completions.tmpl 'source "$HOME/.config/zsh/completions/_tuios"'
 contains dot_zsh_aliases.tmpl 'compdef ae=aerospace'
 
 printf 'Platform layout checks passed.\n'

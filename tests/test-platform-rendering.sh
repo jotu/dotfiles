@@ -61,11 +61,13 @@ for os in linux darwin; do
   zsh_output="$tmp_dir/$os.zshrc"
   render "$os" dot_zshrc.tmpl "$zsh_output"
   zsh -n "$zsh_output"
+  grep -Fq 'fpath=("$HOME/.config/zsh/completions" $fpath)' "$zsh_output"
 
   base_output="$tmp_dir/$os-base.toml"
   render "$os" dot_config/mise/conf.d/00-base.toml.tmpl "$base_output"
   validate_toml "$base_output"
   python3 - "$base_output" "$os" <<'PY'
+import subprocess
 import sys
 import tomllib
 
@@ -86,11 +88,18 @@ else:
     assert '[tasks."omlx:start"]' in rendered_text
 
 assert tools["superfile"] == "latest"
-assert "tuios:pi:install" in config["tasks"]
-assert any(
-    hook.get("task") == "tuios:pi:install"
-    for hook in config.get("hooks", {}).get("postinstall", [])
-)
+for task in ("tuios:pi:install", "tuios:completion:sync"):
+    assert task in config["tasks"]
+    assert any(
+        hook.get("task") == task
+        for hook in config.get("hooks", {}).get("postinstall", [])
+    )
+    subprocess.run(
+        ["bash", "-n"],
+        input=config["tasks"][task]["run"],
+        text=True,
+        check=True,
+    )
 assert "npm:opencode-ai" not in tools
 assert npm_settings.get("package_manager") == "npm"
 if os == "linux":
@@ -120,6 +129,15 @@ else:
     assert packages["brew-cask:signal"] == "latest"
     assert tools["ruby"] == "3"
 PY
+
+  completion_output="$tmp_dir/$os-tuios-completion"
+  render "$os" dot_config/zsh/completions/_tuios.tmpl "$completion_output"
+  zsh -n "$completion_output"
+  if command -v tuios >/dev/null 2>&1; then
+    grep -Fq '#compdef tuios' "$completion_output"
+  else
+    grep -Fq 'tuios:completion:sync' "$completion_output"
+  fi
 
   tuios_output="$tmp_dir/$os-tuios.toml"
   render "$os" dot_config/tuios/config.toml.tmpl "$tuios_output"

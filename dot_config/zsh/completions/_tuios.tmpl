@@ -1,0 +1,6 @@
+# Chezmoi renders this file from the installed TUIOS command.
+{{ if lookPath "tuios" -}}
+{{ output "tuios" "completion" "zsh" }}
+{{- else -}}
+# TUIOS is not installed yet; refresh with `mise run tuios:completion:sync`.
+{{- end -}}

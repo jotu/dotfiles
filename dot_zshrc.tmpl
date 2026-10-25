@@ -66,6 +66,9 @@ fi
 if [[ -d "$HOME/.docker/completions" ]]; then
   fpath=($HOME/.docker/completions $fpath)
 fi
+if [[ -d "$HOME/.config/zsh/completions" ]]; then
+  fpath=("$HOME/.config/zsh/completions" $fpath)
+fi
 
 if command -v mise >/dev/null 2>&1; then
   eval "$(mise activate zsh)"
@@ -146,6 +149,9 @@ fi
 
 # The following lines have been added by Docker Desktop to enable Docker CLI completions.
 fpath=($HOME/.docker/completions $fpath)
+if [[ -d "$HOME/.config/zsh/completions" ]]; then
+  fpath=("$HOME/.config/zsh/completions" $fpath)
+fi
 autoload -Uz compinit compaudit
 # Trust the checked fpath and reuse the dump; remove ~/.zcompdump after changing completion paths.
 if (( ${#$(compaudit)} == 0 )); then

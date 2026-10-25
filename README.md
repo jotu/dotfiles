@@ -351,9 +351,9 @@ mise installs superfile on both platforms and zoxide on macOS; Omarchy supplies 
 
 ## TUIOS terminal multiplexer
 
-mise installs `tuios` from source with Go on macOS and Omarchy/Linux. Chezmoi configures Catppuccin Macchiato on macOS, follows Omarchy's active theme on Linux, and loads TUIOS completions in Bash and zsh.
+mise installs `tuios` from source with Go on macOS and Omarchy/Linux. Chezmoi configures Catppuccin Macchiato on macOS and follows Omarchy's active theme on Linux. Chezmoi also manages the TUIOS zsh completion at `~/.config/zsh/completions/_tuios` and prepends that directory to `fpath` in both zsh profiles. The same zsh setup loads it in ghostty, so no terminal-specific setting applies.
 
-Run `chezmoi apply` to write the config, then `mise install` to install TUIOS. The mise postinstall task installs or refreshes the Pi integration when both commands appear on `PATH`. The integration reports Pi's turn state in `tuios` panes and adds a short skill stub under `~/.agents/skills/tuios`. TUIOS owns its generated Pi extension and leaves Pi settings alone. Run `mise run tuios:pi:install` to retry or refresh it; check with `tuios integration status` or `tuios doctor agents`. If you install both TUIOS and Herdr integrations, `tuios` reports pane state and Herdr supplies session metadata.
+Run `chezmoi apply` to write the config, then `mise install` to install TUIOS. The mise postinstall tasks refresh the Chezmoi-managed completion and install or refresh the Pi integration when the required commands appear on `PATH`. The integration reports Pi's turn state in `tuios` panes and adds a short skill stub under `~/.agents/skills/tuios`. TUIOS owns its generated Pi extension and leaves Pi settings alone. Run `mise run tuios:completion:sync` to refresh the completion manually or `mise run tuios:pi:install` for the Pi integration; check the latter with `tuios integration status` or `tuios doctor agents`. If you install both TUIOS and Herdr integrations, `tuios` reports pane state and Herdr supplies session metadata.
 
 ## GitHub pull request dashboard
 
