@@ -1,0 +1,3 @@
+# Match Pi's Catppuccin Macchiato theme on macOS and Omarchy's active theme on Linux.
+[appearance]
+theme = "{{ if eq .chezmoi.os "linux" }}omarchy{{ else }}catppuccin_macchiato{{ end }}"

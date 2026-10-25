@@ -364,6 +364,19 @@ run = '''
   fi
 '''
 
+[tasks."tuios:pi:install"]
+description = "Install TUIOS's agent-state integration and skill for Pi"
+run = '''
+  set -eu
+  if command -v tuios >/dev/null 2>&1 && command -v pi >/dev/null 2>&1; then
+    if ! tuios integration install pi; then
+      echo "WARNING: TUIOS Pi integration was not installed; run mise run tuios:pi:install to retry" >&2
+    fi
+  else
+    echo "Skipping TUIOS Pi integration: tuios or pi is not installed" >&2
+  fi
+'''
+
 {{- if eq .chezmoi.os "darwin" }}
 [tasks."omlx:model:install"]
 description = "Download the pinned Qwen3 MLX model for oMLX"
@@ -439,6 +452,7 @@ postinstall = [
   { task = "pi:worktrunk:install" },
   { task = "pi:matt:skills:install" },
   { task = "pi:addy:skills:install" },
+  { task = "tuios:pi:install" },
 {{- if eq .chezmoi.os "darwin" }}
   { task = "voxtype:setup" },
 {{- end }}

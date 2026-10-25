@@ -86,6 +86,11 @@ else:
     assert '[tasks."omlx:start"]' in rendered_text
 
 assert tools["superfile"] == "latest"
+assert "tuios:pi:install" in config["tasks"]
+assert any(
+    hook.get("task") == "tuios:pi:install"
+    for hook in config.get("hooks", {}).get("postinstall", [])
+)
 assert "npm:opencode-ai" not in tools
 assert npm_settings.get("package_manager") == "npm"
 if os == "linux":
@@ -114,6 +119,20 @@ else:
     assert packages["brew-cask:nikitabobko/tap/aerospace"] == "latest"
     assert packages["brew-cask:signal"] == "latest"
     assert tools["ruby"] == "3"
+PY
+
+  tuios_output="$tmp_dir/$os-tuios.toml"
+  render "$os" dot_config/tuios/config.toml.tmpl "$tuios_output"
+  validate_toml "$tuios_output"
+  python3 - "$tuios_output" "$os" <<'PY'
+import sys
+import tomllib
+
+with open(sys.argv[1], "rb") as file:
+    config = tomllib.load(file)
+
+expected = "omarchy" if sys.argv[2] == "linux" else "catppuccin_macchiato"
+assert config["appearance"]["theme"] == expected
 PY
 
   if [[ "$os" == linux ]]; then

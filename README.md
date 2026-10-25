@@ -228,6 +228,7 @@ mise run pi:addy:skills:check          # show the selected pinned Addy skills
 mise run pi:addy:skills:install        # install missing Addy skills; refresh after tool installs
 mise run pi:addy:skills:update         # update selected pinned Addy skills
 mise run herdr:pi:install              # install Herdr's Pi lifecycle/session integration
+mise run tuios:pi:install              # install or refresh TUIOS's Pi integration
 mise run pi:worktrunk:install           # install the oh-my-pi Worktrunk hook when omp exists
 ```
 
@@ -347,6 +348,12 @@ Sofka is installed through Mise from its GitHub release artifacts and configured
 ## superfile terminal file manager
 
 mise installs superfile on both platforms and zoxide on macOS; Omarchy supplies zoxide on Linux. The Chezmoi config enables the zoxide navigation modal; press `z` inside superfile. Chezmoi writes the config to `~/.config/superfile/config.toml` on Linux and `~/Library/Application Support/superfile/config.toml` on macOS. The macOS config selects superfile's built-in Catppuccin Macchiato theme; Linux keeps the default theme to follow Omarchy. Launch it with `sf` or `spf`.
+
+## TUIOS terminal multiplexer
+
+mise installs `tuios` from source with Go on macOS and Omarchy/Linux. Chezmoi configures Catppuccin Macchiato on macOS, follows Omarchy's active theme on Linux, and loads TUIOS completions in Bash and zsh.
+
+Run `chezmoi apply` to write the config, then `mise install` to install TUIOS. The mise postinstall task installs or refreshes the Pi integration when both commands appear on `PATH`. The integration reports Pi's turn state in `tuios` panes and adds a short skill stub under `~/.agents/skills/tuios`. TUIOS owns its generated Pi extension and leaves Pi settings alone. Run `mise run tuios:pi:install` to retry or refresh it; check with `tuios integration status` or `tuios doctor agents`. If you install both TUIOS and Herdr integrations, `tuios` reports pane state and Herdr supplies session metadata.
 
 ## GitHub pull request dashboard
 
