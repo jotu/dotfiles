@@ -8,6 +8,16 @@ LICENSE
 mise.toml
 tests/
 
+# Teaching workspace material stays in the source repository, not $HOME.
+MISSION.md
+RESOURCES.md
+NOTES.md
+GLOSSARY.md
+assets/
+lessons/
+learning-records/
+reference/
+
 # This script is repository tooling, not a home-directory target.
 bootstrap
 
