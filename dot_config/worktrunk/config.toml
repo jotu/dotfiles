@@ -1,2 +1,10 @@
+# Keep task worktrees outside repository checkouts in one home directory.
+worktree-path = "~/.worktrunk/{{ owner }}/{{ repo }}/{{ branch | sanitize }}"
+
+[merge]
+# Rebase onto the local target while preserving individual commits.
+squash = false
+rebase = true
+
 [aliases]
 s = "wt switch {{ args }}"

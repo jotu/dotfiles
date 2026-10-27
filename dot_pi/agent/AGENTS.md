@@ -27,7 +27,8 @@ Chezmoi manages this file. Edit `dot_pi/agent/AGENTS.md` and apply it with `chez
 - For multi-slice work, clarify material ambiguity, then outline one goal, dependencies, and a completion check for each slice. Plan the smallest slice; finish, verify, and review it before starting the next. If a blocker or new scope appears, plan again rather than expanding silently.
 - For small, self-contained work, inspect relevant files and callers, make the requested change, run the closest check, and review it; skip the issue tree.
 - Use `/plan` for unfamiliar, multi-step work. Default to Matt skills; use Joyful skills and `/joyful` by explicit choice. Supporting skills can compose, but choose one primary skill for planning, building, and review. Use `/skill:grill-with-docs` for domain decisions, `/skill:implement` to build, and `/skill:code-review` to review.
-- After successful verification and review, create one atomic Conventional Commit unless I opt out.
+- After successful verification and review, create one focused atomic Conventional Commit unless I opt out.
+- Keep topic-branch history reviewable: preserve focused commits when preparing a PR. Before integrating, refresh the target and rebase an unshared Worktrunk branch onto it. If you have published or shared the branch, ask before rewriting it or force-pushing. The user chooses the eventual PR merge strategy, including whether to squash-merge.
 
 ## Scope and approvals
 
@@ -43,7 +44,7 @@ Chezmoi manages this file. Edit `dot_pi/agent/AGENTS.md` and apply it with `chez
 - Never read, print, commit, or send secrets such as API keys, tokens, private keys, `.env` files, or credential stores.
 - Review diffs before applying changes. After code changes, run relevant tests (the full suite when practical); for documentation or configuration, run the closest applicable validation. Report checks and gaps.
 - Do not install third-party Pi packages, extensions, or skills without reviewing their source and pinning a version or commit. Use a container or VM for untrusted repositories or unattended work; do not expose host Pi credentials unless required.
-- Do not rewrite Git history unless I explicitly ask. Never publish without an explicit request. A requested `commit, push, pull request` batch authorizes all steps after review; do not pause for approval mid-batch. Stop and ask if the final diff materially exceeds the requested scope.
+- Apart from rebasing an unshared Worktrunk topic branch onto a refreshed target as described above, do not rewrite Git history unless I explicitly ask. Never publish without an explicit request. A requested `commit, push, pull request` batch authorizes all steps after review; do not pause for approval mid-batch. Stop and ask if the final diff materially exceeds the requested scope.
 
 ## Learning capture
 

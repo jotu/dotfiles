@@ -313,14 +313,6 @@ hide = true
 description = "Update Proton CLI via mise hook"
 run = "mise run proton:cli:update"
 
-[tasks."pi:worktrunk:install"]
-description = "Install Worktrunk activity tracking for oh-my-pi when available"
-run = '''
-  if command -v wt >/dev/null 2>&1 && command -v omp >/dev/null 2>&1; then
-    wt config plugins pi install --yes
-  fi
-'''
-
 [tasks."pi:plan-mode:sync"]
 description = "Sync Pi's bundled read-only plan-mode extension"
 run = "bash \"$HOME/.config/mise/scripts/install-pi-plan-mode\""
@@ -462,7 +454,6 @@ run = '''
 postinstall = [
   { task = "gh:dash:install" },
   { task = "gh:enhance:install" },
-  { task = "pi:worktrunk:install" },
   { task = "pi:matt:skills:install" },
   { task = "pi:addy:skills:install" },
   { task = "tuios:pi:install" },
@@ -552,7 +543,8 @@ vale = "latest"
 # Selected developer runtimes stay version-managed through Mise on both
 # platforms. macOS equivalents of tools supplied by Omarchy remain darwin-only.
 {{- if eq .chezmoi.os "darwin" }}
-"github:max-sixty/worktrunk" = "latest"
+# Pin the Worktrunk CLI version reviewed with the managed Pi activity extension.
+"github:max-sixty/worktrunk" = "0.81.0"
 "github:peteonrails/voxtype" = "latest"
 fd = "latest"
 "aqua:cli/cli" = "latest"

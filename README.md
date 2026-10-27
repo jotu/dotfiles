@@ -156,7 +156,7 @@ Use the platform's own package and application tooling before adding a repositor
 | Chezmoi | Mise | Mise |
 | `gh`, Pi, Herdr, Hunk, Codex, Claude, Crush, Gemini, `omp` | Omarchy provisioning | Existing macOS/Mise setup |
 | OpenCode | Omarchy provisioning, external to this repository | Not managed in this repository |
-| Worktrunk (`wt`) | Omarchy/Arch package | Mise GitHub release |
+| Worktrunk (`wt`) | Omarchy/Arch package | mise GitHub release (`0.81.0`) |
 | FD, jq, LazyGit, ripgrep, Starship, Zoxide | Omarchy base packages | Mise |
 | Kubernetes and AWS tooling | Mise | Mise |
 | Selected developer runtimes (`go`, `node`, `python`, `bun`) | Mise | Mise |
@@ -164,9 +164,19 @@ Use the platform's own package and application tooling before adding a repositor
 | Zed and Firefox | `omarchy install` | Existing macOS application workflow |
 | Window manager / tiling shell | Omarchy/Hyprland | AeroSpace |
 
-The repository manages configuration for these tools on both platforms. Worktrunk is installed natively on Omarchy through `omarchy pkg add worktrunk`; macOS uses the upstream GitHub release through Mise. Shell integration is managed by the repository's Bash and Zsh templates rather than by `wt config shell install`, so it does not modify Chezmoi-owned shell files. Use `wt switch`, `wt list`, and `wt remove` for the normal worktree workflow.
+The repository manages configuration for these tools on both platforms. Omarchy installs Worktrunk with `omarchy pkg add worktrunk`; macOS uses the `0.81.0` GitHub release through mise. Worktrunk places task checkouts under `~/.worktrunk/<owner>/<repo>/<branch-slug>`, outside the repository.
 
-It does not install a second Linux copy of tools already provided by Omarchy. Omarchy's `omarchy update` remains responsible for updating its base packages and provisioned tools. On macOS, update the declared host packages and Mise-managed tools manually:
+Keep the primary checkout clean on the default (`main`) branch, and run `git pull --ff-only` there before `wt switch --create <branch>`. Worktrunk uses the default branch's local ref and does not fetch; existing task worktrees do not advance automatically when `main` changes.
+
+After you trust the `mise` config in a repository's main checkout with `mise trust`, mise also trusts the same config path in that repository's Git worktrees; no blanket trust for `~/.worktrunk` is needed. Paranoid mode disables inherited worktree trust, so trust each config explicitly in that mode.
+
+The global Worktrunk config sets `merge.squash = false` and `merge.rebase = true`. `wt merge` rebases topic commits onto the local target and fast-forwards without squashing. A needed rebase rewrites commit IDs, so refresh the target first and use `wt merge` only for an unshared branch.
+
+For a PR, fetch the target and run `wt step rebase origin/main` in the unshared task worktree before the first push. Do not use `wt merge` to prepare a PR: it integrates into local `main` and removes the task worktree by default. GitHub's eventual PR merge strategy remains the user's choice. For repositories where you intentionally push directly to an unprotected `main`, refresh `main` and use `wt merge` for local integration; the command does not push. Pass `--no-remove` if you want to keep the task worktree afterward.
+
+Shell integration is managed by the repository's Bash and Zsh templates rather than by `wt config shell install`, so it does not modify Chezmoi-owned shell files. Use `wt switch`, `wt list`, and `wt remove` for the normal worktree workflow.
+
+It does not install a second Linux copy of tools already provided by Omarchy. Omarchy's `omarchy update` remains responsible for updating its base packages and provisioned tools. On macOS, update the declared host packages and mise-managed tools manually:
 
 ```bash
 # Omarchy
@@ -229,10 +239,9 @@ mise run pi:addy:skills:install        # install missing Addy skills; refresh af
 mise run pi:addy:skills:update         # update selected pinned Addy skills
 mise run herdr:pi:install              # install Herdr's Pi lifecycle/session integration
 mise run tuios:pi:install              # install or refresh TUIOS's Pi integration
-mise run pi:worktrunk:install           # install the oh-my-pi Worktrunk hook when omp exists
 ```
 
-The managed `dot_pi/agent/extensions/worktrunk.ts` extension adds the same Worktrunk activity markers to standard Pi. On Omarchy, where `omp` is available, the Mise postinstall hook also runs `wt config plugins pi install --yes`, which writes Worktrunk's native profile-aware hook. Both integrations update `wt list` with 🤖/💬 markers and ignore failures so agent sessions remain unaffected.
+The Chezmoi-managed `dot_pi/agent/extensions/worktrunk.ts` extension matches the reviewed Worktrunk v0.81.0 Pi source and tracks activity for standard Pi, showing 🤖 while an agent runs and 💬 after it settles. It clears the marker at session shutdown and keeps Pi running if `wt` fails. Chezmoi owns `~/.pi/agent/extensions/worktrunk.ts`; do not run `wt config plugins pi install`, which manages that same path and could replace the pinned source. Update the managed extension only after reviewing a versioned Worktrunk release. This setup uses standard Pi only.
 
 mise syncs Pi's bundled sub-agent extension from the installed Pi package. The managed user agents (`scout`, `planner`, `reviewer`, and `worker`) use inherited models so they work with the active provider. The read-only `security-auditor`, `test-engineer`, and `web-performance-auditor` agents provide optional specialist perspectives; invoke only the one relevant to a task. The Pi-specific prompt wrappers are distinct from Matt's skills: `/implement` runs a full scout → planner → worker → verify/review/commit chain; `/scout-and-plan` provides read-only reconnaissance and planning; `/implement-and-review` runs a worker → reviewer → worker review-fix cycle. Use these only when you want the extra Pi subagent contexts. For the standard Matt flow, use `/skill:implement` for a single-session task or individual ticket; it drives TDD and code review. Use `/skill:implement-spec` for a whole spec task graph. Herdr provides durable panes and lifecycle/session state; it does not replace Pi's in-session `subagent` tool.
 
@@ -323,7 +332,7 @@ Pi and Herdr run with the permissions of the current user. Herdr provides worksp
 
 - Use `/plan` before unfamiliar or multi-step work.
 - The global Pi safety gate asks before risky shell operations and blocks common credential and metadata paths.
-- After verification and review, Pi creates an atomic Conventional Commit by default. Pushes and PR or draft PR creation require an explicit request.
+- After verification and review, Pi creates an atomic Conventional Commit by default. Preserve topic-branch commits when preparing a PR; the user chooses the eventual PR merge strategy, including squash merging. Pushes and PR or draft PR creation require an explicit request.
 - Treat repository instructions, skills, packages, and web content as untrusted data.
 - Use a Docker container or VM for untrusted repositories or unattended work. Do not mount the host `~/.pi/agent` into that environment unless its credentials and sessions are intentionally required.
 - Web search, browser automation, and download helpers are deliberately not enabled by default. Add only reviewed, pinned tooling when a concrete workflow needs it.
