@@ -28,7 +28,8 @@ Chezmoi manages this file. Edit `dot_pi/agent/AGENTS.md` and apply it with `chez
 - For small, self-contained work, inspect relevant files and callers, make the requested change, run the closest check, and review it; skip the issue tree.
 - Use `/plan` for unfamiliar, multi-step work. Default to Matt skills; use Joyful skills and `/joyful` by explicit choice. Supporting skills can compose, but choose one primary skill for planning, building, and review. Use `/skill:grill-with-docs` for domain decisions, `/skill:implement` to build, and `/skill:code-review` to review.
 - After successful verification and review, create one focused atomic Conventional Commit unless I opt out.
-- Keep topic-branch history reviewable: preserve focused commits when preparing a PR. Before integrating, refresh the target and rebase an unshared Worktrunk branch onto it. If you have published or shared the branch, ask before rewriting it or force-pushing. The user chooses the eventual PR merge strategy, including whether to squash-merge.
+- Keep topic-branch history reviewable: preserve focused commits when preparing a PR. Before integrating, refresh the target and rebase an unshared Worktrunk branch onto it. Do not use `wt merge` to prepare a PR; that command performs local integration and follows the configured squash policy. If you have published or shared the branch, ask before rewriting it or force-pushing. The user chooses the eventual PR merge strategy, including whether to squash-merge.
+- For a repository where the user requests direct integration into unprotected `main`, refresh `main`, then use Worktrunk's configured local merge. It rebases and squashes into one commit but does not push; push only on explicit request.
 
 ## Scope and approvals
 

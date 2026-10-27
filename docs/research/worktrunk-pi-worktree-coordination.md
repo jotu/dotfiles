@@ -14,7 +14,7 @@ Worktrunk supports a centralized path template and expands a leading `~`. The do
 worktree-path = "~/.worktrunk/{{ owner }}/{{ repo }}/{{ branch | sanitize }}"
 
 [merge]
-squash = false
+squash = true
 rebase = true
 ```
 
@@ -24,7 +24,7 @@ mise inherits trust for the same config path in linked Git worktrees after the r
 
 `wt switch --create <branch>` bases the new branch on the repository's default branch. That selects the local default-branch ref; do not treat it as an automatic fetch. To start from the latest remote `main`, update refs first, for example by fast-forwarding the clean primary checkout with `git pull --ff-only`, or run `git fetch` and create with `--base origin/main`. Later changes to `main` do not automatically update an existing task worktree. [Worktrunk switch](https://worktrunk.dev/switch/#creating-a-branch)
 
-Worktrunk's `wt merge` command squashes and rebases by default. The global config turns off squashing but keeps rebasing, so local integration rebases each task commit onto the refreshed target and fast-forwards without combining commits. `wt merge` integrates locally, not through a PR, and never fetches. For PR work, refresh the target, run `wt step rebase origin/main` on an unpublished branch, then push and create the PR without squashing its commits. Rebase changes commit IDs, so ask before rebasing a branch that someone has already pushed or shared. The user decides whether GitHub later squash-merges the PR. [Worktrunk merge](https://worktrunk.dev/merge/), [Worktrunk rebase step](https://worktrunk.dev/step/#wt-step-rebase)
+Worktrunk's `wt merge` command squashes and rebases by default. The global config keeps both defaults: local integration rebases task commits onto the refreshed target, then squashes them into one commit before fast-forwarding. `wt merge` integrates locally, not through a PR, and never fetches. For repos where the user chooses direct integration into unprotected `main`, refresh the target, run `wt merge`, review the local result, and push `main` separately when requested. For PR work, refresh the target, run `wt step rebase origin/main` on an unpublished branch, then push and create the PR with its commits intact. Rebase changes commit IDs, so ask before rebasing a branch that someone has already pushed or shared. The user decides whether GitHub later squash-merges the PR. [Worktrunk merge](https://worktrunk.dev/merge/), [Worktrunk rebase step](https://worktrunk.dev/step/#wt-step-rebase)
 
 Use this routine:
 
