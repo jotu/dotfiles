@@ -29,3 +29,6 @@ jobs:
 
       - name: Test Pi skill manager
         run: mise run test:pi:skills
+
+      - name: Test Pi smart-zone extension
+        run: mise run test:pi:smart-zone
