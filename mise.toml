@@ -18,3 +18,7 @@ run = "bash tests/test-pi-skills.sh && bash tests/test-pi-addy-skills.sh"
 [tasks."test:pi:smart-zone"]
 description = "Test the Pi smart-zone context status extension"
 run = "node --test tests/test-pi-smart-zone.mjs"
+
+[tasks."test:vale:changed"]
+description = "Reject new Vale findings in changed Markdown files"
+run = "python3 tests/vale_new_findings.py origin/main"

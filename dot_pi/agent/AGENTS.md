@@ -11,6 +11,7 @@ Chezmoi manages this file. Edit `dot_pi/agent/AGENTS.md` and apply it with `chez
 - Keep `security-auditor`, `test-engineer`, and `web-performance-auditor` as read-only specialist agents. Invoke only the perspective the task needs; the parent agent owns orchestration and synthesis.
 - Herdr owns `~/.pi/agent/extensions/herdr-agent-state.ts`; never edit or replace that file manually.
 - TUIOS owns `~/.pi/agent/extensions/tuios-agent-state.ts`; install or refresh it with `mise run tuios:pi:install`.
+- For TUIOS keybinding investigations, use `tuios keybinds list --json | jq '.[] | select(.action | test("split|tiling"))'` to inspect split and tiling actions.
 - Keep Herdr workspace configuration separate from Pi configuration.
 - Delegate with Pi's `subagent` tool and Herdr when available. Keep agents within their assigned workspaces. When a third-party skill calls for a generic `Skill` tool, follow its named Pi skill with `/skill:name`.
 
@@ -21,7 +22,7 @@ Chezmoi manages this file. Edit `dot_pi/agent/AGENTS.md` and apply it with `chez
 - For an existing PR, use `wt switch pr:<number>` to work on that branch when you have permission to contribute. Use `wt switch --create <branch> --base pr:<number>` for an independent follow-up branch.
 - Run Pi's normal implementation lifecycle in the selected worktree: plan or scout as needed, build with TDD, verify, review, then commit. Keep one writer per worktree; parallel writers on independent tasks need separate Worktrunk worktrees. Read-only scouts and reviewers may inspect the task worktree.
 - For a PR, refresh the target and use `wt step rebase origin/main` on an unpublished task branch before the first remote push. Preserve focused commits on the branch; do not run `wt merge` as PR preparation. Use `git push` for remote pushes so Git's configured pre-push hooks run; `wt step push` only fast-forwards the local target. The user chooses the eventual PR merge method.
-- For requested direct integration into unprotected `main`, refresh the target and run `wt merge`. The configured local merge rebases and squashes into one commit, then fast-forwards; it does not push and removes the task worktree by default. Push only after an explicit request; use `--no-remove` if the user wants the worktree kept.
+- For requested direct integration into unprotected `main`, refresh `main` from the primary checkout, return to the task worktree, and run `wt merge`. The configured local merge rebases and squashes into one commit, then fast-forwards; it does not push and removes the task worktree by default. Push only after an explicit request; use `--no-remove` if the user wants the worktree kept.
 - After a PR merges or closes, fetch and run `wt step prune --dry-run` from the primary checkout. Show the candidates and ask before pruning. For one abandoned worktree, inspect its changes before `wt remove`; never use `--force` or `-D` without explicit approval.
 
 ## Personal defaults
@@ -39,7 +40,6 @@ Chezmoi manages this file. Edit `dot_pi/agent/AGENTS.md` and apply it with `chez
 - Use `/plan` for unfamiliar, multi-step work. Default to the Matt workflow: clarify uncertain domain decisions with `/skill:grill-with-docs`, keep small tasks lightweight, and use `/skill:implement` for code changes; it coordinates TDD and review where appropriate. Use `/skill:tdd` for a focused test-first loop and `/skill:code-review` for review-only work. Use `to-spec` and `to-tickets` only when the repository already uses that tracker workflow. Invoke supporting skills and specialist agents only when needed; choose one primary skill per phase.
 - After successful verification and review, create one focused atomic Conventional Commit unless I opt out.
 - Follow the Worktrunk task workflow below for branch bases, PR history, local integration, and cleanup.
-- For a repository where the user requests direct integration into unprotected `main`, refresh `main`, then use Worktrunk's configured local merge. It rebases and squashes into one commit but does not push; push only on explicit request.
 
 ## Scope and approvals
 

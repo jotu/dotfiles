@@ -214,9 +214,10 @@ Before committing platform changes, run the local layout checks from the reposit
 ```bash
 mise run test:platform
 mise run test:platform:render
+mise run test:vale:changed
 ```
 
-`test:platform:render` requires Chezmoi, Python, yq, and configured local data; it renders and validates both Linux and macOS outputs. On a machine with Chezmoi and local data configured, also review `chezmoi diff` and use `chezmoi apply --dry-run`. Do not run the Omarchy installation scripts or package installs in unattended environments.
+`test:platform:render` requires Chezmoi, Python, yq, and configured local data; it renders and validates both Linux and macOS outputs. `test:vale:changed` reports new vale findings in changed Markdown without blocking on the existing baseline. On a machine with Chezmoi and local data configured, also review `chezmoi diff` and use `chezmoi apply --dry-run`. Do not run the Omarchy installation scripts or package installs in unattended environments.
 
 Reference sections:
 - Git and identity setup: [Git](#git)
