@@ -14,3 +14,7 @@ run = "bash tests/test-platform-rendering.sh"
 [tasks."test:pi:skills"]
 description = "Test Matt skill setup and explicit Addy cleanup without changing global skills"
 run = "bash tests/test-pi-skills.sh && bash tests/test-pi-addy-skills.sh"
+
+[tasks."test:pi:smart-zone"]
+description = "Test the Pi smart-zone context status extension"
+run = "node --test tests/test-pi-smart-zone.mjs"
