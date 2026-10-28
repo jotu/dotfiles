@@ -6,10 +6,10 @@ argument-hint: "[scope or review focus]"
 Load both skills before reviewing:
 
 1. Load the Hunk review skill and use it for the live review session.
-2. Load the `joyful-code-review` skill and use it as the review method.
+2. Load Matt's `/skill:code-review` skill and use its Standards and Spec axes as the review method, scoped to the active Hunk changes. If no originating spec is available, state that and do not invent one.
 
-Hunk is the live review surface and local comment store. The joyful-code-review
-skill defines what to look for and how to communicate it.
+Hunk is the live review surface and local comment store. Matt's code-review
+skill defines what to look for; this prompt defines how to communicate findings.
 
 Use Hunk's `hunk session *` commands; do not run interactive `hunk diff` or
 `hunk show` commands yourself.
@@ -23,7 +23,6 @@ Review the current Hunk session in read-only code mode:
 - Check the affected files and relevant repository instructions.
 - Look for correctness, regressions, security issues, missing verification,
   template errors, and unnecessary complexity.
-- If the user explicitly invoked `joyful-principles`, use its Pragmatic Programmer, XP/TDD, Tidy First, CUPID, and Fowler vocabulary as review lenses.
 - Do not edit files, apply patches, commit, push, or post external comments.
 - Add only actionable findings as focused inline Hunk comments. Do not
   comment on every hunk. Use `comment add` for one finding or `comment apply`
@@ -48,8 +47,8 @@ question (non-blocking): Should this timeout include queueing time?
 Use `issue (blocking)` only for problems that should prevent merging. Do not
 use invented prefixes such as `P0` or `P1`.
 
-Keep optional Conventional Commit and joyful-principles lessons in the final
-response rather than adding them as Hunk comments. Only add educational
+Keep optional Conventional Commit lessons in the final response rather than
+adding them as Hunk comments. Only add educational
 `note (non-blocking)` comments when the user explicitly asks for an
 instructional review.
 

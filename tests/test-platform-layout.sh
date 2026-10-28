@@ -21,10 +21,15 @@ not_contains() {
   ! grep -Fq -- "$text" "$repo_root/$file" || fail "$file unexpectedly contains: $text"
 }
 
+absent() {
+  [ ! -e "$repo_root/$1" ] || fail "$1 should be removed"
+}
+
 # These scripts are repository tooling and must remain executable shell.
 bash -n "$repo_root/bootstrap"
 bash -n "$repo_root/tests/test-platform-layout.sh"
 bash -n "$repo_root/tests/test-pi-skills.sh"
+bash -n "$repo_root/dot_config/mise/scripts/executable_manage-addy-pi-skills"
 contains bootstrap 'omarchy_ai_commands=(codex claude crush gemini gh opencode pi omp hunk)'
 contains bootstrap 'This macOS bootstrap supports Apple Silicon only.'
 contains bootstrap 'curl -fsSL https://mise.run | sh'
@@ -187,10 +192,27 @@ contains README.md 'mise also trusts the same config path in that repository'
 contains dot_config/mise/scripts/executable_manage-matt-pi-skills.tmpl 'skills/engineering and skills/productivity'
 contains dot_pi/agent/agents/scout.md 'name: scout'
 contains dot_pi/agent/prompts/implement-and-review.md 'subagent tool'
-contains dot_pi/agent/extensions/joyful-workflow.ts 'active: false'
-contains dot_pi/agent/extensions/joyful-workflow.ts 'if (!state.active || !["write", "edit"].includes(event.toolName)) return;'
-contains dot_pi/agent/skills/joyful-workflow/SKILL.md 'Joyful is opt-in'
-contains dot_pi/agent/AGENTS.md 'Default to Matt skills'
+contains dot_config/mise/conf.d/00-base.toml.tmpl '[tasks."pi:addy:skills:remove"]'
+contains dot_config/mise/conf.d/00-base.toml.tmpl 'pi:addy:skills:remove'
+not_contains dot_config/mise/conf.d/00-base.toml.tmpl 'pi:addy:skills:install'
+not_contains dot_config/mise/conf.d/00-base.toml.tmpl 'pi:addy:skills:update'
+absent dot_pi/agent/extensions/joyful-workflow.ts
+for skill in joyful-code-review joyful-implementation joyful-planning joyful-principles joyful-verification joyful-workflow; do
+  absent "dot_pi/agent/skills/$skill"
+done
+not_contains dot_pi/agent/AGENTS.md 'Joyful'
+not_contains dot_pi/agent/prompts/review.md.tmpl 'joyful'
+not_contains README.md 'Joyful'
+contains dot_pi/agent/prompts/review.md.tmpl '/skill:code-review'
+contains dot_pi/agent/AGENTS.md 'Default to the Matt workflow'
+for skill in api-and-interface-design frontend-ui-engineering observability-and-instrumentation security-and-hardening browser-testing-with-devtools ci-cd-and-automation code-simplification deprecation-and-migration documentation-and-adrs doubt-driven-development performance-optimization shipping-and-launch source-driven-development; do
+  not_contains dot_pi/agent/skills/using-agent-skills/SKILL.md "$skill"
+done
+for agent in security-auditor test-engineer web-performance-auditor; do
+  [ -f "$repo_root/dot_pi/agent/agents/$agent.md" ] || fail "missing retained specialist agent: $agent"
+done
+contains GLOSSARY.md '**Pi skill**'
+contains GLOSSARY.md '**Specialist agent**'
 contains dot_config/mise/conf.d/00-base.toml.tmpl 'eq .chezmoi.os "darwin"'
 contains dot_config/gh-work/hosts.yml.tmpl 'else if and (hasKey . "work")'
 contains dot_zshrc.tmpl 'hasKey .github "workUsername"'

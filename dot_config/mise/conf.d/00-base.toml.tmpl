@@ -333,17 +333,9 @@ run = "bash \"$HOME/.config/mise/scripts/manage-matt-pi-skills\" install"
 description = "Update installed stable Matt Pocock skills for Pi"
 run = "bash \"$HOME/.config/mise/scripts/manage-matt-pi-skills\" update"
 
-[tasks."pi:addy:skills:check"]
-description = "Check the selected Addy Osmani skills installed for Pi"
-run = "bash \"$HOME/.config/mise/scripts/manage-addy-pi-skills\" check"
-
-[tasks."pi:addy:skills:install"]
-description = "Install missing Addy skills; refresh after mise tool installs"
-run = "bash \"$HOME/.config/mise/scripts/manage-addy-pi-skills\" install"
-
-[tasks."pi:addy:skills:update"]
-description = "Update selected Addy skills pinned for Pi"
-run = "bash \"$HOME/.config/mise/scripts/manage-addy-pi-skills\" update"
+[tasks."pi:addy:skills:remove"]
+description = "Remove verified Addy skills from this Pi installation"
+run = "bash \"$HOME/.config/mise/scripts/manage-addy-pi-skills\" remove"
 
 [tasks."herdr:pi:install"]
 description = "Install Herdr's Pi lifecycle and session integration"
@@ -455,7 +447,6 @@ postinstall = [
   { task = "gh:dash:install" },
   { task = "gh:enhance:install" },
   { task = "pi:matt:skills:install" },
-  { task = "pi:addy:skills:install" },
   { task = "tuios:pi:install" },
   { task = "tuios:completion:sync" },
 {{- if eq .chezmoi.os "darwin" }}

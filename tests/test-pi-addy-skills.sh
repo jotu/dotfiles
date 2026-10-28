@@ -1,186 +1,125 @@
 #!/usr/bin/env bash
-# Exercise selected Addy skill reconciliation without touching global Pi skills.
+# Verify the explicit Addy cleanup task without touching global Pi skills.
 set -euo pipefail
 
 repo_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
 manager="$repo_root/dot_config/mise/scripts/executable_manage-addy-pi-skills"
-router="$repo_root/dot_pi/agent/skills/using-agent-skills/SKILL.md"
 tmp_dir="$(mktemp -d)"
 trap 'rm -rf "$tmp_dir"' EXIT
 
-mkdir -p "$tmp_dir/bin" "$tmp_dir/home/.pi/agent/skills"
-grep -Fq 'disable-model-invocation: true' "$router"
-: >"$tmp_dir/bin/pi"
-chmod +x "$tmp_dir/bin/pi"
+mkdir -p "$tmp_dir/bin" "$tmp_dir/home/.pi/agent/skills" "$tmp_dir/home/.pi/agent/references"
 
 cat >"$tmp_dir/bin/npx" <<'EOF_NPX'
 #!/usr/bin/env bash
 set -euo pipefail
-if [[ " $* " == *" list --global --agent pi --json "* ]]; then
-  printf '%s\n' "${FAKE_SKILLS_JSON:-[]}"
-  exit 0
+if [ "${DO_NOT_TRACK:-}" != 1 ] || [ "${NPM_CONFIG_OFFLINE:-}" != true ]; then
+	printf 'Expected the skills CLI to run offline without telemetry.\n' >&2
+	exit 2
 fi
-printf '%s\n' "$*" >>"$FAKE_LOG"
-source_repo=''
-collect_skills=false
-for arg in "$@"; do
-  if [ "$arg" = add ]; then
-    continue
-  fi
-  if [ -z "$source_repo" ] && [[ "$arg" == https://github.com/* ]]; then
-    source_repo="$arg"
-    continue
-  fi
-  if [ "$arg" = --skill ]; then
-    collect_skills=true
-    continue
-  fi
-  if [[ "$arg" == --* ]]; then
-    collect_skills=false
-    continue
-  fi
-  if [ "$collect_skills" = true ]; then
-    mkdir -p "$HOME/.pi/agent/skills/$arg"
-    printf '%s\n' '---' "name: $arg" 'description: Fake test skill.' '---' >"$HOME/.pi/agent/skills/$arg/SKILL.md"
-    case "$arg" in
-      security-and-hardening)
-        mkdir -p "$HOME/.pi/agent/skills/$arg/references"
-        : >"$HOME/.pi/agent/skills/$arg/references/hardening-patterns.md"
-        ;;
-      performance-optimization)
-        mkdir -p "$HOME/.pi/agent/skills/$arg/references"
-        : >"$HOME/.pi/agent/skills/$arg/references/optimization-patterns.md"
-        ;;
-    esac
-  fi
-done
+if [[ " $* " == *" list --global --agent pi --json "* ]]; then
+	printf '%s\n' "${FAKE_SKILLS_JSON:-[]}"
+	exit 0
+fi
+if [[ " $* " == *" remove "* ]]; then
+	printf '%s\n' "$*" >>"$FAKE_LOG"
+	remove_skills=false
+	for arg in "$@"; do
+		if [ "$arg" = remove ]; then
+			remove_skills=true
+			continue
+		fi
+		if [[ "$arg" == --* ]]; then
+			remove_skills=false
+			continue
+		fi
+		if [ "$remove_skills" = true ]; then
+			rm -rf "$HOME/.pi/agent/skills/$arg"
+		fi
+	done
+	exit 0
+fi
+printf 'Unexpected skills CLI invocation: %s\n' "$*" >&2
+exit 2
 EOF_NPX
 chmod +x "$tmp_dir/bin/npx"
 
-cat >"$tmp_dir/bin/curl" <<'EOF_CURL'
-#!/usr/bin/env bash
-set -euo pipefail
-output=''
-url=''
-while (($#)); do
-  case "$1" in
-    -o) output="$2"; shift 2 ;;
-    -*) shift ;;
-    *) url="$1"; shift ;;
-  esac
-done
-[ -n "$output" ] || { printf 'missing output path\n' >&2; exit 2; }
-printf 'fixture for %s\n' "$url" >"$output"
-printf '%s\n' "$url" >>"$FAKE_CURL_LOG"
-EOF_CURL
-chmod +x "$tmp_dir/bin/curl"
-
 run_manager() {
-	local mode="$1" mise_tools="$2" skills_json="$3" home="${4:-$tmp_dir/home}"
+	local skills_json="$1" home="${2:-$tmp_dir/home}"
 	FAKE_LOG="$tmp_dir/skills.log" \
-		FAKE_CURL_LOG="$tmp_dir/curl.log" \
 		FAKE_SKILLS_JSON="$skills_json" \
 		PATH="$tmp_dir/bin:$PATH" \
 		HOME="$home" \
-		MISE_INSTALLED_TOOLS="$mise_tools" \
-		bash "$manager" "$mode"
+		bash "$manager" remove
 }
 
-: >"$tmp_dir/skills.log"
-: >"$tmp_dir/curl.log"
-run_manager install '[]' '[]' >/dev/null
-test "$(grep -c ' add ' "$tmp_dir/skills.log")" = 1
-grep -Fq 'https://github.com/addyosmani/agent-skills/tree/aeac41d4d005999432bb7312f7ff06383a91d59d' "$tmp_dir/skills.log"
-grep -Fq ' --agent pi --global --yes' "$tmp_dir/skills.log"
-
-manual_skills=(
-	browser-testing-with-devtools
-	ci-cd-and-automation
-	code-simplification
-	deprecation-and-migration
-	documentation-and-adrs
-	doubt-driven-development
-	performance-optimization
-	shipping-and-launch
-	source-driven-development
-)
-auto_skills=(
-	api-and-interface-design
-	frontend-ui-engineering
-	observability-and-instrumentation
-	security-and-hardening
-)
-for skill in "${manual_skills[@]}"; do
-	grep -Fq 'disable-model-invocation: true' "$tmp_dir/home/.pi/agent/skills/$skill/SKILL.md"
+for skill in api-and-interface-design security-and-hardening observability-and-instrumentation frontend-ui-engineering unselected-addy-skill; do
+	mkdir -p "$tmp_dir/home/.pi/agent/skills/$skill"
+	printf '%s\n' "$skill" >"$tmp_dir/home/.pi/agent/skills/$skill/SKILL.md"
 done
-for skill in "${auto_skills[@]}"; do
-	if grep -Fq 'disable-model-invocation: true' "$tmp_dir/home/.pi/agent/skills/$skill/SKILL.md"; then
-		exit 1
-	fi
+mkdir -p "$tmp_dir/home/.pi/agent/skills/api-and-interface-design/references"
+printf 'nested reference\n' >"$tmp_dir/home/.pi/agent/skills/api-and-interface-design/references/design.md"
+
+cat >"$tmp_dir/home/.pi/agent/references/.addy-agent-skills-ref" <<'EOF_MARKER'
+aeac41d4d005999432bb7312f7ff06383a91d59d
+EOF_MARKER
+for reference in accessibility-checklist.md definition-of-done.md observability-checklist.md orchestration-patterns.md performance-checklist.md security-checklist.md; do
+	printf '%s\n' "$reference" >"$tmp_dir/home/.pi/agent/references/$reference"
 done
-grep -Fq 'Use when adding, changing, or assessing application telemetry' \
-	"$tmp_dir/home/.pi/agent/skills/observability-and-instrumentation/SKILL.md"
+printf 'Keep this unrelated reference.\n' >"$tmp_dir/home/.pi/agent/references/local-notes.md"
 
-reference_files=(
-	accessibility-checklist.md
-	definition-of-done.md
-	observability-checklist.md
-	orchestration-patterns.md
-	performance-checklist.md
-	security-checklist.md
-)
-for reference in "${reference_files[@]}"; do
-	test -f "$tmp_dir/home/.pi/agent/references/$reference"
+owned_skills='[
+  {"name":"api-and-interface-design","source":"addyosmani/agent-skills","sourceUrl":"https://github.com/addyosmani/agent-skills.git"},
+  {"name":"security-and-hardening","sourceUrl":"https://github.com/addyosmani/agent-skills/tree/aeac41d4d005999432bb7312f7ff06383a91d59d"},
+  {"name":"observability-and-instrumentation","sourceUrl":"https://github.com/addyosmani/agent-skills-fork.git"},
+  {"name":"frontend-ui-engineering","source":"addyosmani/agent-skills","sourceUrl":"https://github.com/example/agent-skills.git"},
+  {"name":"unselected-addy-skill","source":"addyosmani/agent-skills"}
+]'
+: >"$tmp_dir/skills.log"
+run_manager "$owned_skills" >"$tmp_dir/remove.log"
+
+grep -Fq ' remove api-and-interface-design security-and-hardening --global --agent pi --yes' "$tmp_dir/skills.log"
+test "$(wc -l <"$tmp_dir/skills.log" | tr -d ' ')" = 1
+test ! -e "$tmp_dir/home/.pi/agent/skills/api-and-interface-design"
+test ! -e "$tmp_dir/home/.pi/agent/skills/security-and-hardening"
+test -f "$tmp_dir/home/.pi/agent/skills/observability-and-instrumentation/SKILL.md"
+test -f "$tmp_dir/home/.pi/agent/skills/frontend-ui-engineering/SKILL.md"
+test -f "$tmp_dir/home/.pi/agent/skills/unselected-addy-skill/SKILL.md"
+test ! -e "$tmp_dir/home/.pi/agent/references/.addy-agent-skills-ref"
+for reference in accessibility-checklist.md definition-of-done.md observability-checklist.md orchestration-patterns.md performance-checklist.md security-checklist.md; do
+	test ! -e "$tmp_dir/home/.pi/agent/references/$reference"
 done
-grep -Fq 'aeac41d4d005999432bb7312f7ff06383a91d59d' \
-	"$tmp_dir/home/.pi/agent/references/.addy-agent-skills-ref"
-test "$(wc -l <"$tmp_dir/curl.log" | tr -d ' ')" = "${#reference_files[@]}"
+grep -Fq 'Keep this unrelated reference.' "$tmp_dir/home/.pi/agent/references/local-notes.md"
+run_manager '[]' >"$tmp_dir/repeat.log"
+test "$(wc -l <"$tmp_dir/skills.log" | tr -d ' ')" = 1
 
-installed_json="$(node -e '
-const names = process.argv.slice(1);
-process.stdout.write(JSON.stringify(names.map(name => ({name, source: "addyosmani/agent-skills"}))));
-' "${auto_skills[@]}" "${manual_skills[@]}")"
-: >"$tmp_dir/skills.log"
-run_manager check '[]' "$installed_json" >"$tmp_dir/check.log"
-grep -Eq '^observability-and-instrumentation[[:space:]]+installed \(automatic\)$' "$tmp_dir/check.log"
-grep -Eq '^doubt-driven-development[[:space:]]+installed \(manual-only\)$' "$tmp_dir/check.log"
-
-# An interrupted sync leaves a pending marker; the next install must repair it.
-references_dir="$tmp_dir/home/.pi/agent/references"
-printf 'pending:aeac41d4d005999432bb7312f7ff06383a91d59d\n' >"$references_dir/.addy-agent-skills-ref"
-rm "$references_dir/observability-checklist.md"
-run_manager install '[]' "$installed_json" >/dev/null
-test "$(<"$references_dir/.addy-agent-skills-ref")" = 'aeac41d4d005999432bb7312f7ff06383a91d59d'
-test -f "$references_dir/observability-checklist.md"
-curl_count="$(wc -l <"$tmp_dir/curl.log" | tr -d ' ')"
-run_manager install '[]' "$installed_json" >/dev/null
-test "$(wc -l <"$tmp_dir/curl.log" | tr -d ' ')" = "$curl_count"
-
-: >"$tmp_dir/skills.log"
-run_manager install '[]' "$installed_json" >/dev/null
-test "$(grep -c ' add ' "$tmp_dir/skills.log" || true)" = 0
-
-: >"$tmp_dir/skills.log"
-run_manager install '[{"name":"node","version":"22.0.0"}]' "$installed_json" >/dev/null
-test "$(grep -c ' add ' "$tmp_dir/skills.log")" = 1
-grep -Fq ' --skill api-and-interface-design frontend-ui-engineering observability-and-instrumentation security-and-hardening browser-testing-with-devtools ci-cd-and-automation code-simplification deprecation-and-migration documentation-and-adrs doubt-driven-development performance-optimization shipping-and-launch source-driven-development --agent pi --global --yes' "$tmp_dir/skills.log"
-
-# Do not patch an unrelated skill that happens to use the same name.
+# An unrecognized owner marker must leave the references untouched.
 unowned_home="$tmp_dir/unowned-home"
-mkdir -p "$unowned_home/.pi/agent/skills/observability-and-instrumentation"
-printf '%s\n' '---' 'name: observability-and-instrumentation' 'description: Keep this description.' 'disable-model-invocation: true' '---' >"$unowned_home/.pi/agent/skills/observability-and-instrumentation/SKILL.md"
-run_manager update '[]' '[{"name":"observability-and-instrumentation","sourceUrl":"https://github.com/addyosmani/agent-skills-fork.git"}]' "$unowned_home" >/dev/null
-grep -Fq 'description: Keep this description.' "$unowned_home/.pi/agent/skills/observability-and-instrumentation/SKILL.md"
-grep -Fq 'disable-model-invocation: true' "$unowned_home/.pi/agent/skills/observability-and-instrumentation/SKILL.md"
+mkdir -p "$unowned_home/.pi/agent/references"
+printf 'unrecognized-owner\n' >"$unowned_home/.pi/agent/references/.addy-agent-skills-ref"
+printf 'user-owned\n' >"$unowned_home/.pi/agent/references/security-checklist.md"
+run_manager '[]' "$unowned_home" >"$tmp_dir/unowned.log"
+test -f "$unowned_home/.pi/agent/references/.addy-agent-skills-ref"
+grep -Fq 'user-owned' "$unowned_home/.pi/agent/references/security-checklist.md"
 
-# Refuse to replace even a dangling reference symlink when no manager marker exists.
-dangling_home="$tmp_dir/dangling-home"
-mkdir -p "$dangling_home/.pi/agent/references"
-ln -s "$dangling_home/missing-target" "$dangling_home/.pi/agent/references/security-checklist.md"
-if run_manager install '[]' '[]' "$dangling_home" >/dev/null 2>&1; then
-	printf 'Expected manager to refuse an unowned dangling reference symlink.\n' >&2
+# A symlinked reference is never followed or removed as an owned regular file.
+symlink_home="$tmp_dir/symlink-home"
+mkdir -p "$symlink_home/.pi/agent/references"
+printf 'aeac41d4d005999432bb7312f7ff06383a91d59d\n' >"$symlink_home/.pi/agent/references/.addy-agent-skills-ref"
+printf 'outside reference\n' >"$tmp_dir/outside-reference.md"
+ln -s "$tmp_dir/outside-reference.md" "$symlink_home/.pi/agent/references/security-checklist.md"
+run_manager '[]' "$symlink_home" >"$tmp_dir/symlink.log"
+test -L "$symlink_home/.pi/agent/references/security-checklist.md"
+grep -Fq 'outside reference' "$tmp_dir/outside-reference.md"
+test -f "$symlink_home/.pi/agent/references/.addy-agent-skills-ref"
+
+# Invalid skill ownership data must fail closed before any removal.
+invalid_home="$tmp_dir/invalid-home"
+mkdir -p "$invalid_home/.pi/agent/skills/api-and-interface-design"
+printf 'keep\n' >"$invalid_home/.pi/agent/skills/api-and-interface-design/SKILL.md"
+if run_manager 'not-json' "$invalid_home" >"$tmp_dir/invalid.log" 2>&1; then
+	printf 'Expected invalid skill metadata to fail cleanup.\n' >&2
 	exit 1
 fi
-test -L "$dangling_home/.pi/agent/references/security-checklist.md"
+test -f "$invalid_home/.pi/agent/skills/api-and-interface-design/SKILL.md"
 
-printf 'Addy Pi skill reconciliation checks passed.\n'
+printf 'Addy Pi cleanup checks passed.\n'
