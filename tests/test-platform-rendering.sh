@@ -151,6 +151,7 @@ with open(sys.argv[1], "rb") as file:
 
 expected = "omarchy" if sys.argv[2] == "linux" else "catppuccin_macchiato"
 assert config["appearance"]["theme"] == expected
+assert config["startup"]["tiled"] is True
 PY
 
   if [[ "$os" == linux ]]; then
