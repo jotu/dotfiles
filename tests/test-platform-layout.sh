@@ -92,8 +92,10 @@ contains dot_zshrc.tmpl '! pgrep -x voxtype-bin >/dev/null 2>&1'
 contains dot_zshrc.tmpl 'voxtype daemon >/dev/null 2>&1 &!'
 contains dot_aerospace.toml "if.app-id = 'com.apple.MobileSMS'"
 contains dot_aerospace.toml "if.app-id = 'org.whispersystems.signal-desktop'"
-contains dot_config/voxtype/config.toml.tmpl 'key = "RIGHTALT"'
-contains dot_config/voxtype/config.toml.tmpl 'mode = "push_to_talk"'
+contains dot_config/voxtype/config.toml.tmpl 'enabled = false'
+not_contains dot_config/voxtype/config.toml.tmpl 'key = "RIGHTALT"'
+contains dot_aerospace.toml 'ctrl-sectionSign ='
+contains dot_aerospace.toml 'voxtype record toggle'
 contains dot_config/mise/conf.d/00-base.toml.tmpl '[bootstrap.packages]'
 not_contains dot_config/mise/conf.d/00-base.toml.tmpl '"jundot/omlx" = "https://github.com/jundot/omlx"'
 not_contains dot_config/mise/conf.d/00-base.toml.tmpl '"brew:jundot/omlx/omlx" = "latest"'

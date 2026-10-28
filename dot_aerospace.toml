@@ -200,6 +200,9 @@ ctrl-alt-shift-7 = 'move-node-to-workspace 7'
 ctrl-alt-shift-8 = 'move-node-to-workspace 8'
 ctrl-alt-shift-9 = 'move-node-to-workspace 9'
 
+# Voxtype dictation: Ctrl+§ toggles recording without using a modifier alone.
+ctrl-sectionSign = 'exec-and-forget mise exec -- voxtype record toggle'
+
 # Modes
 ctrl-alt-r = 'mode resize'
 ctrl-alt-s = 'mode service'
