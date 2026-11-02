@@ -1,0 +1,13 @@
+{{- /* chezmoi:modify-template */ -}}
+{{- /*
+Merge the managed Pi settings into the existing ~/.pi/agent/settings.json.
+Managed keys (from .chezmoitemplates/pi-settings.json.tmpl) always win; keys that
+Pi writes itself (lastChangelogVersion, extensionChangelogVersions, ...) survive
+so `chezmoi apply` stops reporting drift after every Pi upgrade.
+*/ -}}
+{{- $managed := includeTemplate "pi-settings.json.tmpl" . | fromJson -}}
+{{- $current := dict -}}
+{{- if and .chezmoi.stdin (ne (trim .chezmoi.stdin) "") -}}
+{{-   $current = fromJson .chezmoi.stdin -}}
+{{- end -}}
+{{- merge $managed $current | toPrettyJson | trimSuffix "\n" -}}

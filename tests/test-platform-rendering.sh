@@ -53,7 +53,7 @@ toml_sources=(
   dot_config/television/config.toml.tmpl
 )
 json_sources=(
-  dot_pi/agent/settings.json.tmpl
+  .chezmoitemplates/pi-settings.json.tmpl
   dot_pi/agent/models.json
 )
 
@@ -198,7 +198,7 @@ for work_enabled in true false; do
   settings_output="$tmp_dir/settings-work-$work_enabled.json"
   chezmoi execute-template \
     --override-data "{\"chezmoi\":{\"os\":\"linux\",\"arch\":\"arm64\"},\"work\":{\"enable\":$work_enabled}}" \
-    --file "$repo_root/dot_pi/agent/settings.json.tmpl" >"$settings_output"
+    --file "$repo_root/.chezmoitemplates/pi-settings.json.tmpl" >"$settings_output"
   validate_json "$settings_output"
   python3 - "$settings_output" "$work_enabled" <<'PY'
 import json
@@ -211,5 +211,33 @@ assert "npm:pi-mcp-adapter@3.2.0" in packages
 assert ("npm:pi-chatgpt-limit@0.3.1" in packages) == (sys.argv[2] == "true")
 PY
 done
+
+# The settings modify template must keep Pi-owned keys and let managed keys win.
+modify_template="$repo_root/dot_pi/agent/modify_settings.json"
+modify_data='{"chezmoi":{"os":"linux","arch":"arm64"},"work":{"enable":false}}'
+merged_output="$tmp_dir/settings-merged.json"
+printf '{"lastChangelogVersion":"9.9.9","defaultProjectTrust":"always","compaction":{"enabled":false}}' |
+  chezmoi execute-template --source "$repo_root" --with-stdin --override-data "$modify_data" \
+    --file "$modify_template" >"$merged_output"
+validate_json "$merged_output"
+fresh_output="$tmp_dir/settings-fresh.json"
+printf '' | chezmoi execute-template --source "$repo_root" --with-stdin --override-data "$modify_data" \
+  --file "$modify_template" >"$fresh_output"
+validate_json "$fresh_output"
+python3 - "$merged_output" "$fresh_output" <<'PY'
+import json
+import sys
+
+with open(sys.argv[1]) as file:
+    merged = json.load(file)
+with open(sys.argv[2]) as file:
+    fresh = json.load(file)
+
+assert merged["lastChangelogVersion"] == "9.9.9", "Pi-owned keys must survive"
+assert merged["defaultProjectTrust"] == "ask", "managed keys must win"
+assert merged["compaction"]["enabled"] is True, "managed nested keys must win"
+assert "lastChangelogVersion" not in fresh, "fresh installs contain only managed keys"
+assert fresh["defaultProvider"] == "github-copilot"
+PY
 
 printf 'Linux and macOS platform templates rendered and validated.\n'

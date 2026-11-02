@@ -49,7 +49,7 @@ const sharedSkills = [
   "wayfinder",
   "wizard",
 ];
-const templatePath = path.join(repoRoot, "dot_pi/agent/settings.json.tmpl");
+const templatePath = path.join(repoRoot, ".chezmoitemplates/pi-settings.json.tmpl");
 const sharedHome = path.join(tmpDir, "shared-home");
 for (const name of sharedSkills) {
   const skillPath = path.join(sharedHome, ".agents/skills", name, "SKILL.md");
