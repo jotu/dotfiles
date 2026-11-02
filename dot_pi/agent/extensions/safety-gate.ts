@@ -137,8 +137,9 @@ const secretFileMention = /(?:^|[\s"'`/=])\.env(?:\.(?!example(?:$|[\s"'`/]))[A-
 // directory itself (for example `cd` into it), and wildcard paths inside it. Shell checks match by name,
 // so a same-named file elsewhere is also treated as read-only in shell commands.
 const toolOwnedMention = /(?:herdr|tuios)-agent-state|\.pi\/agent\/extensions(?:\/?(?=$|[\s"'`;&|<>)])|\/[^\s"'`;&|<>]*[*?[{])/;
-// Commands that only read their operands when used without output redirection.
-const readOnlyCommands = new Set(["cat", "head", "tail", "wc", "diff", "ls", "stat", "file", "grep", "rg", "sha256sum", "shasum", "true"]);
+// Commands that only read their operands when used without output redirection. Pagers such as `less`
+// stay excluded because they can run shell commands.
+const readOnlyCommands = new Set(["cat", "head", "tail", "wc", "diff", "ls", "stat", "file", "grep", "rg", "jq", "sha256sum", "shasum", "echo", "printf", "true"]);
 const readOnlyGitCommands = new Set(["diff", "log", "show", "blame", "status", "grep"]);
 
 const segments = (command: string) => command.split(/[;&|\n]+/).map((segment) => segment.trim());

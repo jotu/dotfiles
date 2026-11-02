@@ -303,6 +303,9 @@ test("tool-owned integration files are readable but not writable", () => {
 		"cat $HOME/.pi/agent/extensions/herdr-agent-state.ts",
 		"git log --oneline -- herdr-agent-state.ts",
 		"ls -la ~/.pi/agent/extensions/",
+		`diff -u /tmp/a ${herdr} && echo "HERDR: identical"`,
+		`printf '%s\\n' ${tuios}; stat ${tuios}`,
+		`jq -R . ${herdr} | head`,
 	]) {
 		assert.deepEqual(bash(command), { action: "allow" }, command);
 	}
@@ -324,6 +327,8 @@ test("tool-owned integration files are readable but not writable", () => {
 		`rg --pre=rm x ${herdr}`,
 		`git diff --output=${herdr}`,
 		`git grep -O x -- ${herdr}`,
+		`echo x > ${herdr}`,
+		`less ${herdr}`,
 	]) {
 		const decision = bash(command);
 		assert.equal(decision.action, "block", command);
