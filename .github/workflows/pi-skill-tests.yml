@@ -32,3 +32,6 @@ jobs:
 
       - name: Test Pi smart-zone extension
         run: mise run test:pi:smart-zone
+
+      - name: Test Pi safety gate
+        run: mise run test:pi:safety-gate

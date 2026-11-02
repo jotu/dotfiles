@@ -22,3 +22,7 @@ run = "node --test tests/test-pi-smart-zone.mjs"
 [tasks."test:vale:changed"]
 description = "Reject new Vale findings in changed Markdown files"
 run = "python3 tests/vale_new_findings.py origin/main"
+
+[tasks."test:pi:safety-gate"]
+description = "Test Pi safety-gate decisions for local work and remote access"
+run = "node --disable-warning=ExperimentalWarning --experimental-strip-types --test tests/test-pi-safety-gate.mjs"
