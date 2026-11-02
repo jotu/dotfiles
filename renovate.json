@@ -4,7 +4,7 @@
     "config:recommended",
     "helpers:pinGitHubActionDigests"
   ],
-  "schedule": ["before 5am on monday"],
+  "schedule": ["before 5am on tuesday"],
   "timezone": "UTC",
   "automerge": false,
   "packageRules": [
