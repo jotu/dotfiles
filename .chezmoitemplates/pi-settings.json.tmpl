@@ -1,10 +1,10 @@
 {{- $provider := "github-copilot" -}}
 {{- $model := "gpt-6-luna" -}}
-{{- $thinkingLevel := "xhigh" -}}
+{{- $thinkingLevel := "high" -}}
 {{- if .work.enable -}}
   {{- $provider = "openai-codex" -}}
   {{- $model = "gpt-6-luna" -}}
-  {{- $thinkingLevel = "xhigh" -}}
+  {{- $thinkingLevel = "high" -}}
 {{- end -}}
 {{- $sharedSkills := list
   "ask-matt"

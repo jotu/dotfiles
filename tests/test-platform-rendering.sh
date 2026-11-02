@@ -205,8 +205,10 @@ import json
 import sys
 
 with open(sys.argv[1]) as file:
-    packages = {package["source"] for package in json.load(file)["packages"]}
+    settings = json.load(file)
 
+packages = {package["source"] for package in settings["packages"]}
+assert settings["defaultThinkingLevel"] == "high"
 assert "npm:pi-mcp-adapter@3.2.0" in packages
 assert ("npm:pi-chatgpt-limit@0.3.1" in packages) == (sys.argv[2] == "true")
 PY
