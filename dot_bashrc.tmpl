@@ -24,8 +24,8 @@ if [[ -r "$HOME/.config/shell/aliases" ]]; then
   source "$HOME/.config/shell/aliases"
 fi
 
-if [[ -r "$HOME/.bash_completions" ]]; then
-  source "$HOME/.bash_completions"
+if [[ -r "$HOME/.config/bash/completions.bash" ]]; then
+  source "$HOME/.config/bash/completions.bash"
 fi
 
 if command -v wt >/dev/null 2>&1; then

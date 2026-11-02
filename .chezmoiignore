@@ -40,5 +40,5 @@ Library/
 # Do not create empty Bash startup files on macOS.
 {{- if eq .chezmoi.os "darwin" }}
 .bashrc
-.bash_completions
+.config/bash/
 {{- end }}

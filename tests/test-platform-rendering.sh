@@ -4,7 +4,7 @@ set -euo pipefail
 
 repo_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
 
-for command_name in chezmoi python3 yq; do
+for command_name in chezmoi yq; do
   command -v "$command_name" >/dev/null 2>&1 || {
     printf 'ERROR: %s is required for platform rendering checks.\n' "$command_name" >&2
     exit 1
@@ -21,25 +21,18 @@ render() {
     --file "$repo_root/$source" >"$output"
 }
 
-validate_toml() {
-  python3 - "$1" <<'PY'
-import sys
-import tomllib
+fail() { printf 'FAIL: %s\n' "$1" >&2; exit 1; }
 
-with open(sys.argv[1], "rb") as file:
-    tomllib.load(file)
-PY
+validate_toml() { yq -p toml -o json '.' "$1" >/dev/null; }
+validate_json() { yq -p json -o json '.' "$1" >/dev/null; }
+
+# Assert a yq expression is true for a TOML or JSON file: check_expr <format> <file> <expr> <message>
+check_expr() {
+  local format="$1" file="$2" expr="$3" message="$4"
+  [[ "$(yq -p "$format" -o json "$expr" "$file")" == true ]] || fail "$message ($expr)"
 }
-
-validate_json() {
-  python3 - "$1" <<'PY'
-import json
-import sys
-
-with open(sys.argv[1]) as file:
-    json.load(file)
-PY
-}
+check_toml() { check_expr toml "$@"; }
+check_json() { check_expr json "$@"; }
 
 toml_sources=(
   dot_config/voxtype/config.toml.tmpl
@@ -66,69 +59,39 @@ for os in linux darwin; do
   base_output="$tmp_dir/$os-base.toml"
   render "$os" dot_config/mise/conf.d/00-base.toml.tmpl "$base_output"
   validate_toml "$base_output"
-  python3 - "$base_output" "$os" <<'PY'
-import subprocess
-import sys
-import tomllib
-
-with open(sys.argv[1], "rb") as file:
-    config = tomllib.load(file)
-tools = config["tools"]
-packages = config.get("bootstrap", {}).get("packages", {})
-npm_settings = config.get("settings", {}).get("npm", {})
-os = sys.argv[2]
-with open(sys.argv[1]) as file:
-    rendered_text = file.read()
-
-if os == "linux":
-    assert '[tasks."omlx:model:install"]' not in rendered_text
-    assert '[tasks."omlx:start"]' not in rendered_text
-else:
-    assert '[tasks."omlx:model:install"]' in rendered_text
-    assert '[tasks."omlx:start"]' in rendered_text
-
-assert tools["superfile"] == "latest"
-for task in ("tuios:pi:install", "tuios:completion:sync"):
-    assert task in config["tasks"]
-    assert any(
-        hook.get("task") == task
-        for hook in config.get("hooks", {}).get("postinstall", [])
-    )
-    subprocess.run(
-        ["bash", "-n"],
-        input=config["tasks"][task]["run"],
-        text=True,
-        check=True,
-    )
-assert "npm:opencode-ai" not in tools
-assert npm_settings.get("package_manager") == "npm"
-if os == "linux":
-    assert not packages
-    assert "gh" not in tools
-    assert "hunk" not in tools
-    assert "herdr" not in tools
-    assert "github:max-sixty/worktrunk" not in tools
-    assert "aqua:ajeetdsouza/zoxide" not in tools
-    assert "npm:@openai/codex" not in tools
-    assert "npm:@earendil-works/pi-coding-agent" not in tools
-else:
-    assert "aqua:cli/cli" in tools
-    assert "hunk" in tools
-    assert "herdr" in tools
-    assert "github:max-sixty/worktrunk" in tools
-    assert "aqua:ajeetdsouza/zoxide" in tools
-    assert tools["npm:@openai/codex"] == "latest"
-    pi = tools["npm:@earendil-works/pi-coding-agent"]
-    assert pi["version"] == "latest"
-    assert "install-pi-plan-mode" in pi["postinstall"]
-    assert "install-pi-subagent" in pi["postinstall"]
-    assert "jundot/omlx" not in config["bootstrap"]["brew"]["taps"]
-    assert "brew:jundot/omlx/omlx" not in packages
-    assert packages["brew:curl"] == "latest"
-    assert packages["brew-cask:nikitabobko/tap/aerospace"] == "latest"
-    assert packages["brew-cask:signal"] == "latest"
-    assert tools["ruby"] == "3"
-PY
+  check_toml "$base_output" '.tools.superfile == "latest"' 'superfile pinned'
+  for task in tuios:pi:install tuios:completion:sync; do
+    check_toml "$base_output" ".tasks.\"$task\" != null" "task $task exists"
+    check_toml "$base_output" "[.hooks.postinstall[] | select(.task == \"$task\")] | length > 0" "hook $task exists"
+    yq -p toml -oy ".tasks.\"$task\".run" "$base_output" | bash -n
+  done
+  check_toml "$base_output" '.tools."npm:opencode-ai" == null' 'opencode not managed'
+  check_toml "$base_output" '.settings.npm.package_manager == "npm"' 'npm package manager'
+  if [[ "$os" == linux ]]; then
+    check_toml "$base_output" '(.tasks | has("omlx:model:install")) == false' 'no omlx install on linux'
+    check_toml "$base_output" '(.tasks | has("omlx:start")) == false' 'no omlx start on linux'
+    check_toml "$base_output" '(.bootstrap.packages // {} | length) == 0' 'no bootstrap packages on linux'
+    for tool in gh hunk herdr github:max-sixty/worktrunk aqua:ajeetdsouza/zoxide npm:@openai/codex npm:@earendil-works/pi-coding-agent; do
+      check_toml "$base_output" ".tools.\"$tool\" == null" "linux must not install $tool"
+    done
+  else
+    check_toml "$base_output" '(.tasks | has("omlx:model:install"))' 'omlx install on darwin'
+    check_toml "$base_output" '(.tasks | has("omlx:start"))' 'omlx start on darwin'
+    for tool in aqua:cli/cli hunk herdr github:max-sixty/worktrunk aqua:ajeetdsouza/zoxide; do
+      check_toml "$base_output" ".tools.\"$tool\" != null" "darwin installs $tool"
+    done
+    check_toml "$base_output" '.tools."npm:@openai/codex" == "latest"' 'codex latest'
+    pi='.tools."npm:@earendil-works/pi-coding-agent"'
+    check_toml "$base_output" "$pi.version == \"latest\"" 'pi latest'
+    check_toml "$base_output" "$pi.postinstall | contains(\"install-pi-plan-mode\")" 'pi plan-mode postinstall'
+    check_toml "$base_output" "$pi.postinstall | contains(\"install-pi-subagent\")" 'pi subagent postinstall'
+    check_toml "$base_output" '.bootstrap.brew.taps | has("jundot/omlx") | not' 'omlx tap absent'
+    check_toml "$base_output" '.bootstrap.packages."brew:jundot/omlx/omlx" == null' 'omlx package absent'
+    check_toml "$base_output" '.bootstrap.packages."brew:curl" == "latest"' 'brew curl'
+    check_toml "$base_output" '.bootstrap.packages."brew-cask:nikitabobko/tap/aerospace" == "latest"' 'aerospace cask'
+    check_toml "$base_output" '.bootstrap.packages."brew-cask:signal" == "latest"' 'signal cask'
+    check_toml "$base_output" '.tools.ruby == "3"' 'ruby 3'
+  fi
 
   completion_output="$tmp_dir/$os-tuios-completion"
   render "$os" dot_config/zsh/completions/_tuios.tmpl "$completion_output"
@@ -142,17 +105,9 @@ PY
   tuios_output="$tmp_dir/$os-tuios.toml"
   render "$os" dot_config/tuios/config.toml.tmpl "$tuios_output"
   validate_toml "$tuios_output"
-  python3 - "$tuios_output" "$os" <<'PY'
-import sys
-import tomllib
-
-with open(sys.argv[1], "rb") as file:
-    config = tomllib.load(file)
-
-expected = "omarchy" if sys.argv[2] == "linux" else "catppuccin_macchiato"
-assert config["appearance"]["theme"] == expected
-assert config["startup"]["tiled"] is True
-PY
+  if [[ "$os" == linux ]]; then expected_theme=omarchy; else expected_theme=catppuccin_macchiato; fi
+  check_toml "$tuios_output" ".appearance.theme == \"$expected_theme\"" 'tuios theme'
+  check_toml "$tuios_output" '.startup.tiled == true' 'tuios tiled'
 
   if [[ "$os" == linux ]]; then
     superfile_source=dot_config/superfile/config.toml.tmpl
@@ -162,20 +117,13 @@ PY
   superfile_output="$tmp_dir/$os-superfile.toml"
   render "$os" "$superfile_source" "$superfile_output"
   validate_toml "$superfile_output"
-  python3 - "$superfile_output" "$os" <<'PY'
-import sys
-import tomllib
-
-with open(sys.argv[1], "rb") as file:
-    config = tomllib.load(file)
-
-assert config["zoxide_support"] is True
-assert config["ignore_missing_fields"] is True
-if sys.argv[2] == "darwin":
-    assert config["theme"] == "catppuccin-macchiato"
-else:
-    assert "theme" not in config
-PY
+  check_toml "$superfile_output" '.zoxide_support == true' 'superfile zoxide'
+  check_toml "$superfile_output" '.ignore_missing_fields == true' 'superfile ignore_missing_fields'
+  if [[ "$os" == darwin ]]; then
+    check_toml "$superfile_output" '.theme == "catppuccin-macchiato"' 'superfile theme'
+  else
+    check_toml "$superfile_output" 'has("theme") | not' 'superfile no theme on linux'
+  fi
 
   for source in "${toml_sources[@]}"; do
     output="$tmp_dir/$os-$(basename "$source")"
@@ -200,18 +148,9 @@ for work_enabled in true false; do
     --override-data "{\"chezmoi\":{\"os\":\"linux\",\"arch\":\"arm64\"},\"work\":{\"enable\":$work_enabled}}" \
     --file "$repo_root/.chezmoitemplates/pi-settings.json.tmpl" >"$settings_output"
   validate_json "$settings_output"
-  python3 - "$settings_output" "$work_enabled" <<'PY'
-import json
-import sys
-
-with open(sys.argv[1]) as file:
-    settings = json.load(file)
-
-packages = {package["source"] for package in settings["packages"]}
-assert settings["defaultThinkingLevel"] == "high"
-assert "npm:pi-mcp-adapter@3.2.0" in packages
-assert ("npm:pi-chatgpt-limit@0.3.1" in packages) == (sys.argv[2] == "true")
-PY
+  check_json "$settings_output" '.defaultThinkingLevel == "high"' 'thinking level'
+  check_json "$settings_output" '[.packages[].source] | contains(["npm:pi-mcp-adapter@3.2.0"])' 'mcp adapter'
+  check_json "$settings_output" "([.packages[].source] | contains([\"npm:pi-chatgpt-limit@0.3.1\"])) == $work_enabled" 'chatgpt-limit follows work.enable'
 done
 
 # The settings modify template must keep Pi-owned keys and let managed keys win.
@@ -226,20 +165,10 @@ fresh_output="$tmp_dir/settings-fresh.json"
 printf '' | chezmoi execute-template --source "$repo_root" --with-stdin --override-data "$modify_data" \
   --file "$modify_template" >"$fresh_output"
 validate_json "$fresh_output"
-python3 - "$merged_output" "$fresh_output" <<'PY'
-import json
-import sys
-
-with open(sys.argv[1]) as file:
-    merged = json.load(file)
-with open(sys.argv[2]) as file:
-    fresh = json.load(file)
-
-assert merged["lastChangelogVersion"] == "9.9.9", "Pi-owned keys must survive"
-assert merged["defaultProjectTrust"] == "ask", "managed keys must win"
-assert merged["compaction"]["enabled"] is True, "managed nested keys must win"
-assert "lastChangelogVersion" not in fresh, "fresh installs contain only managed keys"
-assert fresh["defaultProvider"] == "github-copilot"
-PY
+check_json "$merged_output" '.lastChangelogVersion == "9.9.9"' 'Pi-owned keys must survive'
+check_json "$merged_output" '.defaultProjectTrust == "ask"' 'managed keys must win'
+check_json "$merged_output" '.compaction.enabled == true' 'managed nested keys must win'
+check_json "$fresh_output" 'has("lastChangelogVersion") | not' 'fresh installs contain only managed keys'
+check_json "$fresh_output" '.defaultProvider == "github-copilot"' 'fresh default provider'
 
 printf 'Linux and macOS platform templates rendered and validated.\n'

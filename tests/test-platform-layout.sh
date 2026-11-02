@@ -69,15 +69,15 @@ check_templated_zsh() {
 }
 
 check_templated_bash dot_bashrc.tmpl
-check_templated_bash dot_bash_completions.tmpl
+check_templated_bash dot_config/bash/completions.bash.tmpl
 check_templated_bash dot_config/shell/aliases.tmpl
 check_templated_bash run_onchange_before_install-applications-omarchy.sh.tmpl
 check_templated_bash run_onchange_after_sync-pi-plan-mode.sh.tmpl
 check_templated_zsh dot_zshenv.tmpl
 check_templated_zsh dot_zshrc.tmpl
-check_templated_zsh dot_zsh_aliases.tmpl
-check_templated_zsh dot_zsh_completions.tmpl
-check_templated_zsh dot_zsh_daily.tmpl
+check_templated_zsh dot_config/zsh/aliases.zsh.tmpl
+check_templated_zsh dot_config/zsh/completions.zsh.tmpl
+check_templated_zsh dot_config/zsh/daily.zsh.tmpl
 
 contains .chezmoiignore '.aerospace.toml'
 contains .chezmoiignore 'Library/'
@@ -86,7 +86,7 @@ contains .chezmoiignore 'renovate.json'
 contains .chezmoiignore '.bashrc'
 not_contains .chezmoiignore '.zshrc'
 contains bootstrap 'omarchy pkg add zsh'
-contains dot_bashrc.tmpl 'source "$HOME/.bash_completions"'
+contains dot_bashrc.tmpl 'source "$HOME/.config/bash/completions.bash"'
 contains dot_zshrc.tmpl 'eq .chezmoi.os "linux"'
 contains dot_zshrc.tmpl 'else if eq .chezmoi.os "darwin"'
 contains dot_zshrc.tmpl '/usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh'
@@ -181,8 +181,8 @@ contains dot_config/mise/conf.d/00-base.toml.tmpl '[tasks."herdr:pi:install"]'
 contains dot_config/mise/conf.d/00-base.toml.tmpl 'install-pi-subagent'
 contains dot_config/mise/conf.d/00-base.toml.tmpl 'pi:matt:skills:install'
 contains dot_config/mise/scripts/executable_manage-matt-pi-skills.tmpl 'MISE_INSTALLED_TOOLS'
-contains dot_config/mise/scripts/install-pi-subagent 'MISE_TOOL_INSTALL_PATH'
-contains dot_config/mise/scripts/install-pi-subagent 'command -v pi'
+contains dot_config/mise/scripts/executable_install-pi-subagent 'MISE_TOOL_INSTALL_PATH'
+contains dot_config/mise/scripts/executable_install-pi-subagent 'command -v pi'
 contains dot_pi/agent/AGENTS.md '/skill:grill-with-docs'
 contains dot_pi/agent/AGENTS.md 'Preserve focused commits on the branch'
 contains dot_pi/agent/AGENTS.md 'direct integration into unprotected `main`'
@@ -221,7 +221,7 @@ contains dot_zshrc.tmpl 'export GITHUB_TOKEN='
 contains dot_zshrc.tmpl 'gh-work'
 not_contains dot_zshenv.tmpl 'export MISE_GITHUB_TOKEN='
 not_contains dot_config/shell/aliases.tmpl 'compdef'
-contains dot_zsh_completions.tmpl 'source "$HOME/.config/zsh/completions/_tuios"'
-contains dot_zsh_aliases.tmpl 'compdef ae=aerospace'
+contains dot_config/zsh/completions.zsh.tmpl 'source "$HOME/.config/zsh/completions/_tuios"'
+contains dot_config/zsh/aliases.zsh.tmpl 'compdef ae=aerospace'
 
 printf 'Platform layout checks passed.\n'

@@ -164,6 +164,16 @@ Use the platform's own package and application tooling before adding a repositor
 | Zed and Firefox | `omarchy install` | Existing macOS application workflow |
 | Window manager / tiling shell | Omarchy/Hyprland | AeroSpace |
 
+OS-gated source paths (see `.chezmoiignore`):
+
+| Source path | Applied on |
+| --- | --- |
+| `private_Library/`, `dot_aerospace.toml` | macOS only |
+| `dot_config/mise/config.toml`, `dot_config/mise/tasks/osx/`, `dot_pi/agent/models.json` | macOS only |
+| `dot_bashrc.tmpl`, `dot_config/bash/`, `dot_config/systemd/` | Omarchy/Linux only |
+| `run_onchange_before_install-applications-omarchy.sh.tmpl` | Omarchy/Linux only |
+| `run_onchange_after_fix-thefuck-compat-darwin.sh.tmpl` | macOS only |
+
 The repository manages configuration for these tools on both platforms. Omarchy installs Worktrunk with `omarchy pkg add worktrunk`; macOS uses the `0.81.0` GitHub release through mise. Worktrunk places task checkouts under `~/.worktrunk/<owner>/<repo>/<branch-slug>`, outside the repository.
 
 Keep the primary checkout clean on the default (`main`) branch, and run `git pull --ff-only` there before `wt switch --create <branch>`. Worktrunk uses the default branch's local ref and does not fetch; existing task worktrees do not advance automatically when `main` changes.
@@ -214,10 +224,11 @@ Before committing platform changes, run the local layout checks from the reposit
 ```bash
 mise run test:platform
 mise run test:platform:render
+mise run test:vale:baseline
 mise run test:vale:changed
 ```
 
-`test:platform:render` requires Chezmoi, Python, yq, and configured local data; it renders and validates both Linux and macOS outputs. `test:vale:changed` reports new vale findings in changed Markdown without blocking on the existing baseline. On a machine with Chezmoi and local data configured, also review `chezmoi diff` and use `chezmoi apply --dry-run`. Do not run the Omarchy installation scripts or package installs in unattended environments.
+`test:platform:render` requires Chezmoi, yq, and configured local data; it renders and validates both Linux and macOS outputs. `test:vale:changed` reports new vale findings in changed Markdown without blocking on the existing baseline. On a machine with Chezmoi and local data configured, also review `chezmoi diff` and use `chezmoi apply --dry-run`. Do not run the Omarchy installation scripts or package installs in unattended environments.
 
 Reference sections:
 - Git and identity setup: [Git](#git)
@@ -248,7 +259,7 @@ The Chezmoi-managed `dot_pi/agent/extensions/smart-zone.ts` shows Pi's active co
 
 mise syncs Pi's bundled sub-agent extension from the installed Pi package. The managed user agents (`scout`, `planner`, `reviewer`, and `worker`) use inherited models so they work with the active provider. The read-only `security-auditor`, `test-engineer`, and `web-performance-auditor` agents provide optional specialist perspectives; invoke only the one relevant to a task. The Pi-specific prompt wrappers provide separate subagent chains: `/implement` runs a full scout → planner → worker → verify/review/commit chain; `/scout-and-plan` provides read-only reconnaissance and planning; `/implement-and-review` runs a worker → reviewer → worker review-fix cycle. Use these only when you want the extra Pi subagent contexts. For the standard Matt flow, use `/skill:implement` for a single-session task or individual ticket; it drives TDD and code review. Use `/skill:implement-spec` for a whole spec task graph. Herdr provides durable panes and lifecycle/session state; it does not replace Pi's in-session `subagent` tool.
 
-The Matt skill tasks manage an explicit allowlist from the stable `skills/engineering` and `skills/productivity` directories only. They exclude `skills/in-progress` and `skills/misc`. The personal profile (`.work.enable = false`) includes the `pr` skill; work setups use their own PR skill. The update task never overwrites the Pi-adapted `grill-me`, `grilling`, or `grill-with-docs` skills.
+The Matt skill tasks manage an explicit allowlist from the stable `skills/engineering` and `skills/productivity` directories only. They exclude `skills/in-progress` and `skills/misc`. The personal profile (`.work.enable = false`) includes the `pr` skill; work setups use their own PR skill.
 
 The manager pins Matt skill content to commit `49dd158d1076134a641b33efb035946536778336`; review changes before advancing the pin. It refreshes skills with a Pi-targeted `skills add` command because `skills update --global` has no agent filter. A mise post-install task installs missing skills on each `mise install` and refreshes existing skills only when a tool installs or upgrades. An unchanged `mise install` leaves existing skill content untouched. Run `mise run pi:matt:skills:update` for an explicit Pi-only refresh.
 

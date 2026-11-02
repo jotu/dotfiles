@@ -93,9 +93,9 @@ if [[ -r /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh ]]; 
   source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 fi
 
-[ -f ~/.zsh_aliases ] && source ~/.zsh_aliases
-[ -f ~/.zsh_daily ] && source ~/.zsh_daily
-[ -f ~/.zsh_completions ] && source ~/.zsh_completions
+[ -f ~/.config/zsh/aliases.zsh ] && source ~/.config/zsh/aliases.zsh
+[ -f ~/.config/zsh/daily.zsh ] && source ~/.config/zsh/daily.zsh
+[ -f ~/.config/zsh/completions.zsh ] && source ~/.config/zsh/completions.zsh
 
 if command -v atuin >/dev/null 2>&1; then
   eval "$(atuin init zsh)"
@@ -164,9 +164,9 @@ if command -v wt >/dev/null 2>&1; then
 fi
 # End of Docker CLI completions
 
-[ -f ~/.zsh_aliases ] && source ~/.zsh_aliases
-[ -f ~/.zsh_daily ] && source ~/.zsh_daily # Run expensive operations once per day
-[ -f ~/.zsh_completions ] && source ~/.zsh_completions
+[ -f ~/.config/zsh/aliases.zsh ] && source ~/.config/zsh/aliases.zsh
+[ -f ~/.config/zsh/daily.zsh ] && source ~/.config/zsh/daily.zsh # Run expensive operations once per day
+[ -f ~/.config/zsh/completions.zsh ] && source ~/.config/zsh/completions.zsh
 if [ -f "$BREW_HOME/share/zsh-autosuggestions/zsh-autosuggestions.zsh" ]; then
   source "$BREW_HOME/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
 fi

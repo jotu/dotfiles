@@ -94,12 +94,6 @@ fi
 EOF_NPX
 chmod +x "$tmp_dir/bin/npx"
 
-# Keep the three Pi adaptations present so the test only observes upstream skills.
-for skill in grill-me grilling grill-with-docs; do
-  mkdir -p "$tmp_dir/home/.pi/agent/skills/$skill"
-  : >"$tmp_dir/home/.pi/agent/skills/$skill/SKILL.md"
-done
-
 run_reconcile() {
   local manager_script="$1" mise_installed_tools="$2"
   local fake_skills_json="${FAKE_SKILLS_JSON:-}"

@@ -1,7 +1,6 @@
 [tools]
 chezmoi = "2.73.1"
 node = "22.22.2"
-python = "3.14.2"
 vale = "latest"
 
 [tasks."test:platform"]
@@ -22,8 +21,12 @@ run = "node --test tests/test-pi-smart-zone.mjs"
 
 [tasks."test:vale:changed"]
 description = "Reject new Vale findings in changed Markdown files"
-run = "python3 tests/vale_new_findings.py origin/main"
+run = "bash tests/vale-new-findings.sh origin/main"
 
 [tasks."test:pi:safety-gate"]
 description = "Test Pi safety-gate decisions for local work and remote access"
 run = "node --disable-warning=ExperimentalWarning --experimental-strip-types --test tests/test-pi-safety-gate.mjs"
+
+[tasks."test:vale:baseline"]
+description = "Test the baseline-aware Vale comparison"
+run = "bash tests/test-vale-new-findings.sh"

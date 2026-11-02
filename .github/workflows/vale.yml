@@ -14,7 +14,7 @@ jobs:
     name: Run Vale on Markdown
     runs-on: ubuntu-latest
     env:
-      MISE_ENABLE_TOOLS: vale,python
+      MISE_ENABLE_TOOLS: vale
 
     steps:
       - name: Checkout repository
@@ -32,9 +32,9 @@ jobs:
         run: bash tests/test-platform-layout.sh
 
       - name: Test Vale baseline comparison
-        run: mise exec -- python3 tests/test_vale_new_findings.py
+        run: mise exec -- bash tests/test-vale-new-findings.sh
 
       - name: Reject new Vale findings
         env:
           VALE_BASE_REF: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
-        run: mise exec -- python3 tests/vale_new_findings.py "$VALE_BASE_REF"
+        run: mise exec -- bash tests/vale-new-findings.sh "$VALE_BASE_REF"
