@@ -60,13 +60,13 @@
   "enabledModels": [
     "{{ $provider }}/{{ $model }}"
   ],
-{{/* Pi discovers ~/.agents/skills too. Exclude native copies only when the shared copy exists. */}}
-  "skills": {{ toJson $skillExclusions }},
+  "skills": {{/* Pi discovers ~/.agents/skills too. Exclude native copies only when the shared copy exists. */}}{{ toPrettyJson $skillExclusions | trimSuffix "\n" | replace "\n" "\n  " }},
   "theme": "{{ if eq .chezmoi.os "linux" }}omarchy-system{{ else }}catppuccin-macchiato{{ end }}",
   "compaction": {
     "enabled": true,
     "reserveTokens": 16384,
     "keepRecentTokens": 20000
   },
-  "defaultProjectTrust": "ask"
+  "defaultProjectTrust": "ask",
+  "lastChangelogVersion": "1.4.0"
 }
