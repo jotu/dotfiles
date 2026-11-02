@@ -1,0 +1,156 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    "helpers:pinGitHubActionDigests"
+  ],
+  "schedule": ["before 5am on monday"],
+  "timezone": "UTC",
+  "automerge": false,
+  "packageRules": [
+    {
+      "matchManagers": ["github-actions"],
+      "groupName": "GitHub Actions"
+    },
+    {
+      "matchManagers": ["mise"],
+      "groupName": "mise tools"
+    },
+    {
+      "matchManagers": ["custom.regex"],
+      "matchDatasources": ["npm"],
+      "groupName": "npm dependencies"
+    },
+    {
+      "matchManagers": ["custom.regex"],
+      "matchDatasources": ["go"],
+      "groupName": "Go tools"
+    },
+    {
+      "matchManagers": ["custom.regex"],
+      "matchDatasources": ["github-releases"],
+      "groupName": "GitHub release tools"
+    },
+    {
+      "matchManagers": ["mise", "custom.regex"],
+      "matchDatasources": ["node-version", "python-version"],
+      "groupName": "Runtime versions"
+    }
+  ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Update the mise CLI version used by CI",
+      "managerFilePatterns": ["/^\\.github\\/workflows\\/.*\\.ya?ml$/"],
+      "matchStrings": [
+        "uses:\\s*jdx/mise-action@[^\\r\\n]+\\r?\\n\\s+with:\\s*\\r?\\n\\s+version:\\s*(?<currentValue>\\d{4}\\.\\d+\\.\\d+)"
+      ],
+      "depNameTemplate": "jdx/mise",
+      "datasourceTemplate": "github-releases"
+    },
+    {
+      "customType": "regex",
+      "description": "Update Go tool versions in the mise template and matching documentation",
+      "managerFilePatterns": [
+        "/^dot_config\\/mise\\/conf\\.d\\/00-base\\.toml\\.tmpl$/",
+        "/^README\\.md$/"
+      ],
+      "matchStrings": [
+        "\\\"go:(?<packageName>[^\\\" ]+)\\\"\\s*=\\s*\\\"(?<currentValue>\\d+\\.\\d+\\.\\d+)\\\"",
+        "TUIOS `(?<currentValue>\\d+\\.\\d+\\.\\d+)`"
+      ],
+      "packageNameTemplate": "github.com/Gaurav-Gosain/tuios/cmd/tuios",
+      "datasourceTemplate": "go"
+    },
+    {
+      "customType": "regex",
+      "description": "Update GitHub-release-backed mise tools and their documentation",
+      "managerFilePatterns": [
+        "/^dot_config\\/mise\\/conf\\.d\\/00-base\\.toml\\.tmpl$/",
+        "/^README\\.md$/"
+      ],
+      "matchStrings": [
+        "\\\"github:(?<packageName>[^\\\" ]+)\\\"\\s*=\\s*\\\"(?<currentValue>\\d+\\.\\d+\\.\\d+)\\\"",
+        "Worktrunk v(?<currentValue>\\d+\\.\\d+\\.\\d+) Pi source",
+        "macOS uses the `(?<currentValue>\\d+\\.\\d+\\.\\d+)` GitHub release through mise"
+      ],
+      "packageNameTemplate": "max-sixty/worktrunk",
+      "datasourceTemplate": "github-releases"
+    },
+    {
+      "customType": "regex",
+      "description": "Update Herdr's reviewed release pin and matching documentation",
+      "managerFilePatterns": [
+        "/^dot_config\\/mise\\/conf\\.d\\/00-base\\.toml\\.tmpl$/",
+        "/^README\\.md$/"
+      ],
+      "matchStrings": [
+        "(?:^|\\n)herdr\\s*=\\s*\\\"(?<currentValue>\\d+\\.\\d+\\.\\d+)\\\"",
+        "Herdr `(?<currentValue>\\d+\\.\\d+\\.\\d+)` on macOS"
+      ],
+      "packageNameTemplate": "herdrdev/herdr",
+      "datasourceTemplate": "github-releases"
+    },
+    {
+      "customType": "regex",
+      "description": "Update Node's exact mise version pin",
+      "managerFilePatterns": ["/^dot_config\\/mise\\/conf\\.d\\/00-base\\.toml\\.tmpl$/"],
+      "matchStrings": [
+        "(?:^|\\n)node\\s*=\\s*\\\"(?<currentValue>\\d+\\.\\d+\\.\\d+)\\\""
+      ],
+      "depNameTemplate": "node",
+      "datasourceTemplate": "node-version"
+    },
+    {
+      "customType": "regex",
+      "description": "Update Python's exact mise version pin",
+      "managerFilePatterns": ["/^dot_config\\/mise\\/conf\\.d\\/00-base\\.toml\\.tmpl$/"],
+      "matchStrings": [
+        "(?:^|\\n)python\\s*=\\s*\\\"(?<currentValue>\\d+\\.\\d+\\.\\d+)\\\""
+      ],
+      "depNameTemplate": "python",
+      "datasourceTemplate": "python-version"
+    },
+    {
+      "customType": "regex",
+      "description": "Update Yarn's exact mise version pin",
+      "managerFilePatterns": ["/^dot_config\\/mise\\/conf\\.d\\/00-base\\.toml\\.tmpl$/"],
+      "matchStrings": [
+        "(?:^|\\n)yarn\\s*=\\s*\\\"(?<currentValue>\\d+\\.\\d+\\.\\d+)\\\""
+      ],
+      "depNameTemplate": "yarn",
+      "datasourceTemplate": "npm"
+    },
+    {
+      "customType": "regex",
+      "description": "Update pinned Pi extension packages in the Chezmoi template",
+      "managerFilePatterns": ["/^\\.chezmoitemplates\\/pi-settings\\.json\\.tmpl$/"],
+      "matchStrings": [
+        "npm:(?<depName>(?:@[^/\\\"]+\\/)?[^@\\\"]+)@(?<currentValue>\\d+\\.\\d+\\.\\d+)"
+      ],
+      "datasourceTemplate": "npm"
+    },
+    {
+      "customType": "regex",
+      "description": "Update the pinned skills CLI in Pi skill management scripts",
+      "managerFilePatterns": [
+        "/^dot_config\\/mise\\/scripts\\/executable_manage-(?:matt|addy)-pi-skills(?:\\.tmpl)?$/"
+      ],
+      "matchStrings": ["skills@(?<currentValue>\\d+\\.\\d+\\.\\d+)"],
+      "depNameTemplate": "skills",
+      "datasourceTemplate": "npm"
+    },
+    {
+      "customType": "regex",
+      "description": "Update pinned GitHub CLI extension versions in configuration and documentation",
+      "managerFilePatterns": [
+        "/^dot_config\\/mise\\/conf\\.d\\/00-base\\.toml\\.tmpl$/",
+        "/^README\\.md$/"
+      ],
+      "matchStrings": [
+        "gh extension install (?<packageName>[^\\s]+/[^\\s]+) --pin v(?<currentValue>\\d+\\.\\d+\\.\\d+)"
+      ],
+      "datasourceTemplate": "github-releases"
+    }
+  ]
+}

@@ -82,6 +82,7 @@ check_templated_zsh dot_zsh_daily.tmpl
 contains .chezmoiignore '.aerospace.toml'
 contains .chezmoiignore 'Library/'
 contains .chezmoiignore '.config/mise/config.toml'
+contains .chezmoiignore 'renovate.json'
 contains .chezmoiignore '.bashrc'
 not_contains .chezmoiignore '.zshrc'
 contains bootstrap 'omarchy pkg add zsh'

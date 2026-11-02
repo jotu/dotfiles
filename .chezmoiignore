@@ -4,6 +4,7 @@
 AGENTS.md
 README.md
 LICENSE
+renovate.json
 
 mise.toml
 tests/

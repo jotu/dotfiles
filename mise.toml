@@ -1,6 +1,7 @@
 [tools]
 chezmoi = "2.73.1"
 node = "22.22.2"
+python = "3.14.2"
 vale = "latest"
 
 [tasks."test:platform"]
