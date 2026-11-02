@@ -53,4 +53,18 @@ copy-on-select = clipboard
 mouse-hide-while-typing = true
 window-save-state = always
 window-new-tab-position = end
+
+# Swedish macOS layout: these symbols need Option. Ghostty composes the
+# character, but under the Kitty keyboard protocol it still reports the chord
+# with Alt set (Option+7 = key 7, mod alt, text "|"). TUIOS, Pi and other
+# Kitty-protocol programs then read alt+7 instead of "|". Send the character
+# as text so `Ctrl+B |`, `[`, `]`, `{`, `}` and friends reach them as typed.
+keybind = alt+2=text:@
+keybind = alt+4=text:$
+keybind = alt+7=text:|
+keybind = alt+8=text:[
+keybind = alt+9=text:]
+keybind = alt+shift+7=text:\\
+keybind = alt+shift+8=text:{
+keybind = alt+shift+9=text:}
 {{- end }}
