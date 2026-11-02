@@ -50,8 +50,6 @@ const protectedRoots = [
 	join(home, ".netrc"),
 	join(home, ".docker", "config.json"),
 	join(home, ".pi", "agent", "auth.json"),
-	join(home, ".pi", "agent", "extensions", "herdr-agent-state.ts"),
-	join(home, ".pi", "agent", "extensions", "tuios-agent-state.ts"),
 	join(home, ".zsh_history"),
 	join(home, ".bash_history"),
 	join(home, ".python_history"),
@@ -95,6 +93,18 @@ function canonicalPath(candidate: string, visited = new Set<string>()): string |
 
 const canonicalProtectedRoots = protectedRoots.map((path) => canonicalPath(path)).filter((path): path is string => path !== undefined);
 
+// Integration files that Herdr and TUIOS install and own. Agents may read them for review but never change them.
+const toolOwnedFiles = [
+	join(home, ".pi", "agent", "extensions", "herdr-agent-state.ts"),
+	join(home, ".pi", "agent", "extensions", "tuios-agent-state.ts"),
+];
+const canonicalToolOwnedFiles = toolOwnedFiles.map((path) => canonicalPath(path)).filter((path): path is string => path !== undefined);
+
+function isToolOwnedPath(inputPath: string, cwd: string): boolean {
+	const canonical = canonicalPath(resolveInputPath(inputPath, cwd));
+	return canonical !== undefined && canonicalToolOwnedFiles.includes(canonical);
+}
+
 function isSecretFileName(name: string): boolean {
 	return name === ".env" || (name.startsWith(".env.") && name !== ".env.example");
 }
@@ -123,8 +133,36 @@ const escapeRegExp = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\
 const protectedNames = protectedRoots.map((path) => relative(home, path).split(sep).join("/"));
 const protectedPathMention = new RegExp(`(?:^|[\\s"'\`/=:(])(?:${protectedNames.map(escapeRegExp).join("|")})(?=$|[\\s"'\`/)])`);
 const secretFileMention = /(?:^|[\s"'`/=])\.env(?:\.(?!example(?:$|[\s"'`/]))[A-Za-z0-9_-]+)?(?=$|[\s"'`/])/;
+// Match the integration file names anywhere (covering separators, globs, and braces), the extensions
+// directory itself (for example `cd` into it), and wildcard paths inside it. Shell checks match by name,
+// so a same-named file elsewhere is also treated as read-only in shell commands.
+const toolOwnedMention = /(?:herdr|tuios)-agent-state|\.pi\/agent\/extensions(?:\/?(?=$|[\s"'`;&|<>)])|\/[^\s"'`;&|<>]*[*?[{])/;
+// Commands that only read their operands when used without output redirection.
+const readOnlyCommands = new Set(["cat", "head", "tail", "wc", "diff", "ls", "stat", "file", "grep", "rg", "sha256sum", "shasum", "true"]);
+const readOnlyGitCommands = new Set(["diff", "log", "show", "blame", "status", "grep"]);
 
 const segments = (command: string) => command.split(/[;&|\n]+/).map((segment) => segment.trim());
+
+function isReadOnlySegment(segment: string): boolean {
+	if (segment === "") return true;
+	const [name = "", subcommand = ""] = segment.split(/\s+/);
+	const command = basename(name);
+	// `rg --pre`/`--search-zip` and `git --output`/`-O` run programs or write files.
+	if (command === "rg") return !/(?:^|\s)(?:--pre\b|--search-zip\b|-[A-Za-z]*z)/.test(segment);
+	if (command === "git") return readOnlyGitCommands.has(subcommand) && !/(?:^|\s)(?:--output\b|--open-files-in-pager\b|-O)/.test(segment);
+	return readOnlyCommands.has(command);
+}
+
+// Allow reading tool-owned integration files; block any shell command that could change them.
+function toolOwnedCommandReason(command: string): string | undefined {
+	if (!toolOwnedMention.test(command)) return undefined;
+	const benign = command
+		.replace(/\s\d?>\s*\/dev\/null\b/g, " ")
+		.replace(/\s\d?>&\d\b/g, " ")
+		.replace(/\$(?:HOME\b|\{HOME\})/g, "~");
+	const readOnly = !/[>`$]|<\(/.test(benign) && segments(benign).every(isReadOnlySegment);
+	return readOnly ? undefined : "modifying a tool-owned integration file (only read-only commands are allowed)";
+}
 
 function isEnvironmentDump(command: string): boolean {
 	return segments(command).some(
@@ -351,6 +389,9 @@ export function classifyToolCall(toolName: string, input: ToolInput, context: Cl
 			return { action: "block", category: "credential", reason: "accessing protected credential or secret material", needsAttention: false };
 		}
 		if (fileWriteTools.has(toolName)) {
+			if (isToolOwnedPath(inputPath, context.cwd)) {
+				return { action: "block", category: "file_scope", reason: "modifying a tool-owned integration file (only read-only commands are allowed)", needsAttention: false };
+			}
 			const scopeReason = writeScopeReason(inputPath, context.cwd, context.cwd);
 			if (scopeReason) return needsUI(context, "file_scope", scopeReason, inputPath);
 		}
@@ -364,6 +405,9 @@ export function classifyToolCall(toolName: string, input: ToolInput, context: Cl
 
 	const sensitiveReason = sensitiveCommandReason(command);
 	if (sensitiveReason) return { action: "block", category: "credential", reason: sensitiveReason, needsAttention: false };
+
+	const toolOwnedReason = toolOwnedCommandReason(command);
+	if (toolOwnedReason) return { action: "block", category: "file_scope", reason: toolOwnedReason, needsAttention: false };
 
 	const risky = riskyCommandReason(command);
 	if (risky) return needsUI(context, risky.category, risky.reason, confirmationDetail(command, risky.category, risky.reason));
