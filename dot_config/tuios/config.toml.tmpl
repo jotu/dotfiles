@@ -5,3 +5,8 @@ theme = "{{ if eq .chezmoi.os "linux" }}omarchy{{ else }}catppuccin_macchiato{{ 
 # Start each new TUIOS session tiled so split bindings work immediately.
 [startup]
 tiled = true
+
+# Match the non-US keyboard while preserving Option-generated characters.
+[keybindings]
+keyboard_layout = "other"
+option_glyphs = "auto"
