@@ -8,3 +8,13 @@ rebase = true
 
 [aliases]
 s = "wt switch {{ args }}"
+
+[commit.generation]
+# Generate commit and squash messages with Pi, using a stripped-down headless run.
+command = "pi -p --no-session --no-tools --no-extensions --no-skills --no-context-files --no-prompt-templates --no-mcp --offline"
+template-append = """
+- Write the subject as a Conventional Commit: `type(scope)!: description`, where type is feat, fix, docs, refactor, test, build, ci, chore, perf, or style. The scope is optional.
+- Use an imperative, lowercase description of at most 72 characters, with no trailing period.
+- Choose the type from the dominant change. Use `feat` only for user-visible new behavior and `fix` only for bug fixes.
+- Mark breaking changes with `!` and add a `BREAKING CHANGE:` footer.
+"""
