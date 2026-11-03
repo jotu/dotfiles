@@ -148,7 +148,16 @@ for work_enabled in true false; do
     --override-data "{\"chezmoi\":{\"os\":\"linux\",\"arch\":\"arm64\"},\"work\":{\"enable\":$work_enabled}}" \
     --file "$repo_root/.chezmoitemplates/pi-settings.json.tmpl" >"$settings_output"
   validate_json "$settings_output"
-  check_json "$settings_output" '.defaultThinkingLevel == "high"' 'thinking level'
+  if [[ "$work_enabled" == true ]]; then
+    check_json "$settings_output" '.defaultProvider == "openai-codex"' 'work provider'
+    check_json "$settings_output" '.defaultModel == "gpt-6.1-sol"' 'work model'
+    check_json "$settings_output" '.defaultThinkingLevel == "medium"' 'work thinking level'
+    check_json "$settings_output" '.enabledModels[0] == "openai-codex/gpt-6.1-sol" and (.enabledModels | length) == 1' 'work model scope'
+  else
+    check_json "$settings_output" '.defaultProvider == "github-copilot"' 'personal provider'
+    check_json "$settings_output" '.defaultModel == "gpt-6-luna"' 'personal model'
+    check_json "$settings_output" '.defaultThinkingLevel == "high"' 'personal thinking level'
+  fi
   check_json "$settings_output" '[.packages[].source] | contains(["npm:pi-mcp-adapter@3.2.0"])' 'mcp adapter'
   check_json "$settings_output" "([.packages[].source] | contains([\"npm:pi-chatgpt-limit@0.3.1\"])) == $work_enabled" 'chatgpt-limit follows work.enable'
 done
