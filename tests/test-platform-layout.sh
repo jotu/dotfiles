@@ -186,10 +186,10 @@ contains dot_config/mise/scripts/executable_install-pi-subagent 'command -v pi'
 contains dot_pi/agent/AGENTS.md '/skill:grill-with-docs'
 contains dot_pi/agent/AGENTS.md 'Preserve focused commits on the branch'
 contains dot_pi/agent/AGENTS.md 'direct integration into unprotected `main`'
-contains README.md 'mise run pi:matt:skills:update'
-not_contains README.md 'mise run pi:worktrunk:install'
-contains README.md 'This setup uses standard Pi only.'
-contains README.md 'mise also trusts the same config path in that repository'
+contains docs/pi.md 'mise run pi:matt:skills:update'
+not_contains docs/pi.md 'mise run pi:worktrunk:install'
+contains docs/pi.md 'This setup uses standard Pi only.'
+contains docs/platform-ownership.md 'mise also trusts the same config path in that repository'
 contains dot_config/mise/scripts/executable_manage-matt-pi-skills.tmpl 'skills/engineering and skills/productivity'
 contains dot_pi/agent/agents/scout.md 'name: scout'
 contains dot_pi/agent/prompts/implement-and-review.md 'subagent tool'
@@ -223,5 +223,15 @@ not_contains dot_zshenv.tmpl 'export MISE_GITHUB_TOKEN='
 not_contains dot_config/shell/aliases.tmpl 'compdef'
 contains dot_config/zsh/completions.zsh.tmpl 'source "$HOME/.config/zsh/completions/_tuios"'
 contains dot_config/zsh/aliases.zsh.tmpl 'compdef ae=aerospace'
+
+# Relative Markdown links in the README and docs must resolve to existing files.
+while IFS= read -r -d '' doc; do
+  doc_dir="$(dirname "$doc")"
+  while IFS= read -r link; do
+    target="${link%%#*}"
+    case "$target" in '' | http*://* | mailto:*) continue ;; esac
+    [ -e "$doc_dir/$target" ] || fail "${doc#"$repo_root"/} links to missing file: $link"
+  done < <(grep -oE '\]\([^)]+\)' "$doc" | sed -E 's/^\]\((.*)\)$/\1/')
+done < <(find "$repo_root/README.md" "$repo_root/docs" -name '*.md' -not -path '*/research/*' -print0)
 
 printf 'Platform layout checks passed.\n'

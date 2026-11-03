@@ -38,6 +38,3 @@ jobs:
 
       - name: Render all Chezmoi templates
         run: mise run test:templates
-
-      - name: Check Renovate README patterns
-        run: mise run test:renovate

@@ -52,12 +52,10 @@
       "customType": "regex",
       "description": "Update Go tool versions in the mise template and matching documentation",
       "managerFilePatterns": [
-        "/^dot_config\\/mise\\/conf\\.d\\/00-base\\.toml\\.tmpl$/",
-        "/^README\\.md$/"
+        "/^dot_config\\/mise\\/conf\\.d\\/00-base\\.toml\\.tmpl$/"
       ],
       "matchStrings": [
-        "\\\"go:(?<packageName>[^\\\" ]+)\\\"\\s*=\\s*\\\"(?<currentValue>\\d+\\.\\d+\\.\\d+)\\\"",
-        "TUIOS `(?<currentValue>\\d+\\.\\d+\\.\\d+)`"
+        "\\\"go:(?<packageName>[^\\\" ]+)\\\"\\s*=\\s*\\\"(?<currentValue>\\d+\\.\\d+\\.\\d+)\\\""
       ],
       "packageNameTemplate": "github.com/Gaurav-Gosain/tuios/cmd/tuios",
       "datasourceTemplate": "go"
@@ -66,13 +64,10 @@
       "customType": "regex",
       "description": "Update GitHub-release-backed mise tools and their documentation",
       "managerFilePatterns": [
-        "/^dot_config\\/mise\\/conf\\.d\\/00-base\\.toml\\.tmpl$/",
-        "/^README\\.md$/"
+        "/^dot_config\\/mise\\/conf\\.d\\/00-base\\.toml\\.tmpl$/"
       ],
       "matchStrings": [
-        "\\\"github:(?<packageName>[^\\\" ]+)\\\"\\s*=\\s*\\\"(?<currentValue>\\d+\\.\\d+\\.\\d+)\\\"",
-        "Worktrunk v(?<currentValue>\\d+\\.\\d+\\.\\d+) Pi source",
-        "macOS uses the `(?<currentValue>\\d+\\.\\d+\\.\\d+)` GitHub release through mise"
+        "\\\"github:(?<packageName>[^\\\" ]+)\\\"\\s*=\\s*\\\"(?<currentValue>\\d+\\.\\d+\\.\\d+)\\\""
       ],
       "packageNameTemplate": "max-sixty/worktrunk",
       "datasourceTemplate": "github-releases"
@@ -81,12 +76,10 @@
       "customType": "regex",
       "description": "Update Herdr's reviewed release pin and matching documentation",
       "managerFilePatterns": [
-        "/^dot_config\\/mise\\/conf\\.d\\/00-base\\.toml\\.tmpl$/",
-        "/^README\\.md$/"
+        "/^dot_config\\/mise\\/conf\\.d\\/00-base\\.toml\\.tmpl$/"
       ],
       "matchStrings": [
-        "(?:^|\\n)herdr\\s*=\\s*\\\"(?<currentValue>\\d+\\.\\d+\\.\\d+)\\\"",
-        "Herdr `(?<currentValue>\\d+\\.\\d+\\.\\d+)` on macOS"
+        "(?:^|\\n)herdr\\s*=\\s*\\\"(?<currentValue>\\d+\\.\\d+\\.\\d+)\\\""
       ],
       "packageNameTemplate": "herdrdev/herdr",
       "datasourceTemplate": "github-releases"
@@ -144,8 +137,7 @@
       "customType": "regex",
       "description": "Update pinned GitHub CLI extension versions in configuration and documentation",
       "managerFilePatterns": [
-        "/^dot_config\\/mise\\/conf\\.d\\/00-base\\.toml\\.tmpl$/",
-        "/^README\\.md$/"
+        "/^dot_config\\/mise\\/conf\\.d\\/00-base\\.toml\\.tmpl$/"
       ],
       "matchStrings": [
         "gh extension install (?<packageName>[^\\s]+/[^\\s]+) --pin v(?<currentValue>\\d+\\.\\d+\\.\\d+)"

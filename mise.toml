@@ -34,7 +34,3 @@ run = "bash tests/test-vale-new-findings.sh"
 [tasks."test:templates"]
 description = "Render every Chezmoi template for darwin and linux"
 run = "bash tests/test-all-templates-render.sh"
-
-[tasks."test:renovate"]
-description = "Verify README text still matches Renovate regex managers"
-run = "bash tests/test-renovate-patterns.sh"
