@@ -1,5 +1,6 @@
+# Worktrunk user config. Chezmoi picks the commit-message model by work/personal profile.
 # Keep task worktrees outside repository checkouts in one home directory.
-worktree-path = "~/.worktrunk/{{ owner }}/{{ repo }}/{{ branch | sanitize }}"
+worktree-path = "~/.worktrunk/{{ `{{ owner }}/{{ repo }}/{{ branch | sanitize }}` }}"
 
 [merge]
 # Rebase before local integration, then keep one commit on the target.
@@ -7,11 +8,13 @@ squash = true
 rebase = true
 
 [aliases]
-s = "wt switch {{ args }}"
+s = "wt switch {{ `{{ args }}` }}"
 
 [commit.generation]
 # Generate commit and squash messages with Pi, using a stripped-down headless run.
-command = "pi -p --no-session --no-tools --no-extensions --no-skills --no-context-files --no-prompt-templates --no-mcp --offline --model github-copilot/claude-haiku-4.5"
+{{- $model := "github-copilot/claude-haiku-4.5" }}
+{{- if .work.enable }}{{ $model = "openai-codex/gpt-6-luna" }}{{ end }}
+command = "pi -p --no-session --no-tools --no-extensions --no-skills --no-context-files --no-prompt-templates --no-mcp --offline --thinking off --model {{ $model }}"
 template-append = """
 - Write the subject as a Conventional Commit: `type(scope)!: description`, where type is feat, fix, docs, refactor, test, build, ci, chore, perf, or style. The scope is optional.
 - Use an imperative, lowercase description of at most 72 characters, with no trailing period.
