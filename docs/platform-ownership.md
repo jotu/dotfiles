@@ -94,7 +94,7 @@ Reference sections:
 
 - Manage only repo-owned personal mise fragments here, primarily `dot_config/mise/conf.d/00-*` and managed helpers under `dot_config/mise/scripts/` and `dot_config/mise/tasks/`.
 - Treat unmanaged or externally owned local fragments such as `10-*`, `20-*`, and other non-chezmoi files as out of scope unless explicitly requested.
-- Keep simple task logic in bash.
+- Keep short task logic in bash.
 - Move more complex task logic into Node.js helpers.
 - Launch Node-based helpers through mise-managed latest Node, for example via `bash "$HOME/.config/mise/scripts/run-node-task" ...` or `bash "$HOME/.config/mise/scripts/run-node-bin" ...`.
 - Prefer invoking behavior through `mise` tasks rather than ad hoc scripts.
