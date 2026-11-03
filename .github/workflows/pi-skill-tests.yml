@@ -35,3 +35,9 @@ jobs:
 
       - name: Test Pi safety gate
         run: mise run test:pi:safety-gate
+
+      - name: Render all Chezmoi templates
+        run: mise run test:templates
+
+      - name: Check Renovate README patterns
+        run: mise run test:renovate

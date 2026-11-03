@@ -1,7 +1,7 @@
 [tools]
 chezmoi = "2.73.1"
 node = "22.22.2"
-vale = "latest"
+vale = "3.26.0"
 
 [tasks."test:platform"]
 description = "Validate platform-specific Chezmoi boundaries and shell syntax"
@@ -30,3 +30,11 @@ run = "node --disable-warning=ExperimentalWarning --experimental-strip-types --t
 [tasks."test:vale:baseline"]
 description = "Test the baseline-aware Vale comparison"
 run = "bash tests/test-vale-new-findings.sh"
+
+[tasks."test:templates"]
+description = "Render every Chezmoi template for darwin and linux"
+run = "bash tests/test-all-templates-render.sh"
+
+[tasks."test:renovate"]
+description = "Verify README text still matches Renovate regex managers"
+run = "bash tests/test-renovate-patterns.sh"
