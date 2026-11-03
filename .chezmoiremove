@@ -3,7 +3,3 @@
 .zsh_completions
 .zsh_daily
 .bash_completions
-# Pi-adapted grill skills, replaced by the upstream Matt versions installed via mise.
-.pi/agent/skills/grill-me
-.pi/agent/skills/grill-with-docs
-.pi/agent/skills/grilling

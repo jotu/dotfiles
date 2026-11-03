@@ -183,6 +183,9 @@ contains dot_config/mise/conf.d/00-base.toml.tmpl 'pi:matt:skills:install'
 contains dot_config/mise/scripts/executable_manage-matt-pi-skills.tmpl 'MISE_INSTALLED_TOOLS'
 contains dot_config/mise/scripts/executable_install-pi-subagent 'MISE_TOOL_INSTALL_PATH'
 contains dot_config/mise/scripts/executable_install-pi-subagent 'command -v pi'
+for skill in grill-me grill-with-docs grilling; do
+  not_contains .chezmoiremove ".pi/agent/skills/$skill"
+done
 contains dot_pi/agent/AGENTS.md '/skill:grill-with-docs'
 contains dot_pi/agent/AGENTS.md 'Preserve focused commits on the branch'
 contains dot_pi/agent/AGENTS.md 'direct integration into unprotected `main`'
