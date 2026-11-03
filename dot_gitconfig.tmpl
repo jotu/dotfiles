@@ -67,7 +67,9 @@
 {{- $ghConfig := get .github "configDir" -}}
 {{- if hasKey $ghConfig "work" -}}{{- $ghConfigWork = get $ghConfig "work" -}}{{- end -}}
 {{- end }}
-    helper = !GH_CONFIG_DIR={{ $ghConfigWork }} gh auth git-credential
+    # Profile credentials must override cached helpers and shell tokens used by Mise.
+    helper =
+    helper = !env -u GH_TOKEN -u GITHUB_TOKEN GH_CONFIG_DIR={{ $ghConfigWork }} gh auth git-credential
 {{- else }}
 {{- $ghConfigPersonal := "~/.config/gh-personal" -}}
 {{- if hasKey .github "configDir" -}}

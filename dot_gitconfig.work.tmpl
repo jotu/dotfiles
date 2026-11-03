@@ -14,11 +14,14 @@
     email = {{ .work.git.email | quote }}
     signingkey = {{ .work.git.signingKey | quote }}
 
+# Select this profile independently of earlier helpers and shell token overrides.
 [credential "https://github.com"]
-        helper = !GH_CONFIG_DIR={{ $ghConfigWork }} gh auth git-credential
+        helper =
+        helper = !env -u GH_TOKEN -u GITHUB_TOKEN GH_CONFIG_DIR={{ $ghConfigWork }} gh auth git-credential
 
 [credential "https://gist.github.com"]
-        helper = !GH_CONFIG_DIR={{ $ghConfigWork }} gh auth git-credential
+        helper =
+        helper = !env -u GH_TOKEN -u GITHUB_TOKEN GH_CONFIG_DIR={{ $ghConfigWork }} gh auth git-credential
 
 [url "ssh://git@github.com/"]
         insteadOf = https://github.com/
