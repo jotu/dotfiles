@@ -50,14 +50,16 @@
 {{- end }}
     # Profile credentials must override cached helpers and shell tokens used by Mise.
     helper =
-    helper = !env -u GH_TOKEN -u GITHUB_TOKEN GH_CONFIG_DIR={{ $ghConfigWork }} gh auth git-credential
+    # Quote for both Git's config parser and the helper shell; env does not expand ~.
+    helper = !env -u GH_TOKEN -u GITHUB_TOKEN GH_CONFIG_DIR={{ $ghConfigWork | replace "~/" "${HOME}/" | quote | quote }} gh auth git-credential
 {{- else }}
 {{- $ghConfigPersonal := "~/.config/gh-personal" -}}
 {{- if hasKey .github "configDir" -}}
 {{- $ghConfig := get .github "configDir" -}}
 {{- if hasKey $ghConfig "personal" -}}{{- $ghConfigPersonal = get $ghConfig "personal" -}}{{- end -}}
 {{- end }}
-    helper = !GH_CONFIG_DIR={{ $ghConfigPersonal }} gh auth git-credential
+    helper =
+    helper = !env -u GH_TOKEN -u GITHUB_TOKEN GH_CONFIG_DIR={{ $ghConfigPersonal | replace "~/" "${HOME}/" | quote | quote }} gh auth git-credential
 {{- end }}
     useHttpPath = true
 

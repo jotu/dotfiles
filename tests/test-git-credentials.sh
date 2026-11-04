@@ -1,72 +1,97 @@
 #!/usr/bin/env bash
-# Verify rendered Git helpers select profiles without inherited token overrides.
+# Verify real includeIf routing, home expansion, and token/cache isolation with fake credentials.
 set -euo pipefail
 repo_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
 tmp_dir=$(mktemp -d)
 tmp_dir=$(cd "$tmp_dir" && pwd -P)
 trap 'rm -rf "$tmp_dir"' EXIT
-mkdir -p "$tmp_dir/bin"
+fixture_home="$tmp_dir/home with spaces"
+mkdir -p "$tmp_dir/bin" "$fixture_home"
 
 cat >"$tmp_dir/bin/gh" <<'EOF'
 #!/usr/bin/env bash
 set -eu
 [ "$*" = 'auth git-credential get' ]
-if [ "$WORK_ENABLED" = true ]; then
-  [ -z "${GH_TOKEN+x}" ] || exit 1
-  [ -z "${GITHUB_TOKEN+x}" ] || exit 1
-else
-  [ "$GH_TOKEN" = fixture ] || exit 1
-  [ "$GITHUB_TOKEN" = fixture ] || exit 1
+[ -z "${GH_TOKEN+x}" ] || exit 1
+[ -z "${GITHUB_TOKEN+x}" ] || exit 1
+if [ "$GH_CONFIG_DIR" != "$EXPECTED_PROFILE" ]; then
+  printf 'Wrong profile path: got <%s>, expected <%s>\n' "$GH_CONFIG_DIR" "$EXPECTED_PROFILE" >&2
+  exit 1
 fi
-[ "$GH_CONFIG_DIR" = "$EXPECTED_PROFILE" ]
 printf 'username=fixture\npassword=fixture\n'
 EOF
 chmod +x "$tmp_dir/bin/gh"
+# A stale cached account must not win before the selected profile helper.
+cat >"$tmp_dir/system" <<'EOF'
+[credential]
+    helper = "!f() { printf 'username=cached\\npassword=cached\\n'; }; f"
+EOF
 
-for enabled in true false; do
-  override="{\"work\":{\"enable\":$enabled},\"github\":{\"configDir\":{\"personal\":\"$tmp_dir/personal\",\"work\":\"$tmp_dir/work\"}}}"
-  for source in dot_gitconfig.tmpl dot_gitconfig.personal.tmpl dot_gitconfig.work.tmpl; do
-    output="$tmp_dir/$source-$enabled"
-    chezmoi execute-template --override-data "$override" --file "$repo_root/$source" >"$output"
-  done
-  for profile in default personal work; do
-    if [ "$profile" != default ] && [ "$enabled" = false ]; then continue; fi
-    config="$tmp_dir/dot_gitconfig.tmpl-$enabled"
-    args=(-c include.path=/dev/null)
-    if [ "$profile" = default ]; then
+for directory in default personal-repos/example work-repos/example dotfiles; do
+  git init --quiet "$tmp_dir/$directory"
+done
+
+for path_style in absolute home; do
+  if [ "$path_style" = absolute ]; then
+    config_root="$tmp_dir/profile configs"
+    expected_root="$config_root"
+  else
+    # Pass a literal tilde to the template to test the default path convention.
+    # shellcheck disable=SC2088
+    config_root='~/.config'
+    expected_root="$fixture_home/.config"
+  fi
+  for enabled in true false; do
+    override="{\"chezmoi\":{\"sourceDir\":\"$tmp_dir/dotfiles\"},\"work\":{\"enable\":$enabled,\"git\":{\"rootDir\":\"$tmp_dir/work-repos\"}},\"personal\":{\"git\":{\"rootDir\":\"$tmp_dir/personal-repos\"}},\"github\":{\"configDir\":{\"personal\":\"$config_root/gh-personal\",\"work\":\"$config_root/gh-work\"}}}"
+    for suffix in '' .personal .work; do
+      chezmoi execute-template --override-data "$override" \
+        --file "$repo_root/dot_gitconfig$suffix.tmpl" >"$fixture_home/.gitconfig$suffix"
+    done
+    # No command-line profile overrides: exercise the same includeIf order as git push.
+    for directory in default personal-repos/example work-repos/example dotfiles; do
       expected=personal
-      [ "$enabled" = false ] || expected=work
-    else
-      expected="$profile"
-      args=(-c "include.path=$tmp_dir/dot_gitconfig.$profile.tmpl-$enabled")
-    fi
-    # Exclude host/system config and use synthetic token values only.
-    for host in github.com gist.github.com; do
-    printf 'protocol=https\nhost=%s\npath=example/repo.git\n\n' "$host" |
-      env GIT_CONFIG_NOSYSTEM=1 GIT_CONFIG_GLOBAL="$config" GIT_TERMINAL_PROMPT=0 \
-        GH_TOKEN=fixture GITHUB_TOKEN=fixture WORK_ENABLED="$enabled" EXPECTED_PROFILE="$tmp_dir/$expected" \
-        PATH="$tmp_dir/bin:$PATH" \
-        git -C "$tmp_dir" "${args[@]}" credential fill >/dev/null
+      if [ "$enabled" = true ]; then
+        case "$directory" in default|work-repos/*) expected=work ;; esac
+      fi
+      for host in github.com gist.github.com; do
+        printf 'protocol=https\nhost=%s\npath=example/repo.git\n\n' "$host" |
+          env HOME="$fixture_home" GIT_CONFIG_NOSYSTEM=0 GIT_CONFIG_SYSTEM="$tmp_dir/system" \
+            GIT_CONFIG_GLOBAL="$fixture_home/.gitconfig" GIT_TERMINAL_PROMPT=0 \
+            GH_TOKEN=fixture GITHUB_TOKEN=fixture EXPECTED_PROFILE="$expected_root/gh-$expected" \
+            PATH="$tmp_dir/bin:$PATH" \
+            git -C "$tmp_dir/$directory" credential fill | grep -qx 'username=fixture'
+      done
     done
   done
 done
-# Exercise includeIf at its real position, not a command-line include appended last.
-mkdir -p "$tmp_dir/home" "$tmp_dir/personal-repos/example" "$tmp_dir/work-repos/example"
-for profile in personal work; do
-  git init --quiet "$tmp_dir/$profile-repos/example"
-done
-override="{\"work\":{\"enable\":true,\"git\":{\"rootDir\":\"$tmp_dir/work-repos\"}},\"personal\":{\"git\":{\"rootDir\":\"$tmp_dir/personal-repos\"}},\"github\":{\"configDir\":{\"personal\":\"$tmp_dir/personal\",\"work\":\"$tmp_dir/work\"}}}"
-for suffix in '' .personal .work; do
-  chezmoi execute-template --override-data "$override" \
-    --file "$repo_root/dot_gitconfig$suffix.tmpl" >"$tmp_dir/home/.gitconfig$suffix"
-done
-for profile in personal work; do
-  for host in github.com gist.github.com; do
-    printf 'protocol=https\nhost=%s\npath=example/repo.git\n\n' "$host" |
-      env HOME="$tmp_dir/home" GIT_CONFIG_NOSYSTEM=1 GIT_CONFIG_GLOBAL="$tmp_dir/home/.gitconfig" \
-        GIT_TERMINAL_PROMPT=0 GH_TOKEN=fixture GITHUB_TOKEN=fixture WORK_ENABLED=true \
-        EXPECTED_PROFILE="$tmp_dir/$profile" PATH="$tmp_dir/bin:$PATH" \
-        git -C "$tmp_dir/$profile-repos/example" credential fill >/dev/null
+# When run in a task worktree, verify its real Git metadata routes via the primary checkout.
+common_dir=$(git -C "$repo_root" rev-parse --path-format=absolute --git-common-dir)
+git_dir=$(git -C "$repo_root" rev-parse --path-format=absolute --git-dir)
+if [ "$git_dir" != "$common_dir" ]; then
+  primary_root=$(dirname "$common_dir")
+  for owner in personal work source; do
+    personal_root="$tmp_dir/personal-repos"
+    work_root="$tmp_dir/work-repos"
+    source_root="$tmp_dir/dotfiles"
+    case "$owner" in
+      personal) personal_root="$primary_root" ;;
+      work) work_root="$primary_root" ;;
+      source) source_root="$primary_root" ;;
+    esac
+    override="{\"chezmoi\":{\"sourceDir\":\"$source_root\"},\"work\":{\"enable\":true,\"git\":{\"rootDir\":\"$work_root\"}},\"personal\":{\"git\":{\"rootDir\":\"$personal_root\"}},\"github\":{\"configDir\":{\"personal\":\"~/.config/gh-personal\",\"work\":\"~/.config/gh-work\"}}}"
+    for suffix in '' .personal .work; do
+      chezmoi execute-template --override-data "$override" \
+        --file "$repo_root/dot_gitconfig$suffix.tmpl" >"$fixture_home/.gitconfig$suffix"
+    done
+    expected=personal
+    [ "$owner" != work ] || expected=work
+    printf 'protocol=https\nhost=github.com\npath=example/repo.git\n\n' |
+      env HOME="$fixture_home" GIT_CONFIG_NOSYSTEM=0 GIT_CONFIG_SYSTEM="$tmp_dir/system" \
+        GIT_CONFIG_GLOBAL="$fixture_home/.gitconfig" GIT_TERMINAL_PROMPT=0 \
+        GH_TOKEN=fixture GITHUB_TOKEN=fixture EXPECTED_PROFILE="$fixture_home/.config/gh-$expected" \
+        PATH="$tmp_dir/bin:$PATH" \
+        git -C "$repo_root" credential fill | grep -qx 'username=fixture'
   done
-done
+  printf 'Linked worktree credential checks passed.\n'
+fi
 printf 'Git credential profile checks passed.\n'

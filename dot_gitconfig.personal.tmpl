@@ -17,11 +17,11 @@
 # Select this profile independently of earlier helpers and shell token overrides.
 [credential "https://github.com"]
     helper =
-    helper = !env -u GH_TOKEN -u GITHUB_TOKEN GH_CONFIG_DIR={{ $ghConfigPersonal }} gh auth git-credential
+    helper = !env -u GH_TOKEN -u GITHUB_TOKEN GH_CONFIG_DIR={{ $ghConfigPersonal | replace "~/" "${HOME}/" | quote | quote }} gh auth git-credential
 
 [credential "https://gist.github.com"]
     helper =
-    helper = !env -u GH_TOKEN -u GITHUB_TOKEN GH_CONFIG_DIR={{ $ghConfigPersonal }} gh auth git-credential
+    helper = !env -u GH_TOKEN -u GITHUB_TOKEN GH_CONFIG_DIR={{ $ghConfigPersonal | replace "~/" "${HOME}/" | quote | quote }} gh auth git-credential
 
 {{- if $personalIdentityFile }}
 [core]
