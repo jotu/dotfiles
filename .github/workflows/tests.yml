@@ -1,4 +1,4 @@
-name: Pi Skill Manager Tests
+name: Tests
 
 on:
   push:
@@ -10,11 +10,11 @@ permissions:
   contents: read
 
 jobs:
-  pi-skill-manager:
-    name: Validate Pi skill manager
+  test:
+    name: Run offline tests
     runs-on: ubuntu-latest
     env:
-      MISE_ENABLE_TOOLS: chezmoi,node
+      MISE_ENABLE_TOOLS: chezmoi,node,vale
 
     steps:
       - name: Checkout repository
@@ -27,14 +27,5 @@ jobs:
         with:
           version: 2026.10.8
 
-      - name: Test Pi skill manager
-        run: mise run test:pi:skills
-
-      - name: Test Pi smart-zone extension
-        run: mise run test:pi:smart-zone
-
-      - name: Test Pi safety gate
-        run: mise run test:pi:safety-gate
-
-      - name: Render all Chezmoi templates
-        run: mise run test:templates
+      - name: Run offline tests
+        run: mise run test

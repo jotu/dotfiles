@@ -1,0 +1,32 @@
+// Git hooks for this repository. Install them with `mise run hk:install`.
+// The hooks call the same Mise tasks as CI, so local and CI checks cannot drift.
+amends "package://github.com/jdx/hk/releases/download/v2.10.0/hk@2.10.0#/Config.pkl"
+
+hooks {
+  ["pre-commit"] {
+    steps {
+      ["templates"] {
+        glob = List("**/*.tmpl", ".chezmoitemplates/**")
+        check = "mise run test:templates"
+      }
+      ["data-keys"] {
+        glob = List("**/*.tmpl", ".chezmoitemplates/**", "docs/data-keys.md")
+        check = "mise run test:data-keys"
+      }
+      ["platform-layout"] {
+        glob = List(".chezmoiignore", "**/*.sh", "**/*.tmpl")
+        check = "mise run test:platform"
+      }
+    }
+  }
+  ["pre-push"] {
+    steps {
+      ["test"] {
+        check = "mise run test"
+      }
+      ["vale"] {
+        check = "mise run test:vale:changed"
+      }
+    }
+  }
+}

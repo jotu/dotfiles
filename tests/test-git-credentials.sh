@@ -42,7 +42,7 @@ for path_style in absolute home; do
     expected_root="$fixture_home/.config"
   fi
   for enabled in true false; do
-    override="{\"chezmoi\":{\"sourceDir\":\"$tmp_dir/dotfiles\"},\"work\":{\"enable\":$enabled,\"git\":{\"rootDir\":\"$tmp_dir/work-repos\"}},\"personal\":{\"git\":{\"rootDir\":\"$tmp_dir/personal-repos\"}},\"github\":{\"configDir\":{\"personal\":\"$config_root/gh-personal\",\"work\":\"$config_root/gh-work\"}}}"
+    override="{\"name\":\"Test User\",\"chezmoi\":{\"sourceDir\":\"$tmp_dir/dotfiles\"},\"work\":{\"enable\":$enabled,\"git\":{\"rootDir\":\"$tmp_dir/work-repos\",\"email\":\"work@example.com\",\"signingKey\":\"WORKKEY\"}},\"personal\":{\"git\":{\"rootDir\":\"$tmp_dir/personal-repos\",\"email\":\"me@example.com\",\"signingKey\":\"MYKEY\"}},\"github\":{\"configDir\":{\"personal\":\"$config_root/gh-personal\",\"work\":\"$config_root/gh-work\"}}}"
     for suffix in '' .personal .work; do
       chezmoi execute-template --override-data "$override" \
         --file "$repo_root/dot_gitconfig$suffix.tmpl" >"$fixture_home/.gitconfig$suffix"
@@ -78,7 +78,7 @@ if [ "$git_dir" != "$common_dir" ]; then
       work) work_root="$primary_root" ;;
       source) source_root="$primary_root" ;;
     esac
-    override="{\"chezmoi\":{\"sourceDir\":\"$source_root\"},\"work\":{\"enable\":true,\"git\":{\"rootDir\":\"$work_root\"}},\"personal\":{\"git\":{\"rootDir\":\"$personal_root\"}},\"github\":{\"configDir\":{\"personal\":\"~/.config/gh-personal\",\"work\":\"~/.config/gh-work\"}}}"
+    override="{\"name\":\"Test User\",\"chezmoi\":{\"sourceDir\":\"$source_root\"},\"work\":{\"enable\":true,\"git\":{\"rootDir\":\"$work_root\",\"email\":\"work@example.com\",\"signingKey\":\"WORKKEY\"}},\"personal\":{\"git\":{\"rootDir\":\"$personal_root\",\"email\":\"me@example.com\",\"signingKey\":\"MYKEY\"}},\"github\":{\"configDir\":{\"personal\":\"~/.config/gh-personal\",\"work\":\"~/.config/gh-work\"}}}"
     for suffix in '' .personal .work; do
       chezmoi execute-template --override-data "$override" \
         --file "$repo_root/dot_gitconfig$suffix.tmpl" >"$fixture_home/.gitconfig$suffix"

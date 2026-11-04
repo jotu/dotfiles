@@ -2,6 +2,8 @@
 chezmoi = "2.73.1"
 node = "22.22.2"
 vale = "3.26.0"
+hk = "2.10.0"
+pkl = "0.29.1"
 
 [tasks."test:platform"]
 description = "Validate platform-specific Chezmoi boundaries and shell syntax"
@@ -34,3 +36,28 @@ run = "bash tests/test-vale-new-findings.sh"
 [tasks."test:templates"]
 description = "Render every Chezmoi template for darwin and linux"
 run = "bash tests/test-all-templates-render.sh"
+
+[tasks."test:data-keys"]
+description = "Fail when a template reads a Chezmoi data key that docs/data-keys.md omits"
+run = "bash tests/test-data-keys.sh"
+
+[tasks."test:git-credentials"]
+description = "Verify Git credential profile routing and token isolation with fake credentials"
+run = "bash tests/test-git-credentials.sh"
+
+[tasks.test]
+description = "Run every offline test that CI runs (excludes the Vale diff against origin/main)"
+depends = [
+  "test:platform",
+  "test:templates",
+  "test:data-keys",
+  "test:git-credentials",
+  "test:pi:skills",
+  "test:pi:smart-zone",
+  "test:pi:safety-gate",
+  "test:vale:baseline",
+]
+
+[tasks."hk:install"]
+description = "Install the hk Git hooks for this checkout"
+run = "hk install"

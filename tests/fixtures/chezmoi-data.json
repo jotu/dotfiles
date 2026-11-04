@@ -1,0 +1,39 @@
+{
+  "name": "Test User",
+  "editor": "vim",
+  "github": {
+    "username": "test-user",
+    "personalUsername": "test-personal",
+    "workUsername": "test-work",
+    "host": "github.com",
+    "configDir": { "personal": "~/.config/gh-personal", "work": "~/.config/gh-work" },
+    "personal": { "gitProtocol": "ssh" },
+    "work": { "gitProtocol": "https" }
+  },
+  "personal": {
+    "git": {
+      "email": "me@example.com",
+      "signingKey": "FIXTURE-PERSONAL",
+      "username": "test-personal",
+      "rootDir": "~/personal"
+    },
+    "ssh": { "identityFile": "id_personal" }
+  },
+  "work": {
+    "enable": true,
+    "git": {
+      "email": "me@work.example.com",
+      "signingKey": "FIXTURE-WORK",
+      "username": "test-work",
+      "rootDir": "~/work"
+    },
+    "ssh": {
+      "organization": { "identityFile": "id_org" },
+      "user": { "identityFile": "id_user" }
+    },
+    "employee": { "code": "e123" },
+    "domain": { "name": "EXAMPLE.COM" },
+    "saml": { "auth": { "url": "https://sso.example.com" } },
+    "aws": { "profile": "test" }
+  }
+}

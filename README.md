@@ -30,6 +30,7 @@ mise run gh:auth:status:all
 | Pi plan mode, skills, subagents, safety model, Hunk review | [docs/pi.md](docs/pi.md) |
 | Herdr, TUIOS, Sofka, superfile, gh-dash, Zed, aliases | [docs/tools.md](docs/tools.md) |
 | Git identity, GitHub profiles, SSH and signing setup | [docs/git-identity.md](docs/git-identity.md) |
+| Every Chezmoi data key that templates read | [docs/data-keys.md](docs/data-keys.md) |
 | Atuin history migration (one-off runbook) | [docs/runbooks/atuin-history-migration.md](docs/runbooks/atuin-history-migration.md) |
 | Working agreement: Tidy First and CUPID | [docs/working-agreement-tidy-cupid.md](docs/working-agreement-tidy-cupid.md) |
 | Agent rules and repository conventions | [AGENTS.md](AGENTS.md), [GLOSSARY.md](GLOSSARY.md) |
@@ -43,14 +44,20 @@ Tool versions are pinned in `dot_config/mise/conf.d/00-base.toml.tmpl` and `mise
 
 ## Checks before committing
 
+Install the Git hooks once per checkout. They run the same Mise tasks as CI:
+
 ```bash
-mise run test:platform
-mise run test:platform:render
-mise run test:templates
+mise run hk:install
+```
+
+`pre-commit` renders the templates, checks the data-key docs, and checks the platform layout. `pre-push` runs the full offline suite and the Vale check. Run them manually with:
+
+```bash
+mise run test            # everything CI runs, except the Vale diff
 mise run test:vale:changed
 ```
 
-`test:platform:render` needs Chezmoi and yq. See [docs/platform-ownership.md](docs/platform-ownership.md) for what each check covers.
+The offline tests use fixture data from `tests/fixtures/chezmoi-data.json`, not your local Chezmoi config. `test:platform:render` still needs Chezmoi, yq, and configured local data. See [docs/platform-ownership.md](docs/platform-ownership.md) for what each check covers.
 
 ## Privacy boundary
 
