@@ -8,6 +8,7 @@ renovate.json
 
 mise.toml
 tests/
+docs/
 
 # Teaching workspace material stays in the source repository, not $HOME.
 MISSION.md
