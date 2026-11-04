@@ -20,25 +20,6 @@
     signingkey = {{ .personal.git.signingKey | quote }}
 {{- end }}
 
-{{- if .work.enable }}
-
-{{- if hasKey .work.git "rootDir" }}
-[includeIf "gitdir:{{ get .work.git "rootDir" }}/"]
-    path = ~/.gitconfig.work
-{{- end }}
-
-{{- if hasKey .personal.git "rootDir" }}
-
-[includeIf "gitdir:{{ get .personal.git "rootDir" }}/"]
-    path = ~/.gitconfig.personal
-
-{{- end }}
-
-[includeIf "gitdir:{{ .chezmoi.sourceDir }}/"]
-    path = ~/.gitconfig.personal
-
-{{- end }}
-
 [core]
     autocrlf = input
     symlinks = false
@@ -88,6 +69,20 @@
 
 [include]
     path = ~/.gitconfig.work-specific
+
+# Load repository profiles after defaults so their helpers and SSH keys win.
+{{- if hasKey .work.git "rootDir" }}
+[includeIf "gitdir:{{ get .work.git "rootDir" }}/"]
+    path = ~/.gitconfig.work
+{{- end }}
+
+{{- if hasKey .personal.git "rootDir" }}
+[includeIf "gitdir:{{ get .personal.git "rootDir" }}/"]
+    path = ~/.gitconfig.personal
+{{- end }}
+
+[includeIf "gitdir:{{ .chezmoi.sourceDir }}/"]
+    path = ~/.gitconfig.personal
 
 {{- end }}
 

@@ -3,6 +3,7 @@
 set -euo pipefail
 repo_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
 tmp_dir=$(mktemp -d)
+tmp_dir=$(cd "$tmp_dir" && pwd -P)
 trap 'rm -rf "$tmp_dir"' EXIT
 mkdir -p "$tmp_dir/bin"
 
@@ -47,6 +48,25 @@ for enabled in true false; do
         PATH="$tmp_dir/bin:$PATH" \
         git -C "$tmp_dir" "${args[@]}" credential fill >/dev/null
     done
+  done
+done
+# Exercise includeIf at its real position, not a command-line include appended last.
+mkdir -p "$tmp_dir/home" "$tmp_dir/personal-repos/example" "$tmp_dir/work-repos/example"
+for profile in personal work; do
+  git init --quiet "$tmp_dir/$profile-repos/example"
+done
+override="{\"work\":{\"enable\":true,\"git\":{\"rootDir\":\"$tmp_dir/work-repos\"}},\"personal\":{\"git\":{\"rootDir\":\"$tmp_dir/personal-repos\"}},\"github\":{\"configDir\":{\"personal\":\"$tmp_dir/personal\",\"work\":\"$tmp_dir/work\"}}}"
+for suffix in '' .personal .work; do
+  chezmoi execute-template --override-data "$override" \
+    --file "$repo_root/dot_gitconfig$suffix.tmpl" >"$tmp_dir/home/.gitconfig$suffix"
+done
+for profile in personal work; do
+  for host in github.com gist.github.com; do
+    printf 'protocol=https\nhost=%s\npath=example/repo.git\n\n' "$host" |
+      env HOME="$tmp_dir/home" GIT_CONFIG_NOSYSTEM=1 GIT_CONFIG_GLOBAL="$tmp_dir/home/.gitconfig" \
+        GIT_TERMINAL_PROMPT=0 GH_TOKEN=fixture GITHUB_TOKEN=fixture WORK_ENABLED=true \
+        EXPECTED_PROFILE="$tmp_dir/$profile" PATH="$tmp_dir/bin:$PATH" \
+        git -C "$tmp_dir/$profile-repos/example" credential fill >/dev/null
   done
 done
 printf 'Git credential profile checks passed.\n'
