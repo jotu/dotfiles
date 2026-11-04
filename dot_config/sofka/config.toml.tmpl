@@ -1,5 +1,5 @@
-# Safe starter profile: inspect Kubernetes resources without mutating them.
-readonly = true
+# Enable Kubernetes resource actions subject to the current context's permissions.
+readonly = false
 
 {{- if eq .chezmoi.os "darwin" }}
 [skin]

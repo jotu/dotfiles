@@ -64,7 +64,7 @@ Herdr preserves the workspace layout but does not automatically restart coding a
 
 ## Sofka Kubernetes TUI
 
-Sofka is installed through Mise from its GitHub release artifacts and configured at `~/.config/sofka/config.toml`. The starter profile sets `readonly = true`, disabling mutating actions for the whole session. On macOS it also keeps the Catppuccin Macchiato skin; on Omarchy/Linux it follows the tool's default look instead of forcing a separate theme. Use `sofka` alongside `k9s` for development and personal clusters; keep `k9s` for production until Sofka has signed/notarized artifacts, SBOMs, provenance attestations, compatibility documentation, and a longer production track record.
+Sofka is installed through Mise from its GitHub release artifacts and configured at `~/.config/sofka/config.toml`. The profile sets `readonly = false`, enabling mutating actions subject to the current Kubernetes context's permissions. On macOS it also keeps the Catppuccin Macchiato skin; on Omarchy/Linux it follows the tool's default look instead of forcing a separate theme. Use `sofka` alongside `k9s` for development and personal clusters; keep `k9s` for production until Sofka has signed/notarized artifacts, SBOMs, provenance attestations, compatibility documentation, and a longer production track record.
 
 ## superfile terminal file manager
 

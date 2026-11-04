@@ -102,6 +102,10 @@ for os in linux darwin; do
     grep -Fq 'tuios:completion:sync' "$completion_output"
   fi
 
+  sofka_output="$tmp_dir/$os-sofka.toml"
+  render "$os" dot_config/sofka/config.toml.tmpl "$sofka_output"
+  check_toml "$sofka_output" '.readonly == false' 'sofka allows mutating actions'
+
   tuios_output="$tmp_dir/$os-tuios.toml"
   render "$os" dot_config/tuios/config.toml.tmpl "$tuios_output"
   validate_toml "$tuios_output"
