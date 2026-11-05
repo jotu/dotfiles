@@ -13,7 +13,7 @@ Chezmoi manages this file. Edit `dot_pi/agent/AGENTS.md` and apply it with `chez
 - TUIOS owns `~/.pi/agent/extensions/tuios-agent-state.ts`; install or refresh it with `mise run tuios:pi:install`.
 - For TUIOS keybinding investigations, use `tuios keybinds list --json | jq '.[] | select(.action | test("split|tiling"))'` to inspect split and tiling actions.
 - Keep Herdr workspace configuration separate from Pi configuration.
-- Rex owns `~/.agents/skills/rex`; install or refresh it with `rex skill setup`. You are inside Rex only when `[ -n "$REX_SESSION" ]` is true; then follow `/skill:rex` and name the session after the first request that identifies the work. Otherwise skip Rex steps.
+- Rex owns `~/.agents/skills/rex`; install or refresh it with `rex skill setup`. You are inside Rex only when `[ -n "$REX_SESSION" ]` is true; then follow `/skill:rex` and name the session after the first request that identifies the work. Otherwise skip Rex steps. `dot_pi/agent/extensions/rex-agent-state.ts` reports Pi's working, blocked, and done states to Rex through OSC 7501.
 - Delegate with Pi's `subagent` tool and Herdr when available. Keep agents within their assigned workspaces. When a third-party skill calls for a generic `Skill` tool, follow its named Pi skill with `/skill:name`.
 
 ## Worktrunk task workflow
