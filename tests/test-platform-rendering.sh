@@ -90,6 +90,7 @@ for os in linux darwin; do
     check_toml "$base_output" '.bootstrap.packages."brew:curl" == "latest"' 'brew curl'
     check_toml "$base_output" '.bootstrap.packages."brew-cask:nikitabobko/tap/aerospace" == "latest"' 'aerospace cask'
     check_toml "$base_output" '.bootstrap.packages."brew-cask:signal" == "latest"' 'signal cask'
+    check_toml "$base_output" '.bootstrap.packages."brew-cask:discord" == "latest"' 'discord cask'
     check_toml "$base_output" '.tools.ruby == "3"' 'ruby 3'
   fi
 

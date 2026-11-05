@@ -130,6 +130,8 @@ contains dot_config/mise/conf.d/00-base.toml.tmpl '"aqua:ajeetdsouza/zoxide" = "
 contains dot_config/mise/conf.d/00-base.toml.tmpl 'ruby = "3"'
 contains dot_config/mise/conf.d/00-base.toml.tmpl '"brew-cask:nikitabobko/tap/aerospace" = "latest"'
 contains dot_config/mise/conf.d/00-base.toml.tmpl '"brew-cask:signal" = "latest"'
+contains dot_config/mise/conf.d/00-base.toml.tmpl '"brew-cask:discord" = "latest"'
+contains run_onchange_before_install-applications-omarchy.sh.tmpl 'omarchy pkg add discord'
 contains dot_config/mise/conf.d/00-base.toml.tmpl '"github:peteonrails/voxtype" = "latest"'
 contains dot_config/mise/conf.d/00-base.toml.tmpl '[tasks."voxtype:setup"]'
 contains dot_config/mise/conf.d/00-base.toml.tmpl 'voxtype setup --download --model small.en'
