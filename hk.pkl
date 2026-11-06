@@ -1,6 +1,6 @@
 // Git hooks for this repository. Install them with `mise run hk:install`.
 // The hooks call the same Mise tasks as CI, so local and CI checks cannot drift.
-amends "package://github.com/jdx/hk/releases/download/v2.10.0/hk@2.10.0#/Config.pkl"
+amends "package://github.com/jdx/hk/releases/download/v2.11.1/hk@2.11.1#/Config.pkl"
 
 hooks {
   ["pre-commit"] {
