@@ -1,0 +1,6 @@
+# Java development packages managed by Mise's Homebrew backends on macOS.
+{{- if eq .chezmoi.os "darwin" }}
+[bootstrap.packages]
+"brew-cask:temurin" = "latest"
+"brew:maven" = "latest"
+{{- end }}

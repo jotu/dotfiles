@@ -94,6 +94,16 @@ for os in linux darwin; do
     check_toml "$base_output" '.tools.ruby == "3"' 'ruby 3'
   fi
 
+  java_output="$tmp_dir/$os-java.toml"
+  render "$os" dot_config/mise/conf.d/00-java.toml.tmpl "$java_output"
+  validate_toml "$java_output"
+  if [[ "$os" == darwin ]]; then
+    check_toml "$java_output" '.bootstrap.packages."brew-cask:temurin" == "latest"' 'Adoptium Temurin JDK cask'
+    check_toml "$java_output" '.bootstrap.packages."brew:maven" == "latest"' 'Maven formula'
+  else
+    check_toml "$java_output" '(.bootstrap.packages // {} | length) == 0' 'no Java bootstrap packages on linux'
+  fi
+
   completion_output="$tmp_dir/$os-tuios-completion"
   render "$os" dot_config/zsh/completions/_tuios.tmpl "$completion_output"
   zsh -n "$completion_output"
