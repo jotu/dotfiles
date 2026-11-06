@@ -97,8 +97,9 @@ for os in linux darwin; do
   java_output="$tmp_dir/$os-java.toml"
   render "$os" dot_config/mise/conf.d/00-java.toml.tmpl "$java_output"
   validate_toml "$java_output"
+  check_toml "$java_output" '.tools.java == "temurin-25"' 'Mise-managed Temurin LTS JDK'
+  check_toml "$java_output" '.bootstrap.packages."brew-cask:temurin" == null' 'no Homebrew Temurin cask'
   if [[ "$os" == darwin ]]; then
-    check_toml "$java_output" '.bootstrap.packages."brew-cask:temurin" == "latest"' 'Adoptium Temurin JDK cask'
     check_toml "$java_output" '.bootstrap.packages."brew:maven" == "latest"' 'Maven formula'
   else
     check_toml "$java_output" '(.bootstrap.packages // {} | length) == 0' 'no Java bootstrap packages on linux'

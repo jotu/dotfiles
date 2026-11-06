@@ -1,6 +1,8 @@
-# Java development packages managed by Mise's Homebrew backends on macOS.
+# Mise manages the Temurin LTS JDK; Homebrew provides Maven on macOS.
+[tools]
+java = "temurin-25"
+
 {{- if eq .chezmoi.os "darwin" }}
 [bootstrap.packages]
-"brew-cask:temurin" = "latest"
 "brew:maven" = "latest"
 {{- end }}
