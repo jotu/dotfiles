@@ -96,14 +96,12 @@ mise exec -- mise bootstrap packages status
 mise exec -- mise bootstrap packages apply --dry-run
 mise exec -- mise bootstrap packages apply
 mise run omlx:install                  # personal profile only; builds from source
-mise run omlx:model:install            # default: qwen3-4b-4bit
-mise run omlx:model:install qwen3.6-35b-a3b-reap-4bit   # about 13 GB
-mise run omlx:model:install gemma-4-26b-reap-4bit       # about 11 GB
+mise run omlx:model:install            # qwen3-4b-4bit
 mise run omlx:start
 mise install
 ```
 
-Mise installs the declared macOS formulae and casks into `/opt/homebrew`. oMLX is intentionally excluded from that package bootstrap because Mise cannot yet evaluate its tap formula, so the personal-profile task `mise run omlx:install` installs it with Homebrew instead; work profiles and Linux do not get the task. Run it before the model and server tasks. The macOS-only Pi configuration registers the oMLX endpoint at `http://127.0.0.1:8000/v1` and makes the pinned Qwen3 4B, Gemma 4 REAP and Qwen3.6 REAP MLX models available through `/model`. See [oMLX and Mise](#omlx-and-mise) and [Local model: when to use it](pi.md#local-model-when-to-use-it).
+Mise installs the declared macOS formulae and casks into `/opt/homebrew`. oMLX is intentionally excluded from that package bootstrap because Mise cannot yet evaluate its tap formula, so the personal-profile task `mise run omlx:install` installs it with Homebrew instead; work profiles and Linux do not get the task. Run it before the model and server tasks. The macOS-only Pi configuration registers the oMLX endpoint at `http://127.0.0.1:8000/v1` and makes the pinned Qwen3 4B MLX model available through `/model`. See [oMLX and Mise](#omlx-and-mise) and [Local model: when to use it](pi.md#local-model-when-to-use-it).
 
 Keep the packages updated with Mise:
 

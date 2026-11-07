@@ -45,17 +45,13 @@ Use `/plan` to toggle read-only planning and `/todos` to show progress. Pi updat
 
 ## Local model: when to use it
 
-The macOS personal profile registers a local oMLX endpoint (`omlx` provider, `http://127.0.0.1:8000/v1`). Install the models with `mise run omlx:model:install [model]`, which pins a Hugging Face revision for each model, then start the server with `mise run omlx:start`. On the personal macOS profile all three models are in Pi's model scope, so select one with `/model` or cycle to it with Ctrl+P. Agents and sub-agents inherit the selected model; nothing pins a local model automatically.
+The macOS personal profile registers a local oMLX endpoint (`omlx` provider, `http://127.0.0.1:8000/v1`). Install the models with `mise run omlx:model:install [model]`, which pins a Hugging Face revision for each model, then start the server with `mise run omlx:start`. On the personal macOS profile the model is in Pi's model scope, so select it with `/model` or cycle to it with Ctrl+P. Agents and sub-agents inherit the selected model; nothing pins a local model automatically.
 
 | Model ID | Role | Disk | Context |
 |---|---|---|---|
-| `qwen3.6-35b-a3b-reap-4bit` | Candidate primary, pending benchmark | 13.2 GB | 32,768 configured (262,144 native) |
-| `gemma-4-26b-reap-4bit` | Alternative | 11.2 GB | 32,768 configured (262,144 native) |
 | `qwen3-4b-4bit` | Small default | 2.3 GB | 40,960 |
 
-`qwen3.6-35b-a3b-reap-4bit` is `mlx-community/Qwen3.6-35B-A3B-OptiQ-4bit-REAP-19B`: Apache 2.0, a mixture of experts with 8 of 128 experts active per token. Its model card reports MMLU 62.3, HumanEval 90.2, BFCL-V3 91.5 and a decode speed of 54.7 tokens per second on the card author's hardware, not this laptop. `gemma-4-26b-reap-4bit` is `mlx-community/gemma-4-26B-A4B-it-OptiQ-4bit-REAP-14B`: Apache 2.0, with BFCL-V3 90.0 but weaker MMLU (38.9) and HumanEval (72.0), so reserve it for short, well-specified tasks. These scores are the card authors' own. Nobody has measured either model on this laptop, so benchmark both with oMLX before you choose. The fallback is `mlx-community/Qwen3.5-9B-MLX-4bit` (Apache 2.0, 5.95 GB, dense, so slower); the install task does not include it.
-
-Memory limit: the laptop has 24 GB of unified memory and the GPU wires about 16 GB by default. Keep the model plus its KV cache under that figure, which leaves little headroom for the 13.2 GB Qwen3.6 model at long context and rules out the 15 GB class (`gemma-4-26b-a4b-it-4bit`, `Devstral-Small-2-24B`) once context grows. Run one model at a time. The configured context for the two REAP models of 32,768 tokens is a practical limit, not the model's limit.
+`qwen3-4b-4bit` is `mlx-community/Qwen3-4B-4bit`. The 12 GB Qwen3.6 35B REAP model did not fit under the dynamic memory ceiling that oMLX enforces (about 6 GB on this laptop) and returned HTTP 507, so the repository no longer ships it. Run one model at a time, and keep the model plus its KV cache under the ceiling. Raise `memory_guard_tier` in oMLX only if you add a larger model.
 
 Good fits:
 
@@ -70,7 +66,7 @@ Poor fits; use a hosted model instead:
 - Long agentic coding sessions.
 - Security-sensitive final judgments.
 
-Worktrunk's `[commit.generation]` runs `pi -p --model <provider/model>`, and Pi resolves `omlx/gemma-4-26b-reap-4bit` from `models.json`, so the local endpoint can generate commit messages. The Chezmoi template keeps a hosted model as the default. To try the local model, copy the command from `dot_config/worktrunk/config.toml.tmpl` and replace the `--model` value with `omlx/gemma-4-26b-reap-4bit` in a local override, not in this repository. The server must be running, and you should read the message before you commit.
+Worktrunk's `[commit.generation]` runs `pi -p --model <provider/model>`, and Pi resolves `omlx/qwen3-4b-4bit` from `models.json`, so the local endpoint can generate commit messages. The Chezmoi template keeps a hosted model as the default. To try the local model, copy the command from `dot_config/worktrunk/config.toml.tmpl` and replace the `--model` value with `omlx/qwen3-4b-4bit` in a local override, not in this repository. The server must be running, and you should read the message before you commit.
 
 ## Pi learning capture
 

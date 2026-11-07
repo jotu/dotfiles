@@ -376,8 +376,8 @@ run = '''
 
 {{- if eq .chezmoi.os "darwin" }}
 [tasks."omlx:model:install"]
-description = "Download a pinned MLX model for oMLX (qwen3-4b-4bit, gemma-4-26b-reap-4bit, or qwen3.6-35b-a3b-reap-4bit)"
-usage = 'arg "[model]" default="qwen3-4b-4bit" help="Model ID: qwen3-4b-4bit (default), gemma-4-26b-reap-4bit, or qwen3.6-35b-a3b-reap-4bit"'
+description = "Download a pinned MLX model for oMLX (qwen3-4b-4bit)"
+usage = 'arg "[model]" default="qwen3-4b-4bit" help="Model ID: qwen3-4b-4bit (default)"'
 run = '''
   set -eu
 
@@ -390,18 +390,8 @@ run = '''
       model_revision="4dcb3d101c2a062e5c1d4bb173588c54ea6c4d25"
       required_files="config.json model.safetensors tokenizer.json tokenizer_config.json vocab.json merges.txt"
       ;;
-    gemma-4-26b-reap-4bit)
-      model_repo="mlx-community/gemma-4-26B-A4B-it-OptiQ-4bit-REAP-14B"
-      model_revision="84c43d8c92e111ff081f618768e8aa5610f050f9"
-      required_files="config.json model.safetensors.index.json model-00001-of-00003.safetensors model-00002-of-00003.safetensors model-00003-of-00003.safetensors tokenizer.json tokenizer_config.json chat_template.jinja"
-      ;;
-    qwen3.6-35b-a3b-reap-4bit)
-      model_repo="mlx-community/Qwen3.6-35B-A3B-OptiQ-4bit-REAP-19B"
-      model_revision="4bbd5a4f7923c4fcf6064e25f628d9996d57da7d"
-      required_files="config.json model.safetensors.index.json model-00001-of-00003.safetensors model-00002-of-00003.safetensors model-00003-of-00003.safetensors tokenizer.json tokenizer_config.json chat_template.jinja"
-      ;;
     *)
-      echo "ERROR: unknown oMLX model '$model_id'; use qwen3-4b-4bit, gemma-4-26b-reap-4bit, or qwen3.6-35b-a3b-reap-4bit" >&2
+      echo "ERROR: unknown oMLX model '$model_id'; use qwen3-4b-4bit" >&2
       exit 1
       ;;
   esac

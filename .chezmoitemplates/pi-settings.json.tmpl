@@ -63,8 +63,6 @@
   "enabledModels": [
     "{{ $provider }}/{{ $model }}"
 {{- if and (not .work.enable) (eq .chezmoi.os "darwin") }},
-    "omlx/qwen3.6-35b-a3b-reap-4bit",
-    "omlx/gemma-4-26b-reap-4bit",
     "omlx/qwen3-4b-4bit"
 {{- end }}
   ],
