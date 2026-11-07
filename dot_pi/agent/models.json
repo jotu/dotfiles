@@ -10,6 +10,18 @@
           "name": "Qwen3 4B (local oMLX)",
           "contextWindow": 40960,
           "maxTokens": 8192
+        },
+        {
+          "id": "gemma-4-26b-reap-4bit",
+          "name": "Gemma 4 26B-A4B REAP (local oMLX)",
+          "contextWindow": 32768,
+          "maxTokens": 4096
+        },
+        {
+          "id": "qwen3.6-35b-a3b-reap-4bit",
+          "name": "Qwen3.6 35B-A3B REAP (local oMLX)",
+          "contextWindow": 32768,
+          "maxTokens": 4096
         }
       ]
     }

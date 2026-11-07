@@ -62,6 +62,11 @@
   "defaultThinkingLevel": "{{ $thinkingLevel }}",
   "enabledModels": [
     "{{ $provider }}/{{ $model }}"
+{{- if and (not .work.enable) (eq .chezmoi.os "darwin") }},
+    "omlx/qwen3.6-35b-a3b-reap-4bit",
+    "omlx/gemma-4-26b-reap-4bit",
+    "omlx/qwen3-4b-4bit"
+{{- end }}
   ],
   "skills": {{/* Pi discovers ~/.agents/skills too. Exclude native copies only when the shared copy exists. */}}{{ toPrettyJson $skillExclusions | trimSuffix "\n" | replace "\n" "\n  " }},
   "theme": "{{ if eq .chezmoi.os "linux" }}omarchy-system{{ else }}catppuccin-macchiato{{ end }}",

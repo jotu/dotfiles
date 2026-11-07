@@ -95,12 +95,15 @@ mise install ruby
 mise exec -- mise bootstrap packages status
 mise exec -- mise bootstrap packages apply --dry-run
 mise exec -- mise bootstrap packages apply
-mise run omlx:model:install
+mise run omlx:install                  # personal profile only; builds from source
+mise run omlx:model:install            # default: qwen3-4b-4bit
+mise run omlx:model:install qwen3.6-35b-a3b-reap-4bit   # about 13 GB
+mise run omlx:model:install gemma-4-26b-reap-4bit       # about 11 GB
 mise run omlx:start
 mise install
 ```
 
-Mise installs the declared macOS formulae and casks into `/opt/homebrew`. oMLX is intentionally excluded from that package bootstrap because older Mise releases cannot evaluate its tap formula; the existing oMLX installation remains available to the model and server tasks above. The macOS-only Pi configuration registers the oMLX endpoint at `http://127.0.0.1:8000/v1` and makes the pinned Qwen3 4B MLX model available through `/model`. See [oMLX and older Mise releases](#omlx-and-older-mise-releases).
+Mise installs the declared macOS formulae and casks into `/opt/homebrew`. oMLX is intentionally excluded from that package bootstrap because Mise cannot yet evaluate its tap formula, so the personal-profile task `mise run omlx:install` installs it with Homebrew instead; work profiles and Linux do not get the task. Run it before the model and server tasks. The macOS-only Pi configuration registers the oMLX endpoint at `http://127.0.0.1:8000/v1` and makes the pinned Qwen3 4B, Gemma 4 REAP and Qwen3.6 REAP MLX models available through `/model`. See [oMLX and Mise](#omlx-and-mise) and [Local model: when to use it](pi.md#local-model-when-to-use-it).
 
 Keep the packages updated with Mise:
 
@@ -111,11 +114,11 @@ mise up
 
 The macOS profile keeps its existing mise-managed host tools; Linux support uses platform-specific templates and ignores.
 
-## oMLX and older Mise releases
+## oMLX and Mise
 
-The oMLX tap formula uses Homebrew's `MacOS.version` API. Older Mise releases, including `2026.9.12`, do not expose that API while evaluating third-party tap formulae, so package bootstrap can fail with `uninitialized constant Omlx::MacOS`. The accompanying API metadata `404` is expected for this tap; it is not the root cause.
+The oMLX tap formula uses Homebrew's `MacOS.version` API. Mise does not expose that API while evaluating third-party tap formulae. On Mise `2026.9.12` and again on `2026.11.2`, `mise bootstrap packages apply --dry-run` with the `jundot/omlx` tap and `brew:jundot/omlx/omlx` declared fails with `uninitialized constant Omlx::MacOS` (`Formula/omlx.rb:23`). The accompanying API metadata `404` is expected for this tap; it is not the root cause.
 
-The oMLX tap and package declaration are disabled in the repository until a compatible Mise release is available. Do not add them back to the bootstrap configuration without first verifying that Mise can evaluate the formula.
+The oMLX tap and package declaration stay out of `[bootstrap.packages]`. The `omlx:install` task runs `brew tap jundot/omlx` and `brew install jundot/omlx/omlx`, pinning the tap to a commit; the formula pins its release tarball by SHA-256. It never runs automatically, and `mise upgrade` does not update oMLX. To upgrade, review the new formula, change `tap_commit` in the task, run `chezmoi apply`, then run `mise run omlx:install` and `brew upgrade omlx`. Do not move the install into `[bootstrap.packages]` without first verifying that a newer Mise release evaluates the formula.
 
 ## Post-apply checks
 

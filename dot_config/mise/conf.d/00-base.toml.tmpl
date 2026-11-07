@@ -376,17 +376,40 @@ run = '''
 
 {{- if eq .chezmoi.os "darwin" }}
 [tasks."omlx:model:install"]
-description = "Download the pinned Qwen3 MLX model for oMLX"
+description = "Download a pinned MLX model for oMLX (qwen3-4b-4bit, gemma-4-26b-reap-4bit, or qwen3.6-35b-a3b-reap-4bit)"
+usage = 'arg "[model]" default="qwen3-4b-4bit" help="Model ID: qwen3-4b-4bit (default), gemma-4-26b-reap-4bit, or qwen3.6-35b-a3b-reap-4bit"'
 run = '''
   set -eu
 
-  model_id="qwen3-4b-4bit"
-  model_revision="4dcb3d101c2a062e5c1d4bb173588c54ea6c4d25"
+  # Each model pins a Hugging Face repository, an immutable revision, and the
+  # files that must exist before the download counts as complete.
+  model_id="${usage_model:-qwen3-4b-4bit}"
+  case "$model_id" in
+    qwen3-4b-4bit)
+      model_repo="mlx-community/Qwen3-4B-4bit"
+      model_revision="4dcb3d101c2a062e5c1d4bb173588c54ea6c4d25"
+      required_files="config.json model.safetensors tokenizer.json tokenizer_config.json vocab.json merges.txt"
+      ;;
+    gemma-4-26b-reap-4bit)
+      model_repo="mlx-community/gemma-4-26B-A4B-it-OptiQ-4bit-REAP-14B"
+      model_revision="84c43d8c92e111ff081f618768e8aa5610f050f9"
+      required_files="config.json model.safetensors.index.json model-00001-of-00003.safetensors model-00002-of-00003.safetensors model-00003-of-00003.safetensors tokenizer.json tokenizer_config.json chat_template.jinja"
+      ;;
+    qwen3.6-35b-a3b-reap-4bit)
+      model_repo="mlx-community/Qwen3.6-35B-A3B-OptiQ-4bit-REAP-19B"
+      model_revision="4bbd5a4f7923c4fcf6064e25f628d9996d57da7d"
+      required_files="config.json model.safetensors.index.json model-00001-of-00003.safetensors model-00002-of-00003.safetensors model-00003-of-00003.safetensors tokenizer.json tokenizer_config.json chat_template.jinja"
+      ;;
+    *)
+      echo "ERROR: unknown oMLX model '$model_id'; use qwen3-4b-4bit, gemma-4-26b-reap-4bit, or qwen3.6-35b-a3b-reap-4bit" >&2
+      exit 1
+      ;;
+  esac
   model_dir="$HOME/.omlx/models/$model_id"
   revision_file="$model_dir/.omlx-revision"
 
   model_complete=true
-  for required_file in config.json model.safetensors tokenizer.json tokenizer_config.json vocab.json merges.txt; do
+  for required_file in $required_files; do
     if [ ! -f "$model_dir/$required_file" ]; then
       model_complete=false
       break
@@ -410,11 +433,47 @@ run = '''
   fi
 
   mkdir -p "$model_dir"
-  "$hf" download "mlx-community/Qwen3-4B-4bit" \
+  "$hf" download "$model_repo" \
     --revision "$model_revision" \
     --local-dir "$model_dir"
   printf '%s\n' "$model_revision" > "$revision_file"
 '''
+
+{{- if not .work.enable }}
+[tasks."omlx:install"]
+description = "Install oMLX with Homebrew from a pinned tap commit"
+run = '''
+  set -eu
+
+  # Mise cannot evaluate the oMLX tap formula (see docs/bootstrap.md), so call
+  # Homebrew directly. The tap is pinned to a commit and the formula pins its
+  # release tarball by SHA-256. Review the formula before advancing the pin.
+  tap="jundot/omlx"
+  tap_commit="2165e75726ba83d9651dbaced61c97728da77bba"
+
+  if ! command -v brew >/dev/null 2>&1; then
+    echo "ERROR: Homebrew is not installed" >&2
+    exit 1
+  fi
+
+  # Keep the pinned tap checkout; edit the pin instead of running brew update.
+  export HOMEBREW_NO_AUTO_UPDATE=1
+
+  if ! brew tap | grep -qx "$tap"; then
+    brew tap "$tap" https://github.com/jundot/omlx
+  fi
+
+  tap_dir="$(brew --repository "$tap")"
+  if [ "$(git -C "$tap_dir" rev-parse HEAD)" != "$tap_commit" ]; then
+    git -C "$tap_dir" fetch --quiet origin "$tap_commit"
+    git -C "$tap_dir" checkout --quiet "$tap_commit"
+  fi
+
+  if ! brew list --formula omlx >/dev/null 2>&1; then
+    brew install "$tap/omlx"
+  fi
+'''
+{{- end }}
 
 [tasks."omlx:start"]
 description = "Start the local oMLX OpenAI-compatible server"
@@ -422,7 +481,7 @@ run = '''
   set -eu
 
   if ! command -v omlx >/dev/null 2>&1; then
-    echo "ERROR: oMLX is not installed; run: mise bootstrap packages apply" >&2
+    echo "ERROR: oMLX is not installed; run: mise run omlx:install" >&2
     exit 1
   fi
 
@@ -461,8 +520,9 @@ postinstall = [
 "nikitabobko/tap" = "https://github.com/nikitabobko/homebrew-tap.git"
 
 [bootstrap.packages]
-# oMLX is intentionally not managed here: older Mise releases cannot evaluate
-# its tap formula. Keep the existing installation available to the tasks above.
+# oMLX is intentionally not managed here: Mise 2026.11.2 still cannot evaluate
+# its tap formula. Run `mise run omlx:install` on personal profiles instead;
+# see docs/bootstrap.md.
 "brew:curl" = "latest"
 "brew:git" = "latest"
 "brew:gnupg" = "latest"

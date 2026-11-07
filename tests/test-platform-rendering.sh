@@ -178,6 +178,35 @@ for work_enabled in true false; do
   check_json "$settings_output" "([.packages[].source] | contains([\"npm:pi-chatgpt-limit@0.3.1\"])) == $work_enabled" 'chatgpt-limit follows work.enable'
 done
 
+# Personal macOS profiles can select the local oMLX models; no other profile can.
+for profile in "darwin false" "darwin true" "linux false"; do
+  set -- $profile
+  settings_output="$tmp_dir/settings-$1-$2.json"
+  chezmoi execute-template \
+    --override-data "{\"chezmoi\":{\"os\":\"$1\",\"arch\":\"arm64\"},\"work\":{\"enable\":$2}}" \
+    --file "$repo_root/.chezmoitemplates/pi-settings.json.tmpl" >"$settings_output"
+  validate_json "$settings_output"
+  expected_local=false
+  [[ "$1 $2" == "darwin false" ]] && expected_local=true
+  check_json "$settings_output" "([.enabledModels[] | select(test(\"^omlx/\"))] | length > 0) == $expected_local" "local models scoped for $1 work=$2"
+done
+
+# The oMLX install task exists only on personal macOS profiles.
+for profile in "darwin false" "darwin true" "linux false"; do
+  set -- $profile
+  base_output="$tmp_dir/base-omlx-$1-$2.toml"
+  chezmoi execute-template \
+    --override-data "{\"chezmoi\":{\"os\":\"$1\",\"arch\":\"arm64\"},\"work\":{\"enable\":$2,\"git\":{}},\"personal\":{\"git\":{}}}" \
+    --file "$repo_root/dot_config/mise/conf.d/00-base.toml.tmpl" >"$base_output"
+  expected_task=false
+  [[ "$1 $2" == "darwin false" ]] && expected_task=true
+  check_toml "$base_output" "(.tasks | has(\"omlx:install\")) == $expected_task" "omlx:install task for $1 work=$2"
+  if [[ "$expected_task" == true ]]; then
+    yq -p toml -r '.tasks."omlx:install".run' "$base_output" >"$tmp_dir/omlx-install.sh"
+    bash -n "$tmp_dir/omlx-install.sh" || fail "omlx:install script syntax"
+  fi
+done
+
 # The settings modify template must keep Pi-owned keys and let managed keys win.
 modify_template="$repo_root/dot_pi/agent/modify_settings.json"
 modify_data='{"chezmoi":{"os":"linux","arch":"arm64"},"work":{"enable":false}}'
