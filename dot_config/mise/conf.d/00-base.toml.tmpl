@@ -483,6 +483,19 @@ run = '''
   omlx start
 '''
 
+[tasks."omlx:restart"]
+description = "Restart the managed oMLX server to reload settings and models"
+run = '''
+  set -eu
+
+  if ! command -v omlx >/dev/null 2>&1; then
+    echo "ERROR: oMLX is not installed; run: mise run omlx:install" >&2
+    exit 1
+  fi
+
+  omlx restart
+'''
+
 [tasks."voxtype:setup"]
 description = "Download the managed Voxtype speech model"
 run = '''

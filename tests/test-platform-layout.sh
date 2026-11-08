@@ -107,6 +107,7 @@ not_contains dot_config/mise/conf.d/00-base.toml.tmpl '"jundot/omlx" = "https://
 not_contains dot_config/mise/conf.d/00-base.toml.tmpl '"brew:jundot/omlx/omlx" = "latest"'
 contains dot_config/mise/conf.d/00-base.toml.tmpl '[tasks."omlx:model:install"]'
 contains dot_config/mise/conf.d/00-base.toml.tmpl '[tasks."omlx:start"]'
+contains dot_config/mise/conf.d/00-base.toml.tmpl '[tasks."omlx:restart"]'
 contains dot_config/mise/conf.d/00-base.toml.tmpl 'model_repo="mlx-community/Qwen3-14B-4bit"'
 contains dot_config/mise/conf.d/00-base.toml.tmpl 'model_repo="mlx-community/Qwen3-4B-4bit"'
 contains dot_config/mise/conf.d/00-base.toml.tmpl 'model_revision="a4d9b2df59d2c150bef02fcbe0d91046b7ca33a4"'

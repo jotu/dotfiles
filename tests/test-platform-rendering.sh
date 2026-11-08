@@ -70,6 +70,7 @@ for os in linux darwin; do
   if [[ "$os" == linux ]]; then
     check_toml "$base_output" '(.tasks | has("omlx:model:install")) == false' 'no omlx install on linux'
     check_toml "$base_output" '(.tasks | has("omlx:start")) == false' 'no omlx start on linux'
+    check_toml "$base_output" '(.tasks | has("omlx:restart")) == false' 'no omlx restart on linux'
     check_toml "$base_output" '(.bootstrap.packages // {} | length) == 0' 'no bootstrap packages on linux'
     for tool in gh hunk herdr github:max-sixty/worktrunk aqua:ajeetdsouza/zoxide npm:@openai/codex npm:@earendil-works/pi-coding-agent; do
       check_toml "$base_output" ".tools.\"$tool\" == null" "linux must not install $tool"
@@ -77,6 +78,7 @@ for os in linux darwin; do
   else
     check_toml "$base_output" '(.tasks | has("omlx:model:install"))' 'omlx install on darwin'
     check_toml "$base_output" '(.tasks | has("omlx:start"))' 'omlx start on darwin'
+    check_toml "$base_output" '(.tasks | has("omlx:restart"))' 'omlx restart on darwin'
     for tool in aqua:cli/cli hunk herdr github:max-sixty/worktrunk aqua:ajeetdsouza/zoxide; do
       check_toml "$base_output" ".tools.\"$tool\" != null" "darwin installs $tool"
     done

@@ -45,7 +45,7 @@ Use `/plan` to toggle read-only planning and `/todos` to show progress. Pi updat
 
 ## Local model: when to use it
 
-The macOS personal profile registers a local oMLX endpoint (`omlx` provider, `http://127.0.0.1:8000/v1`). Install the models with `mise run omlx:model:install [model]`, which pins a Hugging Face revision for each model, then start the server with `mise run omlx:start`. On the personal macOS profile the model is in Pi's model scope, so select it with `/model` or cycle to it with Ctrl+P. Agents and sub-agents inherit the selected model; nothing pins a local model automatically.
+The macOS personal profile registers a local oMLX endpoint (`omlx` provider, `http://127.0.0.1:8000/v1`). Install the models with `mise run omlx:model:install [model]`, which pins a Hugging Face revision for each model, then start the server with `mise run omlx:start`. After changing models or oMLX settings, run `mise run omlx:restart`. On the personal macOS profile the model is in Pi's model scope, so select it with `/model` or cycle to it with Ctrl+P. Agents and sub-agents inherit the selected model; nothing pins a local model automatically.
 
 | Model ID | Role | Disk | Context |
 |---|---|---|---|
