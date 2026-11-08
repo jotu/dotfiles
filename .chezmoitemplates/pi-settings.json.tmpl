@@ -17,21 +17,34 @@
   "grilling"
   "handoff"
   "implement"
+  "implement-spec"
   "improve-codebase-architecture"
+  "prototype"
+  "research"
+  "retro"
   "setup-matt-pocock-skills"
   "tdd"
   "teach"
+  "to-questionnaire"
+  "to-spec"
   "to-tickets"
   "triage"
   "wait-what"
   "wayfinder"
   "wizard"
+  "writing-for-agents"
 -}}
+{{- if not .work.enable -}}
+  {{- $sharedSkills = append $sharedSkills "pr" -}}
+{{- end -}}
 {{- $skillExclusions := list -}}
 {{- range $skill := $sharedSkills -}}
   {{- if stat (joinPath $.chezmoi.homeDir ".agents" "skills" $skill "SKILL.md") -}}
     {{- $skillExclusions = append $skillExclusions (printf "-%s" (joinPath $.chezmoi.homeDir ".pi" "agent" "skills" $skill)) -}}
   {{- end -}}
+{{- end -}}
+{{- if and .work.enable (stat (joinPath .chezmoi.homeDir ".pi" "agent" "skills" "pr" "SKILL.md")) -}}
+  {{- $skillExclusions = append $skillExclusions (printf "-%s" (joinPath .chezmoi.homeDir ".agents" "skills" "pr")) -}}
 {{- end -}}
 {
   "packages": [

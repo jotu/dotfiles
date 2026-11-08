@@ -42,15 +42,23 @@ const sharedSkills = [
   "grilling",
   "handoff",
   "implement",
+  "implement-spec",
   "improve-codebase-architecture",
+  "pr",
+  "prototype",
+  "research",
+  "retro",
   "setup-matt-pocock-skills",
   "tdd",
   "teach",
+  "to-questionnaire",
+  "to-spec",
   "to-tickets",
   "triage",
   "wait-what",
   "wayfinder",
   "wizard",
+  "writing-for-agents",
 ];
 const templatePath = path.join(repoRoot, ".chezmoitemplates/pi-settings.json.tmpl");
 const sharedHome = path.join(tmpDir, "shared-home");
@@ -84,7 +92,16 @@ assert.deepEqual(darwinSettings.npmCommand, ["mise", "exec", `node@${nodePin}`, 
 const expected = sharedSkills.map((name) => `-${sharedHome}/.pi/agent/skills/${name}`);
 const missing = expected.filter((entry) => !sharedSettings.skills?.includes(entry));
 assert.deepEqual(missing, [], "shared skills must exclude their native Pi copies");
+const workPr = path.join(sharedHome, ".pi/agent/skills/pr/SKILL.md");
+fs.mkdirSync(path.dirname(workPr), { recursive: true });
+fs.writeFileSync(workPr, "work fixture\n");
 const workSettings = renderSettings(sharedHome, true);
+assert.ok(workSettings.skills.includes(`-${sharedHome}/.agents/skills/pr`),
+  "work Pi PR skill must take precedence over a shared PR skill");
+assert.ok(!workSettings.skills.includes(`-${sharedHome}/.pi/agent/skills/pr`),
+  "work profile must preserve its own Pi PR skill");
+assert.deepEqual(expected.filter((entry) => !entry.endsWith("/pr") && !workSettings.skills.includes(entry)), [],
+  "work profile must exclude other shared Matt skills");
 const packageSources = (settings) => settings.packages?.map(({ source }) => source);
 assert.deepEqual(packageSources(sharedSettings), [
   "npm:pi-copilot-usage@1.0.0",
@@ -153,7 +170,7 @@ grep -Fq ' pr ' "$tmp_dir/skills.log"
 run_reconcile "$work_script" '[]'
 test "$(grep -c ' add ' "$tmp_dir/skills.log")" = 1
 grep -Fq ' --agent pi --global --yes' "$tmp_dir/skills.log"
-! grep -Fq ' pr ' "$tmp_dir/skills.log"
+test "$(grep -c ' pr ' "$tmp_dir/skills.log" || true)" = 0
 
 : >"$tmp_dir/skills.log"
 run_reconcile "$personal_script" '[{"name":"node","version":"22.0.0"}]'
@@ -165,13 +182,31 @@ grep -Fq 'ask-matt' "$tmp_dir/skills.log"
 
 : >"$tmp_dir/skills.log"
 FAKE_SKILLS_JSON='[{"name":"ask-matt","source":"another/repository"}]' run_reconcile "$personal_script" '[]'
-grep -Fq 'ask-matt' "$tmp_dir/skills.log"
+test "$(grep -c 'ask-matt' "$tmp_dir/skills.log" || true)" = 0
 test "$(grep -c ' update ' "$tmp_dir/skills.log" || true)" = 0
+
+: >"$tmp_dir/skills.log"
+FAKE_SKILLS_JSON='[{"name":"ask-matt","source":"mattpocock/skills","sourceUrl":"https://github.com/other/skills"}]' run_reconcile "$personal_script" '[{"name":"node"}]'
+test "$(grep -c 'ask-matt' "$tmp_dir/skills.log" || true)" = 0
+
+: >"$tmp_dir/skills.log"
+FAKE_SKILLS_JSON='[{"name":"ask-matt","source":"mattpocock/skills"},{"name":"ask-matt","source":"another/repository"}]' run_reconcile "$personal_script" '[]'
+test "$(grep -c 'ask-matt' "$tmp_dir/skills.log" || true)" = 0
+
+mkdir -p "$tmp_dir/home/.agents/skills/ask-matt"
+: >"$tmp_dir/skills.log"
+FAKE_SKILLS_JSON='[{"name":"other","source":"another/repository"}]' run_reconcile "$personal_script" '[]'
+test "$(grep -c 'ask-matt' "$tmp_dir/skills.log" || true)" = 0
+rmdir "$tmp_dir/home/.agents/skills/ask-matt"
 
 : >"$tmp_dir/skills.log"
 run_update "$personal_script"
 test "$(grep -c ' add ' "$tmp_dir/skills.log")" = 1
 test "$(grep -c ' update ' "$tmp_dir/skills.log" || true)" = 0
 grep -Fq ' add https://github.com/mattpocock/skills/tree/49dd158d1076134a641b33efb035946536778336 --skill ask-matt --agent pi --global --yes' "$tmp_dir/skills.log"
+
+: >"$tmp_dir/skills.log"
+FAKE_SKILLS_JSON='[{"name":"pr","source":"mattpocock/skills"}]' run_update "$work_script"
+test "$(grep -c ' pr ' "$tmp_dir/skills.log" || true)" = 0
 
 printf 'Pi skill reconciliation checks passed.\n'
