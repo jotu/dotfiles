@@ -7,7 +7,7 @@ set -euo pipefail
 # Advance this immutable upstream ref only after reviewing its skill changes.
 matt_skills_ref='49dd158d1076134a641b33efb035946536778336'
 source_repo="https://github.com/mattpocock/skills/tree/$matt_skills_ref"
-skills_cli=(npx --yes skills@1.7.0)
+skills_cli=(npx --yes skills@1.7.6)
 skills_dir="$HOME/.pi/agent/skills"
 managed_matt_skills=''
 

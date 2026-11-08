@@ -284,11 +284,11 @@ run = '''
   fi
 
   installed_version=$(NO_COLOR=1 gh extension list 2>/dev/null | awk '$1 == "gh" && $2 == "dash" && $3 == "dlvhdr/gh-dash" { print $4; exit }')
-  if [ "$installed_version" = "v4.25.2" ]; then
+  if [ "$installed_version" = "v4.26.2" ]; then
     exit 0
   fi
 
-  if ! gh extension install dlvhdr/gh-dash --pin v4.25.2 --force; then
+  if ! gh extension install dlvhdr/gh-dash --pin v4.26.2 --force; then
     echo "WARNING: gh-dash was not installed; log in to the active gh profile and run mise run ghdi" >&2
   fi
 '''
@@ -303,7 +303,7 @@ run = '''
     exit 0
   fi
 
-  if ! gh extension install dlvhdr/gh-enhance --pin v0.7.0 --force; then
+  if ! gh extension install dlvhdr/gh-enhance --pin v0.8.1 --force; then
     echo "WARNING: gh-enhance was not installed; log in to the active gh profile and run mise run gh:enhance:install" >&2
   fi
 '''

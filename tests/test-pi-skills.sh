@@ -67,6 +67,20 @@ const renderSettings = (home, workEnabled = false) => JSON.parse(execFileSync("c
   templatePath,
 ], { encoding: "utf8" }));
 const sharedSettings = renderSettings(sharedHome);
+const darwinSettings = JSON.parse(execFileSync("chezmoi", [
+  "execute-template",
+  "--override-data",
+  JSON.stringify({ work: { enable: false }, chezmoi: { homeDir: sharedHome, os: "darwin" } }),
+  "--file",
+  templatePath,
+], { encoding: "utf8" }));
+const nodePin = fs.readFileSync(path.join(repoRoot, "mise.toml"), "utf8").match(/^node\s*=\s*"([^"]+)"/m)?.[1];
+assert.ok(nodePin, "repository Node version must be pinned");
+const globalMise = fs.readFileSync(path.join(repoRoot, "dot_config/mise/conf.d/00-base.toml.tmpl"), "utf8");
+const globalNodePin = globalMise.match(/^node\s*=\s*"([^"]+)"/m)?.[1];
+assert.equal(globalNodePin, nodePin, "global and repository Node pins must match");
+assert.deepEqual(darwinSettings.npmCommand, ["mise", "exec", `node@${nodePin}`, "--", "npm"],
+  "Pi's macOS npm command must use the repository's pinned Node version");
 const expected = sharedSkills.map((name) => `-${sharedHome}/.pi/agent/skills/${name}`);
 const missing = expected.filter((entry) => !sharedSettings.skills?.includes(entry));
 assert.deepEqual(missing, [], "shared skills must exclude their native Pi copies");
