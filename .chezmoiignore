@@ -24,6 +24,11 @@ reference/
 # This script is repository tooling, not a home-directory target.
 bootstrap
 
+{{- if or (ne .chezmoi.os "darwin") .work.enable }}
+# oMLX runs only on personal macOS profiles.
+.omlx/
+{{- end }}
+
 {{- if ne .chezmoi.os "darwin" }}
 # macOS-only targets and tasks.
 .pi/agent/models.json

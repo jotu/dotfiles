@@ -52,7 +52,7 @@ The macOS personal profile registers a local oMLX endpoint (`omlx` provider, `ht
 | `qwen3-14b-4bit` | Default | about 8.3 GB | 40,960 |
 | `qwen3-4b-4bit` | Small and fast | 2.3 GB | 40,960 |
 
-`qwen3-14b-4bit` is `mlx-community/Qwen3-14B-4bit`; `qwen3-4b-4bit` is `mlx-community/Qwen3-4B-4bit`. The 14B model is larger than the default oMLX memory ceiling described below, so raise `memory_guard_tier` in oMLX before using it on a 24 GB laptop. The 12 GB Qwen3.6 35B REAP model did not fit under the dynamic memory ceiling that oMLX enforces (about 6 GB on this laptop) and returned HTTP 507, so the repository no longer ships it. Run one model at a time, and keep the model plus its KV cache under the ceiling. Raise `memory_guard_tier` in oMLX only if you add a larger model.
+`qwen3-14b-4bit` is `mlx-community/Qwen3-14B-4bit`; `qwen3-4b-4bit` is `mlx-community/Qwen3-4B-4bit`. The 14B model is larger than the default oMLX memory ceiling described below, so Chezmoi sets `memory_guard_tier` to `aggressive` in `~/.omlx/settings.json` (`dot_omlx/modify_settings.json`). It patches only that key and keeps the rest of oMLX's own settings. Restart oMLX after applying. The 12 GB Qwen3.6 35B REAP model did not fit under the dynamic memory ceiling that oMLX enforces (about 6 GB on this laptop) and returned HTTP 507, so the repository no longer ships it. Run one model at a time, and keep the model plus its KV cache under the ceiling. Raise `memory_guard_tier` in oMLX only if you add a larger model.
 
 Good fits:
 
