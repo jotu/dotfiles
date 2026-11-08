@@ -376,22 +376,27 @@ run = '''
 
 {{- if eq .chezmoi.os "darwin" }}
 [tasks."omlx:model:install"]
-description = "Download a pinned MLX model for oMLX (qwen3-4b-4bit)"
-usage = 'arg "[model]" default="qwen3-4b-4bit" help="Model ID: qwen3-4b-4bit (default)"'
+description = "Download a pinned MLX model for oMLX (qwen3-14b-4bit)"
+usage = 'arg "[model]" default="qwen3-14b-4bit" help="Model ID: qwen3-14b-4bit (default) or qwen3-4b-4bit"'
 run = '''
   set -eu
 
   # Each model pins a Hugging Face repository, an immutable revision, and the
   # files that must exist before the download counts as complete.
-  model_id="${usage_model:-qwen3-4b-4bit}"
+  model_id="${usage_model:-qwen3-14b-4bit}"
   case "$model_id" in
+    qwen3-14b-4bit)
+      model_repo="mlx-community/Qwen3-14B-4bit"
+      model_revision="a4d9b2df59d2c150bef02fcbe0d91046b7ca33a4"
+      required_files="config.json model.safetensors.index.json model-00001-of-00002.safetensors model-00002-of-00002.safetensors tokenizer.json tokenizer_config.json vocab.json merges.txt"
+      ;;
     qwen3-4b-4bit)
       model_repo="mlx-community/Qwen3-4B-4bit"
       model_revision="4dcb3d101c2a062e5c1d4bb173588c54ea6c4d25"
       required_files="config.json model.safetensors tokenizer.json tokenizer_config.json vocab.json merges.txt"
       ;;
     *)
-      echo "ERROR: unknown oMLX model '$model_id'; use qwen3-4b-4bit" >&2
+      echo "ERROR: unknown oMLX model '$model_id'; use qwen3-14b-4bit or qwen3-4b-4bit" >&2
       exit 1
       ;;
   esac
