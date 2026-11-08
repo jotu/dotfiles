@@ -173,7 +173,8 @@ for work_enabled in true false; do
     check_json "$settings_output" '.enabledModels[0] == "openai-codex/gpt-6.1-terra" and (.enabledModels | length) == 1' 'work model scope'
   else
     check_json "$settings_output" '.defaultProvider == "github-copilot"' 'personal provider'
-    check_json "$settings_output" '.defaultModel == "claude-sonnet-5.5"' 'personal model'
+    check_json "$settings_output" '.defaultModel == "gpt-6.1-terra"' 'personal model'
+    check_json "$settings_output" '.enabledModels | contains(["github-copilot/gpt-6.1-terra", "github-copilot/claude-sonnet-5.5"])' 'personal model scope keeps sonnet'
     check_json "$settings_output" '.defaultThinkingLevel == "medium"' 'personal thinking level'
   fi
   check_json "$settings_output" '[.packages[].source] | contains(["npm:pi-mcp-adapter@3.2.0"])' 'mcp adapter'

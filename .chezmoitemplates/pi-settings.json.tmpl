@@ -1,5 +1,5 @@
 {{- $provider := "github-copilot" -}}
-{{- $model := "claude-sonnet-5.5" -}}
+{{- $model := "gpt-6.1-terra" -}}
 {{- $thinkingLevel := "medium" -}}
 {{- if .work.enable -}}
   {{- $provider = "openai-codex" -}}
@@ -62,6 +62,9 @@
   "defaultThinkingLevel": "{{ $thinkingLevel }}",
   "enabledModels": [
     "{{ $provider }}/{{ $model }}"
+{{- if not .work.enable }},
+    "github-copilot/claude-sonnet-5.5"
+{{- end }}
 {{- if and (not .work.enable) (eq .chezmoi.os "darwin") }},
     "omlx/qwen3-14b-4bit",
     "omlx/qwen3-4b-4bit"
