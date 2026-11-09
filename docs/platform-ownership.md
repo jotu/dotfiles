@@ -54,8 +54,6 @@ mise exec -- mise bootstrap packages upgrade
 mise up
 ```
 
-On macOS, the Darwin mise configuration installs Voxtype and manages `~/.config/voxtype/config.toml`. After `mise install`, it downloads the `small.en` model. Grant Microphone, Accessibility, and Input Monitoring permissions, then start a new `zsh` session. The macOS Zsh template starts the daemon with its built-in hotkey disabled. Press Control+§ once to start dictation and again to stop; AeroSpace runs `mise exec -- voxtype record toggle`. AeroSpace calls this key `sectionSign`, available on ISO keyboards.
-
 ## Project-specific Mise versions
 
 Use project-local `mise.toml` or `.mise.toml` files when a project needs a particular runtime version:

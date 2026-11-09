@@ -35,7 +35,6 @@ check_toml() { check_expr toml "$@"; }
 check_json() { check_expr json "$@"; }
 
 toml_sources=(
-  dot_config/voxtype/config.toml.tmpl
   dot_config/mise/conf.d/00-base.toml.tmpl
   dot_config/herdr/config.toml.tmpl
   dot_config/hunk/config.toml.tmpl

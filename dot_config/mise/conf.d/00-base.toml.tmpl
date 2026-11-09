@@ -72,18 +72,12 @@ run = '''
   set -eu
 
 {{- if eq .chezmoi.os "darwin" }}
-  for command_name in mise aerospace voxtype omlx; do
+  for command_name in mise aerospace omlx; do
     if ! command -v "$command_name" >/dev/null 2>&1; then
       echo "ERROR: $command_name not found in PATH"
       exit 1
     fi
   done
-
-  if ! voxtype setup check >/dev/null 2>&1; then
-    echo "ERROR: Voxtype system check failed"
-    echo "Run: voxtype setup check"
-    exit 1
-  fi
 {{- end }}
 
   expand_path() {
@@ -495,18 +489,6 @@ run = '''
 
   omlx restart
 '''
-
-[tasks."voxtype:setup"]
-description = "Download the managed Voxtype speech model"
-run = '''
-  set -eu
-
-  if command -v voxtype >/dev/null 2>&1; then
-    voxtype setup --download --model small.en
-  else
-    echo "Skipping Voxtype setup: voxtype is not installed" >&2
-  fi
-'''
 {{- end }}
 
 [hooks]
@@ -516,9 +498,6 @@ postinstall = [
   { task = "pi:matt:skills:install" },
   { task = "tuios:pi:install" },
   { task = "tuios:completion:sync" },
-{{- if eq .chezmoi.os "darwin" }}
-  { task = "voxtype:setup" },
-{{- end }}
 ]
 
 {{- if eq .chezmoi.os "darwin" }}
@@ -607,7 +586,6 @@ vale = "latest"
 {{- if eq .chezmoi.os "darwin" }}
 # Pin the Worktrunk CLI version reviewed with the managed Pi activity extension.
 "github:max-sixty/worktrunk" = "0.81.0"
-"github:peteonrails/voxtype" = "latest"
 fd = "latest"
 "aqua:cli/cli" = "latest"
 # Pin the Herdr version whose Pi agent-state extension was reviewed (`herdr:pi:install`).
