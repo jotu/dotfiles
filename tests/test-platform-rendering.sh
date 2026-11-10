@@ -49,6 +49,24 @@ json_sources=(
   dot_pi/agent/models.json
 )
 
+for work_enabled in true false; do
+  base_output="$tmp_dir/base-work-$work_enabled.toml"
+  chezmoi execute-template \
+    --override-data "{\"chezmoi\":{\"os\":\"linux\",\"arch\":\"arm64\"},\"work\":{\"enable\":$work_enabled}}" \
+    --file "$repo_root/dot_config/mise/conf.d/00-base.toml.tmpl" >"$base_output"
+  check_toml "$base_output" "(.tasks | has(\"we:skills:update\")) == $work_enabled" 'we task follows work profile'
+  check_toml "$base_output" "([.hooks.postinstall[] | select(.task == \"we:skills:update\")] | length > 0) == $work_enabled" 'we hook follows work profile'
+  if [[ "$work_enabled" == true ]]; then
+    yq -p toml -oy '.tasks."we:skills:update".run' "$base_output" >"$tmp_dir/we-task"
+    PATH=/usr/bin:/bin bash "$tmp_dir/we-task"
+    mkdir -p "$tmp_dir/bin"
+    printf '#!/bin/sh\nprintf "%%s\\n" "$*" > "$WE_TEST_OUTPUT"\n' >"$tmp_dir/bin/we"
+    chmod +x "$tmp_dir/bin/we"
+    WE_TEST_OUTPUT="$tmp_dir/we-args" PATH="$tmp_dir/bin:/usr/bin:/bin" bash "$tmp_dir/we-task"
+    [[ "$(<"$tmp_dir/we-args")" == 'skills update' ]] || fail 'we receives skills update'
+  fi
+done
+
 for os in linux darwin; do
   zsh_output="$tmp_dir/$os.zshrc"
   render "$os" dot_zshrc.tmpl "$zsh_output"

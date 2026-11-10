@@ -327,6 +327,18 @@ run = "bash \"$HOME/.config/mise/scripts/manage-matt-pi-skills\" install"
 description = "Update installed stable Matt Pocock skills in the shared catalog"
 run = "bash \"$HOME/.config/mise/scripts/manage-matt-pi-skills\" update"
 
+{{- if .work.enable }}
+[tasks."we:skills:update"]
+description = "Update work skills when we is installed"
+run = '''
+  if command -v we >/dev/null 2>&1; then
+    we skills update
+  else
+    echo "Skipping work skills update: we is not installed" >&2
+  fi
+'''
+{{- end }}
+
 [tasks."pi:addy:skills:remove"]
 description = "Remove verified Addy skills from this Pi installation"
 run = "bash \"$HOME/.config/mise/scripts/manage-addy-pi-skills\" remove"
@@ -496,6 +508,9 @@ postinstall = [
   { task = "gh:dash:install" },
   { task = "gh:enhance:install" },
   { task = "pi:matt:skills:install" },
+{{- if .work.enable }}
+  { task = "we:skills:update" },
+{{- end }}
   { task = "tuios:pi:install" },
   { task = "tuios:completion:sync" },
 ]
