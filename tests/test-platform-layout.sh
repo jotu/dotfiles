@@ -214,6 +214,10 @@ not_contains dot_pi/agent/AGENTS.md 'Joyful'
 not_contains dot_pi/agent/prompts/review.md.tmpl 'joyful'
 not_contains README.md 'Joyful'
 contains dot_pi/agent/prompts/review.md.tmpl '/skill:code-review'
+contains dot_pi/agent/prompts/review.md.tmpl '/skill:go-code-review'
+contains dot_pi/agent/AGENTS.md '/skill:go-code-review'
+contains dot_pi/agent/skills/go-code-review/SKILL.md 'name: go-code-review'
+contains dot_pi/agent/skills/go-code-review/SKILL.md 'Standards and Spec'
 contains dot_pi/agent/AGENTS.md 'Default to the Matt workflow'
 for skill in api-and-interface-design frontend-ui-engineering observability-and-instrumentation security-and-hardening browser-testing-with-devtools ci-cd-and-automation code-simplification deprecation-and-migration documentation-and-adrs doubt-driven-development performance-optimization shipping-and-launch source-driven-development; do
   not_contains dot_pi/agent/skills/using-agent-skills/SKILL.md "$skill"

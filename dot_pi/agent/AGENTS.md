@@ -40,6 +40,7 @@ Chezmoi manages this file. Edit `dot_pi/agent/AGENTS.md` and apply it with `chez
 - For multi-slice work, clarify material ambiguity, then outline one goal, dependencies, and a completion check for each slice. Plan the smallest slice; finish, verify, and review it before starting the next. If a blocker or new scope appears, plan again rather than expanding silently.
 - For small, self-contained work, inspect relevant files and callers, make the requested change, run the closest check, and review it; skip the issue tree.
 - Use `/plan` for unfamiliar, multi-step work. Default to the Matt workflow: clarify uncertain domain decisions with `/skill:grill-with-docs`, keep small tasks lightweight, and use `/skill:implement` for code changes; it coordinates TDD and review where appropriate. Use `/skill:tdd` for a focused test-first loop and `/skill:code-review` for review-only work. Use `to-spec` and `to-tickets` only when the repository already uses that tracker workflow. Invoke supporting skills and specialist agents only when needed; choose one primary skill per phase.
+- For Go code reviews, use `/skill:go-code-review` as a companion to the primary review workflow; pass its lens to delegated reviewers.
 - After successful verification and review, create one focused atomic Conventional Commit unless I opt out.
 - Follow the Worktrunk task workflow below for branch bases, PR history, local integration, and cleanup.
 

@@ -3,10 +3,11 @@ description: Review current changes with Hunk and add actionable inline comments
 argument-hint: "[scope or review focus]"
 ---
 
-Load both skills before reviewing:
+Load the applicable skills before reviewing:
 
 1. Load the Hunk review skill and use it for the live review session.
 2. Load Matt's `/skill:code-review` skill and use its Standards and Spec axes as the review method, scoped to the active Hunk changes. If no originating spec is available, state that and do not invent one.
+3. If the active changes include Go code, load `/skill:go-code-review` as a companion lens and pass it to delegated reviewers.
 
 Hunk is the live review surface and local comment store. Matt's code-review
 skill defines what to look for; this prompt defines how to communicate findings.
