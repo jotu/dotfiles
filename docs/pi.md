@@ -45,6 +45,18 @@ Pi discovers both `~/.pi/agent/skills` and the shared `~/.agents/skills` catalog
 
 Use `/plan` to toggle read-only planning and `/todos` to show progress. Pi updates resync the extensions through the managed sync task.
 
+## Rex integration
+
+Chezmoi manages `~/.config/rex/init.lua` as a comments-only baseline, so Rex keeps its default shortcuts and behavior. Applying it can replace an existing config: run `chezmoi diff ~/.config/rex/init.lua` and preserve any customizations first. Rex uses `$XDG_CONFIG_HOME/rex/init.lua` when set, or `REX_CONFIG` when set in the server's environment; this baseline targets only the default path. After applying changes, run `rex config check` and `rex config reload` on the server host. The check uses the CLI's environment, which can differ from the server's.
+
+Run `rex skill setup --agent pi` to install Rex's skill, and `rex skill status` to check it. Start a new Pi session after setup. Rex owns the shared skill and updates its guide with the Rex CLI.
+
+Pi 1.5.2 reports program status to Rex directly using OSC 7501: working, blocked, done, error, and idle after cancellation. Fresh setups need Pi 1.5.2 or another version with native OSC 7501 support for these indicators. Upgrade older Pi installations through the platform's Pi provider. Pi detects protocol support automatically; `PI_PROGRAM_STATUS=1` forces native reporting and `PI_PROGRAM_STATUS=0` disables native reporting. Check the full terminal path before forcing reporting. See [Rex's program status protocol](https://www.superlogical.com/rex/docs/build/program-status.md).
+
+The former Chezmoi-managed `~/.pi/agent/extensions/rex-agent-state.ts` duplicates Pi's reporting. Removing its source does not remove an installed copy; the old extension reports cancellation as done and ignores `PI_PROGRAM_STATUS`. Check `pi --version` and keep the extension on older installations until upgrading Pi. Before removing it, start a separate Pi session in Rex with `pi --no-extensions --no-session`. From another Rex pane, use `rex block ls --json` to find the test pane's ID, then run `rex block call -b <block-id> program_status` and check for an idle record with `app` set to `pi`. The test session has no extension-provided safety gate; exit it without running a task.
+
+Inspect the installed extension and any local changes; Chezmoi does not delete it automatically. To remove the old managed extension, run `rm -i ~/.pi/agent/extensions/rex-agent-state.ts`, then restart Pi. Preserve customized copies until you have reviewed them.
+
 ## Local model: when to use it
 
 The macOS personal profile registers a local oMLX endpoint (`omlx` provider, `http://127.0.0.1:8000/v1`). Install the models with `mise run omlx:model:install [model]`, which pins a Hugging Face revision for each model, then start the server with `mise run omlx:start`. After changing models or oMLX settings, run `mise run omlx:restart`. On the personal macOS profile the model is in Pi's model scope, so select it with `/model` or cycle to it with Ctrl+P. Agents and sub-agents inherit the selected model; nothing pins a local model automatically.

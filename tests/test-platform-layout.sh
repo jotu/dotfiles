@@ -206,6 +206,19 @@ contains dot_config/mise/conf.d/00-base.toml.tmpl '[tasks."pi:addy:skills:remove
 contains dot_config/mise/conf.d/00-base.toml.tmpl 'pi:addy:skills:remove'
 not_contains dot_config/mise/conf.d/00-base.toml.tmpl 'pi:addy:skills:install'
 not_contains dot_config/mise/conf.d/00-base.toml.tmpl 'pi:addy:skills:update'
+# Rex defaults remain unchanged until the user adds a specific customization.
+[ -f "$repo_root/dot_config/rex/init.lua" ] || fail 'missing Rex Lua configuration'
+if grep -Evq '^[[:space:]]*(--.*)?$' "$repo_root/dot_config/rex/init.lua" ||
+  grep -Eq '^[[:space:]]*--\[' "$repo_root/dot_config/rex/init.lua"; then
+  fail 'Rex baseline should contain only line comments and blank lines'
+fi
+# Rex status is built into current Pi; leave old installed copies for explicit review.
+absent dot_pi/agent/extensions/rex-agent-state.ts
+not_contains .chezmoiremove '.pi/agent/extensions/rex-agent-state.ts'
+not_contains dot_pi/agent/AGENTS.md 'rex-agent-state.ts'
+contains docs/pi.md 'rex skill status'
+contains docs/pi.md 'PI_PROGRAM_STATUS'
+contains docs/pi.md 'rex-agent-state.ts'
 absent dot_pi/agent/extensions/joyful-workflow.ts
 for skill in joyful-code-review joyful-implementation joyful-planning joyful-principles joyful-verification joyful-workflow; do
   absent "dot_pi/agent/skills/$skill"

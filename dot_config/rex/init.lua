@@ -1,0 +1,4 @@
+-- Rex server configuration managed by Chezmoi.
+-- Keep Rex's built-in shortcuts and behavior until a customization is needed.
+-- Validate with: rex config check ~/.config/rex/init.lua
+-- Reload on the server host with: rex config reload
