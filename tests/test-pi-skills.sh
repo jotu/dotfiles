@@ -209,4 +209,28 @@ grep -Fq ' add https://github.com/mattpocock/skills/tree/49dd158d1076134a641b33e
 FAKE_SKILLS_JSON='[{"name":"pr","source":"mattpocock/skills"}]' run_update "$work_script"
 test "$(grep -c ' pr ' "$tmp_dir/skills.log" || true)" = 0
 
+socratic_script="$repo_root/dot_config/mise/scripts/executable_manage-socratic-tutor-skill"
+socratic_run() {
+  FAKE_LOG="$tmp_dir/skills.log" PATH="$tmp_dir/bin:$PATH" HOME="$tmp_dir/home" \
+    FAKE_SKILLS_JSON="${FAKE_SKILLS_JSON:-[]}" MISE_INSTALLED_TOOLS="${MISE_INSTALLED_TOOLS:-[]}" \
+    bash "$socratic_script" "$1"
+}
+: >"$tmp_dir/skills.log"
+socratic_run install
+grep -Fq ' add https://github.com/janestreet/agent_skills/tree/469868f4489cbdbe178c775a0af05bb6bef63689 --skill socratic-tutor --agent pi --global --yes' "$tmp_dir/skills.log"
+: >"$tmp_dir/skills.log"
+FAKE_SKILLS_JSON='[{"name":"socratic-tutor","source":"janestreet/agent_skills"}]' socratic_run install
+test ! -s "$tmp_dir/skills.log"
+FAKE_SKILLS_JSON='[{"name":"socratic-tutor","source":"janestreet/agent_skills"}]' MISE_INSTALLED_TOOLS='[{"name":"node"}]' socratic_run install
+test -s "$tmp_dir/skills.log"
+: >"$tmp_dir/skills.log"
+FAKE_SKILLS_JSON='[{"name":"socratic-tutor","source":"janestreet/agent_skills"}]' socratic_run update
+test -s "$tmp_dir/skills.log"
+: >"$tmp_dir/skills.log"
+FAKE_SKILLS_JSON='[{"name":"socratic-tutor","source":"janestreet/agent_skills","sourceUrl":"https://github.com/other/skills"}]' socratic_run install
+test ! -s "$tmp_dir/skills.log"
+mkdir -p "$tmp_dir/home/.agents/skills/socratic-tutor"
+socratic_run install
+test ! -s "$tmp_dir/skills.log"
+
 printf 'Pi skill reconciliation checks passed.\n'

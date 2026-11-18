@@ -1,0 +1,61 @@
+#!/usr/bin/env bash
+# Reconcile the pinned Jane Street Socratic tutor in the shared Pi skill catalog.
+set -euo pipefail
+: "${HOME:?HOME is required}"
+
+# Review upstream changes before advancing this immutable reference.
+ref=469868f4489cbdbe178c775a0af05bb6bef63689
+source_repo="https://github.com/janestreet/agent_skills/tree/$ref"
+cli=(npx --yes skills@1.7.6)
+skill=socratic-tutor
+
+if ! command -v pi >/dev/null 2>&1; then
+  printf 'Skipping Socratic tutor: pi is not installed.\n' >&2
+  exit 0
+fi
+command -v npx >/dev/null 2>&1 || { echo 'ERROR: npx is required' >&2; exit 1; }
+command -v node >/dev/null 2>&1 || { echo 'ERROR: node is required' >&2; exit 1; }
+if ! json=$("${cli[@]}" list --global --agent pi --json 2>/dev/null); then
+  echo 'ERROR: unable to inspect globally installed Pi skills' >&2
+  exit 1
+fi
+if ! state=$(printf '%s' "$json" | node -e '
+  const fs = require("fs");
+  const skills = JSON.parse(fs.readFileSync(0, "utf8"));
+  if (!Array.isArray(skills)) throw new Error("Expected a skills array");
+  const matches = skills.filter(s => s && s.name === "socratic-tutor");
+  function valid(value) {
+    if (value === "janestreet/agent_skills") return true;
+    try {
+      const u = new URL(value);
+      return u.protocol === "https:" && u.hostname === "github.com" &&
+        /^\/janestreet\/agent_skills(?:\.git|\/tree\/[0-9a-f]{40})?\/?$/i.test(u.pathname);
+    } catch { return false; }
+  }
+  console.log(matches.length === 0 ? "missing" : matches.every(s => {
+    const sources = [s.source, s.sourceUrl].filter(Boolean);
+    return sources.length > 0 && sources.every(valid);
+  }) ? "installed" : "conflict");
+'); then
+  echo 'ERROR: unable to parse globally installed Pi skills' >&2
+  exit 1
+fi
+if [ "$state" = missing ] && { [ -e "$HOME/.agents/skills/$skill" ] || [ -L "$HOME/.agents/skills/$skill" ]; }; then
+  state=conflict
+fi
+case "${1:-}" in
+  check) printf '%-35s %s\n' "$skill" "$state" ;;
+  install)
+    if [ "$state" = missing ] || { [ "$state" = installed ] && [ "${MISE_INSTALLED_TOOLS:-[]}" != '[]' ]; }; then
+      "${cli[@]}" add "$source_repo" --skill "$skill" --agent pi --global --yes
+    else
+      printf 'Keeping or skipping %s: %s\n' "$skill" "$state"
+    fi ;;
+  update)
+    if [ "$state" = installed ]; then
+      "${cli[@]}" add "$source_repo" --skill "$skill" --agent pi --global --yes
+    else
+      printf 'Skipping missing or unverified %s: %s\n' "$skill" "$state"
+    fi ;;
+  *) printf 'Usage: %s {check|install|update}\n' "$0" >&2; exit 2 ;;
+esac

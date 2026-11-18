@@ -327,6 +327,26 @@ run = "bash \"$HOME/.config/mise/scripts/manage-matt-pi-skills\" install"
 description = "Update installed stable Matt Pocock skills in the shared catalog"
 run = "bash \"$HOME/.config/mise/scripts/manage-matt-pi-skills\" update"
 
+[tasks."pi:socratic-tutor:check"]
+description = "Check the shared Jane Street Socratic tutor skill"
+run = "bash \"$HOME/.config/mise/scripts/manage-socratic-tutor-skill\" check"
+
+[tasks."pi:socratic-tutor:install"]
+description = "Install or reconcile the shared Socratic tutor skill"
+run = "bash \"$HOME/.config/mise/scripts/manage-socratic-tutor-skill\" install"
+
+[tasks."pi:socratic-tutor:update"]
+description = "Refresh the shared Socratic tutor skill"
+run = "bash \"$HOME/.config/mise/scripts/manage-socratic-tutor-skill\" update"
+
+[tasks."pi:shared-skills:install"]
+hide = true
+description = "Reconcile shared skills sequentially"
+run = '''
+  mise run pi:matt:skills:install
+  mise run pi:socratic-tutor:install
+'''
+
 {{- if .work.enable }}
 [tasks."we:skills:update"]
 description = "Update work skills when we is installed"
@@ -507,7 +527,7 @@ run = '''
 postinstall = [
   { task = "gh:dash:install" },
   { task = "gh:enhance:install" },
-  { task = "pi:matt:skills:install" },
+  { task = "pi:shared-skills:install" },
 {{- if .work.enable }}
   { task = "we:skills:update" },
 {{- end }}
