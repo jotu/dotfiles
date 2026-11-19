@@ -173,7 +173,14 @@ type ShellScope = { command: string; cwd: string; sessionCwd: string };
 type Rule = { pattern: RegExp; reason: string; category: SafetyCategory; unless?: (segment: string, scope: ShellScope) => boolean; whole?: true };
 
 const git = String.raw`\bgit(?:\s+-[Cc]\s+\S+)*\s+`;
-const localKubeContext = /--(?:kube-)?context(?:=|\s+)(?:kind-|k3d-|minikube\b|docker-desktop\b|rancher-desktop\b)/i;
+const localKubeContext = /--(?:kube-)?context(?:=|\s+)(?:kind-[^\s]+|k3d-[^\s]+|minikube|docker-desktop|rancher-desktop)(?=\s|$)/i;
+
+// These Helm commands operate locally, except dependency builds/updates may download charts.
+// Explicit context or server-side template options retain the remote access gate.
+function isLocalHelmCommand(segment: string): boolean {
+	return /^(?:\/[^\s]*\/)?helm\s+(?:plugin\s+list|unittest|lint|template|dependency\s+(?:build|update))(?:\s|$)/i.test(segment)
+		&& !/--(?:kube-context|kube-apiserver|validate)(?:=|\s|$)|--dry-run(?:=|\s+)server\b/i.test(segment);
+}
 const loopback = /(?:localhost|127\.\d{1,3}\.\d{1,3}\.\d{1,3}|\[?::1\]?)(?::\d+)?(?=[/\s"']|$)/i;
 const lockfileInstall = /\b(?:npm\s+ci|(?:pnpm|bun)\s+install\s+--frozen-lockfile|yarn\s+install\s+--immutable|uv\s+sync\s+--frozen)\b/i;
 const recursiveDelete = /\brm\s(?:.*\s)?(?:-[A-Za-z]*[rRf]|--recursive|--force)\b/i;
@@ -233,7 +240,12 @@ const rules: Rule[] = [
 	{ pattern: /\b(?:npx|bunx|uvx|pipx\s+run|pnpm\s+dlx|yarn\s+dlx|bun\s+x|npm\s+(?:exec|x)|uv\s+tool\s+run)\b/i, reason: "running tools from an external package registry", category: "destructive_action" },
 	// remote
 	{ pattern: /\b(?:ssh|scp|sftp)\b|\brsync\b.*\S+@\S+:/i, reason: "connecting to a remote server", category: "remote_access" },
-	{ pattern: /\b(?:kubectl|helm|oc|k9s|flux|argocd|kargo|stern)\b/i, reason: "connecting to a Kubernetes control plane", category: "remote_access", unless: (segment) => localKubeContext.test(segment) },
+	{
+		pattern: /(?:^|\s)(?:\/[^\s]*\/)?(?:kubectl|helm|oc|k9s|sofka|softka|flux|argocd|kargo|stern)(?=\s|$)|^(?:k|k9|s9)(?=\s|$)/i,
+		reason: "connecting to a Kubernetes control plane",
+		category: "remote_access",
+		unless: (segment) => localKubeContext.test(segment) || isLocalHelmCommand(segment),
+	},
 	{ pattern: /\b(?:aws|aws-vault|gcloud|az)\b/i, reason: "accessing a remote cloud service", category: "remote_access", unless: (segment) => /--endpoint-url(?:=|\s+)https?:\/\//i.test(segment) && loopback.test(segment) },
 	{ pattern: /\bterraform\s+(?!fmt\b|validate\b|version\b|help\b|-help\b)\w/i, reason: "accessing or changing remote infrastructure state", category: "remote_access" },
 	{

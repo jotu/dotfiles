@@ -85,6 +85,23 @@ test("everyday read, build, test, and compound commands are allowed", () => {
 	}
 });
 
+test("Kubernetes prompts distinguish local Helm inspection and command names from paths", () => {
+	for (const command of [
+		"helm plugin list",
+		"helm unittest charts/app",
+		"helm lint charts/app",
+		"helm template app charts/app",
+		"helm dependency build charts/app",
+		"helm dependency update charts/app",
+		"tar -xOf /tmp/helm/chart.tgz grafana/templates/_pod.tpl | rg -n -A25 extraVolumes; helm plugin list",
+	]) assert.deepEqual(bash(command), { action: "allow" }, command);
+	for (const command of ["kubectl get pods", "k get pods", "k9s", "k9", "sofka", "s9", "helm list", "helm install app chart", "helm --kube-context production upgrade app chart", "helm template app chart --validate", "helm template app chart --dry-run=server", "helm dependency build chart --kube-context production", "kubectl --context minikube-production get pods", "env FOO=1 kubectl get pods"]) {
+		const result = bash(command);
+		assert.equal(result.action, "confirm", command);
+		assert.equal(result.reason, "connecting to a Kubernetes control plane", command);
+	}
+});
+
 test("allowed actions do not emit safety events", async () => {
 	const handlers = new Map();
 	const emitted = [];
