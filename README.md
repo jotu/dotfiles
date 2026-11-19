@@ -27,7 +27,7 @@ mise run gh:auth:status:all
 | --- | --- |
 | Set up a new machine and verify it | [docs/bootstrap.md](docs/bootstrap.md) |
 | Platform ownership, Worktrunk, Mise conventions, machine data | [docs/platform-ownership.md](docs/platform-ownership.md) |
-| Pi plan mode, skills, subagents, safety model, Hunk review | [docs/pi.md](docs/pi.md) |
+| Pi skills, subagents, safety model, Hunk review | [docs/pi.md](docs/pi.md) |
 | Herdr, TUIOS, Sofka, superfile, gh-dash, Zed, aliases | [docs/tools.md](docs/tools.md) |
 | Git identity, GitHub profiles, SSH and signing setup | [docs/git-identity.md](docs/git-identity.md) |
 | Every Chezmoi data key that templates read | [docs/data-keys.md](docs/data-keys.md) |

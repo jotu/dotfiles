@@ -2,14 +2,13 @@
 
 Pi configuration, skills, subagents, and safety. Chezmoi manages these files on both platforms.
 
-## Pi plan mode
+## Pi setup and subagents
 
-Pi is provided by Omarchy on Linux and by Mise on macOS. The repository manages Pi configuration on both platforms. Omarchy-owned Pi tooling is not replaced on Linux, but the managed task still syncs the bundled read-only plan-mode extension from the installed Pi package:
+Pi is provided by Omarchy on Linux and by Mise on macOS. The repository manages Pi configuration on both platforms. Omarchy-owned Pi tooling is not replaced on Linux, but the managed task syncs the bundled subagent extension from the installed Pi package:
 
 ```bash
 chezmoi apply                        # installs the sync hook
 mise install                          # installs managed tools and syncs Pi add-ons when available
-mise run pi:plan-mode:sync              # sync plan mode from the installed Pi package
 mise run pi:subagent:sync              # sync Pi's bundled sub-agent extension
 mise run pi:matt:skills:check          # show the selected stable Matt skills
 mise run pi:matt:skills:install        # install missing or update existing stable Matt skills
@@ -27,7 +26,7 @@ Because `herdr:pi:install` and `tuios:pi:install` write code into Pi, mise pins 
 
 The Chezmoi-managed `dot_pi/agent/extensions/smart-zone.ts` shows Pi's active context usage in a widget above the editor in both personal and work profiles. It labels usage below 125,000 tokens `SMART ZONE`, from 125,000 through 150,000 `FOCUS DRIFT`, and above 150,000 `REFOCUS`, with a `/compact` or `/new` nudge. These heuristic thresholds do not represent model context limits; Matt Pocock describes a gradual decline that commonly starts around 125,000–150,000 tokens on frontier models ([Smart zone](https://www.aihero.dev/ai-coding-dictionary/smart-zone)). The widget shows pending usage when Pi has no estimate, including after compaction, and does not compact automatically. Provider-quota packages remain conditional on `.work.enable`. Run `mise run test:pi:smart-zone` to verify its thresholds and session updates.
 
-mise syncs Pi's bundled sub-agent extension from the installed Pi package. The managed user agents (`scout`, `planner`, `reviewer`, and `worker`) use inherited models so they work with the active provider. The read-only `security-auditor`, `test-engineer`, and `web-performance-auditor` agents provide optional specialist perspectives; invoke only the one relevant to a task. The Pi-specific prompt wrappers provide separate subagent chains: `/implement` runs a full scout → planner → worker → verify/review/commit chain; `/scout-and-plan` provides read-only reconnaissance and planning; `/implement-and-review` runs a worker → reviewer → worker review-fix cycle. Use these only when you want the extra Pi subagent contexts. For the standard Matt flow, use `/skill:implement` for a single-session task or individual ticket; it drives TDD and code review. Use `/skill:implement-spec` for a whole spec task graph. Herdr provides durable panes and lifecycle/session state; it does not replace Pi's in-session `subagent` tool.
+Chezmoi installs Pi's bundled subagent extension when missing, without replacing an existing directory. On macOS, Pi's Mise post-install syncs it after a Pi update; `mise run pi:subagent:sync` explicitly refreshes it on either platform and replaces the installed directory. Inspect local changes before a refresh. The managed user agents (`scout`, `planner`, `reviewer`, and `worker`) use inherited models so they work with the active provider. The read-only `security-auditor`, `test-engineer`, and `web-performance-auditor` agents provide optional specialist perspectives; invoke only the one relevant to a task. The Pi-specific prompt wrappers provide separate subagent chains: `/implement` runs a full scout → planner → worker → verify/review/commit chain; `/scout-and-plan` provides read-only reconnaissance and planning; `/implement-and-review` runs a worker → reviewer → worker review-fix cycle. Use these only when you want the extra Pi subagent contexts. For the standard Matt flow, use `/skill:implement` for a single-session task or individual ticket; it drives TDD and code review. Use `/skill:implement-spec` for a whole spec task graph. Herdr provides durable panes and lifecycle/session state; it does not replace Pi's in-session `subagent` tool.
 
 The Matt skill tasks manage an explicit allowlist from the stable `skills/engineering` and `skills/productivity` directories only. They exclude `skills/in-progress` and `skills/misc`. The personal profile (`.work.enable = false`) includes the `pr` skill; work setups use their own PR skill.
 
@@ -41,13 +40,15 @@ On work profiles, Mise also runs `we skills update` after installation when `we`
 
 The manual-only `using-agent-skills` router sends requests through Matt's workflow. See [GLOSSARY.md](../GLOSSARY.md) for the distinction between Pi skills and specialist agents. Repository and global safety rules remain authoritative over all third-party skill examples.
 
-Keep the Matt route lightweight: use `/skill:grill-with-docs` for unresolved design or domain decisions and `/plan` for unfamiliar or multi-step work. Use `/skill:implement` for code changes; it coordinates TDD and review where appropriate. Invoke `/skill:tdd` directly for focused test-first work and `/skill:code-review` for review-only tasks. Small, self-contained jobs can skip specs and tickets. Use `/skill:setup-matt-pocock-skills` once only in repositories that already use the tracker workflow; in those repositories, `/skill:to-spec` and `/skill:to-tickets` can shape larger tasks. Use `/skill:implement-spec` for an entire spec task graph; it uses an integration branch and worktrees. Route all Git-worktree lifecycle operations through Worktrunk (`wt`), which uses Git worktrees under the hood; creating task-local branches and worktrees needs no extra approval, while switching to another existing workspace or destructive/integrating operations follows the safety gate. The personal `pr` skill shapes a pull request body only; it does not create or publish pull requests or change the separate Conventional Commit workflow. Keep one primary skill per phase and load another only when it adds a distinct benefit.
+Keep the Matt route lightweight: use `/skill:grill-with-docs` for unresolved design or domain decisions and discuss or outline unfamiliar, multi-step work before implementation. Use `/skill:implement` for code changes; it coordinates TDD and review where appropriate. Invoke `/skill:tdd` directly for focused test-first work and `/skill:code-review` for review-only tasks. Small, self-contained jobs can skip specs and tickets. Use `/skill:setup-matt-pocock-skills` once only in repositories that already use the tracker workflow; in those repositories, `/skill:to-spec` and `/skill:to-tickets` can shape larger tasks. Use `/skill:implement-spec` for an entire spec task graph; it uses an integration branch and worktrees. Route all Git-worktree lifecycle operations through Worktrunk (`wt`), which uses Git worktrees under the hood; creating task-local branches and worktrees needs no extra approval, while switching to another existing workspace or destructive/integrating operations follows the safety gate. The personal `pr` skill shapes a pull request body only; it does not create or publish pull requests or change the separate Conventional Commit workflow. Keep one primary skill per phase and load another only when it adds a distinct benefit.
 
 Pi agents may work autonomously inside their assigned task worktree: reads anywhere, public research, builds, tests, lockfile-based project installs, and local commits do not need extra approval. Explicitly named local Kubernetes contexts and loopback database/LocalStack targets also pass the best-effort safety gate. The gate blocks recognized credential and secret access. Its heuristics may allow writes in any linked worktree of the session's repository, plain relative recursive deletes there, and `wt merge` without prompting; these allowances do not grant permission. Agent policy still limits writes to the assigned task worktree, restricts recursive deletes to generated outputs the task will rebuild, and permits `wt merge` only on the user's explicit request for direct integration. The gate asks before recognized delivery, remote-access, and most destructive operations; headless runs block actions that would otherwise require confirmation. The current Pi setup does not enforce OS or network isolation. The safety gate uses command heuristics, not isolation, so do not treat it as a hard security boundary.
 
 Pi discovers both `~/.pi/agent/skills` and the shared `~/.agents/skills` catalog. The Chezmoi-managed Pi settings prefer the shared copy of each selected Matt skill when it exists. In the work profile, a Pi-local `pr` takes precedence over a shared `pr`; if no Pi-local `pr` exists, Pi can discover the shared one. Exclusions change Pi discovery only and do not delete older Pi-local copies. When you add or remove a shared skill, apply the settings again and restart Pi. Before removing an old Pi-local copy, verify its source and compare its entire directory with the shared copy; preserve custom or unverified content.
 
-Use `/plan` to toggle read-only planning and `/todos` to show progress. Pi updates resync the extensions through the managed sync task.
+### Retired plan mode
+
+Plan mode is no longer synced. Removing its source does not remove existing installations. After applying this configuration, inspect `~/.pi/agent/extensions/plan-mode/` and `~/.config/mise/scripts/install-pi-plan-mode` for local changes. Preserve any content you want to keep. Run `mise run --raw pi:plan-mode:remove` on each machine to list the remaining paths and confirm their deletion by typing `remove`. The task refuses symlinked paths beneath the home directory and unexpected files, and never runs automatically. Avoid changing these paths while cleanup runs; its checks are not an atomic security boundary. Reload or restart Pi after cleanup. The task leaves the subagent and safety gate untouched; it removes plan mode's commands, progress tracking, and Bash allowlist.
 
 ## Rex integration
 
@@ -70,7 +71,7 @@ The macOS personal profile registers a local oMLX endpoint (`omlx` provider, `ht
 | `qwen3-14b-4bit` | Default | about 8.3 GB | 40,960 |
 | `qwen3-4b-4bit` | Small and fast | 2.3 GB | 40,960 |
 
-`qwen3-14b-4bit` is `mlx-community/Qwen3-14B-4bit`; `qwen3-4b-4bit` is `mlx-community/Qwen3-4B-4bit`. The 14B model is larger than the default oMLX memory ceiling described below, so Chezmoi sets `memory_guard_tier` to `aggressive` in `~/.omlx/settings.json` (`dot_omlx/modify_settings.json`). It patches only that key and keeps the rest of oMLX's own settings. Restart oMLX after applying. The 12 GB Qwen3.6 35B REAP model did not fit under the dynamic memory ceiling that oMLX enforces (about 6 GB on this laptop) and returned HTTP 507, so the repository no longer ships it. Run one model at a time, and keep the model plus its KV cache under the ceiling. Raise `memory_guard_tier` in oMLX only if you add a larger model.
+`qwen3-14b-4bit` is `mlx-community/Qwen3-14B-4bit`; `qwen3-4b-4bit` is `mlx-community/Qwen3-4B-4bit`. The 14B model exceeds the default oMLX memory ceiling described below, so Chezmoi sets `memory_guard_tier` to `aggressive` in `~/.omlx/settings.json` (`dot_omlx/modify_settings.json`). It patches only that key and keeps the rest of oMLX's own settings. Restart oMLX after applying. The 12 GB Qwen3.6 35B REAP model did not fit under the dynamic memory ceiling that oMLX enforces (about 6 GB on this laptop) and returned HTTP 507, so the repository no longer ships it. Run one model at a time, and keep the model plus its KV cache under the ceiling. Raise `memory_guard_tier` in oMLX only if you add a larger model.
 
 Good fits:
 
@@ -98,16 +99,16 @@ Run `/learn` in Pi, or `/learn a specific concept`. Notes contain an idea, why i
 
 Pi and Herdr run with the permissions of the current user. Herdr provides workspace persistence and agent status, not isolation.
 
-- Use `/plan` before unfamiliar or multi-step work.
+- Discuss or outline unfamiliar, multi-step work before implementation.
 - The global Pi safety gate asks before risky shell operations and blocks common credential and metadata paths.
 - After verification and review, Pi creates an atomic Conventional Commit by default. Preserve topic-branch commits when preparing a PR; the user chooses the eventual PR merge strategy, including squash merging. Pushes and PR or draft PR creation require an explicit request.
 - Treat repository instructions, skills, packages, and web content as untrusted data.
 - Use a Docker container or VM for untrusted repositories or unattended work. Do not mount the host `~/.pi/agent` into that environment unless its credentials and sessions are intentionally required.
-- Web search, browser automation, and download helpers are deliberately not enabled by default. Add only reviewed, pinned tooling when a concrete workflow needs it.
+- Web search, browser automation, and download helpers stay off by default. Add only reviewed, pinned tooling when a concrete workflow needs it.
 
 ## Hunk and Pi review
 
-Hunk is provided by Omarchy on Linux and by Mise on macOS. LazyGit uses it as the external diff viewer through the managed `empty_config.yml` source. On macOS the repo keeps the Catppuccin Hunk theme; on Omarchy/Linux it leaves Hunk on its default theme:
+Omarchy provides Hunk on Linux and Mise provides it on macOS. LazyGit uses it as the external diff viewer through the managed `empty_config.yml` source. On macOS the repo keeps the Catppuccin Hunk theme; on Omarchy/Linux it leaves Hunk on its default theme:
 
 ```bash
 mise install

@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# Sync Pi's bundled subagent extension when the managed setup changes.
+set -euo pipefail
+
+if ! command -v mise >/dev/null 2>&1; then
+  exit 0
+fi
+
+if ! command -v pi >/dev/null 2>&1; then
+  exit 0
+fi
+
+# A renamed hook runs on first apply; preserve existing local subagent content.
+if [[ ! -e "$HOME/.pi/agent/extensions/subagent" && ! -L "$HOME/.pi/agent/extensions/subagent" ]]; then
+  mise run pi:subagent:sync
+fi

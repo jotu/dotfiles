@@ -307,9 +307,9 @@ hide = true
 description = "Update Proton CLI via mise hook"
 run = "mise run proton:cli:update"
 
-[tasks."pi:plan-mode:sync"]
-description = "Sync Pi's bundled read-only plan-mode extension"
-run = "bash \"$HOME/.config/mise/scripts/install-pi-plan-mode\""
+[tasks."pi:plan-mode:remove"]
+description = "Remove the retired Pi plan-mode extension after confirmation"
+run = "bash \"$HOME/.config/mise/scripts/remove-pi-plan-mode\""
 
 [tasks."pi:subagent:sync"]
 description = "Sync Pi's bundled sub-agent extension"
@@ -636,7 +636,7 @@ lazygit = "latest"
 
 [tools."npm:@earendil-works/pi-coding-agent"]
 version = "latest"
-postinstall = "bash \"$HOME/.config/mise/scripts/install-pi-plan-mode\" && bash \"$HOME/.config/mise/scripts/install-pi-subagent\""
+postinstall = "bash \"$HOME/.config/mise/scripts/install-pi-subagent\""
 {{- end }}
 
 [settings]

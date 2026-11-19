@@ -72,7 +72,7 @@ check_templated_bash dot_bashrc.tmpl
 check_templated_bash dot_config/bash/completions.bash.tmpl
 check_templated_bash dot_config/shell/aliases.tmpl
 check_templated_bash run_onchange_before_install-applications-omarchy.sh.tmpl
-check_templated_bash run_onchange_after_sync-pi-plan-mode.sh.tmpl
+check_templated_bash run_onchange_after_sync-pi-subagent.sh.tmpl
 check_templated_zsh dot_zshenv.tmpl
 check_templated_zsh dot_zshrc.tmpl
 check_templated_zsh dot_config/zsh/aliases.zsh.tmpl
@@ -161,7 +161,7 @@ not_contains dot_config/mise/conf.d/00-base.toml.tmpl 'brew "mise"'
 contains run_onchange_before_install-applications-omarchy.sh.tmpl 'eq .chezmoi.os "linux"'
 contains run_onchange_before_install-applications-omarchy.sh.tmpl 'omarchy install editor zed'
 contains run_onchange_before_install-applications-omarchy.sh.tmpl 'omarchy install browser firefox'
-contains run_onchange_after_sync-pi-plan-mode.sh.tmpl 'command -v pi >/dev/null 2>&1'
+contains run_onchange_after_sync-pi-subagent.sh.tmpl 'command -v pi >/dev/null 2>&1'
 contains dot_config/mise/conf.d/00-base.toml.tmpl 'macOS equivalents of tools supplied by Omarchy'
 contains dot_config/mise/conf.d/00-base.toml.tmpl '"github:max-sixty/worktrunk" = "0.82.0"'
 contains dot_config/mise/conf.d/00-base.toml.tmpl '"go:github.com/Gaurav-Gosain/tuios/cmd/tuios" = "0.13.3"'
@@ -181,7 +181,10 @@ contains dot_pi/agent/extensions/worktrunk.ts 'agent_start'
 contains dot_pi/agent/extensions/worktrunk.ts 'agent_settled'
 contains dot_pi/agent/extensions/worktrunk.ts 'session_shutdown'
 not_contains dot_pi/agent/extensions/worktrunk.ts 'pi.on("agent_end"'
-contains dot_config/mise/conf.d/00-base.toml.tmpl '[tasks."pi:plan-mode:sync"]'
+not_contains dot_config/mise/conf.d/00-base.toml.tmpl '[tasks."pi:plan-mode:sync"]'
+contains dot_config/mise/conf.d/00-base.toml.tmpl '[tasks."pi:plan-mode:remove"]'
+absent dot_config/mise/scripts/executable_install-pi-plan-mode
+bash -n "$repo_root/dot_config/mise/scripts/executable_remove-pi-plan-mode"
 contains dot_config/mise/conf.d/00-base.toml.tmpl '[tasks."pi:subagent:sync"]'
 contains dot_config/mise/conf.d/00-base.toml.tmpl '[tasks."pi:matt:skills:install"]'
 contains dot_config/mise/conf.d/00-base.toml.tmpl '[tasks."herdr:pi:install"]'

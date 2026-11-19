@@ -84,6 +84,9 @@ for os in linux darwin; do
   done
   check_toml "$base_output" '.tools."npm:opencode-ai" == null' 'opencode not managed'
   check_toml "$base_output" '.settings.npm.package_manager == "npm"' 'npm package manager'
+  check_toml "$base_output" '(.tasks | has("pi:plan-mode:sync")) == false' 'plan-mode sync removed'
+  check_toml "$base_output" '(.tasks | has("pi:plan-mode:remove"))' 'explicit plan-mode cleanup exists'
+  check_toml "$base_output" '(.tasks | has("pi:subagent:sync"))' 'subagent sync retained'
   if [[ "$os" == linux ]]; then
     check_toml "$base_output" '(.tasks | has("omlx:model:install")) == false' 'no omlx install on linux'
     check_toml "$base_output" '(.tasks | has("omlx:start")) == false' 'no omlx start on linux'
@@ -102,7 +105,7 @@ for os in linux darwin; do
     check_toml "$base_output" '.tools."npm:@openai/codex" == "latest"' 'codex latest'
     pi='.tools."npm:@earendil-works/pi-coding-agent"'
     check_toml "$base_output" "$pi.version == \"latest\"" 'pi latest'
-    check_toml "$base_output" "$pi.postinstall | contains(\"install-pi-plan-mode\")" 'pi plan-mode postinstall'
+    check_toml "$base_output" "($pi.postinstall | contains(\"install-pi-plan-mode\")) == false" 'no pi plan-mode postinstall'
     check_toml "$base_output" "$pi.postinstall | contains(\"install-pi-subagent\")" 'pi subagent postinstall'
     check_toml "$base_output" '.bootstrap.brew.taps | has("jundot/omlx") | not' 'omlx tap absent'
     check_toml "$base_output" '.bootstrap.packages."brew:jundot/omlx/omlx" == null' 'omlx package absent'

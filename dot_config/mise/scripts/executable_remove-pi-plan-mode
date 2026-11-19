@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+# Remove the retired plan-mode extension and installer only after confirmation.
+set -euo pipefail
+
+: "${HOME:?HOME is required}"
+extension="$HOME/.pi/agent/extensions/plan-mode"
+installer="$HOME/.config/mise/scripts/install-pi-plan-mode"
+
+# Permit only the files shipped by the old sync; preserve custom content.
+inspect_paths() {
+  local path file
+  for path in "$HOME/.pi" "$HOME/.pi/agent" "$HOME/.pi/agent/extensions" "$extension" \
+    "$HOME/.config" "$HOME/.config/mise" "$HOME/.config/mise/scripts" "$installer"; do
+    if [[ -L "$path" ]]; then
+      printf 'Refusing cleanup through symlink: %s\n' "$path" >&2
+      return 1
+    fi
+  done
+  if [[ -e "$extension" && ! -d "$extension" ]] || [[ -e "$installer" && ! -f "$installer" ]]; then
+    printf 'Legacy paths have unexpected types; inspect them manually.\n' >&2
+    return 1
+  fi
+  if [[ -d "$extension" ]]; then
+    ls -di "$extension" || return 1
+    for file in "$extension"/* "$extension"/.[!.]* "$extension"/..?*; do
+      [[ -e "$file" || -L "$file" ]] || continue
+      case "${file##*/}" in
+        index.ts|utils.ts|README.md) ;;
+        *) printf 'Unexpected content; inspect manually: %s\n' "$file" >&2; return 1 ;;
+      esac
+      if [[ -L "$file" || ! -f "$file" ]]; then
+        printf 'Unexpected file type; inspect manually: %s\n' "$file" >&2
+        return 1
+      fi
+      ls -di "$file" || return 1
+      cksum "$file" || return 1
+    done
+  fi
+  if [[ -f "$installer" ]]; then
+    ls -di "$installer" || return 1
+    cksum "$installer" || return 1
+  fi
+}
+
+before=$(inspect_paths)
+if [[ -z "$before" ]]; then
+  printf 'No legacy Pi plan-mode installation found.\n'
+  exit 0
+fi
+printf 'Review these paths before removal:\n'
+if [[ -d "$extension" ]]; then
+  printf '%s\n' "$extension"
+  for file in "$extension/index.ts" "$extension/utils.ts" "$extension/README.md"; do
+    if [[ -f "$file" ]]; then printf '%s\n' "$file"; fi
+  done
+fi
+if [[ -f "$installer" ]]; then printf '%s\n' "$installer"; fi
+printf 'Type remove to delete the paths above: '
+if ! IFS= read -r answer || [[ "$answer" != remove ]]; then
+  printf 'Cleanup cancelled; nothing removed.\n'
+  exit 0
+fi
+after=$(inspect_paths)
+if [[ "$before" != "$after" ]]; then
+  printf 'Legacy paths changed during confirmation; nothing removed.\n' >&2
+  exit 1
+fi
+if [[ -d "$extension" ]]; then
+  for file in "$extension/index.ts" "$extension/utils.ts" "$extension/README.md"; do
+    if [[ -f "$file" ]]; then rm -- "$file"; fi
+  done
+  rmdir -- "$extension"
+fi
+if [[ -f "$installer" ]]; then rm -- "$installer"; fi
+printf 'Legacy Pi plan mode removed. Reload or restart Pi.\n'

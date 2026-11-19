@@ -21,7 +21,7 @@ Invoke this router when asked to choose a skill or workflow. It directs the task
 |---|---|
 | Clarify an uncertain design or domain decision | `/skill:grill-with-docs` |
 | Make a small, self-contained change | Inspect the relevant files and use `/skill:implement`; it coordinates TDD and review where appropriate, while small jobs skip specs and tickets |
-| Handle unfamiliar or multi-step work | `/plan`; use `/skill:to-spec` and `/skill:to-tickets` only when the repository already uses that tracker workflow |
+| Handle unfamiliar or multi-step work | Discuss or outline the work; use `/skill:to-spec` and `/skill:to-tickets` only when the repository already uses that tracker workflow |
 | Diagnose a hard bug | `/skill:diagnosing-bugs`, then `/skill:implement` and test the fix |
 | Improve architecture or domain language | `/skill:improve-codebase-architecture` or `/skill:domain-modeling` |
 | Run a focused test-first loop | `/skill:tdd` alongside the implementation task |
