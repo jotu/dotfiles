@@ -1,6 +1,6 @@
 # Global Pi operating rules
 
-Chezmoi manages this file. Edit `dot_pi/agent/AGENTS.md` and apply it with `chezmoi`; never edit generated files in `~/.pi/agent` directly.
+Chezmoi manages this file. Edit `dot_pi/agent/AGENTS.md`, not generated files in `~/.pi/agent`. Apply only with explicit approval and a reviewed, scoped preview.
 
 ## Ownership
 
@@ -23,7 +23,7 @@ Chezmoi manages this file. Edit `dot_pi/agent/AGENTS.md` and apply it with `chez
 - For a new task, switch to the default worktree with `wt switch ^`, confirm the primary checkout has no uncommitted changes, and run `git pull --ff-only` before `wt switch --create <branch>`. Worktrunk does not fetch automatically; agents may use `git fetch`, `git pull`, or rebase to update the active repository without extra approval. If the primary checkout has local changes or cannot fast-forward, stop and ask rather than moving its branch implicitly.
 - For an existing PR, use `wt switch pr:<number>` to work on that branch when you have permission to contribute. Use `wt switch --create <branch> --base pr:<number>` for an independent follow-up branch.
 - Run Pi's normal implementation lifecycle in the selected worktree: plan or scout as needed, build with TDD, verify, review, then commit. Keep one writer per worktree; parallel writers on independent tasks need separate Worktrunk worktrees. Read-only scouts and reviewers may inspect the task worktree.
-- For a PR, refresh the target and use `wt step rebase origin/main` on an unpublished task branch before the first remote push. Preserve focused commits on the branch; do not run `wt merge` as PR preparation. Use `git push` for remote pushes so Git's configured pre-push hooks run; `wt step push` only fast-forwards the local target. The user chooses the eventual PR merge method.
+- For a PR, identify and refresh its target and use `wt step rebase` with the target's remote-tracking ref on an unpublished task branch before the first remote push. Preserve focused commits on the branch; do not run `wt merge` as PR preparation. Use `git push` for remote pushes so Git's configured pre-push hooks run; `wt step push` only fast-forwards the local target. The user chooses the eventual PR merge method.
 - For requested direct integration into unprotected `main`, refresh `main` from the primary checkout, return to the task worktree, and run `wt merge`. The configured local merge rebases and squashes into one commit, then fast-forwards. Worktrunk's `[commit.generation]` (Pi) writes the squash message as a Conventional Commit; check it with `git log -1` before pushing. `wt merge` does not push and removes the task worktree by default. Push only after an explicit request; use `--no-remove` if the user wants the worktree kept.
 - After a PR merges or closes, fetch and run `wt step prune --dry-run` from the primary checkout. Show the candidates and ask before pruning. For one abandoned worktree, inspect its changes before `wt remove`; never use `--force` or `-D` without explicit approval.
 

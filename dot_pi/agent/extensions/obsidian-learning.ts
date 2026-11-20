@@ -141,9 +141,17 @@ async function withCancellableQueue(path: string, signal: AbortSignal, operation
 	}
 }
 
+type CaptureRequest = {
+	prompt: string;
+	phase: "pending" | "starting" | "active" | "saving" | "creating";
+	controller: AbortController;
+};
+
 export default function obsidianLearning(pi: ExtensionAPI): void {
 	let generation = 0;
-	let capture: { prompt: string; phase: "pending" | "starting" | "active" | "saving" | "creating"; controller: AbortController } | undefined;
+	// Start pending → starting → active, reserve saving → creating; retry safe reads from active.
+	// Revocation cancels the request, and creation consumes it even when its outcome is uncertain.
+	let capture: CaptureRequest | undefined;
 	const revoke = () => { generation++; capture?.controller.abort(); capture = undefined; };
 	pi.on("input", (event) => {
 		if (event.source !== "extension" || event.text !== capture?.prompt) revoke();
@@ -191,6 +199,7 @@ export default function obsidianLearning(pi: ExtensionAPI): void {
 		parameters: noteSchema,
 		async execute(_toolCallId, params, signal, _onUpdate, ctx) {
 			if (capture?.phase !== "active") throw new Error("No active /learn capture request.");
+			// The projection includes persistent context edits, not later per-request provider rewrites.
 			const lastUser = ctx.sessionManager.buildSessionProjection().messages.findLast((message) => message.role === "user");
 			if (!lastUser || lastUser.role !== "user" || userText(lastUser.content) !== capture.prompt) {
 				revoke();

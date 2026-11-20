@@ -1,6 +1,6 @@
 # Chezmoi data keys
 
-Machine-specific values live in `~/.config/chezmoi/chezmoi.toml` under `[data]`, outside this repository. Never commit them or any secrets. `mise run test:data-keys` fails when a template reads a key that this page does not list. Check the rendered values with `chezmoi data`.
+Machine-specific values live in `~/.config/chezmoi/chezmoi.toml` under `[data]`, outside this repository. Never commit them or any secrets. `mise run test:data-keys` fails when a template reads a key that this page does not list. Check required configuration privately without printing secret or machine-specific values.
 
 List every key as a dotted path in code formatting. The test reads those paths.
 

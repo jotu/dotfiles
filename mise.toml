@@ -26,8 +26,16 @@ description = "Test Matt skill setup and explicit Addy cleanup without changing 
 run = "bash tests/test-pi-skills.sh && bash tests/test-pi-addy-skills.sh"
 
 [tasks."test:pi:plan-mode-cleanup"]
-description = "Test legacy plan-mode cleanup and subagent sync"
+description = "Test legacy plan-mode cleanup and its Chezmoi hook"
 run = "bash tests/test-pi-plan-mode-cleanup.sh"
+
+[tasks."test:pi:subagent-installer"]
+description = "Test bundled subagent discovery and installation"
+run = "bash tests/test-pi-subagent-installer.sh"
+
+[tasks."test:pi:renovate"]
+description = "Test Renovate's Pi version extraction contract offline"
+run = "node --test tests/test-pi-renovate.mjs"
 
 [tasks."test:pi:smart-zone"]
 description = "Test the Pi smart-zone context status extension"
@@ -72,6 +80,8 @@ depends = [
   "test:git-credentials",
   "test:pi:skills",
   "test:pi:plan-mode-cleanup",
+  "test:pi:subagent-installer",
+  "test:pi:renovate",
   "test:pi:smart-zone",
   "test:pi:obsidian-learning",
   "test:pi:safety-gate",

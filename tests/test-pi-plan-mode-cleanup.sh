@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Exercise the explicit legacy plan-mode cleanup without touching the real home.
+# Exercise legacy cleanup and its Chezmoi hook without touching the real home.
 set -euo pipefail
 
 repo_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -95,4 +95,4 @@ FAKE_MISE_LOG="$tmp_dir/mise.log" HOME="$hook_home" PATH="$tmp_dir/bin:$PATH" \
 test "$(wc -l <"$tmp_dir/mise.log" | tr -d ' ')" = 1
 test -f "$hook_home/.pi/agent/extensions/subagent/local.ts"
 
-printf 'Pi plan-mode cleanup and subagent sync checks passed.\n'
+printf 'Pi plan-mode cleanup and hook checks passed.\n'

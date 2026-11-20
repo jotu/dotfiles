@@ -1,6 +1,22 @@
 import assert from "node:assert/strict";
 import { registerHooks } from "node:module";
-import test from "node:test";
+import test, { after, before } from "node:test";
+
+// The fixture describes its own vault, independent of the caller's Pi settings.
+const obsidianVariables = ["OBSIDIAN_VAULT", "OBSIDIAN_VAULT_PATH", "OBSIDIAN_ATOMIC_NOTES_DIR", "OBSIDIAN_ATOMIC_NOTE_TEMPLATE"];
+const previousEnvironment = new Map();
+before(() => {
+	for (const name of obsidianVariables) {
+		previousEnvironment.set(name, process.env[name]);
+		delete process.env[name];
+	}
+});
+after(() => {
+	for (const [name, value] of previousEnvironment) {
+		if (value === undefined) delete process.env[name];
+		else process.env[name] = value;
+	}
+});
 
 // Pi and TypeBox are supplied by the host; stub those host APIs for offline tests.
 const hostModules = {
@@ -30,7 +46,12 @@ function setup(exec) {
 		registerTool: (value) => { tool = value; },
 		sendUserMessage: (value) => { prompt = value; },
 		exec: exec ?? (async (_program, args) => {
-			if (args.includes("vault")) return { code: 0, stdout: "name\tbase\npath\t/tmp/vault", stderr: "" };
+			if (args.includes("vault")) {
+				assert.deepEqual(args, ["vault=base", "vault"]);
+				return { code: 0, stdout: "name\tbase\npath\t/tmp/vault", stderr: "" };
+			}
+			if (args[0] === "read") assert.deepEqual(args, ["read", "vault=base", "path=5 - Templates/Atomic Note.md"]);
+			if (args[0] === "create") assert.deepEqual(args.slice(0, 3), ["create", "vault=base", "path=1 - Notes/a-concept.md"]);
 			return { code: 0, stdout: "{{TITLE}}", stderr: "" };
 		}),
 	};

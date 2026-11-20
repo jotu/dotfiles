@@ -23,6 +23,12 @@
     },
     {
       "matchManagers": ["custom.regex"],
+      "matchPackageNames": ["@earendil-works/pi-coding-agent"],
+      "groupName": "Pi coding agent",
+      "automerge": false
+    },
+    {
+      "matchManagers": ["custom.regex"],
       "matchDatasources": ["go"],
       "groupName": "Go tools"
     },
@@ -83,6 +89,16 @@
       ],
       "packageNameTemplate": "herdrdev/herdr",
       "datasourceTemplate": "github-releases"
+    },
+    {
+      "customType": "regex",
+      "description": "Update the macOS Pi coding agent pin",
+      "managerFilePatterns": ["/^dot_config\\/mise\\/conf\\.d\\/00-base\\.toml\\.tmpl$/"],
+      "matchStrings": [
+        "(?:^|\\r?\\n)\\[tools\\.\"npm:@earendil-works/pi-coding-agent\"\\]\\r?\\n[ \\t]*version[ \\t]*=[ \\t]*\"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
+      ],
+      "depNameTemplate": "@earendil-works/pi-coding-agent",
+      "datasourceTemplate": "npm"
     },
     {
       "customType": "regex",

@@ -22,8 +22,9 @@ find_source_dir() {
     return 1
   }
 
-  if [ -n "${MISE_TOOL_INSTALL_PATH:-}" ] && find_in_root "$MISE_TOOL_INSTALL_PATH"; then
-    return 0
+  if [ -n "${MISE_TOOL_INSTALL_PATH:-}" ]; then
+    find_in_root "$MISE_TOOL_INSTALL_PATH"
+    return $?
   fi
 
   if command -v mise >/dev/null 2>&1; then
@@ -44,7 +45,7 @@ find_source_dir() {
   else
     resolved_pi_bin="$pi_bin"
   fi
-  for candidate_root in "$(dirname "$resolved_pi_bin")" "$(cd "$(dirname "$resolved_pi_bin")/.." && pwd)"; do
+  for candidate_root in "$(dirname "$resolved_pi_bin")" "$(cd "$(dirname "$resolved_pi_bin")/.." && pwd)" "$(cd "$(dirname "$resolved_pi_bin")/../.." && pwd)"; do
     if find_in_root "$candidate_root"; then
       return 0
     fi
@@ -54,10 +55,28 @@ find_source_dir() {
 }
 
 if ! source_dir=$(find_source_dir); then
+  if [ -n "${MISE_TOOL_INSTALL_PATH:-}" ]; then
+    printf 'Pi sub-agent extension source not found in the explicit Mise install path: %s\n' "$MISE_TOOL_INSTALL_PATH" >&2
+    exit 1
+  fi
   printf 'Pi sub-agent extension source not found; skipping sync.\n' >&2
   exit 0
 fi
 
+# Reject incomplete sources before removing the installed extension.
+for source_file in index.ts agents.ts; do
+  if [ ! -f "$source_dir/$source_file" ] || [ ! -r "$source_dir/$source_file" ]; then
+    printf 'Pi subagent source is missing or unreadable: %s\n' "$source_dir/$source_file" >&2
+    exit 1
+  fi
+done
+
+# Pi scans one level of subdirectories; stage the extension one level deeper.
+mkdir -p "$(dirname "$target_dir")"
+staging_dir=$(mktemp -d "$(dirname "$target_dir")/.subagent-sync.XXXXXXXX")
+trap 'rm -rf "$staging_dir"' EXIT
+mkdir -m 700 "$staging_dir/subagent"
+# Keep the bundled tree together if upstream adds local dependencies.
+cp -R "$source_dir/." "$staging_dir/subagent/"
 rm -rf "$target_dir"
-mkdir -p "$target_dir"
-cp "$source_dir/index.ts" "$source_dir/agents.ts" "$target_dir/"
+mv "$staging_dir/subagent" "$target_dir"

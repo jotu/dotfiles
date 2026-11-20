@@ -105,7 +105,7 @@ for os in linux darwin; do
     done
     check_toml "$base_output" '.tools."npm:@openai/codex" == "latest"' 'codex latest'
     pi='.tools."npm:@earendil-works/pi-coding-agent"'
-    check_toml "$base_output" "$pi.version == \"latest\"" 'pi latest'
+    check_toml "$base_output" "$pi.version | test(\"^[0-9]+\\\\.[0-9]+\\\\.[0-9]+$\")" 'pi exact version pin'
     check_toml "$base_output" "($pi.postinstall | contains(\"install-pi-plan-mode\")) == false" 'no pi plan-mode postinstall'
     check_toml "$base_output" "$pi.postinstall | contains(\"install-pi-subagent\")" 'pi subagent postinstall'
     check_toml "$base_output" '.bootstrap.brew.taps | has("jundot/omlx") | not' 'omlx tap absent'
