@@ -1,0 +1,15 @@
+{{- /* chezmoi:modify-template */ -}}
+{{- /* Manage only the oMLX provider, preserving other Pi providers and keys. */ -}}
+{{- $current := dict -}}
+{{- if and .chezmoi.stdin (ne (trim .chezmoi.stdin) "") -}}
+{{-   $current = fromJsonc (trimPrefix "\ufeff" .chezmoi.stdin) -}}
+{{- end -}}
+{{- $providers := get $current "providers" | default dict -}}
+{{- if .work.enable -}}
+{{-   $_ := unset $providers "omlx" -}}
+{{- else -}}
+{{-   $managed := includeTemplate "pi-models.json.tmpl" . | fromJson -}}
+{{-   $_ := set $providers "omlx" $managed.providers.omlx -}}
+{{- end -}}
+{{- $_ := set $current "providers" $providers -}}
+{{- $current | toPrettyJson | trimSuffix "\n" -}}

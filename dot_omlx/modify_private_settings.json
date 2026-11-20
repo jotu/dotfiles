@@ -4,8 +4,8 @@ Patch only the managed oMLX settings in ~/.omlx/settings.json.
 oMLX rewrites this file and stores auth data in it, so every other key must
 survive. Managed keys always win.
 
-"aggressive" keeps about 2% of RAM free instead of 8%, which lets the 8.3 GB
-qwen3-14b-4bit fit on this 24 GB laptop (see docs/pi.md).
+Retain the existing "aggressive" memory guard on the personal Mac; this does
+not guarantee that a model and its context will fit (see docs/pi.md).
 */ -}}
 {{- $managed := dict "memory" (dict "memory_guard_tier" "aggressive") -}}
 {{- $current := dict -}}

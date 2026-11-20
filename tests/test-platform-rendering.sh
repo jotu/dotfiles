@@ -16,7 +16,7 @@ trap 'rm -rf "$tmp_dir"' EXIT
 
 render() {
   local os="$1" source="$2" output="$3"
-  chezmoi execute-template \
+  chezmoi execute-template --source "$repo_root" \
     --override-data "{\"chezmoi\":{\"os\":\"$os\",\"arch\":\"arm64\"}}" \
     --file "$repo_root/$source" >"$output"
 }
@@ -46,13 +46,12 @@ toml_sources=(
 )
 json_sources=(
   .chezmoitemplates/pi-settings.json.tmpl
-  dot_pi/agent/models.json
 )
 
 for work_enabled in true false; do
   base_output="$tmp_dir/base-work-$work_enabled.toml"
   chezmoi execute-template \
-    --override-data "{\"chezmoi\":{\"os\":\"linux\",\"arch\":\"arm64\"},\"work\":{\"enable\":$work_enabled}}" \
+    --override-data "{\"chezmoi\":{\"os\":\"linux\",\"arch\":\"arm64\"},\"work\":{\"enable\":$work_enabled,\"git\":{}},\"personal\":{\"git\":{}}}" \
     --file "$repo_root/dot_config/mise/conf.d/00-base.toml.tmpl" >"$base_output"
   check_toml "$base_output" "(.tasks | has(\"we:skills:update\")) == $work_enabled" 'we task follows work profile'
   check_toml "$base_output" "([.hooks.postinstall[] | select(.task == \"we:skills:update\")] | length > 0) == $work_enabled" 'we hook follows work profile'
@@ -74,7 +73,9 @@ for os in linux darwin; do
   grep -Fq 'fpath=("$HOME/.config/zsh/completions" $fpath)' "$zsh_output"
 
   base_output="$tmp_dir/$os-base.toml"
-  render "$os" dot_config/mise/conf.d/00-base.toml.tmpl "$base_output"
+  chezmoi execute-template --source "$repo_root" \
+    --override-data "{\"chezmoi\":{\"os\":\"$os\",\"arch\":\"arm64\"},\"work\":{\"enable\":false,\"git\":{}},\"personal\":{\"git\":{}}}" \
+    --file "$repo_root/dot_config/mise/conf.d/00-base.toml.tmpl" >"$base_output"
   validate_toml "$base_output"
   check_toml "$base_output" '.tools.superfile == "latest"' 'superfile pinned'
   for task in tuios:pi:install tuios:completion:sync; do
@@ -182,7 +183,7 @@ done
 
 for work_enabled in true false; do
   settings_output="$tmp_dir/settings-work-$work_enabled.json"
-  chezmoi execute-template \
+  chezmoi execute-template --source "$repo_root" \
     --override-data "{\"chezmoi\":{\"os\":\"linux\",\"arch\":\"arm64\"},\"work\":{\"enable\":$work_enabled}}" \
     --file "$repo_root/.chezmoitemplates/pi-settings.json.tmpl" >"$settings_output"
   validate_json "$settings_output"
@@ -201,34 +202,8 @@ for work_enabled in true false; do
   check_json "$settings_output" "([.packages[].source] | contains([\"npm:pi-chatgpt-limit@0.3.1\"])) == $work_enabled" 'chatgpt-limit follows work.enable'
 done
 
-# Personal macOS profiles can select the local oMLX models; no other profile can.
-for profile in "darwin false" "darwin true" "linux false"; do
-  set -- $profile
-  settings_output="$tmp_dir/settings-$1-$2.json"
-  chezmoi execute-template \
-    --override-data "{\"chezmoi\":{\"os\":\"$1\",\"arch\":\"arm64\"},\"work\":{\"enable\":$2}}" \
-    --file "$repo_root/.chezmoitemplates/pi-settings.json.tmpl" >"$settings_output"
-  validate_json "$settings_output"
-  expected_local=false
-  [[ "$1 $2" == "darwin false" ]] && expected_local=true
-  check_json "$settings_output" "([.enabledModels[] | select(test(\"^omlx/\"))] | length > 0) == $expected_local" "local models scoped for $1 work=$2"
-done
-
-# The oMLX install task exists only on personal macOS profiles.
-for profile in "darwin false" "darwin true" "linux false"; do
-  set -- $profile
-  base_output="$tmp_dir/base-omlx-$1-$2.toml"
-  chezmoi execute-template \
-    --override-data "{\"chezmoi\":{\"os\":\"$1\",\"arch\":\"arm64\"},\"work\":{\"enable\":$2,\"git\":{}},\"personal\":{\"git\":{}}}" \
-    --file "$repo_root/dot_config/mise/conf.d/00-base.toml.tmpl" >"$base_output"
-  expected_task=false
-  [[ "$1 $2" == "darwin false" ]] && expected_task=true
-  check_toml "$base_output" "(.tasks | has(\"omlx:install\")) == $expected_task" "omlx:install task for $1 work=$2"
-  if [[ "$expected_task" == true ]]; then
-    yq -p toml -r '.tasks."omlx:install".run' "$base_output" >"$tmp_dir/omlx-install.sh"
-    bash -n "$tmp_dir/omlx-install.sh" || fail "omlx:install script syntax"
-  fi
-done
+# Keep the focused oMLX profile checks usable in CI without Zsh.
+bash "$repo_root/tests/test-omlx-profile.sh"
 
 # The settings modify template must keep Pi-owned keys and let managed keys win.
 modify_template="$repo_root/dot_pi/agent/modify_settings.json"

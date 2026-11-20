@@ -13,6 +13,14 @@ run = "bash tests/test-platform-layout.sh"
 description = "Render and validate Linux and macOS platform templates"
 run = "bash tests/test-platform-rendering.sh"
 
+[tasks."test:omlx:model"]
+description = "Test pinned oMLX model installation without network access"
+run = "bash tests/test-omlx-model-install.sh"
+
+[tasks."test:omlx:profile"]
+description = "Test oMLX profile boundaries without a configured home"
+run = "bash tests/test-omlx-profile.sh"
+
 [tasks."test:pi:skills"]
 description = "Test Matt skill setup and explicit Addy cleanup without changing global skills"
 run = "bash tests/test-pi-skills.sh && bash tests/test-pi-addy-skills.sh"
@@ -57,6 +65,8 @@ run = "bash tests/test-git-credentials.sh"
 description = "Run every offline test that CI runs (excludes the Vale diff against origin/main)"
 depends = [
   "test:platform",
+  "test:omlx:model",
+  "test:omlx:profile",
   "test:templates",
   "test:data-keys",
   "test:git-credentials",

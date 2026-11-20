@@ -402,13 +402,19 @@ run = '''
 
 {{- if eq .chezmoi.os "darwin" }}
 [tasks."omlx:model:install"]
+{{- if .work.enable }}
 description = "Download a pinned MLX model for oMLX (qwen3-14b-4bit)"
 usage = 'arg "[model]" default="qwen3-14b-4bit" help="Model ID: qwen3-14b-4bit (default) or qwen3-4b-4bit"'
+{{- else }}
+description = "Download a pinned MLX model for oMLX (qwen3.5-9b-4bit)"
+usage = 'arg "[model]" default="qwen3.5-9b-4bit" help="Model ID: qwen3.5-9b-4bit (default), qwen3.5-4b-4bit, or gpt-oss-20b-mxfp4-q4"'
+{{- end }}
 run = '''
   set -eu
 
   # Each model pins a Hugging Face repository, an immutable revision, and the
   # files that must exist before the download counts as complete.
+{{- if .work.enable }}
   model_id="${usage_model:-qwen3-14b-4bit}"
   case "$model_id" in
     qwen3-14b-4bit)
@@ -426,8 +432,69 @@ run = '''
       exit 1
       ;;
   esac
-  model_dir="$HOME/.omlx/models/$model_id"
+{{- else }}
+  model_id="${usage_model:-qwen3.5-9b-4bit}"
+  case "$model_id" in
+    qwen3.5-9b-4bit)
+      model_repo="mlx-community/Qwen3.5-9B-4bit"
+      model_revision="8b2b98c00a6b4d291155e4890773ca8f769aee53"
+      required_files="config.json model.safetensors.index.json model-00001-of-00002.safetensors model-00002-of-00002.safetensors tokenizer.json tokenizer_config.json chat_template.jinja vocab.json preprocessor_config.json processor_config.json video_preprocessor_config.json"
+      ;;
+    qwen3.5-4b-4bit)
+      model_repo="mlx-community/Qwen3.5-4B-4bit"
+      model_revision="0e7ffd5c629ef7719d4cbc04069232580bfa9d9c"
+      required_files="config.json model.safetensors.index.json model.safetensors tokenizer.json tokenizer_config.json chat_template.jinja vocab.json preprocessor_config.json processor_config.json video_preprocessor_config.json"
+      ;;
+    gpt-oss-20b-mxfp4-q4)
+      model_repo="mlx-community/gpt-oss-20b-MXFP4-Q4"
+      model_revision="f356f2747216d7e98fee755df25987459fc19089"
+      required_files="config.json generation_config.json model.safetensors.index.json model-00001-of-00003.safetensors model-00002-of-00003.safetensors model-00003-of-00003.safetensors tokenizer.json tokenizer_config.json"
+      ;;
+    *)
+      echo "ERROR: unknown oMLX model '$model_id'; use qwen3.5-9b-4bit, qwen3.5-4b-4bit, or gpt-oss-20b-mxfp4-q4" >&2
+      exit 1
+      ;;
+  esac
+{{- end }}
+  models_dir="$HOME/.omlx/models"
+  model_dir="$models_dir/$model_id"
   revision_file="$model_dir/.omlx-revision"
+  pending_backup="$models_dir/.$model_id.pending-backup"
+  lock_dir="$models_dir/.$model_id.install-lock"
+  mkdir -p "$models_dir"
+  if ! mkdir "$lock_dir" 2>/dev/null; then
+    echo "ERROR: another installation may be running; inspect $lock_dir before retrying" >&2
+    exit 1
+  fi
+  trap 'rmdir "$lock_dir"' EXIT
+  hf_pid=""
+  stop_download() {
+    trap '' HUP INT TERM
+    if [ -n "$hf_pid" ]; then
+      kill "$hf_pid" 2>/dev/null || true
+      wait "$hf_pid" 2>/dev/null || true
+    fi
+    exit 1
+  }
+  trap stop_download HUP INT TERM
+
+  retain_backup() {
+    backup_dir="$(mktemp -d "$models_dir/.$model_id.backup.XXXXXX")"
+    if ! mv "$pending_backup" "$backup_dir/model"; then
+      rmdir "$backup_dir"
+      return 1
+    fi
+    echo "Previous model retained at $backup_dir/model"
+  }
+  # Recover either side of an interrupted promotion before checking the marker.
+  if [ -e "$pending_backup" ] || [ -L "$pending_backup" ]; then
+    if [ -e "$model_dir" ] || [ -L "$model_dir" ]; then
+      retain_backup
+    else
+      mv "$pending_backup" "$model_dir"
+      echo "Recovered previous model at $model_dir"
+    fi
+  fi
 
   model_complete=true
   for required_file in $required_files; do
@@ -453,11 +520,38 @@ run = '''
     exit 1
   fi
 
-  mkdir -p "$model_dir"
+  # A unique staging directory isolates interrupted or orphaned downloads and
+  # prevents different revisions from sharing files.
+  staging_dir="$(mktemp -d "$models_dir/.$model_id.$model_revision.partial.XXXXXX")"
+  # The pinned repositories are public; do not send local Hugging Face credentials.
+  unset HF_TOKEN HUGGING_FACE_HUB_TOKEN
+  export HF_HUB_DISABLE_IMPLICIT_TOKEN=1
   "$hf" download "$model_repo" \
     --revision "$model_revision" \
-    --local-dir "$model_dir"
-  printf '%s\n' "$model_revision" > "$revision_file"
+    --local-dir "$staging_dir" &
+  hf_pid=$!
+  wait "$hf_pid"
+  hf_pid=""
+  for required_file in $required_files; do
+    if [ ! -f "$staging_dir/$required_file" ]; then
+      echo "ERROR: download of $model_id is missing $required_file" >&2
+      exit 1
+    fi
+  done
+  printf '%s\n' "$model_revision" > "$staging_dir/.omlx-revision"
+
+  if [ -e "$model_dir" ] || [ -L "$model_dir" ]; then
+    mv "$model_dir" "$pending_backup"
+  fi
+  if ! mv "$staging_dir" "$model_dir"; then
+    if [ -e "$pending_backup" ] || [ -L "$pending_backup" ]; then
+      mv "$pending_backup" "$model_dir" || echo "ERROR: restore the previous model from $pending_backup" >&2
+    fi
+    exit 1
+  fi
+  if [ -e "$pending_backup" ] || [ -L "$pending_backup" ]; then
+    retain_backup
+  fi
 '''
 
 {{- if not .work.enable }}

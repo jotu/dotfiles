@@ -66,14 +66,21 @@ Inspect the installed extension and any local changes; Chezmoi does not delete i
 
 ## Local model: when to use it
 
-The macOS personal profile registers a local oMLX endpoint (`omlx` provider, `http://127.0.0.1:8000/v1`). Install the models with `mise run omlx:model:install [model]`, which pins a Hugging Face revision for each model, then start the server with `mise run omlx:start`. After changing models or oMLX settings, run `mise run omlx:restart`. On the personal macOS profile the model is in Pi's model scope, so select it with `/model` or cycle to it with Ctrl+P. Agents and sub-agents inherit the selected model; nothing pins a local model automatically.
+The macOS personal profile adds a local oMLX endpoint (`omlx` provider, `http://127.0.0.1:8000/v1`) to Pi's model cycling scope. Install each model explicitly with `mise run omlx:model:install [model]`; the task pins its Hugging Face revision. Start the server with `mise run omlx:start`, and run `mise run omlx:restart` after changing models or oMLX settings. Select a model with `/model` or cycle to it with Ctrl+P. Sub-agents can override the selected model, including with a hosted model; check their configuration before delegating private content. Nothing pins a local model automatically. The macOS work profile retains its existing oMLX tasks but removes the oMLX provider from Pi and its cycling scope. Other providers remain unchanged, and applying this configuration does not delete model files.
 
-| Model ID | Role | Disk | Context |
+| Model ID | Role | Approximate weights | Pi context limit |
 |---|---|---|---|
-| `qwen3-14b-4bit` | Default | about 8.3 GB | 40,960 |
-| `qwen3-4b-4bit` | Small and fast | 2.3 GB | 40,960 |
+| `qwen3.5-9b-4bit` | Default download; everyday candidate | 6.0 GB | 40,960 |
+| `qwen3.5-4b-4bit` | Lightweight candidate | 3.0 GB | 40,960 |
+| `gpt-oss-20b-mxfp4-q4` | Experimental reasoning and tool-use candidate | 11.2 GB | 40,960 |
 
-`qwen3-14b-4bit` is `mlx-community/Qwen3-14B-4bit`; `qwen3-4b-4bit` is `mlx-community/Qwen3-4B-4bit`. The 14B model exceeds the default oMLX memory ceiling described below, so Chezmoi sets `memory_guard_tier` to `aggressive` in `~/.omlx/settings.json` (`dot_omlx/modify_settings.json`). It patches only that key and keeps the rest of oMLX's own settings. Restart oMLX after applying. The 12 GB Qwen3.6 35B REAP model did not fit under the dynamic memory ceiling that oMLX enforces (about 6 GB on this laptop) and returned HTTP 507, so the repository no longer ships it. Run one model at a time, and keep the model plus its KV cache under the ceiling. Raise `memory_guard_tier` in oMLX only if you add a larger model.
+The installer stages each download separately and retains the previous model in a hidden backup directory after replacement. Interrupted downloads leave their partial directories in place and restart on retry. Updates can require space for both copies. If a forced termination leaves an install lock, check that both the installer and its Hugging Face download process have exited before removing the empty `.install-lock` directory.
+
+The sizes exclude runtime allocations and KV cache. The Pi context limit does not guarantee that the model and context fit in memory. Run one model at a time, check memory pressure and swap, and stop if a model cannot fit. A previous 12 GB model encountered an approximately 6 GB dynamic ceiling and HTTP 507 on this laptop. Chezmoi retains the existing `aggressive` memory guard in `~/.omlx/settings.json`; it patches only that key and keeps the other oMLX settings. Do not raise limits without checking available memory. Changing the catalog does not delete old model files.
+
+Qwen3.5 performance depends on native oMLX custom kernels. The managed Homebrew install does not request them; check the oMLX logs before comparing speed. The official [kernel guide](https://github.com/jundot/omlx/blob/v0.8.0/docs/custom-kernels.md) explains the requirements. Test model loading, tool calls and response quality locally: results depend on the exact oMLX version. The built-in benchmark can upload results and machine metadata to a community leaderboard; use an isolated network if results must remain local. Pi controls Qwen thinking as on or off, not as distinct effort levels. GPT-OSS requires reasoning and exposes low, medium and high effort.
+
+A short local smoke test on an M4 Mac with 24 GB and oMLX 0.8.0 loaded each model separately. All three identified a JavaScript bug and produced a calculator tool call. Qwen 4B and 9B generated roughly 28 and 18 tokens per second on that short prompt; GPT-OSS generated roughly 42 including reasoning tokens, but reached about 1.2 GB of system swap and hit the 180-token limit before finishing its answer. These samples do not measure quality or long-context performance. Start with Qwen 4B when responsiveness matters, try 9B for more demanding work, and treat GPT-OSS as experimental when memory is available.
 
 Good fits:
 
@@ -88,7 +95,7 @@ Poor fits; use a hosted model instead:
 - Long agentic coding sessions.
 - Security-sensitive final judgments.
 
-Worktrunk's `[commit.generation]` runs `pi -p --model <provider/model>`, and Pi resolves `omlx/qwen3-4b-4bit` from `models.json`, so the local endpoint can generate commit messages. The Chezmoi template keeps a hosted model as the default. To try the local model, copy the command from `dot_config/worktrunk/config.toml.tmpl` and replace the `--model` value with `omlx/qwen3-4b-4bit` in a local override, not in this repository. The server must be running, and you should read the message before you commit.
+Worktrunk's `[commit.generation]` runs `pi -p --model <provider/model>`, and Pi resolves `omlx/qwen3.5-4b-4bit` from `models.json`, so the local endpoint can generate commit messages. The Chezmoi template keeps a hosted model as the default. To try the local model, copy the command from `dot_config/worktrunk/config.toml.tmpl` and replace the `--model` value with `omlx/qwen3.5-4b-4bit` in a local override, not in this repository. The server must be running, and you should read the message before you commit.
 
 ## Pi learning capture
 

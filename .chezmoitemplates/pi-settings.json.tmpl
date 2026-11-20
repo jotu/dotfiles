@@ -79,8 +79,9 @@
     "github-copilot/claude-sonnet-5.5"
 {{- end }}
 {{- if and (not .work.enable) (eq .chezmoi.os "darwin") }},
-    "omlx/qwen3-14b-4bit",
-    "omlx/qwen3-4b-4bit"
+    "omlx/qwen3.5-9b-4bit",
+    "omlx/qwen3.5-4b-4bit",
+    "omlx/gpt-oss-20b-mxfp4-q4"
 {{- end }}
   ],
   "skills": {{/* Pi discovers ~/.agents/skills too. Exclude native copies only when the shared copy exists. */}}{{ toPrettyJson $skillExclusions | trimSuffix "\n" | replace "\n" "\n  " }},

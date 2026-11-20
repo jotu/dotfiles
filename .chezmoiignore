@@ -25,7 +25,7 @@ reference/
 bootstrap
 
 {{- if or (ne .chezmoi.os "darwin") .work.enable }}
-# oMLX runs only on personal macOS profiles.
+# oMLX settings are managed only on personal macOS profiles.
 .omlx/
 {{- end }}
 

@@ -24,7 +24,7 @@ OS-gated source paths (see `.chezmoiignore`):
 | Source path | Applied on |
 | --- | --- |
 | `private_Library/`, `dot_aerospace.toml` | macOS only |
-| `dot_config/mise/config.toml`, `dot_config/mise/tasks/osx/`, `dot_pi/agent/models.json` | macOS only |
+| `dot_config/mise/config.toml`, `dot_config/mise/tasks/osx/`, `dot_pi/agent/modify_private_models.json` | macOS only |
 | `dot_bashrc.tmpl`, `dot_config/bash/`, `dot_config/systemd/` | Omarchy/Linux only |
 | `run_onchange_before_install-applications-omarchy.sh.tmpl` | Omarchy/Linux only |
 | `run_onchange_after_fix-thefuck-compat-darwin.sh.tmpl` | macOS only |
