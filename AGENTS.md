@@ -26,7 +26,7 @@ Maintain portable, secure dotfiles for macOS and Omarchy/Linux. Keep changes sma
 
 ## Verification
 
-- Run relevant tests after changes; use `mise run test` for the full offline suite when practical.
-- Run `mise run test:vale:changed` for changed Markdown and follow `.vale.ini` and the Base vocabulary.
+- Run relevant tests after changes; use `mise run test` for the full offline suite when practical. Before invoking Mise, consider deferred tool cleanup and post-install work: use an environment that prevents host-state changes, or inspect the effects and get approval for global changes. Use suitable installed binaries for focused checks when needed; report skipped checks.
+- Check changed Markdown against `.vale.ini` and the Base vocabulary; `mise run test:vale:changed` runs the changed-file check subject to the same Mise precautions.
 - Check platform rendering when changing templates. Never print private configuration or secret values during validation.
 - Review the diff for scope, portability, secrets, and Tidy First/CUPID before committing.
