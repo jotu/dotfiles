@@ -7,14 +7,14 @@ Chezmoi manages this file. Edit `dot_pi/agent/AGENTS.md` and apply it with `chez
 - Keep Pi settings, context, skills, prompts, and custom extensions in this repository under `dot_pi/agent/`.
 - `mise` tasks sync Pi's bundled subagent extension from the installed Pi package; keep agent definitions and prompt templates in this repository.
 - The `pi:matt:skills:*` tasks manage selected, pinned upstream Matt skills in the shared `~/.agents/skills` catalog. The explicit `pi:addy:skills:remove` task handles one-time cleanup on machines with the prior 13-skill installation. It removes only verified installs and references with a matching ownership marker, and it never runs automatically. Keep upstream copies out of `dot_pi/agent/skills` except for explicit Pi adaptations.
-- Invoke the `using-agent-skills` Pi adaptation manually for skill routing. Use Matt as the default development workflow and upstream skills as task-specific specialists. Map references to omitted workflow skills to Matt's `tdd`, `diagnosing-bugs`, `implement`, and `code-review` skills.
+- The user invokes the `using-agent-skills` Pi adaptation. Use Matt's development principles and task-specific skills when available. Skills marked `disable-model-invocation: true` require the user to invoke their `/skill:name` command; do not assume automatic discovery can select them.
 - Keep `security-auditor`, `test-engineer`, and `web-performance-auditor` as read-only specialist agents. Invoke only the perspective the task needs; the parent agent owns orchestration and synthesis.
 - Herdr owns `~/.pi/agent/extensions/herdr-agent-state.ts`; never edit or replace that file manually.
 - TUIOS owns `~/.pi/agent/extensions/tuios-agent-state.ts`; install or refresh it with `mise run tuios:pi:install`.
 - For TUIOS keybinding investigations, use `tuios keybinds list --json | jq '.[] | select(.action | test("split|tiling"))'` to inspect split and tiling actions.
 - Keep Herdr workspace configuration separate from Pi configuration.
 - Rex owns `~/.agents/skills/rex`; install or refresh it with `rex skill setup`. When `[ -n "$REX_SESSION" ]` is true, follow `/skill:rex` and name the session after the first request that identifies the work. Also follow `/skill:rex` when asked to use Rex from outside it.
-- Delegate with Pi's `subagent` tool and Herdr when available. Keep agents within their assigned workspaces. When a third-party skill calls for a generic `Skill` tool, follow its named Pi skill with `/skill:name`.
+- Delegate with Pi's `subagent` tool and Herdr when available. Keep agents within their assigned workspaces. When a third-party skill calls for a generic `Skill` tool, follow the named Pi skill if model-invocable; otherwise suggest its `/skill:name` command to the user.
 
 ## Worktrunk task workflow
 
@@ -36,10 +36,10 @@ Chezmoi manages this file. Edit `dot_pi/agent/AGENTS.md` and apply it with `chez
 
 ## Engineering workflow
 
-- Before using `/skill:to-spec` or `/skill:to-tickets`, run `/skill:setup-matt-pocock-skills` once in the repository. Use those skills only when the repository already uses that tracker workflow.
+- Before using `/skill:to-spec` or `/skill:to-tickets`, ask the user to invoke `/skill:setup-matt-pocock-skills` once in the repository. Use those skills only when the repository already uses that tracker workflow.
 - For multi-slice work, clarify material ambiguity, then outline one goal, dependencies, and a completion check for each slice. Plan the smallest slice; finish, verify, and review it before starting the next. If a blocker or new scope appears, plan again rather than expanding silently.
 - For small, self-contained work, inspect relevant files and callers, make the requested change, run the closest check, and review it; skip the issue tree.
-- Discuss or outline unfamiliar, multi-step work before implementation. Default to the Matt workflow: clarify uncertain domain decisions with `/skill:grill-with-docs`, keep small tasks lightweight, and use `/skill:implement` for code changes; it coordinates TDD and review where appropriate. Use `/skill:tdd` for a focused test-first loop and `/skill:code-review` for review-only work. Use `to-spec` and `to-tickets` only when the repository already uses that tracker workflow. Invoke supporting skills and specialist agents only when needed; choose one primary skill per phase.
+- Discuss or outline unfamiliar, multi-step work before implementation. Default to the Matt workflow: clarify uncertain domain decisions, keep small tasks lightweight, and use TDD and review where appropriate. The user can invoke `/skill:implement` for work based on a spec or tickets and `/skill:grill-with-docs` for design clarification. Use `/skill:tdd` for a focused test-first loop and `/skill:code-review` for review-only work. Use `to-spec` and `to-tickets` only when the repository already uses that tracker workflow. Invoke supporting skills and specialist agents only when needed; choose one primary skill per phase.
 - For Go code reviews, use `/skill:go-code-review` as a companion to the primary review workflow; pass its lens to delegated reviewers.
 - After successful verification and review, create one focused atomic Conventional Commit unless I opt out.
 - Follow the Worktrunk task workflow below for branch bases, PR history, local integration, and cleanup.

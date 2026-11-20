@@ -6,7 +6,7 @@ disable-model-invocation: true
 
 # Pi Skill Router
 
-Invoke this router when asked to choose a skill or workflow. It directs the task; it does not define another process.
+Use this router when the user invokes it to choose a skill or workflow. Skills marked `disable-model-invocation: true` require the user to invoke their commands; suggest those commands rather than invoking them automatically.
 
 ## Precedence
 
@@ -19,14 +19,15 @@ Invoke this router when asked to choose a skill or workflow. It directs the task
 
 | Work | Primary route |
 |---|---|
-| Clarify an uncertain design or domain decision | `/skill:grill-with-docs` |
-| Make a small, self-contained change | Inspect the relevant files and use `/skill:implement`; it coordinates TDD and review where appropriate, while small jobs skip specs and tickets |
-| Handle unfamiliar or multi-step work | Discuss or outline the work; use `/skill:to-spec` and `/skill:to-tickets` only when the repository already uses that tracker workflow |
-| Diagnose a hard bug | `/skill:diagnosing-bugs`, then `/skill:implement` and test the fix |
-| Improve architecture or domain language | `/skill:improve-codebase-architecture` or `/skill:domain-modeling` |
+| Clarify an uncertain design or domain decision | Discuss it, or suggest `/skill:grill-with-docs` |
+| Make a small, self-contained change | Inspect relevant files, make the change, verify and review; skip specs and tickets |
+| Build work based on a spec or tickets | Suggest `/skill:implement` |
+| Handle unfamiliar or multi-step work | Discuss or outline the work; suggest `/skill:to-spec` and `/skill:to-tickets` only when the repository already uses that tracker workflow |
+| Diagnose a hard bug | `/skill:diagnosing-bugs`, then make and test the fix |
+| Improve architecture or domain language | Suggest `/skill:improve-codebase-architecture` or use `/skill:domain-modeling` |
 | Run a focused test-first loop | `/skill:tdd` alongside the implementation task |
 | Review changes without implementing | `/skill:code-review` |
-| Learn a concept or teach it back | `/skill:teach` |
+| Learn a concept or teach it back | Suggest `/skill:teach` |
 | Walk through a step only a human can perform | `/skill:wizard` |
 
 ## Specialist agents

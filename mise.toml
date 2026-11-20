@@ -25,6 +25,10 @@ run = "bash tests/test-pi-plan-mode-cleanup.sh"
 description = "Test the Pi smart-zone context status extension"
 run = "node --test tests/test-pi-smart-zone.mjs"
 
+[tasks."test:pi:obsidian-learning"]
+description = "Test Pi learning-capture authorization and cancellation"
+run = "node --disable-warning=ExperimentalWarning --experimental-strip-types --test tests/test-pi-obsidian-learning.mjs"
+
 [tasks."test:vale:changed"]
 description = "Reject new Vale findings in changed Markdown files"
 run = "bash tests/vale-new-findings.sh origin/main"
@@ -59,6 +63,7 @@ depends = [
   "test:pi:skills",
   "test:pi:plan-mode-cleanup",
   "test:pi:smart-zone",
+  "test:pi:obsidian-learning",
   "test:pi:safety-gate",
   "test:vale:baseline",
 ]

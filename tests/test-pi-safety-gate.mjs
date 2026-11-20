@@ -111,6 +111,28 @@ test("allowed actions do not emit safety events", async () => {
 	assert.deepEqual(emitted, []);
 });
 
+test("headless project-scoped subagents are blocked even when confirmation is disabled", async () => {
+	const handlers = new Map();
+	safetyGate({ on: (event, handler) => handlers.set(event, handler) });
+	const call = handlers.get("tool_call");
+	for (const agentScope of ["project", "both"]) {
+		for (const request of [
+			{ agent: "scout", task: "inspect" },
+			{ tasks: [{ agent: "scout", task: "inspect" }] },
+			{ chain: [{ agent: "scout", task: "inspect" }] },
+		]) {
+			for (const confirmProjectAgents of [undefined, true, false]) {
+				const event = { toolName: "subagent", input: { ...request, agentScope, confirmProjectAgents } };
+				assert.equal((await call(event, headless))?.block, true);
+				assert.equal(await call(event, tui), undefined);
+			}
+		}
+	}
+	for (const agentScope of [undefined, "user"]) {
+		assert.equal(await call({ toolName: "subagent", input: { agent: "scout", task: "inspect", agentScope } }, headless), undefined);
+	}
+});
+
 // --- Tier 2: externally visible or destructive actions ask ----------------
 
 test("delivery, destructive, privileged, and remote commands require confirmation", () => {

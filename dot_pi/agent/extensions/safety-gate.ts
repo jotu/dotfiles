@@ -357,6 +357,12 @@ export function classifyToolCall(toolName: string, input: ToolInput, { cwd, hasU
 	const ask = (category: SafetyCategory, reason: string, promptDetail: string): SafetyDecision =>
 		hasUI ? { action: "confirm", category, reason, promptDetail } : { action: "block", category, reason, needsAttention: true };
 
+	// Project-agent discovery is independent of Pi's project trust and the bundled
+	// subagent skips its confirmation in headless mode. Fail closed even for "both".
+	if (toolName === "subagent" && !hasUI && (input.agentScope === "project" || input.agentScope === "both")) {
+		return ask("file_scope", "running project-scoped subagents", "");
+	}
+
 	if (fileTools.has(toolName)) {
 		const path = typeof input.path === "string" ? input.path : ".";
 		if (isSecretPath(path, cwd)) return block("credential", "accessing protected credential or secret material");
