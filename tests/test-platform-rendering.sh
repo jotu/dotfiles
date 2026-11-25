@@ -99,6 +99,7 @@ for os in darwin; do
     check_toml "$base_output" '.bootstrap.brew.taps | has("jundot/omlx") | not' 'omlx tap absent'
     check_toml "$base_output" '.bootstrap.packages."brew:jundot/omlx/omlx" == null' 'omlx package absent'
     check_toml "$base_output" '.bootstrap.packages."brew:curl" == "latest"' 'brew curl'
+    check_toml "$base_output" '.bootstrap.packages."brew:thefuck" == "latest" and .tools."pipx:thefuck" == null' 'Homebrew thefuck replaces pipx'
     check_toml "$base_output" '.bootstrap.packages."brew-cask:nikitabobko/tap/aerospace" == "latest"' 'aerospace cask'
     check_toml "$base_output" '.bootstrap.packages."brew-cask:signal" == "latest"' 'signal cask'
     check_toml "$base_output" '.bootstrap.packages."brew-cask:discord" == "latest"' 'discord cask'

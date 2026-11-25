@@ -36,6 +36,12 @@ Aliases for optional tools are defined only when the command is installed. Mise 
 
 `sar` and `avr` are shell functions because SSH-agent and AWS Vault environment changes must persist in the current shell.
 
+## Command correction
+
+Chezmoi declares `thefuck` as a Homebrew package in Mise's package bootstrap. After applying the dotfiles, install or reconcile that package with `mise bootstrap packages apply brew:thefuck`; this does not run a general `mise install`. The shell loads the `fuck` alias on first use.
+
+If an older Mise-managed Python installation shadows the Homebrew executable, inspect it with `mise ls --installed` and `command -v thefuck`. After verifying `/opt/homebrew/bin/thefuck --version`, remove the old `pipx:thefuck` version with `mise uninstall pipx:thefuck@<version>`, then restart the shell and check `thefuck --version`. Preserve the older installation if another project still needs it.
+
 ## Sofka Kubernetes TUI
 
 Sofka is installed through Mise from its GitHub release artifacts and configured at `~/.config/sofka/config.toml`. The profile sets `readonly = false`, enabling mutating actions subject to the current Kubernetes context's permissions. The profile uses the Catppuccin Macchiato skin. Use `sofka` alongside `k9s` for development and personal clusters; keep `k9s` for production until Sofka has signed/notarized artifacts, SBOMs, provenance attestations, compatibility documentation, and a longer production track record.
