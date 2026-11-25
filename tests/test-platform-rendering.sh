@@ -84,7 +84,6 @@ for os in darwin; do
   check_toml "$base_output" '.tools."npm:opencode-ai" == null' 'opencode not managed'
   check_toml "$base_output" '.settings.npm.package_manager == "npm"' 'npm package manager'
   check_toml "$base_output" '(.tasks | has("pi:plan-mode:sync")) == false' 'plan-mode sync removed'
-  check_toml "$base_output" '(.tasks | has("pi:plan-mode:remove"))' 'explicit plan-mode cleanup exists'
   check_toml "$base_output" '(.tasks | has("pi:subagent:sync"))' 'subagent sync retained'
     check_toml "$base_output" '(.tasks | has("omlx:model:install"))' 'omlx install on darwin'
     check_toml "$base_output" '(.tasks | has("omlx:start"))' 'omlx start on darwin'

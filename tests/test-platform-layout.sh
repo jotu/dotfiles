@@ -29,7 +29,6 @@ absent() {
 bash -n "$repo_root/bootstrap"
 bash -n "$repo_root/tests/test-platform-layout.sh"
 bash -n "$repo_root/tests/test-pi-skills.sh"
-bash -n "$repo_root/dot_config/mise/scripts/executable_manage-addy-pi-skills"
 not_contains bootstrap 'omarchy_ai_commands='
 contains bootstrap 'This macOS bootstrap supports Apple Silicon only.'
 contains bootstrap 'curl -fsSL https://mise.run | sh'
@@ -175,9 +174,7 @@ contains dot_pi/agent/extensions/worktrunk.ts 'agent_settled'
 contains dot_pi/agent/extensions/worktrunk.ts 'session_shutdown'
 not_contains dot_pi/agent/extensions/worktrunk.ts 'pi.on("agent_end"'
 not_contains dot_config/mise/conf.d/00-base.toml.tmpl '[tasks."pi:plan-mode:sync"]'
-contains dot_config/mise/conf.d/00-base.toml.tmpl '[tasks."pi:plan-mode:remove"]'
 absent dot_config/mise/scripts/executable_install-pi-plan-mode
-bash -n "$repo_root/dot_config/mise/scripts/executable_remove-pi-plan-mode"
 contains dot_config/mise/conf.d/00-base.toml.tmpl '[tasks."pi:subagent:sync"]'
 contains dot_config/mise/conf.d/00-base.toml.tmpl '[tasks."pi:matt:skills:install"]'
 not_contains dot_config/mise/conf.d/00-base.toml.tmpl '[tasks."herdr:pi:install"]'
@@ -199,8 +196,6 @@ contains docs/platform-ownership.md 'mise also trusts the same config path in th
 contains dot_config/mise/scripts/executable_manage-matt-pi-skills.tmpl 'skills/engineering and skills/productivity'
 contains dot_pi/agent/agents/scout.md 'name: scout'
 contains dot_pi/agent/prompts/implement-and-review.md 'subagent tool'
-contains dot_config/mise/conf.d/00-base.toml.tmpl '[tasks."pi:addy:skills:remove"]'
-contains dot_config/mise/conf.d/00-base.toml.tmpl 'pi:addy:skills:remove'
 not_contains dot_config/mise/conf.d/00-base.toml.tmpl 'pi:addy:skills:install'
 not_contains dot_config/mise/conf.d/00-base.toml.tmpl 'pi:addy:skills:update'
 # Rex defaults remain unchanged until the user adds a specific customization.
@@ -215,7 +210,6 @@ not_contains .chezmoiremove '.pi/agent/extensions/rex-agent-state.ts'
 not_contains dot_pi/agent/AGENTS.md 'rex-agent-state.ts'
 contains docs/pi.md 'rex skill status'
 contains docs/pi.md 'PI_PROGRAM_STATUS'
-contains docs/pi.md 'rex-agent-state.ts'
 absent dot_pi/agent/extensions/joyful-workflow.ts
 for skill in joyful-code-review joyful-implementation joyful-planning joyful-principles joyful-verification joyful-workflow; do
   absent "dot_pi/agent/skills/$skill"

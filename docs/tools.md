@@ -44,10 +44,6 @@ Sofka is installed through Mise from its GitHub release artifacts and configured
 
 Mise installs superfile and zoxide. The Chezmoi config enables the zoxide navigation modal; press `z` inside superfile. The config lives at `~/Library/Application Support/superfile/config.toml` and selects the built-in Catppuccin Macchiato theme. Launch it with `sf` or `spf`.
 
-## Retired multiplexers
-
-A temporary Chezmoi run-once script uninstalls Mise-managed Herdr and TUIOS versions and removes selected integration and session files. It skips symlinked paths and files inside Git worktrees and fails so Chezmoi can retry; inspect skipped paths manually and preserve any worktrees. Run it on both Macs before removing the temporary cleanup from the repository. It does not uninstall copies managed outside Mise.
-
 ## GitHub pull request dashboard
 
 This setup uses gh-dash as a pinned GitHub CLI extension. Mise manages `gh`. Homebrew is not required for this integration.

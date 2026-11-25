@@ -31,13 +31,12 @@ mise run gh:auth:status:all
 | Rex, Sofka, superfile, gh-dash, Zed, aliases | [docs/tools.md](docs/tools.md) |
 | Git identity, GitHub profiles, SSH and signing setup | [docs/git-identity.md](docs/git-identity.md) |
 | Every Chezmoi data key that templates read | [docs/data-keys.md](docs/data-keys.md) |
-| Atuin history migration (one-off runbook) | [docs/runbooks/atuin-history-migration.md](docs/runbooks/atuin-history-migration.md) |
 | Working agreement: Tidy First and CUPID | [docs/working-agreement-tidy-cupid.md](docs/working-agreement-tidy-cupid.md) |
 | Agent rules and repository conventions | [AGENTS.md](AGENTS.md), [GLOSSARY.md](GLOSSARY.md) |
 
-## Platform profiles
+## Tool management
 
-- **macOS:** Mise manages packages through its Homebrew-compatible backend, along with CLI tools and runtimes.
+Mise manages macOS packages through its Homebrew-compatible backend, along with CLI tools and runtimes.
 
 Tool versions are pinned in `dot_config/mise/conf.d/00-base.toml.tmpl` and `mise.toml`; Renovate proposes updates.
 

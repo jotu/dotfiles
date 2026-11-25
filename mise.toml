@@ -13,10 +13,6 @@ run = "bash tests/test-platform-layout.sh"
 description = "Render and validate macOS platform templates"
 run = "bash tests/test-platform-rendering.sh"
 
-[tasks."test:retired-multiplexers"]
-description = "Test retired multiplexer cleanup in an isolated home"
-run = "bash tests/test-retired-multiplexers.sh"
-
 [tasks."test:omlx:model"]
 description = "Test pinned oMLX model installation without network access"
 run = "bash tests/test-omlx-model-install.sh"
@@ -26,12 +22,8 @@ description = "Test oMLX profile boundaries without a configured home"
 run = "bash tests/test-omlx-profile.sh"
 
 [tasks."test:pi:skills"]
-description = "Test Matt skill setup and explicit Addy cleanup without changing global skills"
-run = "bash tests/test-pi-skills.sh && bash tests/test-pi-addy-skills.sh"
-
-[tasks."test:pi:plan-mode-cleanup"]
-description = "Test legacy plan-mode cleanup and its Chezmoi hook"
-run = "bash tests/test-pi-plan-mode-cleanup.sh"
+description = "Test Matt skill setup without changing global skills"
+run = "bash tests/test-pi-skills.sh"
 
 [tasks."test:pi:subagent-installer"]
 description = "Test bundled subagent discovery and installation"
@@ -77,14 +69,12 @@ run = "bash tests/test-git-credentials.sh"
 description = "Run every offline test that CI runs (excludes the Vale diff against origin/main)"
 depends = [
   "test:platform",
-  "test:retired-multiplexers",
   "test:omlx:model",
   "test:omlx:profile",
   "test:templates",
   "test:data-keys",
   "test:git-credentials",
   "test:pi:skills",
-  "test:pi:plan-mode-cleanup",
   "test:pi:subagent-installer",
   "test:pi:renovate",
   "test:pi:smart-zone",

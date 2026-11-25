@@ -367,69 +367,28 @@ test("file tools block protected paths including symlink aliases", () => {
 	});
 });
 
-test("tool-owned integration files are readable but not writable", () => {
-	const herdr = join(homedir(), ".pi", "agent", "extensions", "herdr-agent-state.ts");
-	const tuios = "~/.pi/agent/extensions/tuios-agent-state.ts";
-	for (const path of [herdr, tuios]) {
-		for (const tool of ["read", "grep", "ls"]) {
-			assert.deepEqual(classifyToolCall(tool, { path }, tui), { action: "allow" }, `${tool} ${path}`);
-		}
-		for (const tool of ["write", "edit"]) {
-			const decision = classifyToolCall(tool, { path }, tui);
-			assert.equal(decision.action, "block", `${tool} ${path}`);
-			assert.equal(decision.category, "file_scope", `${tool} ${path}`);
-		}
-	}
-	for (const command of [
-		`cat ${tuios}`,
-		`head -40 ${herdr}`,
-		`rg -n herdr ${herdr} | head`,
-		`diff -u ${tuios} ${tuios}.tuios.bak`,
-		`cat ${herdr} 2>/dev/null`,
-		`grep -n pi ${herdr} 2>&1 || true`,
-		"cat $HOME/.pi/agent/extensions/herdr-agent-state.ts",
-		"git log --oneline -- herdr-agent-state.ts",
-		"ls -la ~/.pi/agent/extensions/",
-		`diff -u /tmp/a ${herdr} && echo "HERDR: identical"`,
-		`printf '%s\\n' ${tuios}; stat ${tuios}`,
-		`jq -R . ${herdr} | head`,
-		"cd ~/.pi/agent/extensions && ls",
-		"find ~/.pi/agent/extensions -name '*.ts'",
-		"rg -il 'herdr|tuios' ~/.pi/agent/extensions/",
-		"rg -n Pi /tmp/tuios-agent-state.md",
-		"curl -fsSL https://example.com/tuios-agent-state.md -o /tmp/tuios-agent-state.md",
-	]) {
+test("shell access to installed extensions remains read-only", () => {
+	for (const command of ["ls ~/.pi/agent/extensions/", "cat ~/.pi/agent/extensions/safety-gate.ts", "cd ~/.pi/agent/extensions && ls"]) {
 		assert.deepEqual(bash(command), { action: "allow" }, command);
 	}
-	for (const command of [
-		`echo x > ${tuios}`,
-		`sed -i '' s/a/b/ ${herdr}`,
-		`cp /tmp/x ${tuios}`,
-		`rm ${herdr}`,
-		`cat ${herdr} | tee ${tuios}`,
-		"cd ~/.pi/agent/extensions && sed -i '' s/a/b/ herdr-agent-state.ts",
-		`rm ${herdr};true`,
-		`cp /tmp/x ${herdr}&&true`,
-		`sed -i '' s/a/b/ ${herdr}>/dev/null`,
-		`mv ${herdr}{,.x}`,
-		"rm ~/.pi/agent/extensions/herdr-agent-state.t?",
-		"cd ~/.pi/agent/extensions && rm *",
-		"rm ~/.pi/agent/extensions/*.ts",
-		`rg --pre rm x ${herdr}`,
-		`rg --pre=rm x ${herdr}`,
-		`git diff --output=${herdr}`,
-		`git grep -O x -- ${herdr}`,
-		`echo x > ${herdr}`,
-		`less ${herdr}`,
-		"find ~/.pi/agent/extensions -name '*state*' -delete",
-		"rm ~/.pi/agent/extensions/herdr-agent-state*",
-		"cd ~/.pi/agent && rm extensions/herdr-agent-state.*",
-		"cd ~/.pi/agent/extensions && mv tuios-agent-state.[t]s x",
-	]) {
+	for (const command of ["rm ~/.pi/agent/extensions/safety-gate.ts", "cd ~/.pi/agent/extensions && rm *", "find ~/.pi/agent/extensions -delete", "echo x > $HOME/.pi/agent/extensions/example.ts"]) {
 		const decision = bash(command);
 		assert.equal(decision.action, "block", command);
 		assert.equal(decision.category, "file_scope", command);
 	}
+});
+
+test("retired integration paths use normal workspace and credential safeguards", () => {
+	withWorktree((worktree) => {
+		const context = { cwd: worktree, hasUI: true };
+		for (const name of ["herdr", "tuios"]) {
+			const local = `src/${name}-agent-state.ts`;
+			const outside = join(homedir(), ".pi", "agent", "extensions", `${name}-agent-state.ts`);
+			assert.deepEqual(classifyToolCall("write", { path: local }, context), { action: "allow" });
+			assert.equal(classifyToolCall("write", { path: outside }, context).action, "confirm");
+			assert.equal(classifyToolCall("read", { path: ".env" }, context).category, "credential");
+		}
+	});
 });
 
 // --- Write scoping: edits outside the workspace ask, reads never do --------

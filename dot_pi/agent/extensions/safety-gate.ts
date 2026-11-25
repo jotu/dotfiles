@@ -1,6 +1,6 @@
 // Best-effort safety gate for Pi tool calls.
 //
-//   block   — credential/secret access and edits to Herdr/TUIOS-owned files. Never promptable.
+//   block   — credential/secret access and shell modifications of installed Pi extensions.
 //   confirm — delivery, destructive, privileged, or remote commands, and writes outside the
 //             repository's worktrees. Blocks instead when no UI can ask (print/JSON, subagents).
 //   allow   — everything else, including reads anywhere.
@@ -72,10 +72,6 @@ function isSecretPath(inputPath: string, cwd: string): boolean {
 	return !path || secretRoots.some((root) => isWithin(root, path)) || isSecretFileName(basename(path));
 }
 
-// Herdr and TUIOS install and own these extensions: agents may read them, never change them.
-const toolOwnedFiles = canonicalAll(["herdr", "tuios"].map((tool) => join(home, ".pi", "agent", "extensions", `${tool}-agent-state.ts`)));
-const toolOwnedReason = "modifying a tool-owned integration file (only read-only commands are allowed)";
-
 // Every worktree of the session's repository is writable, so a session in the primary checkout
 // can work in its Worktrunk task worktrees. Outside Git, only the session directory is.
 function worktreeRoots(cwd: string): string[] {
@@ -138,26 +134,22 @@ function credentialReason(command: string): string | undefined {
 	return credentialCommands.find(([pattern]) => pattern.test(command))?.[1];
 }
 
-// The integration file names (including globs and braces, but not other extensions such as `.md`), the
-// extensions directory, and wildcards inside it. Matching is by name, so same-named files elsewhere
-// are read-only in shell commands too.
-const toolOwnedMention = /(?:herdr|tuios)-agent-state(?!\.(?!t)\w)|\.pi\/agent\/extensions(?:\/?(?=$|[\s"'`;&|<>)])|\/[^\s"'`;&|<>]*[*?[{])/;
-// Pagers such as `less` are excluded because they can run shell commands.
+// Shell commands mentioning the installed Pi extension directory must be read-only.
+const extensionDirectoryMention = /\.pi\/agent\/extensions(?:\/?(?=$|[\s"'`;&|<>)])|\/[^\s"'`;&|<>]*[*?[{]|\/[^\s"'`;&|<>]+)/;
 const readOnlyCommands = new Set(["cat", "head", "tail", "wc", "diff", "ls", "stat", "file", "grep", "rg", "jq", "find", "sort", "uniq", "cut", "sha256sum", "shasum", "echo", "printf", "true", "cd", "pwd"]);
 const readOnlyGitCommands = new Set(["diff", "log", "show", "blame", "status", "grep"]);
 
 function isReadOnly(segment: string): boolean {
 	const [name = "", subcommand = ""] = segment.split(/\s+/);
 	const command = basename(name);
-	// These options run programs or write files.
 	if (command === "rg") return !/\s(?:--pre\b|--search-zip\b|-[A-Za-z]*z)/.test(segment);
 	if (command === "find") return !/\s-(?:delete|exec|execdir|ok|okdir|fprint\w*|fls)\b/.test(segment);
 	if (command === "git") return readOnlyGitCommands.has(subcommand) && !/\s(?:--output\b|--open-files-in-pager\b|-O)/.test(segment);
 	return readOnlyCommands.has(command);
 }
 
-function modifiesToolOwnedFile(command: string): boolean {
-	if (!toolOwnedMention.test(command)) return false;
+function modifiesExtensionDirectory(command: string): boolean {
+	if (!extensionDirectoryMention.test(command)) return false;
 	const benign = command.replace(/\s\d?>\s*\/dev\/null\b|\s\d?>&\d\b/g, " ").replace(/\$(?:HOME\b|\{HOME\})/g, "~");
 	return /[>`$]|<\(/.test(benign) || !commandSegments(benign).every(isReadOnly);
 }
@@ -367,8 +359,6 @@ export function classifyToolCall(toolName: string, input: ToolInput, { cwd, hasU
 		const path = typeof input.path === "string" ? input.path : ".";
 		if (isSecretPath(path, cwd)) return block("credential", "accessing protected credential or secret material");
 		if (toolName !== "write" && toolName !== "edit") return { action: "allow" };
-		const target = canonicalInput(path, cwd);
-		if (target && toolOwnedFiles.includes(target)) return block("file_scope", toolOwnedReason);
 		return isWritable(path, cwd, cwd) ? { action: "allow" } : ask("file_scope", outsideWorktrees, path);
 	}
 	if (toolName !== "bash" && toolName !== "powershell") return { action: "allow" };
@@ -378,7 +368,7 @@ export function classifyToolCall(toolName: string, input: ToolInput, { cwd, hasU
 
 	const credential = credentialReason(command);
 	if (credential) return block("credential", credential);
-	if (modifiesToolOwnedFile(command)) return block("file_scope", toolOwnedReason);
+	if (modifiesExtensionDirectory(command)) return block("file_scope", "modifying installed Pi extensions with a shell command");
 	const rule = riskyRule({ command, cwd: commandCwd, sessionCwd: cwd });
 	if (rule) return ask(rule.category, rule.reason, redacted(command, rule.reason));
 	if (shellWriteTargets(command).some((target) => !isWritable(target, commandCwd, cwd))) return ask("file_scope", outsideWorktrees, command);

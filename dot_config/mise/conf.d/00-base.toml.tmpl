@@ -305,10 +305,6 @@ hide = true
 description = "Update Proton CLI via mise hook"
 run = "mise run proton:cli:update"
 
-[tasks."pi:plan-mode:remove"]
-description = "Remove the retired Pi plan-mode extension after confirmation"
-run = "bash \"$HOME/.config/mise/scripts/remove-pi-plan-mode\""
-
 [tasks."pi:subagent:sync"]
 description = "Sync Pi's bundled sub-agent extension"
 run = "bash \"$HOME/.config/mise/scripts/install-pi-subagent\""
@@ -356,10 +352,6 @@ run = '''
   fi
 '''
 {{- end }}
-
-[tasks."pi:addy:skills:remove"]
-description = "Remove verified Addy skills from this Pi installation"
-run = "bash \"$HOME/.config/mise/scripts/manage-addy-pi-skills\" remove"
 
 [tasks."omlx:model:install"]
 {{- if .work.enable }}

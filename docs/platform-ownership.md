@@ -4,8 +4,6 @@
 
 This repository targets Apple Silicon macOS. Mise manages host packages, developer tools, runtimes, and Worktrunk; AeroSpace manages window tiling. Project-specific runtime overrides belong in project Mise configuration. Worktrunk places task checkouts under `~/.worktrunk/<owner>/<repo>/<branch-slug>`, outside the repository.
 
-Removing the source does not remove all installed Herdr and TUIOS files. Git worktrees must remain untouched.
-
 Keep the primary checkout clean on the default (`main`) branch, and run `git pull --ff-only` there before `wt switch --create <branch>`. Worktrunk uses the default branch's local ref and does not fetch; existing task worktrees do not advance automatically when `main` changes.
 
 After you trust the `mise` config in a repository's main checkout with `mise trust`, mise also trusts the same config path in that repository's Git worktrees; no blanket trust for `~/.worktrunk` is needed. Paranoid mode disables inherited worktree trust, so trust each config explicitly in that mode.
