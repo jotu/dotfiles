@@ -1,4 +1,4 @@
-# Shared aliases and functions for Bash and Zsh on Omarchy and macOS.
+# Shared shell aliases and functions for macOS.
 if command -v zoxide >/dev/null 2>&1; then
   alias f='z'
   zd() {
@@ -41,11 +41,7 @@ if command -v fzf >/dev/null 2>&1 && command -v scp >/dev/null 2>&1; then
       return 1
     fi
     local file
-{{- if eq .chezmoi.os "linux" }}
-    file=$(find . -type f -printf '%T@\t%p\n' | sort -rn | cut -f2- | ff) && [ -n "$file" ] && scp "$file" "$1"
-{{- else }}
     file=$(find . -type f -print | ff) && [ -n "$file" ] && scp "$file" "$1"
-{{- end }}
   }
 fi
 
@@ -54,13 +50,6 @@ alias cl='clear'
 alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
-{{- if eq .chezmoi.os "linux" }}
-if command -v xdg-open >/dev/null 2>&1; then
-  open() (
-    xdg-open "$@" >/dev/null 2>&1 &
-  )
-fi
-{{- end }}
 if command -v tv >/dev/null 2>&1; then
   alias al='tv alias'
   alias tva='tv alias'
@@ -120,10 +109,7 @@ if command -v mise >/dev/null 2>&1 && command -v aws-vault >/dev/null 2>&1; then
   avr() { eval "$(mise run --silent aws-vault:refresh)"; }
 fi
 
-# Omarchy developer shortcuts. Optional commands are only defined when installed.
-if command -v omarchy-agent >/dev/null 2>&1; then
-  alias a='omarchy-agent --inline'
-fi
+# Optional developer shortcuts.
 if command -v claude >/dev/null 2>&1; then
   alias cx='claude'
 fi
@@ -152,10 +138,6 @@ if command -v tdl >/dev/null 2>&1; then
 fi
 
 # Common developer tools. Optional commands are only aliased when installed.
-if command -v herdr >/dev/null 2>&1; then
-  alias h='herdr'
-  alias hr='herdr'
-fi
 if command -v chezmoi >/dev/null 2>&1; then
   alias cm='chezmoi'
 fi
@@ -229,21 +211,17 @@ if command -v sk >/dev/null 2>&1; then
   alias skN="sk -N" # Only prompt for namespace selection
   alias skc="sk -c" # Print the currently selected context and namespace
 fi
-{{- if eq .chezmoi.os "darwin" }}
 if command -v brew >/dev/null 2>&1; then
   alias bud='brew update'
   alias bug='brew upgrade'
 fi
-{{- end }}
 {{- if .work.enable }}
-{{- if eq .chezmoi.os "darwin" }}
 if command -v kinit >/dev/null 2>&1; then
   alias kinit="kinit --keychain {{ .work.employee.code }}@{{ .work.domain.name }}"
 fi
 if command -v open >/dev/null 2>&1 || command -v mise >/dev/null 2>&1; then
   alias goedemorgen='if command -v open >/dev/null; then open -a "Firefox" "{{ .work.saml.auth.url }}?nocache=$(date +%s)"; fi; if command -v mise >/dev/null; then mise tb:aws:login; fi'
 fi
-{{- end }}
 if command -v mise >/dev/null 2>&1; then
   alias ghlw='mise run gh:auth:login:work'
   alias ghsa='mise run gh:auth:status:all'

@@ -48,17 +48,14 @@ test("Pi has an explicit non-automerge grouping rule", () => {
 });
 
 test("rendered profiles pin Pi only where Mise owns it", () => {
-  for (const os of ["darwin", "linux"]) {
+  for (const os of ["darwin"]) {
     for (const work of [false, true]) {
       const data = JSON.stringify({ ...fixture, chezmoi: { os, arch: "arm64" }, work: { ...fixture.work, enable: work } });
       const toml = execFileSync("chezmoi", ["--config", "/dev/null", "--config-format", "toml", "execute-template", "--source", root, "--override-data", data, "--file", templatePath], { encoding: "utf8" });
       const parsed = JSON.parse(execFileSync("chezmoi", ["--config", "/dev/null", "--config-format", "toml", "execute-template", "--with-stdin", "{{ .chezmoi.stdin | fromToml | toJson }}"], { input: toml, encoding: "utf8" }));
       const pi = parsed.tools[`npm:${packageName}`];
-      if (os === "linux") assert.equal(pi, undefined);
-      else {
-        assert.match(pi.version, /^\d+\.\d+\.\d+$/);
-        assert.match(pi.postinstall, /install-pi-subagent/);
-      }
+      assert.match(pi.version, /^\d+\.\d+\.\d+$/);
+      assert.match(pi.postinstall, /install-pi-subagent/);
     }
   }
 });

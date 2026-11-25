@@ -42,9 +42,6 @@ if command -v tv >/dev/null; then
   load_or_generate_completion "$_zc_cache_dir/television.zsh" "source <(tv init zsh)"
 fi
 
-if [[ -r "$HOME/.config/zsh/completions/_tuios" ]]; then
-  source "$HOME/.config/zsh/completions/_tuios"
-fi
 
 {{- if .work.enable }}
 

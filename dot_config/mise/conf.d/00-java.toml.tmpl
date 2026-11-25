@@ -2,7 +2,5 @@
 [tools]
 java = "temurin-25"
 
-{{- if eq .chezmoi.os "darwin" }}
 [bootstrap.packages]
 "brew:maven" = "latest"
-{{- end }}

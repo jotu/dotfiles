@@ -7,7 +7,7 @@
 
 # Dotfiles
 
-Chezmoi-managed dotfiles for Omarchy/Linux and Apple Silicon macOS. Everything except sensitive, machine-specific data lives here, so a new computer can be set up and kept in sync.
+Chezmoi-managed dotfiles for Apple Silicon macOS. Everything except sensitive, machine-specific data lives here, so a new computer can be set up and kept in sync.
 
 ## Daily commands
 
@@ -28,7 +28,7 @@ mise run gh:auth:status:all
 | Set up a new machine and verify it | [docs/bootstrap.md](docs/bootstrap.md) |
 | Platform ownership, Worktrunk, Mise conventions, machine data | [docs/platform-ownership.md](docs/platform-ownership.md) |
 | Pi skills, subagents, safety model, Hunk review | [docs/pi.md](docs/pi.md) |
-| Herdr, TUIOS, Sofka, superfile, gh-dash, Zed, aliases | [docs/tools.md](docs/tools.md) |
+| Rex, Sofka, superfile, gh-dash, Zed, aliases | [docs/tools.md](docs/tools.md) |
 | Git identity, GitHub profiles, SSH and signing setup | [docs/git-identity.md](docs/git-identity.md) |
 | Every Chezmoi data key that templates read | [docs/data-keys.md](docs/data-keys.md) |
 | Atuin history migration (one-off runbook) | [docs/runbooks/atuin-history-migration.md](docs/runbooks/atuin-history-migration.md) |
@@ -37,7 +37,6 @@ mise run gh:auth:status:all
 
 ## Platform profiles
 
-- **Omarchy/Linux:** Omarchy owns the operating system, base packages, desktop applications, and its provisioned tools. Chezmoi adds user configuration and Mise installs the rest.
 - **macOS:** Mise manages packages through its Homebrew-compatible backend, along with CLI tools and runtimes.
 
 Tool versions are pinned in `dot_config/mise/conf.d/00-base.toml.tmpl` and `mise.toml`; Renovate proposes updates.

@@ -1,4 +1,3 @@
-{{- if eq .chezmoi.os "darwin" -}}
 #!/bin/bash
 
 set -eu
@@ -34,4 +33,3 @@ fi
 if ! thefuck --version >/dev/null 2>&1; then
   echo "WARNING: thefuck is still not runnable after compatibility injection"
 fi
-{{- end -}}

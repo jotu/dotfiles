@@ -1,6 +1,6 @@
 # Chezmoi repository guide
 
-Maintain portable, secure dotfiles for macOS and Omarchy/Linux. Keep changes small, explicit, and reversible.
+Maintain secure dotfiles for Apple Silicon macOS. Keep changes small, explicit, and reversible.
 
 ## Project context
 
@@ -19,7 +19,7 @@ Maintain portable, secure dotfiles for macOS and Omarchy/Linux. Keep changes sma
 
 ## Platform and configuration
 
-- When changing shell initialization, preserve Omarchy's user-safe Bash initialization and macOS Zsh behavior. Guard optional tools, keep PATH changes predictable, and prefer cross-machine-compatible paths over hard-coded user paths.
+- When changing shell initialization, preserve macOS Zsh behavior. Guard optional tools, keep PATH changes predictable, and prefer cross-machine-compatible paths over hard-coded user paths.
 - Keep Git work/personal `includeIf` separation; source identities and signing keys from `.data`.
 - Keep initial setup and secrets guidance in `README.md` and platform-specific setup in the relevant `docs/` pages.
 - Keep GitHub Actions pinned to commit SHAs and review updates periodically.

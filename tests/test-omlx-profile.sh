@@ -4,7 +4,7 @@ set -euo pipefail
 repo_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
 tmp_dir=$(mktemp -d)
 trap 'rm -rf "$tmp_dir"' EXIT
-for profile in 'darwin false' 'darwin true' 'linux false' 'linux true'; do
+for profile in 'darwin false' 'darwin true'; do
   set -- $profile
   os="$1" work="$2"
   data=$(jq -c --arg os "$os" --argjson work "$work" --arg src "$repo_root" \
@@ -39,10 +39,6 @@ for profile in 'darwin false' 'darwin true' 'linux false' 'linux true'; do
       jq -e '[.providers.omlx.models[].id] == ["qwen3.5-9b-4bit", "qwen3.5-4b-4bit", "gpt-oss-20b-mxfp4-q4"]' "$tmp_dir/models.json" >/dev/null
       jq -e '[.enabledModels[] | select(startswith("omlx/"))] == ["omlx/qwen3.5-9b-4bit", "omlx/qwen3.5-4b-4bit", "omlx/gpt-oss-20b-mxfp4-q4"]' "$tmp_dir/settings.json" >/dev/null
     fi
-  else
-    jq -e '.tasks | (has("omlx:install") or has("omlx:model:install") or has("omlx:start") or has("omlx:restart")) | not' "$tmp_dir/base.json" >/dev/null
-    grep -Fxq '.pi/agent/models.json' "$tmp_dir/ignore"
-    jq -e '[.enabledModels[] | select(startswith("omlx/"))] | length == 0' "$tmp_dir/settings.json" >/dev/null
   fi
 done
 

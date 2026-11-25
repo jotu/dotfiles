@@ -1,13 +1,4 @@
-{{- if eq .chezmoi.os "linux" }}
-# Keep Omarchy's environment defaults without sourcing its Bash-only rc.
-if [[ -r /usr/share/omarchy/default/bash/envs ]]; then
-  source /usr/share/omarchy/default/bash/envs
-fi
-{{- end }}
-
-{{ if eq .chezmoi.os "darwin" }}
 export BREW_HOME="/opt/homebrew"
-{{ end }}
 
 # openssl
 if [[ -n "${BREW_HOME:-}" ]]; then

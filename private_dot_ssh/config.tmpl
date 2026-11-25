@@ -18,9 +18,7 @@ Host github.com
 HostName github.com
 User git
 AddKeysToAgent yes
-{{- if eq .chezmoi.os "darwin" }}
 UseKeychain yes
-{{- end }}
 IdentityFile ~/.ssh/{{ $personalIdentityFile }}
 IdentitiesOnly yes
 
@@ -28,9 +26,7 @@ Host {{ $orgAlias }}
 HostName github.com
 User git
 AddKeysToAgent yes
-{{- if eq .chezmoi.os "darwin" }}
 UseKeychain yes
-{{- end }}
 IdentityFile ~/.ssh/{{ $workOrgIdentityFile }}
 IdentitiesOnly yes
 
@@ -49,9 +45,7 @@ Host github.com
 HostName github.com
 User git
 AddKeysToAgent yes
-{{- if eq .chezmoi.os "darwin" }}
 UseKeychain yes
-{{- end }}
 IdentityFile ~/.ssh/{{ $personalIdentityFile }}
 IdentitiesOnly yes
 {{- else }}

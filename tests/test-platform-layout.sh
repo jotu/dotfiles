@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Validate the cross-platform file boundaries without applying the dotfiles.
+# Validate repository file boundaries without applying the dotfiles.
 set -euo pipefail
 
 repo_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -30,11 +30,11 @@ bash -n "$repo_root/bootstrap"
 bash -n "$repo_root/tests/test-platform-layout.sh"
 bash -n "$repo_root/tests/test-pi-skills.sh"
 bash -n "$repo_root/dot_config/mise/scripts/executable_manage-addy-pi-skills"
-contains bootstrap 'omarchy_ai_commands=(codex claude crush gemini gh opencode pi omp hunk)'
+not_contains bootstrap 'omarchy_ai_commands='
 contains bootstrap 'This macOS bootstrap supports Apple Silicon only.'
 contains bootstrap 'curl -fsSL https://mise.run | sh'
 contains bootstrap 'mise bootstrap packages apply --dry-run'
-contains bootstrap 'omarchy refresh applications'
+not_contains bootstrap 'omarchy refresh applications'
 
 # Chezmoi templates are checked with template-control lines removed and inline
 # template expressions replaced by a harmless shell word. Full rendering tests
@@ -68,10 +68,10 @@ check_templated_zsh() {
   trap - RETURN
 }
 
-check_templated_bash dot_bashrc.tmpl
-check_templated_bash dot_config/bash/completions.bash.tmpl
+absent dot_bashrc.tmpl
+absent dot_config/bash/completions.bash.tmpl
 check_templated_bash dot_config/shell/aliases.tmpl
-check_templated_bash run_onchange_before_install-applications-omarchy.sh.tmpl
+absent run_onchange_before_install-applications-omarchy.sh.tmpl
 check_templated_bash run_onchange_after_sync-pi-subagent.sh.tmpl
 check_templated_zsh dot_zshenv.tmpl
 check_templated_zsh dot_zshrc.tmpl
@@ -79,19 +79,14 @@ check_templated_zsh dot_config/zsh/aliases.zsh.tmpl
 check_templated_zsh dot_config/zsh/completions.zsh.tmpl
 check_templated_zsh dot_config/zsh/daily.zsh.tmpl
 
-contains .chezmoiignore '.aerospace.toml'
-contains .chezmoiignore 'Library/'
-contains .chezmoiignore '.config/mise/config.toml'
 contains .chezmoiignore 'renovate.json'
-contains .chezmoiignore '.bashrc'
 not_contains .chezmoiignore '.zshrc'
-contains bootstrap 'omarchy pkg add zsh'
-contains dot_bashrc.tmpl 'source "$HOME/.config/bash/completions.bash"'
-contains dot_zshrc.tmpl 'eq .chezmoi.os "linux"'
-contains dot_zshrc.tmpl 'else if eq .chezmoi.os "darwin"'
-contains dot_zshrc.tmpl '/usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh'
+not_contains bootstrap 'omarchy pkg add zsh'
+absent dot_config/bash/completions.bash.tmpl
+not_contains dot_zshrc.tmpl 'eq .chezmoi.os "linux"'
+not_contains dot_zshrc.tmpl '/usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh'
 contains dot_zshrc.tmpl '$BREW_HOME/share/zsh-autosuggestions/zsh-autosuggestions.zsh'
-contains dot_zshrc.tmpl '/usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh'
+not_contains dot_zshrc.tmpl '/usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh'
 contains dot_zshrc.tmpl '$BREW_HOME/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh'
 not_contains dot_zshrc.tmpl 'voxtype'
 contains dot_aerospace.toml "if.app-id = 'com.apple.MobileSMS'"
@@ -119,7 +114,7 @@ contains dot_config/mise/conf.d/00-base.toml.tmpl 'tap_commit="2165e75726ba83d96
 contains dot_config/mise/conf.d/00-base.toml.tmpl 'HOMEBREW_NO_AUTO_UPDATE=1'
 contains dot_omlx/modify_private_settings.json 'memory_guard_tier" "aggressive"'
 contains .chezmoiignore '.omlx/'
-contains .chezmoiignore '.pi/agent/models.json'
+not_contains .chezmoiignore '.pi/agent/models.json'
 contains .chezmoiignore 'MISSION.md'
 contains .chezmoiignore 'RESOURCES.md'
 contains .chezmoiignore 'NOTES.md'
@@ -139,7 +134,7 @@ contains dot_config/mise/conf.d/00-base.toml.tmpl 'ruby = "3"'
 contains dot_config/mise/conf.d/00-base.toml.tmpl '"brew-cask:nikitabobko/tap/aerospace" = "latest"'
 contains dot_config/mise/conf.d/00-base.toml.tmpl '"brew-cask:signal" = "latest"'
 contains dot_config/mise/conf.d/00-base.toml.tmpl '"brew-cask:discord" = "latest"'
-contains run_onchange_before_install-applications-omarchy.sh.tmpl 'omarchy pkg add discord'
+absent dot_config/systemd/user/ssh-agent.service.tmpl
 not_contains dot_config/mise/conf.d/00-base.toml.tmpl 'voxtype'
 [ ! -e "$repo_root/run_onchange_before_install-packages-darwin.sh.tmpl" ] || fail 'the Darwin package script should be removed'
 not_contains dot_zshenv.tmpl 'amd64'
@@ -151,24 +146,22 @@ contains dot_config/mise/tasks/proton/cli/executable_install 'version="2.3.3"'
 contains dot_config/mise/tasks/proton/cli/executable_install 'expected_sha256='
 contains dot_config/mise/tasks/proton/cli/executable_install 'curl --fail --silent --show-error'
 contains dot_config/mise/tasks/proton/cli/executable_update 'pass-cli update "$@"'
-contains run_onchange_before_install-applications-omarchy.sh.tmpl 'omarchy pkg add zsh zsh-autosuggestions zsh-syntax-highlighting'
+absent run_after_enable-ssh-agent.sh.tmpl
 contains dot_config/television/cable/alias.toml.tmpl 'requirements = ["zsh"]'
 contains dot_config/television/cable/recent-files.toml.tmpl 'shell = "zsh"'
 not_contains dot_config/television/cable/alias.toml.tmpl 'bash -ic'
 contains dot_config/shell/aliases.tmpl 'command -v nvim'
-contains private_dot_ssh/config.tmpl 'eq .chezmoi.os "darwin"'
+not_contains private_dot_ssh/config.tmpl 'eq .chezmoi.os "darwin"'
 not_contains dot_config/mise/conf.d/00-base.toml.tmpl 'brew "mise"'
-contains run_onchange_before_install-applications-omarchy.sh.tmpl 'eq .chezmoi.os "linux"'
-contains run_onchange_before_install-applications-omarchy.sh.tmpl 'omarchy install editor zed'
-contains run_onchange_before_install-applications-omarchy.sh.tmpl 'omarchy install browser firefox'
+not_contains bootstrap 'omarchy install'
 contains run_onchange_after_sync-pi-subagent.sh.tmpl 'command -v pi >/dev/null 2>&1'
-contains dot_config/mise/conf.d/00-base.toml.tmpl 'macOS equivalents of tools supplied by Omarchy'
+not_contains dot_config/mise/conf.d/00-base.toml.tmpl 'Omarchy'
 contains dot_config/mise/conf.d/00-base.toml.tmpl '"github:max-sixty/worktrunk" = "0.82.0"'
-contains dot_config/mise/conf.d/00-base.toml.tmpl '"go:github.com/Gaurav-Gosain/tuios/cmd/tuios" = "0.13.3"'
+not_contains dot_config/mise/conf.d/00-base.toml.tmpl 'go:github.com/Gaurav-Gosain/tuios/cmd/tuios'
 contains dot_config/mise/conf.d/00-base.toml.tmpl 'aqua:cli/cli'
-contains run_onchange_before_install-applications-omarchy.sh.tmpl 'omarchy pkg add worktrunk'
+not_contains bootstrap 'omarchy pkg add worktrunk'
 contains dot_zshrc.tmpl 'wt config shell init zsh'
-contains dot_bashrc.tmpl 'wt config shell init bash'
+contains dot_zshrc.tmpl 'wt config shell init zsh'
 contains dot_config/worktrunk/config.toml.tmpl 'worktree-path = "~/.worktrunk/{{ `{{ owner }}/{{ repo }}/{{ branch | sanitize }}` }}"'
 contains dot_config/worktrunk/config.toml.tmpl '[merge]'
 contains dot_config/worktrunk/config.toml.tmpl 'squash = true'
@@ -187,7 +180,7 @@ absent dot_config/mise/scripts/executable_install-pi-plan-mode
 bash -n "$repo_root/dot_config/mise/scripts/executable_remove-pi-plan-mode"
 contains dot_config/mise/conf.d/00-base.toml.tmpl '[tasks."pi:subagent:sync"]'
 contains dot_config/mise/conf.d/00-base.toml.tmpl '[tasks."pi:matt:skills:install"]'
-contains dot_config/mise/conf.d/00-base.toml.tmpl '[tasks."herdr:pi:install"]'
+not_contains dot_config/mise/conf.d/00-base.toml.tmpl '[tasks."herdr:pi:install"]'
 contains dot_config/mise/conf.d/00-base.toml.tmpl 'install-pi-subagent'
 contains dot_config/mise/conf.d/00-base.toml.tmpl 'pi:matt:skills:install'
 contains dot_config/mise/scripts/executable_manage-matt-pi-skills.tmpl 'MISE_INSTALLED_TOOLS'
@@ -244,14 +237,14 @@ for agent in security-auditor test-engineer web-performance-auditor; do
 done
 contains GLOSSARY.md '**Pi skill**'
 contains GLOSSARY.md '**Specialist agent**'
-contains dot_config/mise/conf.d/00-base.toml.tmpl 'eq .chezmoi.os "darwin"'
+not_contains dot_config/mise/conf.d/00-base.toml.tmpl 'eq .chezmoi.os "darwin"'
 contains dot_config/gh-work/hosts.yml.tmpl 'else if and (hasKey . "work")'
 contains dot_zshrc.tmpl 'hasKey .github "workUsername"'
 contains dot_zshrc.tmpl 'export GITHUB_TOKEN='
 contains dot_zshrc.tmpl 'gh-work'
 not_contains dot_zshenv.tmpl 'export MISE_GITHUB_TOKEN='
 not_contains dot_config/shell/aliases.tmpl 'compdef'
-contains dot_config/zsh/completions.zsh.tmpl 'source "$HOME/.config/zsh/completions/_tuios"'
+not_contains dot_config/zsh/completions.zsh.tmpl 'source "$HOME/.config/zsh/completions/_tuios"'
 contains dot_config/zsh/aliases.zsh.tmpl 'compdef ae=aerospace'
 
 # Relative Markdown links in the README and docs must resolve to existing files.

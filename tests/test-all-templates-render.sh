@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Render every Chezmoi template for each supported OS to catch syntax and data errors.
+# Render every Chezmoi template for macOS to catch syntax and data errors.
 set -euo pipefail
 
 repo_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -13,7 +13,8 @@ fixture=tests/fixtures/chezmoi-data.json
 
 failures=0
 while IFS= read -r -d '' file; do
-  for os in darwin linux; do
+  [[ -f "$file" ]] || continue
+  for os in darwin; do
     data="$(jq -c --arg os "$os" --arg src "$repo_root" \
       '. + {chezmoi: {os: $os, arch: "arm64", sourceDir: $src}}' "$fixture")"
     if ! chezmoi --config /dev/null --config-format toml execute-template --override-data "$data" \
@@ -22,7 +23,7 @@ while IFS= read -r -d '' file; do
       failures=$((failures + 1))
     fi
   done
-done < <(git ls-files -z -- '*.tmpl' ':!:.chezmoitemplates')
+done < <(git ls-files --cached --others --exclude-standard -z -- '*.tmpl' ':!:.chezmoitemplates')
 
 [[ $failures -eq 0 ]] || exit 1
-echo "All templates render for darwin and linux."
+echo "All templates render for darwin."

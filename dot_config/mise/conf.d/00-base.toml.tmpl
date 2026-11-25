@@ -71,14 +71,12 @@ description = "Validate gh, ssh agent, repo roots, and macOS tooling"
 run = '''
   set -eu
 
-{{- if eq .chezmoi.os "darwin" }}
   for command_name in mise aerospace omlx; do
     if ! command -v "$command_name" >/dev/null 2>&1; then
       echo "ERROR: $command_name not found in PATH"
       exit 1
     fi
   done
-{{- end }}
 
   expand_path() {
     case "$1" in
@@ -363,44 +361,6 @@ run = '''
 description = "Remove verified Addy skills from this Pi installation"
 run = "bash \"$HOME/.config/mise/scripts/manage-addy-pi-skills\" remove"
 
-[tasks."herdr:pi:install"]
-description = "Install Herdr's Pi lifecycle and session integration"
-run = '''
-  set -eu
-  if command -v herdr >/dev/null 2>&1 && command -v pi >/dev/null 2>&1; then
-    herdr integration install pi
-  else
-    echo "Skipping Herdr Pi integration: herdr or pi is not installed" >&2
-  fi
-'''
-
-[tasks."tuios:pi:install"]
-description = "Install TUIOS's agent-state integration and skill for Pi"
-run = '''
-  set -eu
-  if command -v tuios >/dev/null 2>&1 && command -v pi >/dev/null 2>&1; then
-    if ! tuios integration install pi; then
-      echo "WARNING: TUIOS Pi integration was not installed; run mise run tuios:pi:install to retry" >&2
-    fi
-  else
-    echo "Skipping TUIOS Pi integration: tuios or pi is not installed" >&2
-  fi
-'''
-
-[tasks."tuios:completion:sync"]
-description = "Refresh the Chezmoi-managed TUIOS Zsh completion"
-run = '''
-  set -eu
-  if command -v tuios >/dev/null 2>&1 && command -v chezmoi >/dev/null 2>&1; then
-    if ! chezmoi apply "$HOME/.config/zsh/completions/_tuios"; then
-      echo "WARNING: TUIOS Zsh completion was not refreshed; run mise run tuios:completion:sync to retry" >&2
-    fi
-  else
-    echo "Skipping TUIOS Zsh completion sync: tuios or chezmoi is not installed" >&2
-  fi
-'''
-
-{{- if eq .chezmoi.os "darwin" }}
 [tasks."omlx:model:install"]
 {{- if .work.enable }}
 description = "Download a pinned MLX model for oMLX (qwen3-14b-4bit)"
@@ -615,7 +575,6 @@ run = '''
 
   omlx restart
 '''
-{{- end }}
 
 [hooks]
 postinstall = [
@@ -625,11 +584,8 @@ postinstall = [
 {{- if .work.enable }}
   { task = "we:skills:update" },
 {{- end }}
-  { task = "tuios:pi:install" },
-  { task = "tuios:completion:sync" },
 ]
 
-{{- if eq .chezmoi.os "darwin" }}
 # Mise manages the macOS host package layer directly in the Apple Silicon
 # Homebrew prefix; a real Homebrew installation is not required.
 [bootstrap.brew.taps]
@@ -656,15 +612,11 @@ postinstall = [
 "brew-cask:font-fira-code-nerd-font" = "latest"
 "brew-cask:obsidian" = "latest"
 "brew-cask:signal" = "latest"
-{{- end }}
 
 [tools]
-{{- if eq .chezmoi.os "darwin" }}
 # Mise needs Ruby 3 to evaluate the AeroSpace tap's cask definition.
 ruby = "3"
-{{- end }}
-# These tools are not part of Omarchy's base image and are shared across
-# supported platforms. Omarchy-owned tools are intentionally absent here.
+# Developer tools managed by Mise.
 adr-tools = "latest"
 atuin = "latest"
 aws-cli = "latest"
@@ -677,9 +629,6 @@ grpcurl = "latest"
 golangci-lint = "latest"
 "go:golang.org/x/tools/gopls" = "latest"
 "go:github.com/erikkinding/sk" = "0.5.0"
-# Pin the TUIOS version whose Pi agent-state extension was reviewed; `tuios:pi:install`
-# writes that extension into ~/.pi/agent/extensions after every Mise install.
-"go:github.com/Gaurav-Gosain/tuios/cmd/tuios" = "0.13.3"
 helm = "latest"
 helm-ls = "latest"
 k6 = "latest"
@@ -710,15 +659,11 @@ vale = "latest"
 "github:errata-ai/vale-ls" = "latest"
 "github:dandavison/delta" = "latest"
 
-# Selected developer runtimes stay version-managed through Mise on both
-# platforms. macOS equivalents of tools supplied by Omarchy remain darwin-only.
-{{- if eq .chezmoi.os "darwin" }}
+# Additional macOS developer tools.
 # Pin the Worktrunk CLI version reviewed with the managed Pi activity extension.
 "github:max-sixty/worktrunk" = "0.82.0"
 fd = "latest"
 "aqua:cli/cli" = "latest"
-# Pin the Herdr version whose Pi agent-state extension was reviewed (`herdr:pi:install`).
-herdr = "0.9.5"
 hunk = "latest"
 "aqua:jqlang/jq" = "latest"
 lazygit = "latest"
@@ -731,7 +676,6 @@ lazygit = "latest"
 [tools."npm:@earendil-works/pi-coding-agent"]
 version = "1.6.0"
 postinstall = "bash \"$HOME/.config/mise/scripts/install-pi-subagent\""
-{{- end }}
 
 [settings]
 npm.package_manager = "npm"

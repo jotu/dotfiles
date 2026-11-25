@@ -2,34 +2,9 @@
 
 ## Platform ownership
 
-Use the platform's own package and application tooling before adding a repository-managed tool:
+This repository targets Apple Silicon macOS. Mise manages host packages, developer tools, runtimes, and Worktrunk; AeroSpace manages window tiling. Project-specific runtime overrides belong in project Mise configuration. Worktrunk places task checkouts under `~/.worktrunk/<owner>/<repo>/<branch-slug>`, outside the repository.
 
-| Tool or category | Omarchy/Linux | macOS |
-| --- | --- | --- |
-| Git | Omarchy base package | Mise `brew` backend |
-| Mise | Omarchy | Standalone Mise |
-| Chezmoi | Mise | Mise |
-| `gh`, Pi, Herdr, Hunk, Codex, Claude, Crush, Gemini, `omp` | Omarchy provisioning | Existing macOS/Mise setup |
-| OpenCode | Omarchy provisioning, external to this repository | Not managed in this repository |
-| Worktrunk (`wt`) | Omarchy/Arch package | mise GitHub release |
-| FD, jq, LazyGit, ripgrep, Starship, Zoxide | Omarchy base packages | Mise |
-| Kubernetes and AWS tooling | Mise | Mise |
-| Selected developer runtimes (`go`, `node`, `python`, `bun`) | Mise | Mise |
-| Project-specific runtime overrides | Mise project configuration | Mise project configuration |
-| Zed and Firefox | `omarchy install` | Existing macOS application workflow |
-| Window manager / tiling shell | Omarchy/Hyprland | AeroSpace |
-
-OS-gated source paths (see `.chezmoiignore`):
-
-| Source path | Applied on |
-| --- | --- |
-| `private_Library/`, `dot_aerospace.toml` | macOS only |
-| `dot_config/mise/config.toml`, `dot_config/mise/tasks/osx/`, `dot_pi/agent/modify_private_models.json` | macOS only |
-| `dot_bashrc.tmpl`, `dot_config/bash/`, `dot_config/systemd/` | Omarchy/Linux only |
-| `run_onchange_before_install-applications-omarchy.sh.tmpl` | Omarchy/Linux only |
-| `run_onchange_after_fix-thefuck-compat-darwin.sh.tmpl` | macOS only |
-
-The repository manages configuration for these tools on both platforms. Omarchy installs Worktrunk with `omarchy pkg add worktrunk`; macOS uses a pinned GitHub release through mise. Worktrunk places task checkouts under `~/.worktrunk/<owner>/<repo>/<branch-slug>`, outside the repository.
+Removing the source does not remove all installed Herdr and TUIOS files. Git worktrees must remain untouched.
 
 Keep the primary checkout clean on the default (`main`) branch, and run `git pull --ff-only` there before `wt switch --create <branch>`. Worktrunk uses the default branch's local ref and does not fetch; existing task worktrees do not advance automatically when `main` changes.
 
@@ -41,15 +16,11 @@ Worktrunk's `[commit.generation]` runs Pi headless (no tools, extensions, skills
 
 For a PR, fetch the target and run `wt step rebase origin/main` in the unshared task worktree before the first push. Keep the task branch's commits separate and do not use `wt merge` to prepare the PR: that command integrates into local `main` and removes the task worktree by default. GitHub's eventual PR merge strategy remains the user's choice. For repositories where you intentionally push directly to an unprotected `main`, refresh `main` and use `wt merge` to rebase and squash locally into one commit before fast-forwarding. Review the result, then push `main` separately when requested; `wt merge` does not push. Pass `--no-remove` if you want to keep the task worktree afterward.
 
-Shell integration is managed by the repository's Bash and Zsh templates rather than by `wt config shell install`, so it does not modify Chezmoi-owned shell files. Use `wt switch`, `wt list`, and `wt remove` for the normal worktree workflow.
+Shell integration is managed by the repository's Zsh templates rather than by `wt config shell install`, so it does not modify Chezmoi-owned shell files. Use `wt switch`, `wt list`, and `wt remove` for the normal worktree workflow.
 
-It does not install a second Linux copy of tools already provided by Omarchy. Omarchy's `omarchy update` remains responsible for updating its base packages and provisioned tools. On macOS, update the declared host packages and mise-managed tools manually:
+Update the declared host packages and Mise-managed tools manually:
 
 ```bash
-# Omarchy
-omarchy update
-
-# macOS
 mise exec -- mise bootstrap packages upgrade
 mise up
 ```
@@ -83,7 +54,7 @@ mise run test:vale:baseline
 mise run test:vale:changed
 ```
 
-`test:platform:render` requires Chezmoi, yq, and configured local data; it renders and validates both Linux and macOS outputs. `test:vale:changed` reports new vale findings in changed Markdown without blocking on the existing baseline. On a machine with Chezmoi and local data configured, also review `chezmoi diff` and use `chezmoi apply --dry-run`. Do not run the Omarchy installation scripts or package installs in unattended environments.
+`test:platform:render` requires Chezmoi, yq, and configured local data; it renders and validates macOS outputs. `test:vale:changed` reports new vale findings in changed Markdown without blocking on the existing baseline. On a machine with Chezmoi and local data configured, also review `chezmoi diff` and use `chezmoi apply --dry-run`.
 
 Reference sections:
 - Git and identity setup: [Git, GitHub, SSH, and signing setup](git-identity.md)

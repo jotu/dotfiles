@@ -11,14 +11,6 @@ case "$(uname -s):$(uname -m)" in
     asset="pass-cli-macos-aarch64"
     expected_sha256="3281587ac9c50ae2f1604ba75e9d1d39b6debb221b65a6cc56f64d626ede3dbc"
     ;;
-  Linux:aarch64)
-    asset="pass-cli-linux-aarch64"
-    expected_sha256="9c3e85e10d3bb631ffe377f063d996b9cc9a545d30971bcedf5910e16d03542b"
-    ;;
-  Linux:x86_64)
-    asset="pass-cli-linux-x86_64"
-    expected_sha256="b5b49a8b3fd0af8830c0c1979f28ea0c90ccece73f59023a8bca8245d4b68da9"
-    ;;
   *)
     printf 'Unsupported Proton Pass CLI platform: %s:%s\n' "$(uname -s)" "$(uname -m)" >&2
     exit 1

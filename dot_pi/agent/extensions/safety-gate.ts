@@ -392,10 +392,6 @@ type SafetyGateEvent =
 	| { phase: "resolved"; category: SafetyCategory; reason: string; outcome: "approved" | "denied" };
 
 export default function safetyGate(pi: ExtensionAPI): void {
-	let nextBlockId = 0;
-	const activeBlocks = new Set<number>();
-	const headlessBlocks = new Set<number>();
-
 	function emit(name: string, payload: unknown): void {
 		try {
 			pi.events?.emit(name, payload);
@@ -405,28 +401,6 @@ export default function safetyGate(pi: ExtensionAPI): void {
 	}
 	const emitDecision = (event: SafetyGateEvent) => emit("safety-gate:decision", event);
 
-	function beginBlock(headless: boolean): number {
-		const id = ++nextBlockId;
-		if (activeBlocks.size === 0) emit("herdr:blocked", { active: true, label: "Safety gate needs attention" });
-		activeBlocks.add(id);
-		if (headless) headlessBlocks.add(id);
-		return id;
-	}
-	function endBlock(id: number): void {
-		headlessBlocks.delete(id);
-		if (activeBlocks.delete(id) && activeBlocks.size === 0) emit("herdr:blocked", { active: false });
-	}
-	const clearHeadlessBlocks = () => {
-		for (const id of [...headlessBlocks]) endBlock(id);
-	};
-
-	pi.on("input", clearHeadlessBlocks);
-	pi.on("turn_start", clearHeadlessBlocks);
-	pi.on("agent_end", clearHeadlessBlocks);
-	pi.on("session_shutdown", () => {
-		for (const id of [...activeBlocks]) endBlock(id);
-	});
-
 	pi.on("tool_call", async (event, ctx) => {
 		const decision = classifyToolCall(event.toolName, event.input as ToolInput, { cwd: ctx.cwd, hasUI: ctx.hasUI });
 		if (decision.action === "allow") return;
@@ -434,7 +408,6 @@ export default function safetyGate(pi: ExtensionAPI): void {
 		if (decision.action === "block") {
 			emitDecision({ phase: "blocked", category: decision.category, reason: decision.reason });
 			if (decision.needsAttention) {
-				beginBlock(true);
 				return { block: true, reason: `Safety gate blocked ${decision.reason}; no interactive confirmation is available.` };
 			}
 			if (ctx.hasUI) {
@@ -448,17 +421,14 @@ export default function safetyGate(pi: ExtensionAPI): void {
 		}
 
 		emitDecision({ phase: "approval_required", category: decision.category, reason: decision.reason });
-		const blockId = beginBlock(false);
 		let allowed: boolean;
 		try {
 			allowed = await ctx.ui.confirm(`Allow ${decision.reason}?`, decision.promptDetail);
 		} catch {
 			emitDecision({ phase: "blocked", category: decision.category, reason: decision.reason });
-			endBlock(blockId);
 			return { block: true, reason: `Safety gate blocked ${decision.reason}; interactive confirmation failed.` };
 		}
 		emitDecision({ phase: "resolved", category: decision.category, reason: decision.reason, outcome: allowed ? "approved" : "denied" });
-		endBlock(blockId);
 		if (!allowed) return { block: true, reason: `Safety gate blocked ${decision.reason}.` };
 	});
 }

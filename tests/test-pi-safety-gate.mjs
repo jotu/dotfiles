@@ -243,7 +243,7 @@ test("confirmation detail redacts credential material and payloads", () => {
 	}
 });
 
-test("a block without UI notifies Herdr until the run progresses", async () => {
+test("a block without UI emits only a safety decision", async () => {
 	const handlers = new Map();
 	const emitted = [];
 	safetyGate({ on: (event, handler) => handlers.set(event, handler), events: { emit: (name, payload) => emitted.push({ name, payload }) } });
@@ -252,29 +252,24 @@ test("a block without UI notifies Herdr until the run progresses", async () => {
 	assert.match(result.reason, /no interactive confirmation/);
 	assert.deepEqual(emitted, [
 		{ name: "safety-gate:decision", payload: { phase: "blocked", category: "remote_access", reason: "accessing a remote cloud service" } },
-		{ name: "herdr:blocked", payload: { active: true, label: "Safety gate needs attention" } },
 	]);
-	handlers.get("turn_start")();
-	assert.deepEqual(emitted.at(-1), { name: "herdr:blocked", payload: { active: false } });
 });
 
-test("approval events carry safe categories, never the command, and clear Herdr state", async () => {
+test("approval events carry safe categories, never the command", async () => {
 	const handlers = new Map();
 	const emitted = [];
 	safetyGate({ on: (event, handler) => handlers.set(event, handler), events: { emit: (name, payload) => emitted.push({ name, payload }) } });
 	const approve = { ...tui, ui: { confirm: async () => true, notify: () => {} } };
 	assert.equal(await handlers.get("tool_call")({ toolName: "bash", input: { command: "git push origin HEAD" } }, approve), undefined);
-	assert.deepEqual(emitted.map((event) => event.name), ["safety-gate:decision", "herdr:blocked", "safety-gate:decision", "herdr:blocked"]);
-	assert.deepEqual(emitted.at(-1), { name: "herdr:blocked", payload: { active: false } });
-	assert.equal(emitted[2].payload.outcome, "approved");
+	assert.deepEqual(emitted.map((event) => event.name), ["safety-gate:decision", "safety-gate:decision"]);
+	assert.equal(emitted[1].payload.outcome, "approved");
 	assert.doesNotMatch(JSON.stringify(emitted), /git push/);
 
 	emitted.length = 0;
 	const deny = { ...tui, ui: { confirm: async () => false, notify: () => {} } };
 	const denied = await handlers.get("tool_call")({ toolName: "bash", input: { command: "git push origin HEAD" } }, deny);
 	assert.equal(denied.block, true);
-	assert.equal(emitted[2].payload.outcome, "denied");
-	assert.deepEqual(emitted.at(-1), { name: "herdr:blocked", payload: { active: false } });
+	assert.equal(emitted[1].payload.outcome, "denied");
 });
 
 test("a confirmation UI failure or observer failure cannot allow the action", async () => {

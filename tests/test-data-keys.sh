@@ -11,7 +11,8 @@ documented="$(grep -oE '`[A-Za-z]+(\.[A-Za-z]+)*`' "$doc" | tr -d '`' | sort -u)
 # Dotted references (.work.git.email), string lookups (hasKey .work.git "email"),
 # and nested lookups (get (get .github "work") "gitProtocol").
 used="$(
-  git ls-files -z -- '*.tmpl' ':!:.chezmoitemplates' ':!:*/scripts/*' '.chezmoitemplates/*' |
+  git ls-files --cached --others --exclude-standard -z -- '*.tmpl' ':!:.chezmoitemplates' ':!:*/scripts/*' '.chezmoitemplates/*' |
+    while IFS= read -r -d '' file; do [[ ! -f "$file" ]] || printf '%s\0' "$file"; done |
     xargs -0 perl -ne '
       while (/(?:^|[^A-Za-z0-9_.])\.((?:work|personal|github)(?:\.[A-Za-z]+)*|name|editor)\b/g) { print "$1\n" }
       while (/(?:hasKey|get) \.((?:work|personal|github)(?:\.[A-Za-z]+)*) "([A-Za-z]+)"/g) { print "$1.$2\n" }

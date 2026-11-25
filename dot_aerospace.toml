@@ -1,6 +1,6 @@
 # AeroSpace window management defaults for macOS.
 # The layout is intentionally small and predictable; visual theming is not
-# exposed by AeroSpace, so the Herdr Catppuccin Macchiato palette remains
+# exposed by AeroSpace, so the Catppuccin Macchiato palette remains
 # managed by the terminal and other applications.
 
 config-version = 2
@@ -25,6 +25,10 @@ outer.bottom = 0
 # Workspace conventions: 0 catch-all, 1 terminal, 2 browser, 3 Slack/Messages/Signal, 4 Teams, 5 notes, 6 security, 7 Mail, 8 media, 9 editors/coding.
 [[on-window-detected]]
 if.app-id = 'com.mitchellh.ghostty'
+run = 'move-node-to-workspace 1'
+
+[[on-window-detected]]
+if.app-id = 'com.superlogical.rex'
 run = 'move-node-to-workspace 1'
 
 [[on-window-detected]]

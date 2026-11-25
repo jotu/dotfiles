@@ -1,0 +1,133 @@
+{{- if eq .chezmoi.os "darwin" -}}
+#!/bin/bash
+# Remove retired Mise-managed multiplexers; never remove workspace directories.
+set -eu
+
+# Do not disrupt live terminal sessions or allow them to recreate state.
+for process in herdr tuios; do
+  if pgrep -x "$process" >/dev/null 2>&1; then
+    echo "$process is running; stop its sessions and daemon before retrying." >&2
+    exit 1
+  else
+    status=$?
+    if [ "$status" -ne 1 ]; then
+      echo "Could not check whether $process is running (pgrep status $status)." >&2
+      exit 1
+    fi
+  fi
+done
+
+if command -v mise >/dev/null 2>&1; then
+  for tool in herdr 'go:github.com/Gaurav-Gosain/tuios/cmd/tuios'; do
+    installed=$(mise ls --installed "$tool" --quiet)
+    if [ -n "$installed" ]; then
+      mise uninstall --all --yes "$tool"
+    fi
+  done
+else
+  echo 'Skipping retired multiplexer uninstall: mise is not available' >&2
+  exit 1
+fi
+
+# Treat any Git marker in an ancestor as a worktree, even when Git refuses it.
+inside_git_tree() {
+  directory=$1
+  while :; do
+    [ ! -e "$directory/.git" ] && [ ! -L "$directory/.git" ] || return 0
+    [ "$directory" != / ] || return 1
+    directory=$(dirname "$directory")
+  done
+}
+
+# Remove only explicit files outside Git worktrees and symlinked paths.
+skipped=0
+remove_retired_file() {
+  relative=$1
+  target="$HOME/$relative"
+  [ -e "$target" ] || [ -L "$target" ] || return 0
+  command -v git >/dev/null 2>&1 || { echo "Skipping $target: git unavailable" >&2; skipped=1; return; }
+  parent=$HOME
+  remaining=$relative
+  while [ "$remaining" != "${remaining#*/}" ]; do
+    component=${remaining%%/*}
+    parent="$parent/$component"
+    remaining=${remaining#*/}
+    if [ -L "$parent" ]; then
+      echo "Skipping symlinked path: $target" >&2
+      skipped=1
+      return
+    fi
+  done
+  if [ -L "$target" ] || [ ! -f "$target" ] || inside_git_tree "$parent" || git -C "$parent" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    echo "Skipping potentially unsafe path: $target" >&2
+    skipped=1
+    return
+  fi
+  rm -- "$target"
+}
+
+for file in \
+  .config/herdr/config.toml .config/herdr/.plugins.lock \
+  .config/herdr/herdr.log .config/herdr/herdr-client.log .config/herdr/herdr-server.log \
+  .config/herdr/release-notes.json .config/herdr/session.json \
+  .config/tuios/config.toml .config/zsh/completions/_tuios \
+  .agents/skills/tuios/SKILL.md \
+  'Library/Application Support/tuios/config.toml' \
+  'Library/Application Support/tuios/daemon.log' \
+  'Library/Application Support/tuios/daemon.log.old' \
+  'Library/Application Support/tuios/sidebar.json' \
+  .pi/agent/extensions/herdr-agent-state.ts .pi/agent/extensions/tuios-agent-state.ts; do
+  remove_retired_file "$file"
+done
+
+# This known agent socket link may be stale; unlink only the link, not its target.
+socket="$HOME/.config/herdr/herdr.sock.agent"
+if [ -L "$socket" ]; then
+  if [ -L "$HOME/.config" ] || [ -L "$HOME/.config/herdr" ] || ! command -v git >/dev/null 2>&1 || inside_git_tree "$HOME/.config/herdr" || git -C "$HOME/.config/herdr" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    echo "Skipping potentially unsafe socket link: $socket" >&2
+    skipped=1
+  else
+    rm -- "$socket"
+  fi
+elif [ -e "$socket" ]; then
+  echo "Skipping unexpected socket path: $socket" >&2
+  skipped=1
+fi
+
+# Walk session files without following symlinks; preserve any Git worktrees.
+sessions="$HOME/Library/Application Support/tuios/sessions"
+if [ -L "$HOME/Library" ] || [ -L "$HOME/Library/Application Support" ] || [ -L "$HOME/Library/Application Support/tuios" ] || [ -L "$sessions" ]; then
+  echo "Skipping symlinked session path: $sessions" >&2
+  skipped=1
+elif [ -d "$sessions" ]; then
+  listing=$(mktemp)
+  trap 'rm -f -- "$listing"' EXIT
+  if ! find -P "$sessions" -name .git -prune -o \( -type f -o -type l \) -print0 > "$listing"; then
+    echo "Failed to inspect session directory: $sessions" >&2
+    exit 1
+  fi
+  while IFS= read -r -d '' session; do
+    remove_retired_file "${session#"$HOME/"}"
+  done < "$listing"
+  rm -f -- "$listing"
+  trap - EXIT
+fi
+
+# Delete only Herdr's named snapshot files, never directories or symlinks.
+snapshots="$HOME/.config/herdr/session-snapshots"
+if command -v git >/dev/null 2>&1 && [ ! -L "$HOME/.config" ] && [ ! -L "$HOME/.config/herdr" ] && [ ! -L "$snapshots" ] && [ -d "$snapshots" ] && ! inside_git_tree "$snapshots" && ! git -C "$snapshots" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+  for snapshot in "$snapshots"/session-*.json; do
+    [ -e "$snapshot" ] || [ -L "$snapshot" ] || continue
+    remove_retired_file "${snapshot#"$HOME/"}"
+  done
+elif [ -e "$snapshots" ] || [ -L "$snapshots" ]; then
+  echo "Skipping potentially unsafe snapshot directory: $snapshots" >&2
+  skipped=1
+fi
+
+echo 'Inspect remaining Herdr and TUIOS workspace data and non-Mise installations manually; preserve Git worktrees.' >&2
+if [ "$skipped" -ne 0 ]; then
+  echo 'Cleanup incomplete; resolve skipped paths before retrying chezmoi apply.' >&2
+  exit 1
+fi
+{{- end }}

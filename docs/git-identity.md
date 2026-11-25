@@ -2,28 +2,18 @@
 
 ## Generate SSH Keys for Laptop
 
-Chezmoi manages the SSH configuration and, on Omarchy/Linux, the shared user-level SSH-agent service. It does not store private keys or passphrases in this repository.
+Chezmoi manages the SSH configuration. It does not store private keys or passphrases in this repository.
 
 ```bash
 # Generate locally
 ssh-keygen -t ed25519 -a 100 -C "<personal-email>" -f ~/.ssh/<personal-ssh-key>
 
-# Omarchy/Linux: the agent socket is configured by the managed Zsh setup.
-# Load the key manually when needed; AddKeysToAgent also loads it on first use.
-sar
-ssh-add ~/.ssh/<personal-ssh-key>
-
 # macOS: UseKeychain in the managed SSH config uses iCloud Keychain.
 ssh-add --apple-use-keychain ~/.ssh/<personal-ssh-key>
 
 # Add the public key to GitHub or similar.
-# Linux:
-wl-copy < ~/.ssh/<personal-ssh-key>.pub
-# macOS:
 pbcopy < ~/.ssh/<personal-ssh-key>.pub
 ```
-
-On Omarchy, the managed `ssh-agent.service` uses `$XDG_RUNTIME_DIR/ssh-agent.sock`, so all terminals share one agent. `sar` is a manual preload/recovery command, not a second per-terminal agent.
 
 ## Generate GPG Key for Laptop
 

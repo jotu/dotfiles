@@ -1,73 +1,8 @@
 # New machine bootstrap
 
-Setup for a new Omarchy/Linux or macOS machine. Return to the [README](../README.md) for daily commands.
-
-This repository supports two platform profiles:
-
-- **Omarchy/Linux:** Omarchy owns the operating system, base packages, desktop applications, and its provisioned tools. Chezmoi adds user configuration and Mise installs tools that Omarchy does not provide.
-- **macOS:** Mise manages the package layer through its Homebrew-compatible backend, while also managing the configured CLI tools and runtimes. The profile targets Apple Silicon.
+Setup for a new Apple Silicon macOS machine. Return to the [README](../README.md) for daily commands. Mise manages host packages and CLI tools.
 
 The checked-in `bootstrap` helper runs the platform checks and initializes Chezmoi from `git@github.com:jotu/dotfiles.git` by default (`mise exec -- chezmoi init ...`). It deliberately stops before applying files. Set `DOTFILES_REPO_URL` to use a different repository. Run it from a checked-out copy after the machine has GitHub access.
-
-## Omarchy/Linux
-
-Mise is preinstalled by Omarchy. The bootstrap keeps Bash as its interpreter, installs Zsh when needed, and leaves the login-shell switch for after the dotfiles have been reviewed and applied. Omarchy also provisions the base desktop applications and its AI harnesses and developer agents, including `codex`, `claude`, `crush`, `gemini`, `gh`, OpenCode, Pi, `omp`, Hunk, and Herdr. The repository leaves OpenCode configuration to Omarchy. If one of these wrappers is missing, restore Omarchy's application wrappers before authenticating:
-
-```bash
-omarchy refresh applications
-gh auth login --hostname github.com --git-protocol ssh
-gh auth status
-ssh -T git@github.com
-```
-
-Install Chezmoi through the existing Mise installation and initialize it from GitHub:
-
-```bash
-mise use --global chezmoi@latest
-mise exec -- chezmoi init git@github.com:jotu/dotfiles.git
-```
-
-Do not apply immediately. Configure local, machine-specific Chezmoi data first, then review the rendered changes. For this personal Omarchy computer, the local Chezmoi config must add the identity values that cannot be committed:
-
-```toml
-[data]
-name = "Your Name"
-editor = "zed"
-github.username = "jotu"
-
-[data.personal.git]
-email = "personal@example.com"
-signingKey = "YOUR_GPG_KEY_ID"
-username = "jotu"
-
-[data.personal.ssh]
-identityFile = "id_ed25519"
-```
-
-Then inspect and apply:
-
-```bash
-mise exec -- chezmoi data
-mise exec -- chezmoi diff
-mise exec -- chezmoi apply
-mise install
-```
-
-After validating the rendered Zsh setup, make Zsh the default shell for your user. Bash remains installed for scripts and fallback sessions:
-
-```bash
-chsh -s "$(command -v zsh)"
-exec zsh -l
-```
-
-Applying the dotfiles installs the selected desktop applications through Omarchy:
-
-```bash
-omarchy install editor zed
-omarchy install browser firefox
-```
-
-Those commands are intentionally Omarchy-specific. Do not add Zed, Firefox, Herdr, Pi, Hunk, OpenCode, Codex, Claude, Crush, Gemini, `omp`, or `gh` to the repository's Linux Mise fragments. Omarchy's managed wrappers live in `~/.local/bin`; the Linux Zsh profile puts that directory before Mise's shims so Omarchy remains authoritative. Omarchy may maintain global Mise state underneath those wrappers; that state is not the repository's source of ownership.
 
 ## macOS
 
@@ -101,7 +36,7 @@ mise run omlx:start
 mise install
 ```
 
-Mise installs the declared macOS formulae and casks into `/opt/homebrew`. oMLX is intentionally excluded from that package bootstrap because Mise cannot yet evaluate its tap formula, so the personal-profile task `mise run omlx:install` installs it with Homebrew instead; work profiles and Linux do not get the task. Run it before the model and server tasks. The personal macOS Pi configuration registers the oMLX endpoint at `http://127.0.0.1:8000/v1` and adds the pinned local models to its cycling scope. See [oMLX and Mise](#omlx-and-mise) and [Local model: when to use it](pi.md#local-model-when-to-use-it).
+Mise installs the declared macOS formulae and casks into `/opt/homebrew`. oMLX is intentionally excluded from that package bootstrap because Mise cannot yet evaluate its tap formula, so the personal-profile task `mise run omlx:install` installs it with Homebrew instead; work profiles do not get the task. Run it before the model and server tasks. The personal macOS Pi configuration registers the oMLX endpoint at `http://127.0.0.1:8000/v1` and adds the pinned local models to its cycling scope. See [oMLX and Mise](#omlx-and-mise) and [Local model: when to use it](pi.md#local-model-when-to-use-it).
 
 Keep the packages updated with Mise:
 
@@ -109,8 +44,6 @@ Keep the packages updated with Mise:
 mise exec -- mise bootstrap packages upgrade
 mise up
 ```
-
-The macOS profile keeps its existing mise-managed host tools; Linux support uses platform-specific templates and ignores.
 
 ## oMLX and Mise
 

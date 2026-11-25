@@ -29,40 +29,6 @@ case "$os_name" in
       error 'Mise is required on Apple Silicon macOS. Install it with: curl -fsSL https://mise.run | sh'
     fi
     ;;
-  Linux)
-    command -v omarchy >/dev/null 2>&1 || error \
-      'This Linux bootstrap supports Omarchy only.'
-    command -v mise >/dev/null 2>&1 || error \
-      'Mise should be preinstalled by Omarchy.'
-    mise_bin="$(command -v mise)"
-
-    if ! command -v zsh >/dev/null 2>&1; then
-      omarchy pkg add zsh
-    fi
-    command -v zsh >/dev/null 2>&1 || error \
-      'Omarchy did not install zsh; install it with `omarchy pkg add zsh` and retry.'
-
-    # Omarchy provisions the AI harnesses and developer agents with its own
-    # Mise-backed wrappers. Refresh those wrappers if any core harness is
-    # missing; do not install competing copies from this repository.
-    omarchy_ai_commands=(codex claude crush gemini gh opencode pi omp hunk)
-    omarchy_ai_refresh_needed=0
-    for command_name in "${omarchy_ai_commands[@]}"; do
-      if ! command -v "$command_name" >/dev/null 2>&1; then
-        omarchy_ai_refresh_needed=1
-        break
-      fi
-    done
-
-    if [ "$omarchy_ai_refresh_needed" -eq 1 ]; then
-      omarchy refresh applications
-    fi
-
-    for command_name in "${omarchy_ai_commands[@]}"; do
-      command -v "$command_name" >/dev/null 2>&1 || error \
-        "Omarchy did not provide $command_name; run `omarchy refresh applications` and retry."
-    done
-    ;;
   *)
     error "Unsupported operating system: $os_name"
     ;;
@@ -72,21 +38,10 @@ if ! git ls-remote "$repo_url" HEAD >/dev/null 2>&1; then
   error "GitHub access failed for $repo_url; authenticate Git before continuing."
 fi
 
-# Chezmoi is a bootstrap dependency on both platforms. After initialization,
+# Chezmoi is a bootstrap dependency. After initialization,
 # the rendered Mise configuration keeps it available as part of the setup.
 "$mise_bin" use --global chezmoi@latest
 "$mise_bin" exec -- chezmoi init "$repo_url"
-
-if [ "$os_name" = Linux ]; then
-  # Use Omarchy installers for desktop applications so package installation,
-  # desktop entries, defaults, and Omarchy integration stay consistent.
-  if ! command -v zeditor >/dev/null 2>&1; then
-    omarchy install editor zed
-  fi
-  if ! command -v firefox >/dev/null 2>&1; then
-    omarchy install browser firefox
-  fi
-fi
 
 cat <<'EOF'
 
@@ -102,8 +57,7 @@ Bootstrap finished without applying the dotfiles.
    mise exec -- chezmoi apply
 EOF
 
-if [ "$os_name" = Darwin ]; then
-  cat <<'EOF'
+cat <<'EOF'
 5. Install Ruby for third-party cask metadata:
    mise install ruby
 6. Inspect declared host packages:
@@ -115,9 +69,3 @@ if [ "$os_name" = Darwin ]; then
 9. Install remaining Mise-managed tools:
    mise install
 EOF
-else
-  cat <<'EOF'
-5. Install Mise-managed tools not supplied by the platform:
-   mise install
-EOF
-fi

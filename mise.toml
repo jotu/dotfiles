@@ -10,8 +10,12 @@ description = "Validate platform-specific Chezmoi boundaries and shell syntax"
 run = "bash tests/test-platform-layout.sh"
 
 [tasks."test:platform:render"]
-description = "Render and validate Linux and macOS platform templates"
+description = "Render and validate macOS platform templates"
 run = "bash tests/test-platform-rendering.sh"
+
+[tasks."test:retired-multiplexers"]
+description = "Test retired multiplexer cleanup in an isolated home"
+run = "bash tests/test-retired-multiplexers.sh"
 
 [tasks."test:omlx:model"]
 description = "Test pinned oMLX model installation without network access"
@@ -58,7 +62,7 @@ description = "Test the baseline-aware Vale comparison"
 run = "bash tests/test-vale-new-findings.sh"
 
 [tasks."test:templates"]
-description = "Render every Chezmoi template for darwin and linux"
+description = "Render every Chezmoi template for macOS"
 run = "bash tests/test-all-templates-render.sh"
 
 [tasks."test:data-keys"]
@@ -73,6 +77,7 @@ run = "bash tests/test-git-credentials.sh"
 description = "Run every offline test that CI runs (excludes the Vale diff against origin/main)"
 depends = [
   "test:platform",
+  "test:retired-multiplexers",
   "test:omlx:model",
   "test:omlx:profile",
   "test:templates",

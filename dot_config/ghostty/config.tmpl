@@ -1,53 +1,4 @@
-{{- if eq .chezmoi.os "linux" }}
-# Omarchy-managed dynamic theme colors
-config-file = ?"~/.local/state/omarchy/current/theme/ghostty.conf"
-
-# Font
-font-family = "JetBrainsMono Nerd Font"
-font-style = Regular
-font-size = 9
-
-# Window
-window-theme = ghostty
-window-padding-x = 14
-window-padding-y = 14
-confirm-close-surface = false
-resize-overlay = never
-gtk-toolbar-style = flat
-window-save-state = always
-window-new-tab-position = end
-
-# Cursor styling
-cursor-style = "block"
-cursor-style-blink = false
-
-# Cursor styling + SSH session terminfo
-# (all shell integration options must be passed together)
-shell-integration-features = no-cursor,ssh-env
-
-# Keyboard bindings
-keybind = shift+insert=paste_from_clipboard
-keybind = control+insert=copy_to_clipboard
-# Send Shift+Enter as CSI-u so TUIs can distinguish it from Enter.
-keybind = shift+enter=csi:13;2u
-# Legacy encoding sends Alt+Shift+Enter the same as Alt+Enter; send CSI-u so tmux can match M-S-Enter.
-keybind = alt+shift+enter=csi:13;4u
-keybind = super+control+shift+alt+arrow_down=resize_split:down,100
-keybind = super+control+shift+alt+arrow_up=resize_split:up,100
-keybind = super+control+shift+alt+arrow_left=resize_split:left,100
-keybind = super+control+shift+alt+arrow_right=resize_split:right,100
-
-# Clipboard and selection
-clipboard-trim-trailing-spaces = true
-copy-on-select = clipboard
-
-# Interaction and performance
-mouse-hide-while-typing = true
-mouse-scroll-multiplier = 0.95
-# Fix general slowness on Hyprland
-async-backend = epoll
-{{- else }}
-# Shared Ghostty preferences for non-Omarchy platforms.
+# Ghostty preferences for macOS.
 clipboard-trim-trailing-spaces = true
 copy-on-select = clipboard
 mouse-hide-while-typing = true
@@ -56,7 +7,7 @@ window-new-tab-position = end
 
 # Swedish macOS layout: these symbols need Option. Ghostty composes the
 # character, but under the Kitty keyboard protocol it still reports the chord
-# with Alt set (Option+7 = key 7, mod alt, text "|"). TUIOS, Pi and other
+# with Alt set (Option+7 = key 7, mod alt, text "|"). Pi and other
 # Kitty-protocol programs then read alt+7 instead of "|". Send the character
 # as text so `Ctrl+B |`, `[`, `]`, `{`, `}` and friends reach them as typed.
 keybind = alt+2=text:@
@@ -67,4 +18,3 @@ keybind = alt+9=text:]
 keybind = alt+shift+7=text:\\
 keybind = alt+shift+8=text:{
 keybind = alt+shift+9=text:}
-{{- end }}

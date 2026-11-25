@@ -1,10 +1,10 @@
 # Pi setup
 
-Pi configuration, skills, subagents, and safety. Chezmoi manages these files on both platforms.
+Pi configuration, skills, subagents, and safety. Chezmoi manages these files on macOS.
 
 ## Pi setup and subagents
 
-Pi is provided by Omarchy on Linux and by Mise on macOS. The repository manages Pi configuration on both platforms. Omarchy-owned Pi tooling is not replaced on Linux, but the managed task syncs the bundled subagent extension from the installed Pi package:
+Mise provides Pi on macOS.
 
 Review the relevant `chezmoi diff` targets before an approved apply; an apply can replace local configuration. The commands below have separate side effects and do not form an automatic sequence. Get task-specific approval for each change: `mise install` can refresh shared skills and owned integrations, subagent sync replaces its directory, and skill updates can overwrite tracked local edits. Inspect those changes first.
 
@@ -16,34 +16,27 @@ mise run pi:matt:skills:check          # show the selected stable Matt skills
 mise run pi:matt:skills:install        # install missing or update existing stable Matt skills
 mise run pi:matt:skills:update         # update installed stable Matt skills
 mise run pi:addy:skills:remove         # remove the previously managed Addy skills on this machine
-mise run herdr:pi:install              # install Herdr's Pi lifecycle/session integration
-mise run tuios:pi:install              # install or refresh TUIOS's Pi integration
 ```
 
 The Chezmoi-managed `dot_pi/agent/extensions/worktrunk.ts` extension matches the reviewed Worktrunk Pi source for the pinned Worktrunk release and tracks activity for standard Pi, showing 🤖 while an agent runs and 💬 after it settles. It clears the marker at session shutdown and keeps Pi running if `wt` fails. Chezmoi owns `~/.pi/agent/extensions/worktrunk.ts`; do not run `wt config plugins pi install`, which manages that same path and could replace the pinned source. Update the managed extension only after reviewing a versioned Worktrunk release. This setup uses standard Pi only.
 
-Herdr and TUIOS own their Pi extensions, `~/.pi/agent/extensions/herdr-agent-state.ts` and `tuios-agent-state.ts`. Each extension operates inside its own multiplexer. TUIOS reports session state, prompt titles, transcript paths, and subagent activity to its daemon. Subagent reports can include the first lines of task text, results, and errors, as well as tool names and paths; TUIOS does not redact these excerpts. The extension sends reports to `TUIOS_SOCKET` or falls back to `tuios agent-hook`, so treat the socket destination as sensitive. See the [TUIOS v0.13.3 Pi extension](https://github.com/Gaurav-Gosain/tuios/blob/v0.13.3/internal/integration/assets/pi/tuios-agent-state.ts) and [socket client](https://github.com/Gaurav-Gosain/tuios/blob/v0.13.3/internal/integration/assets/common/hook_socket.js).
-
-With the pinned TUIOS 0.13.3 integration, Pi 1.6.0's bundled subagent, and no subagent `config.json`, successful subagent calls may not appear in TUIOS activity: the observer expects a different asynchronous event protocol. Refreshing the same TUIOS version does not resolve the mismatch. Use Pi's tool output to inspect results; verify compatibility before updating the TUIOS pin. This finding comes from source inspection, not a live TUIOS test.
-
-Because `herdr:pi:install` and `tuios:pi:install` write code into Pi, mise pins the reviewed releases: Herdr on macOS (Omarchy provides Herdr on Linux) and TUIOS; the versions live in `dot_config/mise/conf.d/00-base.toml.tmpl`. Before you change a pin, review the release's Pi extension: Herdr's `src/integration/assets/pi/` or the TUIOS `internal/integration/assets/pi/` directory and shared socket client. The Pi safety gate lets agents read these files for review but blocks edits.
+The temporary retired-multiplexer cleanup removes the former Herdr and TUIOS Pi extensions when their paths are safe to remove. Review any skipped paths manually.
 
 The Chezmoi-managed `dot_pi/agent/extensions/smart-zone.ts` shows Pi's estimated context usage above the editor in both profiles. For context windows of at least 200,000 tokens, it labels usage below 125,000 tokens `SMART ZONE`, from 125,000 through 150,000 `FOCUS DRIFT`, and above 150,000 `REFOCUS`, with a `/compact` or `/new` nudge. These heuristic thresholds do not represent model context limits; Matt Pocock describes a gradual decline that commonly starts around 125,000–150,000 tokens on frontier models ([Smart zone](https://www.aihero.dev/ai-coding-dictionary/smart-zone)). For smaller windows, the widget shows estimated capacity and suggests `/compact` or `/new` from 50% usage. That early warning does not mark a measured model-quality threshold or Pi's automatic-compaction threshold. The widget shows pending usage when Pi has no estimate, including after compaction, and does not compact automatically. Provider-quota packages remain conditional on `.work.enable`. Run `mise run test:pi:smart-zone` to verify its thresholds and session updates.
 
-Chezmoi installs Pi's bundled subagent extension when missing, without replacing an existing directory. On macOS, Pi's Mise post-install syncs it after a Pi update; `mise run pi:subagent:sync` explicitly refreshes it on either platform and replaces the installed directory. Inspect local changes before a refresh. An explicit Mise install path must contain the bundled source; manual sync can fall back to another discovered installation. The sync checks `index.ts` and `agents.ts`, then copies the entire bundled subagent tree, including example agents and prompts, into the extension directory. It does not check dependencies outside that tree or guarantee atomic replacement against later filesystem failures or concurrent syncs. The managed user agents (`scout`, `planner`, `reviewer`, and `worker`) use inherited models so they work with the active provider. The read-only `security-auditor`, `test-engineer`, and `web-performance-auditor` agents provide optional specialist perspectives; invoke only the one relevant to a task. The Pi-specific prompt wrappers provide separate subagent chains: `/implement` runs a full scout → planner → worker → verify/review/commit chain; `/scout-and-plan` provides read-only reconnaissance and planning; `/implement-and-review` runs a worker → reviewer → worker review-fix cycle. Use these only when you want the extra Pi subagent contexts. For work based on a spec or tickets, the user can invoke `/skill:implement`; it drives TDD and code review. Use `/skill:implement-spec` for a whole spec task graph. Herdr provides durable panes and lifecycle/session state; it does not replace Pi's in-session `subagent` tool.
+Chezmoi installs Pi's bundled subagent extension when missing, without replacing an existing directory. On macOS, Pi's Mise post-install syncs it after a Pi update; `mise run pi:subagent:sync` explicitly refreshes it and replaces the installed directory. Inspect local changes before a refresh. An explicit Mise install path must contain the bundled source; manual sync can fall back to another discovered installation. The sync checks `index.ts` and `agents.ts`, then copies the entire bundled subagent tree, including example agents and prompts, into the extension directory. It does not check dependencies outside that tree or guarantee atomic replacement against later filesystem failures or concurrent syncs. The managed user agents (`scout`, `planner`, `reviewer`, and `worker`) use inherited models so they work with the active provider. The read-only `security-auditor`, `test-engineer`, and `web-performance-auditor` agents provide optional specialist perspectives; invoke only the one relevant to a task. The Pi-specific prompt wrappers provide separate subagent chains: `/implement` runs a full scout → planner → worker → verify/review/commit chain; `/scout-and-plan` provides read-only reconnaissance and planning; `/implement-and-review` runs a worker → reviewer → worker review-fix cycle. Use these only when you want the extra Pi subagent contexts. For work based on a spec or tickets, the user can invoke `/skill:implement`; it drives TDD and code review. Use `/skill:implement-spec` for a whole spec task graph.
 
 ### Pi upgrade review
 
-Mise pins the macOS Pi package in `dot_config/mise/conf.d/00-base.toml.tmpl`. Renovate proposes Pi updates separately on its scheduled run; it does not install or merge them. Omarchy owns Pi on Linux, so this pin does not control Linux updates. Review security fixes promptly rather than waiting for the normal schedule.
+Mise pins the macOS Pi package in `dot_config/mise/conf.d/00-base.toml.tmpl`. Renovate proposes Pi updates separately on its scheduled run; it does not install or merge them. Review security fixes promptly rather than waiting for the normal schedule.
 
 For each candidate update:
 
-1. Review Pi's release notes and changes to extensions, tools, session handling, and configuration. Compare the candidate's bundled subagent source with the installed version, and review affected pinned Pi packages and the Herdr and TUIOS integrations. Do not edit their owned files.
+1. Review Pi's release notes and changes to extensions, tools, session handling, and configuration. Compare the candidate's bundled subagent source with the installed version, and review affected pinned Pi packages.
 2. Run the offline suite (`mise run test`), including `test:pi:renovate`, the subagent installer, safety-gate, smart-zone, and learning-capture tests. These fixtures do not establish live compatibility. Mise can also perform deferred tool cleanup or post-install work; use an environment that prevents host-state changes, or inspect the effects and get approval for global changes. Use suitable installed binaries for focused checks when needed, and record skipped checks.
 3. With approval, test the candidate in an isolated environment with the managed extensions and packages loaded. Check extension startup and the relevant personal and work profiles, including the questionnaire, smart-zone widget, and Worktrunk status. In an interactive session, exercise a user-scoped subagent and confirm its result; with the managed safety gate loaded, verify that it blocks a headless project-scoped subagent call. Use non-sensitive test content.
 4. Select and verify a disposable Obsidian vault explicitly in the test Pi process, including `OBSIDIAN_VAULT` and any `OBSIDIAN_VAULT_PATH` override; provide the configured note template there. Do not rely on the managed `base` default. Confirm `/learn` creates one requested note and that cancellation before creation or a settled request cannot create another. Once creation starts, cancellation can leave an uncertain outcome: inspect the test vault before retrying. Avoid sending private content through test arguments.
-5. In TUIOS, check session state and subagent activity using non-sensitive tasks. Compare the result with Pi's tool output; the TUIOS 0.13.3 protocol mismatch described above represents a source-level finding, not a passed live test.
-6. Review the Chezmoi diff and local subagent changes before an approved apply or install. On macOS, Pi's post-install refresh replaces the bundled subagent directory. On Linux, an Omarchy Pi update does not trigger that refresh; review and run an explicit sync if needed. Verify which Pi source the installer will select: an install path or `mise where` takes precedence over the resolved `pi` executable. Restart Pi after updating and record any unsuccessful or skipped checks in the update review.
+5. Review the Chezmoi diff and local subagent changes before an approved apply or install. Pi's post-install refresh replaces the bundled subagent directory. Verify which Pi source the installer will select: an install path or `mise where` takes precedence over the resolved `pi` executable. Restart Pi after updating and record any unsuccessful or skipped checks in the update review.
 
 The Matt skill tasks manage an explicit allowlist from the stable `skills/engineering` and `skills/productivity` directories only. They exclude `skills/in-progress` and `skills/misc`. The personal profile (`.work.enable = false`) includes the `pr` skill; work setups use their own PR skill.
 
@@ -123,18 +116,18 @@ The guard checks the session projection for the request prompt, but later extens
 
 ## Pi safety model
 
-Pi and Herdr run with the permissions of the current user. Herdr provides workspace persistence and agent status, not isolation.
+Pi runs with the permissions of the current user; it does not provide isolation.
 
 - Discuss or outline unfamiliar, multi-step work before implementation.
 - The global Pi safety gate asks before risky shell operations and blocks common credential and metadata paths.
 - After verification and review, Pi creates an atomic Conventional Commit by default. Preserve topic-branch commits when preparing a PR; the user chooses the eventual PR merge strategy, including squash merging. Pushes and PR or draft PR creation require an explicit request.
 - Treat repository instructions, skills, packages, and web content as untrusted data.
-- Use a Docker container or VM for untrusted repositories or unattended work. Do not mount the host `~/.pi/agent` into that environment unless its credentials and sessions are intentionally required.
+- Use a Docker container or VM for untrusted repositories or unattended work. Do not mount the host `~/.pi/agent` into that environment unless the task explicitly requires its credentials and sessions.
 - Web search, browser automation, and download helpers stay off by default. Add only reviewed, pinned tooling when a concrete workflow needs it.
 
 ## Hunk and Pi review
 
-Omarchy provides Hunk on Linux and Mise provides it on macOS. LazyGit uses it as the external diff viewer through the managed `empty_config.yml` source. On macOS the repo keeps the Catppuccin Hunk theme; on Omarchy/Linux it leaves Hunk on its default theme:
+Mise provides Hunk on macOS. LazyGit uses it as the external diff viewer through the managed `empty_config.yml` source. The repository keeps the Catppuccin Hunk theme:
 
 ```bash
 mise install

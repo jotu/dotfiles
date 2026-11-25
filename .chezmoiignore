@@ -24,28 +24,7 @@ reference/
 # This script is repository tooling, not a home-directory target.
 bootstrap
 
-{{- if or (ne .chezmoi.os "darwin") .work.enable }}
+{{- if .work.enable }}
 # oMLX settings are managed only on personal macOS profiles.
 .omlx/
-{{- end }}
-
-{{- if ne .chezmoi.os "darwin" }}
-# macOS-only targets and tasks.
-.pi/agent/models.json
-.config/mise/config.toml
-.aerospace.toml
-Library/
-.config/mise/tasks/osx/
-{{- else }}
-# Omarchy/Linux Bash entrypoint.
-.bashrc
-# Linux user services.
-.config/systemd/
-{{- end }}
-
-# Zsh is the managed interactive shell on both supported platforms.
-# Do not create empty Bash startup files on macOS.
-{{- if eq .chezmoi.os "darwin" }}
-.bashrc
-.config/bash/
 {{- end }}
