@@ -6,7 +6,7 @@ The checked-in `bootstrap` helper runs the platform checks and initializes Chezm
 
 ## macOS
 
-The macOS setup targets Apple Silicon and uses standalone Mise with its Homebrew-compatible package backend. A real Homebrew installation is not required. Install Mise first:
+The macOS setup targets Apple Silicon and uses standalone Mise with its Homebrew-compatible package backend. The baseline does not require real Homebrew; the personal oMLX setup does. Install Mise first:
 
 ```bash
 curl -fsSL https://mise.run | sh
@@ -30,13 +30,24 @@ mise install ruby
 mise exec -- mise bootstrap packages status
 mise exec -- mise bootstrap packages apply --dry-run
 mise exec -- mise bootstrap packages apply
-mise run omlx:install                  # personal profile only; builds from source
-mise run omlx:model:install            # qwen3.5-9b-4bit (default); pass a model ID to select another
-mise run omlx:start
 mise install
 ```
 
-Mise installs the declared macOS formulae and casks into `/opt/homebrew`. oMLX is intentionally excluded from that package bootstrap because Mise cannot yet evaluate its tap formula, so the personal-profile task `mise run omlx:install` installs it with Homebrew instead; work profiles do not get the task. Run it before the model and server tasks. The personal macOS Pi configuration registers the oMLX endpoint at `http://127.0.0.1:8000/v1` and adds the pinned local models to its cycling scope. See [oMLX and Mise](#omlx-and-mise) and [Local model: when to use it](pi.md#local-model-when-to-use-it).
+Mise installs the declared macOS formulae and casks into `/opt/homebrew`. Keep those declarations under Mise ownership: use Mise to upgrade them rather than running a general `brew upgrade`.
+
+### Personal local-model setup
+
+Work profiles skip this section. On personal machines, install [Homebrew](https://brew.sh/) using its reviewed installation instructions before continuing. Homebrew and Mise share `/opt/homebrew`; review the installer's proposed changes and preserve existing packages. Do not rerun the installer on a machine that already has Homebrew. Confirm `command -v brew` succeeds in the current shell.
+
+Mise's package bootstrap excludes oMLX because Mise cannot evaluate its tap formula. Homebrew owns oMLX and any dependencies it installs; use the targeted oMLX upgrade procedure below, not a general Homebrew upgrade of Mise-owned packages.
+
+```bash
+mise run omlx:install                  # personal profile only; builds from source
+mise run omlx:model:install            # qwen3.5-9b-4bit by default
+mise run omlx:start
+```
+
+Run the installer before the model and server tasks. The personal macOS Pi configuration registers the oMLX endpoint at `http://127.0.0.1:8000/v1` and adds the pinned local models to its cycling scope. See [oMLX and Mise](#omlx-and-mise) and [Local model: when to use it](pi.md#local-model-when-to-use-it).
 
 Keep the packages updated with Mise:
 
@@ -62,7 +73,7 @@ ssh -T git@github.com
 mise run dotfiles:health:check
 ```
 
-On macOS, the health check also verifies Mise, AeroSpace, and oMLX.
+The health check verifies Mise and AeroSpace on both profiles, plus oMLX on personal machines. It checks the personal GitHub profile and, on work machines, the work profile too. Run `mise run gh:auth:login:personal` to authenticate the personal profile; work machines also provide `mise run gh:auth:login:work`. Diagnostics ignore inherited GitHub tokens so they check each profile's stored login.
 
 AeroSpace is installed and configured on macOS by chezmoi. Grant it Accessibility permission in System Settings → Privacy & Security → Accessibility. It starts automatically at login and uses `~/.aerospace.toml`.
 

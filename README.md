@@ -38,7 +38,7 @@ mise run gh:auth:status:all
 
 Mise manages macOS packages through its Homebrew-compatible backend, along with CLI tools and runtimes.
 
-Tool versions are pinned in `dot_config/mise/conf.d/00-base.toml.tmpl` and `mise.toml`; Renovate proposes updates.
+The global setup follows a rolling baseline: most tools and host packages use `latest`, with selected compatibility-sensitive versions pinned in `dot_config/mise/conf.d/00-base.toml.tmpl`. Repository test tools are pinned in `mise.toml`; Renovate proposes pin updates. Fresh installations can resolve different versions over time.
 
 ## Checks before committing
 

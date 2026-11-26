@@ -1,11 +1,7 @@
 export BREW_HOME="/opt/homebrew"
 
-# openssl
-if [[ -n "${BREW_HOME:-}" ]]; then
-  export LDFLAGS="-L$BREW_HOME/opt/openssl@3/lib"
-  export CPPFLAGS="-I$BREW_HOME/opt/openssl@3/include"
-  export PATH="$BREW_HOME/opt/openssl@3/bin:$PATH"
-fi
+# Keep build flags and keg-only OpenSSL paths project-scoped. Child shells
+# must preserve the caller's LDFLAGS, CPPFLAGS, and tool selection.
 
 
 {{- if .work.enable }}

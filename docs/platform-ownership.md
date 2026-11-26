@@ -43,6 +43,16 @@ mise install
 
 This allows different projects to use different Go, Java, and Node.js versions without changing the global platform setup.
 
+Keep build flags project-scoped too. Shell startup no longer sets `LDFLAGS`, `CPPFLAGS`, or a keg-only OpenSSL PATH globally. Existing machines that relied on those defaults should add the required flags to the affected project's Mise environment. For example, a project using the declared Apple Silicon OpenSSL package can use:
+
+```toml
+[env]
+LDFLAGS = "-L/opt/homebrew/opt/openssl@3/lib"
+CPPFLAGS = "-I/opt/homebrew/opt/openssl@3/include"
+```
+
+Preserve any other flags the project requires. Add `/opt/homebrew/opt/openssl@3/bin` to the project's PATH only when it needs that specific OpenSSL executable.
+
 Before committing platform changes, run the local layout checks from the repository root:
 
 ```bash

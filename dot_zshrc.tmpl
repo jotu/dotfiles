@@ -12,45 +12,13 @@
 {{- else if and (hasKey . "personal") (hasKey .personal "git") (hasKey .personal.git "username") -}}
 {{- $githubUsername = get .personal.git "username" -}}
 {{- end -}}
-{{- $ghTokenConfigDir := "" -}}
-{{- if .work.enable -}}
-{{- $ghTokenConfigDir = "~/.config/gh-work" -}}
+{{- $ghProfile := "personal" -}}
+{{- if .work.enable -}}{{- $ghProfile = "work" -}}{{- end -}}
+{{- $ghTokenConfigDir := printf "~/.config/gh-%s" $ghProfile -}}
 {{- if and (hasKey . "github") (hasKey .github "configDir") -}}
 {{- $ghConfig := get .github "configDir" -}}
-{{- if hasKey $ghConfig "work" -}}{{- $ghTokenConfigDir = get $ghConfig "work" -}}{{- end -}}
+{{- if hasKey $ghConfig $ghProfile -}}{{- $ghTokenConfigDir = get $ghConfig $ghProfile -}}{{- end -}}
 {{- end -}}
-{{- end -}}
-
-# gh auth token reads the local credential store; it does not call GitHub's API.
-# Keep this in interactive Zsh so Mise also works in non-login terminal shells.
-if [[ -z "${GITHUB_TOKEN:-}" && -z "${GH_TOKEN:-}" ]] && command -v gh >/dev/null 2>&1; then
-  if [[ -n "${GH_CONFIG_DIR:-}" ]]; then
-    _mise_github_token=$(gh auth token 2>/dev/null || true)
-  elif [[ -n "{{ $ghTokenConfigDir }}" ]]; then
-    _gh_config_dir="{{ $ghTokenConfigDir }}"
-    case "$_gh_config_dir" in
-      "~") _gh_config_dir="$HOME" ;;
-      "~/"*) _gh_config_dir="$HOME/${_gh_config_dir#~/}" ;;
-    esac
-    _mise_github_token=$(GH_CONFIG_DIR="$_gh_config_dir" gh auth token 2>/dev/null || true)
-    unset _gh_config_dir
-  else
-    _mise_github_token=$(gh auth token 2>/dev/null || true)
-  fi
-  if [[ -n "$_mise_github_token" ]]; then
-    export GITHUB_TOKEN="$_mise_github_token"
-  fi
-  unset _mise_github_token
-fi
-{{- if ne $githubUsername "" }}
-if [[ -z "${GITHUB_TOKEN:-}" && -z "${GH_TOKEN:-}" ]] && command -v security >/dev/null 2>&1; then
-  _mise_github_token=$(security find-generic-password -s "github" -a {{ $githubUsername | quote }} -w 2>/dev/null || true)
-  if [[ -n "$_mise_github_token" ]]; then
-    export GITHUB_TOKEN="$_mise_github_token"
-  fi
-  unset _mise_github_token
-fi
-{{- end }}
 
 # Debug startup time
 #zmodload zsh/zprof
@@ -76,6 +44,31 @@ fi
 if command -v mise >/dev/null; then
   eval "$(mise activate zsh)"
 fi
+
+# Discover managed tools before loading credentials. gh reads the local store;
+# it does not call GitHub's API. Keep this in interactive, non-login shells too.
+if [[ -z "${GITHUB_TOKEN:-}" && -z "${GH_TOKEN:-}" ]] && command -v gh >/dev/null 2>&1; then
+  _gh_config_dir="${GH_CONFIG_DIR:-{{ $ghTokenConfigDir }}}"
+  case "$_gh_config_dir" in
+    "~") _gh_config_dir="$HOME" ;;
+    "~/"*) _gh_config_dir="$HOME/${_gh_config_dir#'~/'}" ;;
+  esac
+  _mise_github_token=$(GH_CONFIG_DIR="$_gh_config_dir" gh auth token 2>/dev/null || true)
+  if [[ -n "$_mise_github_token" ]]; then
+    export GITHUB_TOKEN="$_mise_github_token"
+  fi
+  unset _mise_github_token _gh_config_dir
+fi
+{{- if ne $githubUsername "" }}
+if [[ -z "${GITHUB_TOKEN:-}" && -z "${GH_TOKEN:-}" ]] && command -v security >/dev/null 2>&1; then
+  _mise_github_token=$(security find-generic-password -s "github" -a {{ $githubUsername | quote }} -w 2>/dev/null || true)
+  if [[ -n "$_mise_github_token" ]]; then
+    export GITHUB_TOKEN="$_mise_github_token"
+  fi
+  unset _mise_github_token
+fi
+{{- end }}
+
 if command -v zoxide >/dev/null; then
   eval "$(zoxide init zsh)"
 fi

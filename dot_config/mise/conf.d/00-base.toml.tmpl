@@ -71,7 +71,7 @@ description = "Validate gh, ssh agent, repo roots, and macOS tooling"
 run = '''
   set -eu
 
-  for command_name in mise aerospace omlx; do
+  for command_name in mise aerospace{{ if not .work.enable }} omlx{{ end }}; do
     if ! command -v "$command_name" >/dev/null 2>&1; then
       echo "ERROR: $command_name not found in PATH"
       exit 1
@@ -96,7 +96,7 @@ run = '''
     exit 1
   fi
 
-  gh_status_cmd='gh auth status --hostname github.com'
+  gh_status_cmd='env -u GH_TOKEN -u GITHUB_TOKEN gh auth status --hostname github.com'
 
   check_gh_login() {
     local config_dir="$1"
@@ -114,18 +114,11 @@ run = '''
     fi
   }
 
-{{- if .work.enable }}
   gh_personal_dir=$(expand_path "{{ $ghConfigPersonal }}")
-  gh_work_dir=$(expand_path "{{ $ghConfigWork }}")
-
   check_gh_login "$gh_personal_dir" "personal"
+{{- if .work.enable }}
+  gh_work_dir=$(expand_path "{{ $ghConfigWork }}")
   check_gh_login "$gh_work_dir" "work"
-{{- else }}
-  if ! $gh_status_cmd >/dev/null 2>&1; then
-    echo "ERROR: gh is not logged in for default profile"
-    echo "Run: gh auth login --hostname github.com"
-    exit 1
-  fi
 {{- end }}
 
 {{- if $personalIdentityFile }}
@@ -238,6 +231,7 @@ run = '''
   gh_work_dir=$(expand_path "{{ $ghConfigWork }}")
   env -u GITHUB_TOKEN -u GH_TOKEN GH_CONFIG_DIR="$gh_work_dir" gh auth login --hostname github.com --git-protocol ssh
 '''
+{{- end }}
 
 [tasks."gh:auth:status:all"]
 alias = "ghsa"
@@ -254,15 +248,15 @@ run = '''
   }
 
   gh_personal_dir=$(expand_path "{{ $ghConfigPersonal }}")
-  gh_work_dir=$(expand_path "{{ $ghConfigWork }}")
-
   echo "Personal profile ($gh_personal_dir):"
-  GH_CONFIG_DIR="$gh_personal_dir" gh auth status --hostname github.com
+  env -u GH_TOKEN -u GITHUB_TOKEN GH_CONFIG_DIR="$gh_personal_dir" gh auth status --hostname github.com
+{{- if .work.enable }}
+  gh_work_dir=$(expand_path "{{ $ghConfigWork }}")
   echo
   echo "Work profile ($gh_work_dir):"
-  GH_CONFIG_DIR="$gh_work_dir" gh auth status --hostname github.com
-'''
+  env -u GH_TOKEN -u GITHUB_TOKEN GH_CONFIG_DIR="$gh_work_dir" gh auth status --hostname github.com
 {{- end }}
+'''
 
 [tasks."gh:dash:install"]
 alias = "ghdi"

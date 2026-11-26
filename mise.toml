@@ -9,6 +9,14 @@ pkl = "0.33.1"
 description = "Validate platform-specific Chezmoi boundaries and shell syntax"
 run = "bash tests/test-platform-layout.sh"
 
+[tasks."test:profiles"]
+description = "Test rendered profile diagnostics with fake credentials and tools"
+run = "bash tests/test-profile-diagnostics.sh"
+
+[tasks."test:shell"]
+description = "Test isolated Zsh startup and build environment preservation"
+run = "bash tests/test-shell-startup.sh"
+
 [tasks."test:platform:render"]
 description = "Render and validate macOS platform templates"
 run = "bash tests/test-platform-rendering.sh"
@@ -69,6 +77,8 @@ run = "bash tests/test-git-credentials.sh"
 description = "Run every offline test that CI runs (excludes the Vale diff against origin/main)"
 depends = [
   "test:platform",
+  "test:profiles",
+  "test:shell",
   "test:omlx:model",
   "test:omlx:profile",
   "test:templates",

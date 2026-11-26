@@ -53,29 +53,44 @@ This repo is configured so:
   - `work.git.rootDir` -> include `~/.gitconfig.work` for work repos.
   - `personal.git.rootDir` -> include `~/.gitconfig.personal` for personal repos.
 
-After applying chezmoi on a work machine, initialize both gh profiles once:
+After applying chezmoi, initialize the personal gh profile on both personal and work machines. Work machines also need the work profile:
 
 ```bash
-GH_CONFIG_DIR="~/.config/gh-personal" gh auth login --hostname github.com --git-protocol https
-GH_CONFIG_DIR="~/.config/gh-work" gh auth login --hostname github.com --git-protocol ssh
-
-GH_CONFIG_DIR="~/.config/gh-personal" gh auth status --hostname github.com
-GH_CONFIG_DIR="~/.config/gh-work" gh auth status --hostname github.com
+mise run gh:auth:login:personal
+mise run gh:auth:login:work     # work machines only
+mise run gh:auth:status:all
 ```
 
-Then use `GH_CONFIG_DIR` explicitly in the current shell/session when you need a profile:
+These tasks use the profile paths from local Chezmoi data, defaulting to `~/.config/gh-personal` and `~/.config/gh-work`. Login and status tasks ignore inherited `GH_TOKEN` and `GITHUB_TOKEN` values so they use the selected profile's stored credentials.
+
+Then use `GH_CONFIG_DIR` explicitly in the current shell/session when you need a profile. Clear inherited tokens first so gh uses that profile's stored credentials:
 
 ```bash
-export GH_CONFIG_DIR="~/.config/gh-personal"
-# or
-export GH_CONFIG_DIR="~/.config/gh-work"
+unset GH_TOKEN GITHUB_TOKEN
+export GH_CONFIG_DIR="$HOME/.config/gh-personal"
+# or, on work machines
+export GH_CONFIG_DIR="$HOME/.config/gh-work"
 ```
 
 For normal `gh` usage, no PAT needs to be stored in this git repo.
 Use interactive `gh auth login` for both personal and work profiles.
 Use PAT only for tools that explicitly require it (for example `mcp-server-github` or CI automation via `GH_TOKEN`).
 
-On personal machines (`work.enable = false`), standard `~/.config/gh` is used and personal remains default.
+On personal machines (`work.enable = false`), Git credential helpers, shell token loading, and health checks use the personal profile at `~/.config/gh-personal` by default, not standard `~/.config/gh`. Shell token loading respects an explicit `GH_CONFIG_DIR` or an existing token.
+
+### Migrate an existing personal login
+
+If you authenticated only in standard `~/.config/gh`, authenticate the managed personal profile after applying the updated dotfiles:
+
+```bash
+# Clear session overrides so the next shell loads the managed personal profile.
+unset GH_CONFIG_DIR GH_TOKEN GITHUB_TOKEN
+mise run gh:auth:login:personal
+mise run gh:auth:status:all
+exec zsh
+```
+
+This leaves the old default profile untouched; do not delete its configuration or copy tokens into Chezmoi data. The login task respects a custom `github.configDir.personal` path. On work machines, also authenticate the work profile before checking all profiles.
 
 Set `work.git.rootDir` and `personal.git.rootDir` in local chezmoi data so `includeIf` routing applies where you keep each repo type.
 
@@ -98,7 +113,7 @@ work = "~/.config/gh-work"
 
 ```bash
 mise run gh:auth:login:personal
-mise run gh:auth:login:work
+mise run gh:auth:login:work     # work machines only
 mise run gh:auth:status:all
 ```
 
